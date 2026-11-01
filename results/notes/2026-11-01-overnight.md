@@ -1,0 +1,88 @@
+# Overnight runs 2026-10-31 → 2026-11-01: notes
+
+The second batch, on the same M4 Mac mini (16 GiB). New suites: `nudity-flag` (77 cases) and the four
+region suites, `regions-objects` (14), `regions-find` (18), `regions-faces` (15) and `regions-text` (8). Also rescored or
+rerun: `workout` (scorer fixes), `classify` (64-token output cap). The records are in `results/ledger/`;
+these are the observations the numbers don't carry.
+
+## Region suites
+
+Pass means F1 ≥ 0.7, with boxes matched at IoU ≥ 0.5 and the same label (`assertions/regions.ts`).
+
+| Model | objects | find | faces | text | per image |
+| --- | --- | --- | --- | --- | --- |
+| qwen3.5:4b | **12/14** | 17/18 | **13/15** | 0/8 | 3–5 s (22 s text) |
+| qwen3.5:9b | 11/14 | **18/18** | 12/15 | — | 5 s |
+| lfm3-vl:2b | **12/14** | 15/18 | 11/15 | 5/8 | 1–2 s |
+| gemma4:e4b | 3/14 | 12/18 | 5/15 | 0/8 | 3 s (14 s text) |
+| florence2-base (od / ground / ocr) | 4/14 | 14/18 | 12/15 (od) | **8/8** | 0.8 s (1.8 s ocr) |
+| yunet-2023mar | | | **13/15** | | under 10 ms |
+| ppocr-v5-mobile-det | | | | 6/8 | under 50 ms |
+| grounding-dino-tiny | 4/14 | 12/18 | 9/15 | 0/8 | 1.2 s |
+| owlv2-base | 6/14 | 11/18 | 7/15 | 0/8 | 1.5 s |
+| rtdetr-r18 | 6/14 | | | | 0.1 s |
+| dfine-s / dfine-n | 5/14 · 0/14 | | | | 0.1 s / under 50 ms |
+
+- **The small vision LLMs box things well.** qwen3.5:4b and lfm3-vl:2b beat every dedicated
+  detector on objects and named things. Their boxes are on a 0–1000 grid in [x0, y0, x1, y1];
+  gemma4 is read as [y0, x0, y1, x1] (its documented order) and still scores poorly. Either it
+  isn't following that order consistently, or it's genuinely weak at this. Worth a look at its raw replies.
+- **Specialists win in their own lane:**
+  - Florence-2 OCR found every text line on all 8 pages, at 0.99 F1.
+  - YuNet matched the LLMs on faces in under 10 ms.
+  - PP-OCR det got 6/8 in under 50 ms.
+- **Text lines defeat the LLMs.** Asked for "text", they box the whole page. Asked for each
+  visual line (`ask` in the config), lfm3-vl got 5/8, but qwen3.5:4b still merges or misplaces
+  lines (0/8, mean F1 0.11). The open-vocabulary detectors (OWLv2, Grounding DINO) can't do text
+  lines at all.
+- **dfine-n is under-confident.** At threshold 0.3 it returns almost nothing (F1 0.11). dfine-s
+  at the same threshold is fine. Lowering dfine-n's threshold is a fair follow-up; it doesn't
+  justify a code change.
+- Fixed-class detectors (D-FINE, RT-DETR) need a label map: they use the old VOC names
+  (`pottedplant`, `diningtable`, `tvmonitor`...).
+- Grounding DINO only works with one joined prompt (`"dog . car ."`); a label list errors in the
+  ONNX export (`join_phrases`).
+- Detector timings are in-process per image after load. `rss_mb` is process memory, an upper
+  bound on the model's footprint.
+
+## nudity-flag
+
+77 cases, split into explicit nudes (9), nude art (10), swimwear (8) and everything else (50).
+Each column counts the cases judged correctly. Explicit nudes should be flagged. Nude art is
+counted correct when it is not flagged. Swimwear and everything else should also stay unflagged.
+
+| Model | nude 9 | art 10 | swim 8 | other 50 | total |
+| --- | --- | --- | --- | --- | --- |
+| qwen3.5:4b | 9 | 8 | 6 | 50 | **73/77** |
+| vit-nsfw-falconsai | 3 | 9 | 8 | 50 | 70/77 |
+| gemma4:e4b | 0 | 10 | 8 | 50 | 68/77 |
+| vit-nsfw-adamcodd | 9 | 7 | 1 | 50 | 67/77 |
+| d1-omni:600m | 1 | 8 | 8 | 49 | 66/77 |
+| d1:2b | 9 | 6 | 0 | 50 | 65/77 |
+| lfm3-vl:2b | 7 | 1 | 0 | 50 | 58/77 |
+
+- The totals hide the important column. **gemma4 flags nothing**: 0/9 explicit nudes. That looks
+  like a refusal or safety filter, not a judgement, so its 68/77 is meaningless for this job.
+  Falconsai is close behind (3/9).
+- qwen3.5:4b is the only model that catches every nude while mostly sparing art and swimwear.
+  AdamCodd also catches every nude, but it flags 7 of 8 swimsuit photos.
+- No nudity *region* suite yet. No public box data meets our sourcing rules, and NudeNet's
+  detector is AGPL and trained on a scraped set. Boxes need hand-labelling on the site's
+  `/label/` page.
+
+## Rescoring and reruns
+
+- workout: the scorer no longer gives credit for matching empty set lists, and a cardio session
+  is compared on duration alone. Scores fell to their real level. gemma4 leads with 8/16; most
+  models score 2–6.
+- classify: lfm3:1.7b ran to the 5-minute timeout. With `num_predict: 64` it answers, but it
+  labels almost everything "task" (4/20). That's a real weakness, not a harness fault.
+- gemma3:4b's classify row stays stale. The output cap changed its provider config, and the
+  runner now skips it under the 12-month age rule (released 2025-03). Add `baseline` to its
+  registry entry to keep it.
+
+## Harness
+
+- Staleness is now per model. A result depends on the shared suite setup, that model's own
+  provider entry, and the scorer files those reference. Previously, editing one provider file
+  (`ollama-boxes.ts`) staled every detector in the same suite.
