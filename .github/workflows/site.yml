@@ -50,7 +50,9 @@ jobs:
 
   deploy:
     needs: check
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    # Pages serves only a public repo here; while the repo is private the
+    # site is built and checked but not deployed.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && !github.event.repository.private
     runs-on: ubuntu-latest
     permissions:
       pages: write
