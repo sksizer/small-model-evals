@@ -1,0 +1,18 @@
+{
+  "tag": "PaddlePaddle/PP-OCRv5_mobile_det_onnx",
+  "digest": "e6f4fa85f00e",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-classification"
+  ],
+  "default_parameters": {
+    "revision": "e6f4fa85f00e168c862bc462aebca69eef9b3d3d"
+  },
+  "template_hash": ""
+}

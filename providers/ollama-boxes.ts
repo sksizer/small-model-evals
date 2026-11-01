@@ -3,7 +3,8 @@
 //
 // The model is asked for every instance of each phrase in the case's `find`
 // list, as JSON constrained by a schema: {"boxes": [{"label", "box_2d":
-// [x0, y0, x1, y1]}]} with coordinates on a 0-1000 grid over the image (the
+// [x0, y0, x1, y1]}]}, the label limited to those phrases (left free, models
+// label a text line with its words) with coordinates on a 0-1000 grid over the image (the
 // convention Qwen's vision models are trained on; other models are told the
 // same in the prompt). Coordinates are divided by 1000, so the output matches
 // assertions/regions.ts: {"boxes": [{label, box}]} as fractions.
@@ -12,7 +13,10 @@
 // 1024; a long list of boxes is the only long reply), `order`: `xyxy`
 // (default; Qwen, LFM) or `yxyx` for models trained on [y0, x0, y1, x1]
 // (Gemma's documented box_2d order). The prompt asks for [x0, y0, x1, y1]
-// either way; `order` says how the reply is read.
+// either way; `order` says how the reply is read. `ask` replaces the phrase
+// list in the request when the phrases alone are ambiguous (regions-text asks
+// for each line of text: asked for "text", models box the whole page); labels
+// stay limited to the `find` phrases.
 const BASE = process.env['OLLAMA_BASE_URL'] ?? 'http://localhost:11434'
 
 interface Config {
@@ -21,9 +25,10 @@ interface Config {
   num_ctx?: number
   num_predict?: number
   order?: 'xyxy' | 'yxyx'
+  ask?: string
 }
 
-const SCHEMA = {
+const schema = (find: string[]) => ({
   type: 'object',
   required: ['boxes'],
   properties: {
@@ -33,13 +38,13 @@ const SCHEMA = {
         type: 'object',
         required: ['label', 'box_2d'],
         properties: {
-          label: { type: 'string' },
+          label: { type: 'string', enum: find },
           box_2d: { type: 'array', items: { type: 'number' }, minItems: 4, maxItems: 4 },
         },
       },
     },
   },
-}
+})
 
 export default class OllamaBoxes {
   private readonly config: Config
@@ -58,8 +63,8 @@ export default class OllamaBoxes {
       if (!image) throw new Error('vars.image is missing')
       if (find.length === 0) throw new Error('vars.find is empty')
       const ask =
-        `Find every ${find.map((f) => `"${f}"`).join(', ')} in this image. ` +
-        'For each one, give its label (one of the phrases) and its bounding box as box_2d: [x0, y0, x1, y1], ' +
+        `Find every ${this.config.ask ?? find.map((f) => `"${f}"`).join(', ')} in this image. ` +
+        `For each one, give its label (one of: ${find.map((f) => `"${f}"`).join(', ')}) and its bounding box as box_2d: [x0, y0, x1, y1], ` +
         'with coordinates from 0 to 1000 relative to the image width and height, top left origin. ' +
         'Give an empty list when there are none. Reply as JSON: {"boxes": [{"label": "...", "box_2d": [x0, y0, x1, y1]}]}.'
       const res = await fetch(`${BASE}/api/chat`, {
@@ -69,7 +74,7 @@ export default class OllamaBoxes {
           stream: false,
           ...(this.config.think === undefined ? {} : { think: this.config.think }),
           options: { temperature: 0, num_ctx: this.config.num_ctx ?? 8192, num_predict: this.config.num_predict ?? 1024 },
-          format: SCHEMA,
+          format: schema(find),
           messages: [{ role: 'user', content: ask, images: [image.replace(/^data:image\/[a-z]+;base64,/, '')] }],
         }),
       })

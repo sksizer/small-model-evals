@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/owlv2-base-patch16-ensemble-ONNX",
+  "digest": "180d6ef7599b",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "q8",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-classification"
+  ],
+  "default_parameters": {
+    "revision": "180d6ef7599bd69bb48db5c72bd49ad03ddfab80"
+  },
+  "template_hash": ""
+}

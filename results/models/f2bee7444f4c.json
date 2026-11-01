@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/rtdetr_r18vd",
+  "digest": "f2bee7444f4c",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-classification"
+  ],
+  "default_parameters": {
+    "revision": "f2bee7444f4c29003df7e9ef07c4c1c6632eca6f"
+  },
+  "template_hash": ""
+}

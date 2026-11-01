@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/Florence-2-base",
+  "digest": "d59e079711c5",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "q8",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-classification"
+  ],
+  "default_parameters": {
+    "revision": "d59e079711c57174f29265539fb4cc9f0f335916"
+  },
+  "template_hash": ""
+}

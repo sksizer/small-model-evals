@@ -10,8 +10,10 @@
 //
 // Config: `model` (Hugging Face id), `revision` (commit, pinned so the weights
 // never change under a snapshot), `dtype`, `task`, `threshold` (minimum
-// score, default 0.3), and optionally `labels` to rename a model's labels to
-// plain words (`{ "dining table": "table" }`).
+// score, default 0.3), optionally `labels` to rename a model's labels to
+// plain words (`{ "pottedplant": "potted plant" }`), and `join_phrases` for
+// Grounding DINO, which takes one prompt in its own format, "dog . car .",
+// rather than a list of labels (a list errors in the ONNX export).
 //
 // Vars: `image`; `find` (the phrases to look for, for zero-shot models).
 //
@@ -28,6 +30,7 @@ interface Config {
   task: 'object-detection' | 'zero-shot-object-detection'
   threshold?: number
   labels?: Record<string, string>
+  join_phrases?: boolean
 }
 
 interface Detection {
@@ -78,7 +81,8 @@ export default class RegionDetector {
       if (task === 'zero-shot-object-detection') {
         const find = context.vars.find ?? []
         if (find.length === 0) throw new Error('vars.find is empty: a zero-shot detector needs phrases to look for')
-        found = await detect(image, find, { threshold, percentage: true })
+        const prompts = this.config.join_phrases ? [`${find.join(' . ')} .`] : find
+        found = await detect(image, prompts, { threshold, percentage: true })
       } else {
         found = await detect(image, { threshold, percentage: true })
       }

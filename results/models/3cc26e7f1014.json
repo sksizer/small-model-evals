@@ -1,0 +1,18 @@
+{
+  "tag": "opencv/face_detection_yunet",
+  "digest": "3cc26e7f1014",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-classification"
+  ],
+  "default_parameters": {
+    "revision": "3cc26e7f1014a5ee5d74a42acee58bafc9d0a310"
+  },
+  "template_hash": ""
+}

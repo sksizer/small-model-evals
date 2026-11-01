@@ -39,7 +39,7 @@ export const SNAPSHOT_DIR = join(RESULTS_DIR, 'suites')
 export const OLLAMA = process.env['OLLAMA_BASE_URL'] ?? 'http://localhost:11434'
 export const PROMPTFOO_VERSION = '0.125.1'
 
-/** Folders of shared code that scores or calls suites. Every file is hashed into each snapshot; a result depends only on the ones its suite uses (scorerFilesOf). */
+/** Folders of shared code that scores or calls suites. Every file is hashed into each snapshot; a result depends only on the ones its suite and its model's provider use (scorerFilesOf). */
 const SCORER_DIRS = ['assertions', 'providers']
 
 export interface Machine {
@@ -350,9 +350,11 @@ export interface Latest {
 /**
  * The scorer files a suite uses, by path from the package root: its config's
  * `file://` references into the scorer folders and, transitively, the local
- * files they import.
+ * files they import. Given a model label, only that model's own provider
+ * entry counts, not the other models' providers: a change to one provider's
+ * code leaves the other models' results current.
  */
-export function scorerFilesOf(suite: string): string[] {
+export function scorerFilesOf(suite: string, label?: string): string[] {
   const dir = join(SUITES_DIR, suite)
   const found = new Set<string>()
   const visit = (path: string) => {
@@ -366,7 +368,13 @@ export function scorerFilesOf(suite: string): string[] {
     else if (Array.isArray(v)) v.forEach(walk)
     else if (v && typeof v === 'object') Object.values(v).forEach(walk)
   }
-  walk(readYaml(join(dir, 'promptfooconfig.yaml')))
+  const config = readYaml(join(dir, 'promptfooconfig.yaml')) as { providers?: { label?: string }[] }
+  if (label === undefined) walk(config)
+  else {
+    const { providers, ...shared } = config
+    walk(shared)
+    walk(providers?.find((p) => p.label === label) ?? null)
+  }
   return [...found].sort()
 }
 
@@ -388,18 +396,23 @@ export function resultKey(snap: Snapshot, label: string, files: string[]): strin
  * suite as it stands.
  */
 export function latest(records = readLedger()): Latest[] {
-  const current = new Map<string, { snap: Snapshot; files: string[] } | null>()
+  const current = new Map<string, Snapshot | null>()
   const now = (suite: string) => {
-    if (!current.has(suite)) {
-      current.set(suite, existsSync(join(SUITES_DIR, suite)) ? { snap: currentSnapshot(suite), files: scorerFilesOf(suite) } : null)
-    }
+    if (!current.has(suite)) current.set(suite, existsSync(join(SUITES_DIR, suite)) ? currentSnapshot(suite) : null)
     return current.get(suite)!
+  }
+  const filesFor = new Map<string, string[]>()
+  const files = (suite: string, label: string) => {
+    const key = `${suite}\u0000${label}`
+    if (!filesFor.has(key)) filesFor.set(key, scorerFilesOf(suite, label))
+    return filesFor.get(key)!
   }
   const isCurrent = (r: LedgerRecord) => {
     const cur = now(r.suite)
     const snap = readSnapshot(r.suite, r.suite_fp)
-    if (!cur || !snap || snap.cases[r.case]?.hash !== cur.snap.cases[r.case]?.hash) return false
-    return resultKey(snap, r.model.label, cur.files) === resultKey(cur.snap, r.model.label, cur.files)
+    if (!cur || !snap || snap.cases[r.case]?.hash !== cur.cases[r.case]?.hash) return false
+    const f = files(r.suite, r.model.label)
+    return resultKey(snap, r.model.label, f) === resultKey(cur, r.model.label, f)
   }
   const groups = new Map<string, LedgerRecord[]>()
   for (const r of records) {
@@ -408,7 +421,7 @@ export function latest(records = readLedger()): Latest[] {
   }
   return [...groups.values()].map((rs) => {
     const first = rs[0]!
-    const active = Object.keys(now(first.suite)?.snap.cases ?? {})
+    const active = Object.keys(now(first.suite)?.cases ?? {})
     const chosen: LedgerRecord[] = []
     const missing: string[] = []
     let stale = false

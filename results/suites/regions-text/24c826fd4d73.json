@@ -1,0 +1,1558 @@
+{
+  "suite": "regions-text",
+  "fingerprint": "24c826fd4d73",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:fbf7ea45a9b87b74a24175d5dfde31ab6b2fb25f0d8b1f9e9413c5f07c179fc9"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "regions-text — box every line of text",
+    "prompts": [
+      "{{ find }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "file": "inference.onnx",
+          "kind": "dbnet",
+          "repo": "PaddlePaddle/PP-OCRv5_mobile_det_onnx",
+          "revision": "e6f4fa85f00e168c862bc462aebca69eef9b3d3d",
+          "sha256": "a431985659dc921974177a95adcfbb90fd9e51989a5e04d70d0b75f597b6e61d"
+        },
+        "id": "sha256:46ecb00e5d11f18c3fac85c7da035a7a01c767261f5df1fc014a17ab16ca18bb",
+        "label": "ppocr-v5-mobile-det"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/Florence-2-base",
+          "revision": "d59e079711c57174f29265539fb4cc9f0f335916",
+          "task": "ocr"
+        },
+        "id": "sha256:8fb99030998e192af42b570d4c4de761ed3701c0e8bc5526b0cfb7acc0a93922",
+        "label": "florence2-base-ocr-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/owlv2-base-patch16-ensemble-ONNX",
+          "revision": "180d6ef7599bd69bb48db5c72bd49ad03ddfab80",
+          "task": "zero-shot-object-detection",
+          "threshold": 0.2
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "owlv2-base-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "join_phrases": true,
+          "model": "onnx-community/grounding-dino-tiny-ONNX",
+          "revision": "ff690b0a8050566c290287545bd059350f3e9096",
+          "task": "zero-shot-object-detection",
+          "threshold": 0.3
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "grounding-dino-tiny-q8"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:4b",
+          "num_predict": 4096,
+          "think": false
+        },
+        "id": "sha256:55bb6147623f83de4b40c7c67f15135a7385d305eec400a106730e849ad51ea8",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "model": "gemma4:e4b",
+          "num_predict": 4096,
+          "order": "yxyx",
+          "think": false
+        },
+        "id": "sha256:55bb6147623f83de4b40c7c67f15135a7385d305eec400a106730e849ad51ea8",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "model": "lfm3-vl:2b",
+          "num_predict": 4096,
+          "think": false
+        },
+        "id": "sha256:55bb6147623f83de4b40c7c67f15135a7385d305eec400a106730e849ad51ea8",
+        "label": "lfm3-vl:2b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "8fb99030998e",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "1482885f4b93",
+    "providers/ollama-boxes.ts": "55bb6147623f",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/onnx-detector.ts": "46ecb00e5d11",
+    "providers/region-detector.ts": "20b52284e631"
+  },
+  "setup_hash": "debb81243a53",
+  "cases": {
+    "error-dialog-text": {
+      "hash": "b9ef643e2bfa",
+      "def": {
+        "description": "text lines: error-dialog (synthetic page, 8 lines)",
+        "metadata": {
+          "id": "error-dialog-text"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/error-dialog.png",
+          "find": [
+            "text"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": "text",
+                "box": [
+                  0.0968,
+                  0.1425,
+                  0.4369,
+                  0.195
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0968,
+                  0.3241,
+                  0.3441,
+                  0.3691
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0968,
+                  0.4185,
+                  0.8322,
+                  0.461
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0968,
+                  0.5104,
+                  0.6963,
+                  0.5529
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0968,
+                  0.6025,
+                  0.7152,
+                  0.645
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2743,
+                  0.7843,
+                  0.3854,
+                  0.8268
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.4467,
+                  0.7843,
+                  0.6882,
+                  0.8268
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7495,
+                  0.7843,
+                  0.8468,
+                  0.8268
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "event-flyer-text": {
+      "hash": "f23a9d68b4f1",
+      "def": {
+        "description": "text lines: event-flyer (synthetic page, 7 lines)",
+        "metadata": {
+          "id": "event-flyer-text"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/event-flyer.png",
+          "find": [
+            "text"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": "text",
+                "box": [
+                  0.253,
+                  0.0913,
+                  0.747,
+                  0.1304
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1846,
+                  0.1721,
+                  0.8154,
+                  0.2808
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2563,
+                  0.3239,
+                  0.7436,
+                  0.3804
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.3144,
+                  0.5063,
+                  0.6856,
+                  0.5628
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.4104,
+                  0.593,
+                  0.5896,
+                  0.6321
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1061,
+                  0.739,
+                  0.8938,
+                  0.7782
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2585,
+                  0.8199,
+                  0.7415,
+                  0.859
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "invoice-simple-text": {
+      "hash": "65b25d0d65ac",
+      "def": {
+        "description": "text lines: invoice-simple (synthetic page, 31 lines)",
+        "metadata": {
+          "id": "invoice-simple-text"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/invoice-simple.png",
+          "find": [
+            "text"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": "text",
+                "box": [
+                  0.8424,
+                  0.0683,
+                  0.9368,
+                  0.0917
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0632,
+                  0.0717,
+                  0.2372,
+                  0.1317
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8034,
+                  0.099,
+                  0.9368,
+                  0.1273
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0632,
+                  0.1425,
+                  0.2865,
+                  0.1708
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8617,
+                  0.1436,
+                  0.9368,
+                  0.1669
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8147,
+                  0.1742,
+                  0.9368,
+                  0.2026
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0632,
+                  0.2388,
+                  0.1211,
+                  0.2621
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8801,
+                  0.2388,
+                  0.9368,
+                  0.2621
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0632,
+                  0.2695,
+                  0.1834,
+                  0.2978
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8257,
+                  0.2695,
+                  0.9368,
+                  0.2978
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0632,
+                  0.3057,
+                  0.2152,
+                  0.334
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0632,
+                  0.342,
+                  0.1406,
+                  0.3703
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0737,
+                  0.4365,
+                  0.1822,
+                  0.4665
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.577,
+                  0.4365,
+                  0.6095,
+                  0.4665
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6633,
+                  0.4365,
+                  0.7017,
+                  0.4665
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8525,
+                  0.4365,
+                  0.9263,
+                  0.4665
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0737,
+                  0.5028,
+                  0.365,
+                  0.5311
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.577,
+                  0.5028,
+                  0.5989,
+                  0.5311
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6633,
+                  0.5028,
+                  0.7237,
+                  0.5311
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.855,
+                  0.5028,
+                  0.9263,
+                  0.5311
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0737,
+                  0.5674,
+                  0.2518,
+                  0.5957
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.577,
+                  0.5674,
+                  0.5879,
+                  0.5957
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6633,
+                  0.5674,
+                  0.7237,
+                  0.5957
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.855,
+                  0.5674,
+                  0.9263,
+                  0.5957
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0737,
+                  0.632,
+                  0.1439,
+                  0.6603
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.577,
+                  0.632,
+                  0.5879,
+                  0.6603
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6633,
+                  0.632,
+                  0.7237,
+                  0.6603
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.866,
+                  0.632,
+                  0.9263,
+                  0.6603
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6633,
+                  0.6949,
+                  0.7086,
+                  0.7249
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.855,
+                  0.6949,
+                  0.9263,
+                  0.7249
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0632,
+                  0.7928,
+                  0.53,
+                  0.8211
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "jobs-table-text": {
+      "hash": "5dbbdb20b2d8",
+      "def": {
+        "description": "text lines: jobs-table (synthetic page, 31 lines)",
+        "metadata": {
+          "id": "jobs-table-text"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/jobs-table.png",
+          "find": [
+            "text"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": "text",
+                "box": [
+                  0.0513,
+                  0.1059,
+                  0.13,
+                  0.1471
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.3689,
+                  0.1059,
+                  0.4235,
+                  0.1471
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6864,
+                  0.1059,
+                  0.8002,
+                  0.1471
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0513,
+                  0.16,
+                  0.1415,
+                  0.2306
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.3689,
+                  0.16,
+                  0.4594,
+                  0.2306
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6864,
+                  0.16,
+                  0.7523,
+                  0.2306
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0461,
+                  0.3541,
+                  0.1055,
+                  0.3982
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2075,
+                  0.3541,
+                  0.2397,
+                  0.3982
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.5003,
+                  0.3541,
+                  0.5723,
+                  0.3982
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6689,
+                  0.3541,
+                  0.7514,
+                  0.3982
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8555,
+                  0.3541,
+                  0.8994,
+                  0.3982
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0461,
+                  0.4552,
+                  0.0941,
+                  0.5052
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2075,
+                  0.4582,
+                  0.3304,
+                  0.5052
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.5003,
+                  0.4582,
+                  0.5464,
+                  0.5052
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6689,
+                  0.4582,
+                  0.7297,
+                  0.5052
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8555,
+                  0.4582,
+                  0.9016,
+                  0.5052
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0461,
+                  0.5649,
+                  0.0901,
+                  0.6149
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2075,
+                  0.5679,
+                  0.3519,
+                  0.6149
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.5003,
+                  0.5679,
+                  0.5464,
+                  0.6149
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6689,
+                  0.5679,
+                  0.74,
+                  0.6149
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8555,
+                  0.5679,
+                  0.9016,
+                  0.6149
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0461,
+                  0.6746,
+                  0.1136,
+                  0.7246
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2075,
+                  0.6776,
+                  0.3253,
+                  0.7246
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.5003,
+                  0.6776,
+                  0.5464,
+                  0.7246
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6689,
+                  0.6776,
+                  0.7297,
+                  0.7246
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8555,
+                  0.6776,
+                  0.9016,
+                  0.7246
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0461,
+                  0.7843,
+                  0.0941,
+                  0.8343
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2075,
+                  0.7873,
+                  0.33,
+                  0.8343
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.5003,
+                  0.7873,
+                  0.5464,
+                  0.8343
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6689,
+                  0.7873,
+                  0.6986,
+                  0.8343
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8555,
+                  0.7873,
+                  0.9016,
+                  0.8343
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "receipt-grocery-text": {
+      "hash": "4e25ce90e9c1",
+      "def": {
+        "description": "text lines: receipt-grocery (synthetic page, 24 lines)",
+        "metadata": {
+          "id": "receipt-grocery-text"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/receipt-grocery.png",
+          "find": [
+            "text"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": "text",
+                "box": [
+                  0.2276,
+                  0.075,
+                  0.7724,
+                  0.1125
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2577,
+                  0.1188,
+                  0.7423,
+                  0.1422
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.3882,
+                  0.1482,
+                  0.6118,
+                  0.1716
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.2026,
+                  0.6016,
+                  0.2308
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.2366,
+                  0.4511,
+                  0.2647
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.2987,
+                  0.3651,
+                  0.3269
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7854,
+                  0.2987,
+                  0.8714,
+                  0.3269
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.339,
+                  0.4296,
+                  0.3671
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7854,
+                  0.339,
+                  0.8714,
+                  0.3671
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.3792,
+                  0.4296,
+                  0.4073
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7854,
+                  0.3792,
+                  0.8714,
+                  0.4073
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.4194,
+                  0.4081,
+                  0.4476
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7854,
+                  0.4194,
+                  0.8714,
+                  0.4476
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.4597,
+                  0.5156,
+                  0.4878
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7639,
+                  0.4597,
+                  0.8714,
+                  0.4878
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.5249,
+                  0.3006,
+                  0.553
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7639,
+                  0.5249,
+                  0.8714,
+                  0.553
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.5651,
+                  0.2576,
+                  0.5933
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7854,
+                  0.5651,
+                  0.8714,
+                  0.5933
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.6054,
+                  0.2361,
+                  0.6335
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7639,
+                  0.6054,
+                  0.8714,
+                  0.6335
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1286,
+                  0.6456,
+                  0.4081,
+                  0.6737
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7639,
+                  0.6456,
+                  0.8714,
+                  0.6737
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2298,
+                  0.7077,
+                  0.7702,
+                  0.7312
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "recipe-card-text": {
+      "hash": "788284ecc67c",
+      "def": {
+        "description": "text lines: recipe-card (synthetic page, 14 lines)",
+        "metadata": {
+          "id": "recipe-card-text"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recipe-card.png",
+          "find": [
+            "text"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": "text",
+                "box": [
+                  0.0953,
+                  0.1054,
+                  0.53,
+                  0.1625
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0953,
+                  0.1814,
+                  0.5365,
+                  0.21
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0953,
+                  0.2462,
+                  0.3037,
+                  0.2802
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.3144,
+                  0.2998,
+                  0.3448
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.3586,
+                  0.3392,
+                  0.389
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.4028,
+                  0.3134,
+                  0.4332
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.447,
+                  0.1936,
+                  0.4774
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.4912,
+                  0.299,
+                  0.5216
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.5354,
+                  0.3912,
+                  0.5658
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.5796,
+                  0.2527,
+                  0.61
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0953,
+                  0.647,
+                  0.2277,
+                  0.6809
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.7152,
+                  0.3438,
+                  0.7456
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.7594,
+                  0.6228,
+                  0.7898
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.1297,
+                  0.8036,
+                  0.5079,
+                  0.834
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "settings-panel-text": {
+      "hash": "2778aa9a182b",
+      "def": {
+        "description": "text lines: settings-panel (synthetic page, 15 lines)",
+        "metadata": {
+          "id": "settings-panel-text"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/settings-panel.png",
+          "find": [
+            "text"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.0885,
+                  0.2327,
+                  0.1288
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.1974,
+                  0.2465,
+                  0.2301
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.2373,
+                  0.3688,
+                  0.2661
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.3312,
+                  0.1807,
+                  0.3639
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8392,
+                  0.3493,
+                  0.9059,
+                  0.382
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.3711,
+                  0.3812,
+                  0.4
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.4651,
+                  0.2956,
+                  0.4977
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.8282,
+                  0.4832,
+                  0.9059,
+                  0.5159
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.505,
+                  0.3462,
+                  0.5338
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.5989,
+                  0.2768,
+                  0.6316
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.6388,
+                  0.2785,
+                  0.6676
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.7327,
+                  0.1914,
+                  0.7654
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.777,
+                  0.7508,
+                  0.9221,
+                  0.7835
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0721,
+                  0.7726,
+                  0.259,
+                  0.8015
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0926,
+                  0.8858,
+                  0.2316,
+                  0.9185
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "shipping-label-text": {
+      "hash": "3ca8a6228588",
+      "def": {
+        "description": "text lines: shipping-label (synthetic page, 13 lines)",
+        "metadata": {
+          "id": "shipping-label-text"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/shipping-label.png",
+          "find": [
+            "text"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.0936,
+                  0.3075,
+                  0.1489
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.7518,
+                  0.0936,
+                  0.8857,
+                  0.1489
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.2062,
+                  0.1612,
+                  0.2338
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.2422,
+                  0.3654,
+                  0.2784
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.2885,
+                  0.302,
+                  0.3246
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.3347,
+                  0.3474,
+                  0.3709
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.4257,
+                  0.1841,
+                  0.4534
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.4617,
+                  0.2871,
+                  0.5064
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.5173,
+                  0.5437,
+                  0.5619
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.5728,
+                  0.392,
+                  0.6175
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.2502,
+                  0.8134,
+                  0.7294,
+                  0.8517
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.0939,
+                  0.9086,
+                  0.281,
+                  0.9448
+                ]
+              },
+              {
+                "label": "text",
+                "box": [
+                  0.6594,
+                  0.9086,
+                  0.8857,
+                  0.9448
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

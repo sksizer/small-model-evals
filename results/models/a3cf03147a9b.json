@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/dfine_s_coco-ONNX",
+  "digest": "a3cf03147a9b",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-classification"
+  ],
+  "default_parameters": {
+    "revision": "a3cf03147a9b86c78475139115c8ac142577352d"
+  },
+  "template_hash": ""
+}
