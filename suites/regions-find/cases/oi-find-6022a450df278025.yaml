@@ -1,0 +1,8 @@
+description: "find: bicycle helmet (Open Images 6022a450df278025)"
+metadata: { id: oi-find-6022a450df278025 }
+vars:
+  image: file://../../corpus/images/oi-find-6022a450df278025.jpg
+  find: [bicycle helmet]
+  expected:
+    boxes:
+      - { label: [bicycle helmet, helmet], box: [0.4499, 0.1128, 0.5767, 0.3341] }

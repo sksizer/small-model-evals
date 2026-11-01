@@ -1,13 +1,24 @@
 ---
 // The visual comparison for one result: chips for expected strings or tags
-// (found or missed) plus any wrong tags the model gave, or a field table for
-// expected fields. Renders nothing otherwise.
+// (found or missed) plus any wrong tags the model gave; a field table for
+// expected fields; or, for a regions result, the model's boxes drawn on the
+// image (components/Boxes.astro) with what it found, missed and added, and
+// the detector's time and memory. Renders nothing otherwise.
+import Boxes from './Boxes.astro'
 import { show, type Result } from '../lib/data'
 
 interface Props {
   result: Result
+  /** Draw a regions result's boxes on the image (off where the page already shows the image). */
+  image?: boolean
 }
-const { result } = Astro.props
+const { result, image = true } = Astro.props
+const regions = result.regions
+const found = regions?.filter((x) => x.ok).length ?? 0
+const expectedN = regions?.filter((x) => x.want).length ?? 0
+const missed = regions?.filter((x) => x.want && !x.ok).map((x) => x.label) ?? []
+const extra = regions?.filter((x) => !x.want).map((x) => x.label) ?? []
+const m = result.metrics ?? {}
 ---
 
 {
@@ -21,6 +32,28 @@ const { result } = Astro.props
       {result.wrong?.filter((w) => w.found).map((w) => (
         <span class="chip wrong" title="a tag that is wrong for this image">✗ {w.want}</span>
       ))}
+    </div>
+  )
+}
+{
+  regions && (
+    <div class="regions">
+      <p class="region-sum">
+        <b>
+          {found}/{expectedN}
+        </b>{' '}
+        found
+        {missed.length > 0 && <span class="missed-l"> · missed {missed.join(', ')}</span>}
+        {extra.length > 0 && <span class="extra-l"> · {extra.length} extra ({[...new Set(extra)].join(', ')})</span>}
+        {(m['detect_ms'] !== undefined || m['rss_mb'] !== undefined) && (
+          <span class="muted">
+            {' '}
+            · {m['detect_ms'] !== undefined && `${Math.round(m['detect_ms'])} ms per image`}
+            {m['rss_mb'] !== undefined && ` · ${Math.round(m['rss_mb'])} MB process memory`}
+          </span>
+        )}
+      </p>
+      {image && result.image && <Boxes path={result.image} alt={`${result.model} on ${result.case}`} regions={regions} small />}
     </div>
   )
 }
@@ -55,6 +88,9 @@ const { result } = Astro.props
 }
 
 <style>
+  .region-sum { margin: 4px 0 6px; font-size: 13px; }
+  .missed-l { color: var(--muted); }
+  .extra-l { color: var(--bad, #d93025); }
   .chips { display: flex; flex-wrap: wrap; gap: 4px; }
   .chip { font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid transparent; }
   .chip.found { background: var(--good-bg); color: var(--good); }

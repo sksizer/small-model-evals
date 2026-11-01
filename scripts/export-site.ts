@@ -15,6 +15,7 @@ import { conceptLabel, parseTags, tagMatches, type Concept } from '../assertions
 import { compareWorkout, type ExpectedWorkout } from '../assertions/workout.ts'
 import { compareFood, type ExpectedFood } from '../assertions/food.ts'
 import { compareDecide } from '../assertions/decide.ts'
+import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
 import { MODELS, ageMonths, skipReason } from './models.ts'
@@ -66,6 +67,11 @@ function compare(expected: unknown, absent: unknown, output: string) {
   if (Array.isArray(expected) && expected.every((e) => typeof e === 'string')) {
     const text = output.toLowerCase()
     return { hits: (expected as string[]).map((want) => ({ want, found: text.includes(want.toLowerCase()) })) }
+  }
+  // Regions: expected and predicted boxes, paired, from the scorer.
+  if (expected && typeof expected === 'object' && Array.isArray((expected as { boxes?: unknown }).boxes)) {
+    const e = expected as ExpectedRegions
+    return { regions: compareRegions(e.boxes, output, e.labels) }
   }
   // Decisions: one row per question, from the scorer.
   const decided = compareDecide(expected as Record<string, string | string[]>, output)
@@ -216,6 +222,7 @@ const results = view
         suite_fp: r.suite_fp,
         case_hash: c?.hash ?? null,
         env: r.env ?? null,
+        metrics: r.metrics ?? null,
         ...compare(c?.expected, c?.absent, r.output ?? ''),
       }
     }),

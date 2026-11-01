@@ -1,0 +1,9 @@
+description: "objects: coffee cup, bowl (Open Images 25d107f1590c1772)"
+metadata: { id: oi-objects-25d107f1590c1772 }
+vars:
+  image: file://../../corpus/images/oi-objects-25d107f1590c1772.jpg
+  find: [cup, bowl]
+  expected:
+    boxes:
+      - { label: [cup, coffee cup, mug], box: [0.3297, 0.1875, 0.8578, 0.725] }
+      - { label: [bowl], box: [0, 0.0354, 0.3375, 0.4396] }

@@ -1,0 +1,9 @@
+description: "find: bicycle helmet (Open Images 8f08cb18c27fbaa7)"
+metadata: { id: oi-find-8f08cb18c27fbaa7 }
+vars:
+  image: file://../../corpus/images/oi-find-8f08cb18c27fbaa7.jpg
+  find: [bicycle helmet]
+  expected:
+    boxes:
+      - { label: [bicycle helmet, helmet], box: [0.5, 0.0907, 0.5855, 0.1792] }
+      - { label: [bicycle helmet, helmet], box: [0.736, 0.1128, 0.8702, 0.3009] }

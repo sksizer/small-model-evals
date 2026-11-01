@@ -1,0 +1,10 @@
+description: "objects: dog, car (Open Images 0fd512f1bffb8cf3)"
+metadata: { id: oi-objects-0fd512f1bffb8cf3 }
+vars:
+  image: file://../../corpus/images/oi-objects-0fd512f1bffb8cf3.jpg
+  find: [dog, car]
+  expected:
+    boxes:
+      - { label: [dog], box: [0.0859, 0.1354, 0.4422, 0.5021] }
+      - { label: [dog], box: [0.3984, 0.2417, 0.7219, 0.5188] }
+      - { label: [car], box: [0, 0, 0.9984, 0.9979] }

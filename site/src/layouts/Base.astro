@@ -1,5 +1,5 @@
 ---
-import { data, href, imageSuites } from '../lib/data'
+import { data, href } from '../lib/data'
 
 interface Props {
   title: string
@@ -10,7 +10,7 @@ const path = Astro.url.pathname
 const nav = [
   { href: '/', label: 'Leaderboard' },
   { href: '/results/', label: 'All results' },
-  ...imageSuites.map((s) => ({ href: `/gallery/${s.id}/`, label: `Gallery: ${s.id}` })),
+  { href: '/gallery/', label: 'Galleries' },
   { href: '/cases/', label: 'Cases' },
   { href: '/corpus/', label: 'Corpus' },
   { href: '/speed/', label: 'Speed & memory' },
@@ -66,6 +66,9 @@ const active = (h: string) => (h === '/' ? path === href('/') || path === '/' : 
   }
   .shot-frame.censored a {
     pointer-events: none;
+  }
+  .shot-frame.censored .overlay {
+    display: none;
   }
   .shot-frame .reveal {
     position: absolute;

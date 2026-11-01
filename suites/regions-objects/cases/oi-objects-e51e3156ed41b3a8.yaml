@@ -1,0 +1,9 @@
+description: "objects: bottle, wine glass (Open Images e51e3156ed41b3a8)"
+metadata: { id: oi-objects-e51e3156ed41b3a8 }
+vars:
+  image: file://../../corpus/images/oi-objects-e51e3156ed41b3a8.jpg
+  find: [bottle, wine glass]
+  expected:
+    boxes:
+      - { label: [bottle], box: [0, 0, 0.2574, 1] }
+      - { label: [wine glass], box: [0.0853, 0.0976, 0.5162, 1] }

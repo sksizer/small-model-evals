@@ -40,7 +40,7 @@ const count = (c: string) => images.filter((m) => m.category === c).length
               {m.licence_url ? <a href={m.licence_url}>{m.licence}</a> : m.licence} · {m.author}
             </div>
             <div class="meta">
-              <a href={sourceUrl(m)}>Source</a> · {m.width}×{m.height}
+              <a href={sourceUrl(m)}>Source</a> · {m.width}×{m.height} · <a href={href(`/label/?image=${m.id}`)}>Label regions</a>
             </div>
             {m.used_by.length > 0 ? (
               <div class="meta used">

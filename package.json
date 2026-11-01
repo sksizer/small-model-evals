@@ -26,7 +26,9 @@
   },
   "dependencies": {
     "@huggingface/transformers": "4.3.1",
-    "@osdlc/command-seam": "^0.14.0"
+    "@osdlc/command-seam": "^0.14.0",
+    "onnxruntime-node": "1.30.0",
+    "sharp": "0.35.5"
   },
   "devDependencies": {
     "@osdlc/tsconfig": "^0.4.1",

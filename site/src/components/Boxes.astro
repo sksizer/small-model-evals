@@ -1,0 +1,112 @@
+---
+// An image with region boxes drawn over it (the regions suite). Give either
+// `expected` (the case's boxes, drawn dashed) or `regions` (one result's
+// comparison: matched boxes green, extra boxes red, missed expected boxes
+// grey and dashed). Boxes are fractions of the image size, so they are
+// placed in percent and scale with the image. The image goes through
+// components/Shot.astro, so a sensitive one stays covered, boxes included,
+// until the viewer asks to see it.
+import Shot from './Shot.astro'
+import type { Box, ExpectedRegions, Result } from '../lib/data'
+
+interface Props {
+  path: string
+  alt: string
+  expected?: ExpectedRegions
+  regions?: NonNullable<Result['regions']>
+  small?: boolean
+}
+const { path, alt, expected, regions, small = false } = Astro.props
+
+type Drawn = { box: Box; label: string; kind: 'want' | 'hit' | 'extra' | 'miss' }
+const first = (l: string | string[]) => (Array.isArray(l) ? l[0]! : l)
+const drawn: Drawn[] = regions
+  ? regions.flatMap((r): Drawn[] =>
+      r.ok && r.got
+        ? [{ box: r.got, label: r.label, kind: 'hit' }]
+        : r.want
+          ? [{ box: r.want, label: r.label, kind: 'miss' }]
+          : r.got
+            ? [{ box: r.got, label: r.label, kind: 'extra' }]
+            : [],
+    )
+  : (expected?.boxes ?? []).map((b) => ({ box: b.box, label: first(b.label), kind: 'want' as const }))
+const pct = (n: number) => `${(n * 100).toFixed(2)}%`
+---
+
+<div class:list={['boxes', { small }]}>
+  <Shot path={path} alt={alt} wrapClass="boxes-link" class="boxes-img">
+    <div class="overlay" aria-hidden="true">
+      {
+        drawn.map((d) => (
+          <div
+            class={`bx ${d.kind}`}
+            style={`left:${pct(d.box[0])};top:${pct(d.box[1])};width:${pct(d.box[2] - d.box[0])};height:${pct(d.box[3] - d.box[1])}`}
+          >
+            {!small && <span class="bx-label">{d.label}</span>}
+          </div>
+        ))
+      }
+    </div>
+  </Shot>
+</div>
+
+<style>
+  .boxes :global(.boxes-link) {
+    display: block;
+  }
+  .boxes :global(.boxes-img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  .boxes.small {
+    max-width: 260px;
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .bx {
+    position: absolute;
+    box-sizing: border-box;
+    border: 2px solid;
+  }
+  .bx.want {
+    border-color: #2f6fed;
+    border-style: dashed;
+  }
+  .bx.hit {
+    border-color: #1a9e55;
+  }
+  .bx.extra {
+    border-color: #d93025;
+  }
+  .bx.miss {
+    border-color: #9aa0a6;
+    border-style: dashed;
+  }
+  .bx-label {
+    position: absolute;
+    left: -2px;
+    top: -1.35em;
+    font-size: 11px;
+    line-height: 1.2;
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: #fff;
+    background: #2f6fed;
+    white-space: nowrap;
+  }
+  .bx.hit .bx-label {
+    background: #1a9e55;
+  }
+  .bx.extra .bx-label {
+    background: #d93025;
+  }
+  .bx.miss .bx-label {
+    background: #9aa0a6;
+  }
+</style>

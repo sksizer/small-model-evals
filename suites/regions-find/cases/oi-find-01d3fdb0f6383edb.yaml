@@ -1,0 +1,8 @@
+description: "find: traffic sign (Open Images 01d3fdb0f6383edb)"
+metadata: { id: oi-find-01d3fdb0f6383edb }
+vars:
+  image: file://../../corpus/images/oi-find-01d3fdb0f6383edb.jpg
+  find: [traffic sign]
+  expected:
+    boxes:
+      - { label: [traffic sign, road sign, sign], box: [0, 0, 0.87, 1] }

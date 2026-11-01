@@ -1,0 +1,14 @@
+description: "text lines: event-flyer (synthetic page, 7 lines)"
+metadata: { id: event-flyer-text }
+vars:
+  image: file://../../corpus/images/event-flyer.png
+  find: [text]
+  expected:
+    boxes:
+      - { label: text, box: [0.253, 0.0913, 0.747, 0.1304] }
+      - { label: text, box: [0.1846, 0.1721, 0.8154, 0.2808] }
+      - { label: text, box: [0.2563, 0.3239, 0.7436, 0.3804] }
+      - { label: text, box: [0.3144, 0.5063, 0.6856, 0.5628] }
+      - { label: text, box: [0.4104, 0.593, 0.5896, 0.6321] }
+      - { label: text, box: [0.1061, 0.739, 0.8938, 0.7782] }
+      - { label: text, box: [0.2585, 0.8199, 0.7415, 0.859] }

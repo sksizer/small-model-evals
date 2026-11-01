@@ -1,0 +1,15 @@
+description: "text lines: error-dialog (synthetic page, 8 lines)"
+metadata: { id: error-dialog-text }
+vars:
+  image: file://../../corpus/images/error-dialog.png
+  find: [text]
+  expected:
+    boxes:
+      - { label: text, box: [0.0968, 0.1425, 0.4369, 0.195] }
+      - { label: text, box: [0.0968, 0.3241, 0.3441, 0.3691] }
+      - { label: text, box: [0.0968, 0.4185, 0.8322, 0.461] }
+      - { label: text, box: [0.0968, 0.5104, 0.6963, 0.5529] }
+      - { label: text, box: [0.0968, 0.6025, 0.7152, 0.645] }
+      - { label: text, box: [0.2743, 0.7843, 0.3854, 0.8268] }
+      - { label: text, box: [0.4467, 0.7843, 0.6882, 0.8268] }
+      - { label: text, box: [0.7495, 0.7843, 0.8468, 0.8268] }

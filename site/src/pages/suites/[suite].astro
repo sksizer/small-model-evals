@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { data, href, imageSuites, isSensitive, modelSlug, pct, qualitySuites, show, type Suite, tone } from '../../lib/data'
+import { data, describeExpected, href, imageSuites, isSensitive, modelSlug, pct, qualitySuites, show, type Suite, tone } from '../../lib/data'
 
 export function getStaticPaths() {
   return qualitySuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
@@ -70,7 +70,7 @@ const rows = suite.cases.map((c) => {
                 )}
               </td>
               <td class="expected-col">
-                <code>{show(c.expected).slice(0, 160)}</code>
+                <code>{describeExpected(c.expected).slice(0, 160)}</code>
               </td>
               <td class={`heat ${tone(rate)}`} data-value={rate}>
                 {rate}%

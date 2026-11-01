@@ -6,11 +6,13 @@
 # breasts, partial nudity included. Swimwear, underwear and artworks
 # (statues, paintings) are not flagged.
 #
-# The public cases here are negatives only: the corpus images, which measure
-# false alarms on ordinary photos. Positives exist only in the private copy of
-# this suite (private/suites/nudity-flag, set up with
-# `bun scripts/init-private.ts nudity-flag`), run with EVALS_SCOPE=private;
-# their images and results never enter git or the site.
+# Cases: 9 adult nudes (positives), 10 nude artworks and 8 swimwear photos
+# (hard negatives), all CC0 or public domain from Wikimedia Commons, plus the
+# 50 ordinary corpus photos, which measure false alarms. The sensitive images
+# are covered on the results site until the viewer asks to see them. Cases
+# from your own photos go in a private copy (private/suites/nudity-flag, set up
+# with `bun scripts/init-private.ts nudity-flag`), run with
+# EVALS_SCOPE=private; they never enter git or the published site.
 #
 # Candidates: two small ONNX classifiers run in-process
 # (providers/image-classifier.ts), Liquid's d1 decision models, and vision

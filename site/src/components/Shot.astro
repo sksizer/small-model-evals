@@ -9,6 +9,9 @@
 // click. If the stylesheet or the script fails to load, the viewer sees a
 // blank box, never the image. This is a courtesy, not access control: the
 // file itself is served as usual.
+//
+// A slotted overlay (components/Boxes.astro draws region boxes) sits over the
+// image and is hidden while the image is covered.
 import { href, isSensitive } from '../lib/data'
 
 interface Props {
@@ -30,6 +33,7 @@ const src = href(`/${path}`)
       <a class={wrapClass} data-href={src} target="_blank" rel="noopener" title="Open full size">
         <img class={imgClass} data-src={src} alt={alt} width={width} height={height} />
       </a>
+      <slot />
       <button type="button" class="reveal" aria-label={`Let me view ${alt} (contains nudity)`}>
         <span class="reveal-note">Contains nudity</span>
         <span class="reveal-cta">Let me view</span>
@@ -40,6 +44,7 @@ const src = href(`/${path}`)
       <a class={wrapClass} href={src} target="_blank" rel="noopener" title="Open full size">
         <img class={imgClass} src={src} alt={alt} loading="lazy" width={width} height={height} />
       </a>
+      <slot />
     </span>
   )
 }

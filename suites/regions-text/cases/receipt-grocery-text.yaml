@@ -1,0 +1,31 @@
+description: "text lines: receipt-grocery (synthetic page, 24 lines)"
+metadata: { id: receipt-grocery-text }
+vars:
+  image: file://../../corpus/images/receipt-grocery.png
+  find: [text]
+  expected:
+    boxes:
+      - { label: text, box: [0.2276, 0.075, 0.7724, 0.1125] }
+      - { label: text, box: [0.2577, 0.1188, 0.7423, 0.1422] }
+      - { label: text, box: [0.3882, 0.1482, 0.6118, 0.1716] }
+      - { label: text, box: [0.1286, 0.2026, 0.6016, 0.2308] }
+      - { label: text, box: [0.1286, 0.2366, 0.4511, 0.2647] }
+      - { label: text, box: [0.1286, 0.2987, 0.3651, 0.3269] }
+      - { label: text, box: [0.7854, 0.2987, 0.8714, 0.3269] }
+      - { label: text, box: [0.1286, 0.339, 0.4296, 0.3671] }
+      - { label: text, box: [0.7854, 0.339, 0.8714, 0.3671] }
+      - { label: text, box: [0.1286, 0.3792, 0.4296, 0.4073] }
+      - { label: text, box: [0.7854, 0.3792, 0.8714, 0.4073] }
+      - { label: text, box: [0.1286, 0.4194, 0.4081, 0.4476] }
+      - { label: text, box: [0.7854, 0.4194, 0.8714, 0.4476] }
+      - { label: text, box: [0.1286, 0.4597, 0.5156, 0.4878] }
+      - { label: text, box: [0.7639, 0.4597, 0.8714, 0.4878] }
+      - { label: text, box: [0.1286, 0.5249, 0.3006, 0.553] }
+      - { label: text, box: [0.7639, 0.5249, 0.8714, 0.553] }
+      - { label: text, box: [0.1286, 0.5651, 0.2576, 0.5933] }
+      - { label: text, box: [0.7854, 0.5651, 0.8714, 0.5933] }
+      - { label: text, box: [0.1286, 0.6054, 0.2361, 0.6335] }
+      - { label: text, box: [0.7639, 0.6054, 0.8714, 0.6335] }
+      - { label: text, box: [0.1286, 0.6456, 0.4081, 0.6737] }
+      - { label: text, box: [0.7639, 0.6456, 0.8714, 0.6737] }
+      - { label: text, box: [0.2298, 0.7077, 0.7702, 0.7312] }

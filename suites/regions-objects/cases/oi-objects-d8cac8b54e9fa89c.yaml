@@ -1,0 +1,11 @@
+description: "objects: dog, car, couch (Open Images d8cac8b54e9fa89c)"
+metadata: { id: oi-objects-d8cac8b54e9fa89c }
+vars:
+  image: file://../../corpus/images/oi-objects-d8cac8b54e9fa89c.jpg
+  find: [dog, car, couch]
+  expected:
+    boxes:
+      - { label: [dog], box: [0.3625, 0.3563, 1, 1] }
+      - { label: [car], box: [0.0016, 0.8333, 0.0516, 0.9542] }
+      - { label: [car], box: [0.0875, 0.7521, 0.2547, 0.8708] }
+      - { label: [couch, sofa], box: [0.4625, 0.1833, 0.9984, 0.9979] }

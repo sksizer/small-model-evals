@@ -1,0 +1,8 @@
+description: "faces: human face (Open Images 3f85aab38e4fee07)"
+metadata: { id: oi-faces-3f85aab38e4fee07 }
+vars:
+  image: file://../../corpus/images/oi-faces-3f85aab38e4fee07.jpg
+  find: [face]
+  expected:
+    boxes:
+      - { label: [face, human face], box: [0.2996, 0.2081, 0.5447, 0.4228] }

@@ -1,0 +1,8 @@
+description: "find: guitar (Open Images c4d62e55691ed1e4)"
+metadata: { id: oi-find-c4d62e55691ed1e4 }
+vars:
+  image: file://../../corpus/images/oi-find-c4d62e55691ed1e4.jpg
+  find: [guitar]
+  expected:
+    boxes:
+      - { label: [guitar], box: [0, 0.0642, 0.9102, 0.9115] }

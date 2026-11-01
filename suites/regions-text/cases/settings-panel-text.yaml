@@ -1,0 +1,22 @@
+description: "text lines: settings-panel (synthetic page, 15 lines)"
+metadata: { id: settings-panel-text }
+vars:
+  image: file://../../corpus/images/settings-panel.png
+  find: [text]
+  expected:
+    boxes:
+      - { label: text, box: [0.0721, 0.0885, 0.2327, 0.1288] }
+      - { label: text, box: [0.0721, 0.1974, 0.2465, 0.2301] }
+      - { label: text, box: [0.0721, 0.2373, 0.3688, 0.2661] }
+      - { label: text, box: [0.0721, 0.3312, 0.1807, 0.3639] }
+      - { label: text, box: [0.8392, 0.3493, 0.9059, 0.382] }
+      - { label: text, box: [0.0721, 0.3711, 0.3812, 0.4] }
+      - { label: text, box: [0.0721, 0.4651, 0.2956, 0.4977] }
+      - { label: text, box: [0.8282, 0.4832, 0.9059, 0.5159] }
+      - { label: text, box: [0.0721, 0.505, 0.3462, 0.5338] }
+      - { label: text, box: [0.0721, 0.5989, 0.2768, 0.6316] }
+      - { label: text, box: [0.0721, 0.6388, 0.2785, 0.6676] }
+      - { label: text, box: [0.0721, 0.7327, 0.1914, 0.7654] }
+      - { label: text, box: [0.777, 0.7508, 0.9221, 0.7835] }
+      - { label: text, box: [0.0721, 0.7726, 0.259, 0.8015] }
+      - { label: text, box: [0.0926, 0.8858, 0.2316, 0.9185] }

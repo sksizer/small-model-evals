@@ -1,0 +1,8 @@
+description: "find: lamp (Open Images a90c22661fe961ff)"
+metadata: { id: oi-find-a90c22661fe961ff }
+vars:
+  image: file://../../corpus/images/oi-find-a90c22661fe961ff.jpg
+  find: [lamp]
+  expected:
+    boxes:
+      - { label: [lamp], box: [0.2714, 0.0951, 0.7065, 0.9358] }

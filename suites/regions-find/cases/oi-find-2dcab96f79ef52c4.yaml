@@ -1,0 +1,8 @@
+description: "find: pen (Open Images 2dcab96f79ef52c4)"
+metadata: { id: oi-find-2dcab96f79ef52c4 }
+vars:
+  image: file://../../corpus/images/oi-find-2dcab96f79ef52c4.jpg
+  find: [pen]
+  expected:
+    boxes:
+      - { label: [pen], box: [0.0929, 0.4447, 0.913, 0.5465] }

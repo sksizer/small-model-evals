@@ -1,0 +1,10 @@
+description: "find: lamp (Open Images 743dbcab02a9971e)"
+metadata: { id: oi-find-743dbcab02a9971e }
+vars:
+  image: file://../../corpus/images/oi-find-743dbcab02a9971e.jpg
+  find: [lamp]
+  expected:
+    boxes:
+      - { label: [lamp], box: [0.2043, 0.321, 0.4817, 0.6177] }
+      - { label: [lamp], box: [0.3376, 0.4548, 0.6215, 0.7629] }
+      - { label: [lamp], box: [0.486, 0.729, 0.7054, 0.9484] }

@@ -1,0 +1,8 @@
+description: "find: envelope (Open Images 0f730eda466be34c)"
+metadata: { id: oi-find-0f730eda466be34c }
+vars:
+  image: file://../../corpus/images/oi-find-0f730eda466be34c.jpg
+  find: [envelope]
+  expected:
+    boxes:
+      - { label: [envelope], box: [0.0312, 0.0535, 0.9532, 0.9649] }

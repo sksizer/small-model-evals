@@ -1,0 +1,12 @@
+description: "objects: chair, chair/couch, couch (Open Images 2b2c4fe6d63a13e4)"
+metadata: { id: oi-objects-2b2c4fe6d63a13e4 }
+vars:
+  image: file://../../corpus/images/oi-objects-2b2c4fe6d63a13e4.jpg
+  find: [chair, couch]
+  expected:
+    boxes:
+      - { label: [chair], box: [0.0882, 0.3636, 0.2221, 0.6364] }
+      - { label: [chair], box: [0.2162, 0.3681, 0.3588, 0.6475] }
+      - { label: [chair], box: [0.3015, 0.3282, 0.3824, 0.5565] }
+      - { label: [chair, couch, sofa], box: [0.7779, 0.3725, 1, 0.7494] }
+      - { label: [couch, sofa], box: [0.4971, 0.3215, 0.8132, 0.643] }

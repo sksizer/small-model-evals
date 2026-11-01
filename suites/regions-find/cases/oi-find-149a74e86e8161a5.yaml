@@ -1,0 +1,8 @@
+description: "find: watch (Open Images 149a74e86e8161a5)"
+metadata: { id: oi-find-149a74e86e8161a5 }
+vars:
+  image: file://../../corpus/images/oi-find-149a74e86e8161a5.jpg
+  find: [watch]
+  expected:
+    boxes:
+      - { label: [watch, wristwatch], box: [0.155, 0, 0.7969, 0.9955] }

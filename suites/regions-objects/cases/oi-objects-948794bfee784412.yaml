@@ -1,0 +1,9 @@
+description: "objects: dog, houseplant (Open Images 948794bfee784412)"
+metadata: { id: oi-objects-948794bfee784412 }
+vars:
+  image: file://../../corpus/images/oi-objects-948794bfee784412.jpg
+  find: [dog, potted plant]
+  expected:
+    boxes:
+      - { label: [dog], box: [0.2581, 0.208, 0.9425, 1] }
+      - { label: [potted plant, houseplant, plant], box: [0.4351, 0, 1, 0.3628] }

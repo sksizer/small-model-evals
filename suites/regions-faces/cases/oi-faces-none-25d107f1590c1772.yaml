@@ -1,0 +1,8 @@
+description: "faces: none, cups and a bowl (Open Images 25d107f1590c1772)"
+metadata: { id: oi-faces-none-25d107f1590c1772 }
+vars:
+  image: file://../../corpus/images/oi-objects-25d107f1590c1772.jpg
+  find: [face]
+  expected:
+    labels: [[face, human face]]
+    boxes: []

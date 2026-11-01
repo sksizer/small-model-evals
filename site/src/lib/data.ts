@@ -59,6 +59,10 @@ export interface Result {
   wrong?: { want: string; found: boolean }[]
   /** For tags: the model's tag list, or null when the reply did not parse. */
   tags?: string[] | null
+  /** Numbers the provider reported for this case (detect_ms, rss_mb, load_ms, ...). */
+  metrics?: Record<string, number> | null
+  /** For regions: each expected box with the box matched to it (or null), then each extra box. Boxes are [x0, y0, x1, y1] as fractions. */
+  regions?: { label: string; want: Box | null; got: Box | null; iou: number | null; ok: boolean }[] | null
   /** For expected fields: what the model returned for each. */
   fields?: { field: string; want: unknown; got: unknown; ok: boolean }[] | null
 }
@@ -82,6 +86,29 @@ export interface Environment {
   os: { name: string; version: string; build: string; kernel: string }
   power: string
   runtime: { ollama: string; ollama_started: string | null; ollama_settings: Record<string, string>; promptfoo: string; bun: string; node: string }
+}
+
+/** A box as fractions of the image size: [x0, y0, x1, y1], top left origin. */
+export type Box = [number, number, number, number]
+
+/** A regions case's expectation (assertions/regions.ts). */
+export interface ExpectedRegions {
+  labels?: (string | string[])[]
+  boxes: { label: string | string[]; box: Box }[]
+}
+
+export const isRegions = (e: unknown): e is ExpectedRegions =>
+  !!e && typeof e === 'object' && Array.isArray((e as { boxes?: unknown }).boxes)
+
+const firstLabel = (l: string | string[]) => (Array.isArray(l) ? l[0]! : l)
+
+/** A case's expectation in a few words: a regions case as its box count and labels, anything else as JSON. */
+export const describeExpected = (e: unknown): string => {
+  if (!isRegions(e)) return show(e)
+  if (e.boxes.length === 0) return `no ${(e.labels ?? []).map(firstLabel).join(', ') || 'boxes'}`
+  const counts = new Map<string, number>()
+  for (const b of e.boxes) counts.set(firstLabel(b.label), (counts.get(firstLabel(b.label)) ?? 0) + 1)
+  return `${e.boxes.length} box${e.boxes.length === 1 ? '' : 'es'}: ${[...counts].map(([l, n]) => (n > 1 ? `${n} × ${l}` : l)).join(', ')}`
 }
 
 export interface CaseView {

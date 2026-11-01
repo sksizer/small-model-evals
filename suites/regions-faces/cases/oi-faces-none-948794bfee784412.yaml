@@ -1,0 +1,8 @@
+description: "faces: none, a dog and a houseplant (Open Images 948794bfee784412)"
+metadata: { id: oi-faces-none-948794bfee784412 }
+vars:
+  image: file://../../corpus/images/oi-objects-948794bfee784412.jpg
+  find: [face]
+  expected:
+    labels: [[face, human face]]
+    boxes: []

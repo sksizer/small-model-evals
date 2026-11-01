@@ -1,11 +1,12 @@
 # The image corpus: Wikimedia Commons files under licences that need no
-# share-alike (CC0, public domain, CC BY). scripts/fetch-corpus.ts downloads
-# each at 768 px into corpus/images/<id>.jpg, re-checks its licence and writes
+# share-alike (CC0, public domain, CC BY), Open Images validation photos
+# (CC BY 2.0) and synthetic pages. scripts/fetch-corpus.ts downloads each at
+# 768 px into corpus/images/<id>.jpg, re-checks its licence and writes
 # manifest.json and ATTRIBUTIONS.md. To extend: add an entry with a new id
 # (ids are permanent; cases name them) and rerun the script. No people as
-# subjects, except in the nudity-flag section. Your own photos go in private/
-# (gitignored), not here. Sections in order: Commons photos, synthetic OCR
-# pages, nudity flagging.
+# subjects, except in the nudity-flag and regions sections. Your own photos go
+# in private/ (gitignored), not here. Sections in order: Commons photos,
+# synthetic OCR pages, nudity flagging, regions (Open Images).
 - { id: salad-ham, category: food, title: 'File:Stra-ham+salad.JPG' }
 - { id: salad-party-dish, category: food, title: 'File:Party food dish 8 salad tomatoes cheese lettuce spinach.jpg' }
 - { id: salad-rucola-plate, category: food, title: 'File:Food-plate-rucola-salad (23699968653).jpg' }
@@ -92,3 +93,51 @@
 - { id: swim-white-sand, category: swimwear, title: 'File:Woman in swimsuit posing (Unsplash).jpg' }
 - { id: swim-shallows, category: swimwear, title: 'File:A woman in bikini at a tropical beach at Great Exuma Island, the Bahamas.jpg' }
 - { id: swim-strongman-loincloth, category: swimwear, title: 'File:033- Brookes & Sandow, c.1900.jpg' }
+
+# Regions suites (Open Images validation, CC BY 2.0; boxes from the dataset,
+# CC BY 4.0). Written by scripts/pick-openimages.ts after a contact-sheet review:
+# no children, no public figures, no intimate or medical scenes.
+- { id: oi-objects-948794bfee784412, category: regions-objects, openimages: '948794bfee784412' }
+- { id: oi-objects-0fd512f1bffb8cf3, category: regions-objects, openimages: '0fd512f1bffb8cf3' }
+- { id: oi-objects-25d107f1590c1772, category: regions-objects, openimages: '25d107f1590c1772' }
+- { id: oi-objects-a7e5d2727af4299d, category: regions-objects, openimages: 'a7e5d2727af4299d' }
+- { id: oi-objects-28bd6c6b1050e055, category: regions-objects, openimages: '28bd6c6b1050e055' }
+- { id: oi-objects-e51e3156ed41b3a8, category: regions-objects, openimages: 'e51e3156ed41b3a8' }
+- { id: oi-objects-d8cac8b54e9fa89c, category: regions-objects, openimages: 'd8cac8b54e9fa89c' }
+- { id: oi-objects-5b7ab3baf4c0492f, category: regions-objects, openimages: '5b7ab3baf4c0492f' }
+- { id: oi-objects-eccb080e57b2aac5, category: regions-objects, openimages: 'eccb080e57b2aac5' }
+- { id: oi-objects-7408fef212a5d3bc, category: regions-objects, openimages: '7408fef212a5d3bc' }
+- { id: oi-objects-2b2c4fe6d63a13e4, category: regions-objects, openimages: '2b2c4fe6d63a13e4' }
+- { id: oi-objects-ee47ccab89a75d0d, category: regions-objects, openimages: 'ee47ccab89a75d0d' }
+- { id: oi-objects-2fba54286aaac20e, category: regions-objects, openimages: '2fba54286aaac20e' }
+- { id: oi-objects-5ea13fbbd1a1474f, category: regions-objects, openimages: '5ea13fbbd1a1474f' }
+- { id: oi-find-e916dd0b766b2f40, category: regions-find, openimages: 'e916dd0b766b2f40' }
+- { id: oi-find-743dbcab02a9971e, category: regions-find, openimages: '743dbcab02a9971e' }
+- { id: oi-find-2dcab96f79ef52c4, category: regions-find, openimages: '2dcab96f79ef52c4' }
+- { id: oi-find-07caab7b663b7e86, category: regions-find, openimages: '07caab7b663b7e86' }
+- { id: oi-find-0f730eda466be34c, category: regions-find, openimages: '0f730eda466be34c' }
+- { id: oi-find-a1b604b5548bfc1f, category: regions-find, openimages: 'a1b604b5548bfc1f' }
+- { id: oi-find-6022a450df278025, category: regions-find, openimages: '6022a450df278025' }
+- { id: oi-find-8f08cb18c27fbaa7, category: regions-find, openimages: '8f08cb18c27fbaa7' }
+- { id: oi-find-864e6f2e549e9542, category: regions-find, openimages: '864e6f2e549e9542' }
+- { id: oi-find-030c5a10124e6252, category: regions-find, openimages: '030c5a10124e6252' }
+- { id: oi-find-489076e07c213206, category: regions-find, openimages: '489076e07c213206' }
+- { id: oi-find-66a342dcdafc7607, category: regions-find, openimages: '66a342dcdafc7607' }
+- { id: oi-find-149a74e86e8161a5, category: regions-find, openimages: '149a74e86e8161a5' }
+- { id: oi-find-29de4e35add89b69, category: regions-find, openimages: '29de4e35add89b69' }
+- { id: oi-find-c4d62e55691ed1e4, category: regions-find, openimages: 'c4d62e55691ed1e4' }
+- { id: oi-find-01d3fdb0f6383edb, category: regions-find, openimages: '01d3fdb0f6383edb' }
+- { id: oi-find-fad0f797e6985f7f, category: regions-find, openimages: 'fad0f797e6985f7f' }
+- { id: oi-find-a90c22661fe961ff, category: regions-find, openimages: 'a90c22661fe961ff' }
+- { id: oi-faces-3f85aab38e4fee07, category: regions-faces, openimages: '3f85aab38e4fee07' }
+- { id: oi-faces-8d4d6659f45bd396, category: regions-faces, openimages: '8d4d6659f45bd396' }
+- { id: oi-faces-83f3f5f1b4864969, category: regions-faces, openimages: '83f3f5f1b4864969' }
+- { id: oi-faces-01fe16fca259a75a, category: regions-faces, openimages: '01fe16fca259a75a' }
+- { id: oi-faces-d9a2eaa90a597834, category: regions-faces, openimages: 'd9a2eaa90a597834' }
+- { id: oi-faces-363fbcd9d3492c8f, category: regions-faces, openimages: '363fbcd9d3492c8f' }
+- { id: oi-faces-bf5d9fdef70c9334, category: regions-faces, openimages: 'bf5d9fdef70c9334' }
+- { id: oi-faces-450dc8db3bfee2c9, category: regions-faces, openimages: '450dc8db3bfee2c9' }
+- { id: oi-faces-c03b166fe8428bb6, category: regions-faces, openimages: 'c03b166fe8428bb6' }
+- { id: oi-faces-58f524841563410b, category: regions-faces, openimages: '58f524841563410b' }
+- { id: oi-faces-1a5a8e2cdbdeaab0, category: regions-faces, openimages: '1a5a8e2cdbdeaab0' }
+- { id: oi-faces-fca6fb7f00addeae, category: regions-faces, openimages: 'fca6fb7f00addeae' }

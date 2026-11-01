@@ -1,0 +1,8 @@
+description: "find: sunglasses (Open Images 864e6f2e549e9542)"
+metadata: { id: oi-find-864e6f2e549e9542 }
+vars:
+  image: file://../../corpus/images/oi-find-864e6f2e549e9542.jpg
+  find: [sunglasses]
+  expected:
+    boxes:
+      - { label: [sunglasses], box: [0.1965, 0.404, 0.5894, 0.5828] }

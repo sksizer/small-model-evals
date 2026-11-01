@@ -1,0 +1,9 @@
+description: "objects: bicycle, houseplant (Open Images 2fba54286aaac20e)"
+metadata: { id: oi-objects-2fba54286aaac20e }
+vars:
+  image: file://../../corpus/images/oi-objects-2fba54286aaac20e.jpg
+  find: [bicycle, potted plant]
+  expected:
+    boxes:
+      - { label: [bicycle, bike], box: [0.1721, 0.1707, 0.9059, 0.9246] }
+      - { label: [potted plant, houseplant, plant], box: [0, 0.2683, 0.3132, 0.9113] }

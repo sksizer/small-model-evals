@@ -1,0 +1,9 @@
+description: "objects: houseplant, bench (Open Images eccb080e57b2aac5)"
+metadata: { id: oi-objects-eccb080e57b2aac5 }
+vars:
+  image: file://../../corpus/images/oi-objects-eccb080e57b2aac5.jpg
+  find: [potted plant, bench]
+  expected:
+    boxes:
+      - { label: [potted plant, houseplant, plant], box: [0.0956, 0.3259, 0.3397, 0.6696] }
+      - { label: [bench], box: [0.2162, 0.8027, 0.3441, 0.9978] }

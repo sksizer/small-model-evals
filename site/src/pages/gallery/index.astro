@@ -1,0 +1,52 @@
+---
+// One entry per suite whose cases are images, with a few of its images and
+// how many cases it has. A sensitive image stays covered here too.
+import Base from '../../layouts/Base.astro'
+import Shot from '../../components/Shot.astro'
+import { data, href, imageSuites } from '../../lib/data'
+
+const passRate = (suite: string) => {
+  const rs = data.results.filter((r) => r.suite === suite)
+  return rs.length === 0 ? null : rs.filter((r) => r.pass).length / rs.length
+}
+---
+
+<Base title="Galleries" description="Every suite whose cases are images: each image beside what every model made of it — text read, tags given, a yes/no flag, or boxes drawn.">
+  <div class="g-grid">
+    {
+      imageSuites.map((s) => {
+        const rate = passRate(s.id)
+        return (
+          <div class="g-card">
+            <div class="g-thumbs">
+              {s.cases
+                .filter((c) => c.input.image)
+                .slice(0, 3)
+                .map((c) => (
+                  <Shot path={c.input.image!} alt={c.id} />
+                ))}
+            </div>
+            <h3>
+              <a href={href(`/gallery/${s.id}/`)}>{s.id}</a>
+            </h3>
+            <p class="muted">
+              {s.cases.length} cases{rate === null ? ' · no results yet' : ` · ${Math.round(rate * 100)}% of results pass`}
+            </p>
+          </div>
+        )
+      })
+    }
+  </div>
+</Base>
+
+<style>
+  .g-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .g-card { padding: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  .g-card h3 { margin: 10px 0 2px; font-size: 15px; }
+  .g-card p { margin: 0; font-size: 13px; }
+  .g-thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .g-thumbs :global(.shot-frame) { min-height: 0; }
+  .g-thumbs :global(img) { width: 100%; height: 80px; object-fit: cover; border-radius: 4px; display: block; }
+  .g-thumbs :global(.reveal-note) { display: none; }
+  .g-thumbs :global(.reveal-cta) { font-size: 11px; padding: 0.1rem 0.4rem; }
+</style>

@@ -1,0 +1,8 @@
+description: "find: mirror (Open Images 489076e07c213206)"
+metadata: { id: oi-find-489076e07c213206 }
+vars:
+  image: file://../../corpus/images/oi-find-489076e07c213206.jpg
+  find: [mirror]
+  expected:
+    boxes:
+      - { label: [mirror], box: [0.4917, 0, 0.6958, 0.25] }

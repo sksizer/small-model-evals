@@ -18,8 +18,8 @@
 // weight). Weights match within 1% or 0.6 kg, which absorbs lb conversions.
 // An exercise's name matches when a synonym's words appear in order in the
 // model's name, after lower-casing, splitting on hyphens and stemming each
-// word (plural s, -ing, a final e), so "push-ups" is "push up", "rowing" is
-// "row" and "biking" is "bike". Fields an expected exercise leaves out are
+// word (assertions/names.ts), so "push-ups" is "push up", "rowing" is "row"
+// and "biking" is "bike". Fields an expected exercise leaves out are
 // not checked, except `sets`: left out, the model must give none. A set the
 // model gives with reps, weight and seconds all null is a placeholder and is
 // ignored.
@@ -38,6 +38,7 @@
 // item. Passes at 0.85, so a missing exercise fails a case and a single wrong
 // set does not.
 import { matches, parseJson, type Expected, type GradingResult } from './match.ts'
+import { nameMatches } from './names.ts'
 import type { Concept } from './tags.ts'
 
 const PASS_AT = 0.85
@@ -125,35 +126,6 @@ export interface Row {
   ok: boolean
   /** For an exercise: the share of its checked fields that match. */
   score: number
-}
-
-/** A word's stem for name matching: plural s, -ing (doubled consonant undone), final e. */
-function stem(w: string): string {
-  let x = w
-  if (x.length > 5 && x.endsWith('ing')) {
-    x = x.slice(0, -3)
-    if (/([bdgmnpt])\1$/.test(x)) x = x.slice(0, -1)
-  } else if (x.length > 2 && x.endsWith('s') && !x.endsWith('ss')) x = x.slice(0, -1)
-  if (x.length > 3 && x.endsWith('e')) x = x.slice(0, -1)
-  return x
-}
-const nameWords = (s: string) =>
-  s
-    .toLowerCase()
-    .split(/[^\p{L}\p{N}]+/u)
-    .filter(Boolean)
-    .map(stem)
-
-/** Whether a model's exercise name matches any synonym of the expected name. */
-export function nameMatches(want: Concept, got: string): boolean {
-  const hay = nameWords(got)
-  return (Array.isArray(want) ? want : [want]).some((syn) => {
-    const needle = nameWords(syn)
-    for (let i = 0; needle.length > 0 && i + needle.length <= hay.length; i++) {
-      if (needle.every((w, j) => hay[i + j] === w)) return true
-    }
-    return false
-  })
 }
 
 const isPlaceholder = (s: Partial<Set>) => s.reps == null && s.weight_kg == null && s.seconds == null

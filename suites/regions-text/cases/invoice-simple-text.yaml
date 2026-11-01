@@ -1,0 +1,38 @@
+description: "text lines: invoice-simple (synthetic page, 31 lines)"
+metadata: { id: invoice-simple-text }
+vars:
+  image: file://../../corpus/images/invoice-simple.png
+  find: [text]
+  expected:
+    boxes:
+      - { label: text, box: [0.8424, 0.0683, 0.9368, 0.0917] }
+      - { label: text, box: [0.0632, 0.0717, 0.2372, 0.1317] }
+      - { label: text, box: [0.8034, 0.099, 0.9368, 0.1273] }
+      - { label: text, box: [0.0632, 0.1425, 0.2865, 0.1708] }
+      - { label: text, box: [0.8617, 0.1436, 0.9368, 0.1669] }
+      - { label: text, box: [0.8147, 0.1742, 0.9368, 0.2026] }
+      - { label: text, box: [0.0632, 0.2388, 0.1211, 0.2621] }
+      - { label: text, box: [0.8801, 0.2388, 0.9368, 0.2621] }
+      - { label: text, box: [0.0632, 0.2695, 0.1834, 0.2978] }
+      - { label: text, box: [0.8257, 0.2695, 0.9368, 0.2978] }
+      - { label: text, box: [0.0632, 0.3057, 0.2152, 0.334] }
+      - { label: text, box: [0.0632, 0.342, 0.1406, 0.3703] }
+      - { label: text, box: [0.0737, 0.4365, 0.1822, 0.4665] }
+      - { label: text, box: [0.577, 0.4365, 0.6095, 0.4665] }
+      - { label: text, box: [0.6633, 0.4365, 0.7017, 0.4665] }
+      - { label: text, box: [0.8525, 0.4365, 0.9263, 0.4665] }
+      - { label: text, box: [0.0737, 0.5028, 0.365, 0.5311] }
+      - { label: text, box: [0.577, 0.5028, 0.5989, 0.5311] }
+      - { label: text, box: [0.6633, 0.5028, 0.7237, 0.5311] }
+      - { label: text, box: [0.855, 0.5028, 0.9263, 0.5311] }
+      - { label: text, box: [0.0737, 0.5674, 0.2518, 0.5957] }
+      - { label: text, box: [0.577, 0.5674, 0.5879, 0.5957] }
+      - { label: text, box: [0.6633, 0.5674, 0.7237, 0.5957] }
+      - { label: text, box: [0.855, 0.5674, 0.9263, 0.5957] }
+      - { label: text, box: [0.0737, 0.632, 0.1439, 0.6603] }
+      - { label: text, box: [0.577, 0.632, 0.5879, 0.6603] }
+      - { label: text, box: [0.6633, 0.632, 0.7237, 0.6603] }
+      - { label: text, box: [0.866, 0.632, 0.9263, 0.6603] }
+      - { label: text, box: [0.6633, 0.6949, 0.7086, 0.7249] }
+      - { label: text, box: [0.855, 0.6949, 0.9263, 0.7249] }
+      - { label: text, box: [0.0632, 0.7928, 0.53, 0.8211] }

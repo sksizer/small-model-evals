@@ -1,0 +1,8 @@
+description: "faces: none, a bottle and a wine glass (Open Images e51e3156ed41b3a8)"
+metadata: { id: oi-faces-none-e51e3156ed41b3a8 }
+vars:
+  image: file://../../corpus/images/oi-objects-e51e3156ed41b3a8.jpg
+  find: [face]
+  expected:
+    labels: [[face, human face]]
+    boxes: []

@@ -1,0 +1,10 @@
+description: "objects: chair, bicycle (Open Images 5ea13fbbd1a1474f)"
+metadata: { id: oi-objects-5ea13fbbd1a1474f }
+vars:
+  image: file://../../corpus/images/oi-objects-5ea13fbbd1a1474f.jpg
+  find: [chair, bicycle]
+  expected:
+    boxes:
+      - { label: [chair], box: [0.1125, 0.2506, 0.4969, 0.8103] }
+      - { label: [chair], box: [0.5453, 0.2459, 0.9313, 0.8126] }
+      - { label: [bicycle, bike], box: [0, 0.2576, 0.1063, 0.5059] }

@@ -3,6 +3,11 @@
 // - a Wikimedia Commons file (`title`). The script re-reads its licence,
 //   refuses anything outside the allow-list (CC0, public domain, CC BY; no
 //   share-alike) and saves a 768 px JPEG to corpus/images/<id>.jpg.
+// - an Open Images validation photo (`openimages: <ImageID>`), CC BY 2.0,
+//   for the regions suites, whose boxes come from Open Images too. Its
+//   licence and author come from the dataset's image list (downloaded once
+//   into .cache/openimages/); the photo comes from the dataset's mirror and
+//   is re-encoded at 768 px with every metadata block (EXIF, GPS) dropped.
 // - a synthetic page (`synthetic: synthetic/<file>.html`, `size: [w, h]`),
 //   rendered once with headless Chrome to corpus/images/<id>.png. Its text is
 //   known exactly, which OCR cases need. Set CHROME to the browser binary if
@@ -17,10 +22,12 @@
 //   bun scripts/fetch-corpus.ts
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { spawnRunner } from '@osdlc/command-seam'
+import sharp from 'sharp'
 import { ROOT, SCOPE } from './ledger.ts'
+import { OI_LICENCE, oiImage } from './openimages.ts'
+import { chrome } from './chrome.ts'
 
 // EVALS_SCOPE=private builds private/corpus (gitignored) the same way.
 const CORPUS = SCOPE === 'private' ? join(ROOT, 'private', 'corpus') : join(ROOT, 'corpus')
@@ -33,7 +40,11 @@ const ALLOWED = /^(CC0( 1\.0)?|Public domain|PD\b.*|CC BY \d(\.\d)?)$/i
 // `sensitive: true` marks an image the site shows blurred until the viewer
 // asks to see it (nudity, including in art). It is display metadata, so it
 // can change on an existing entry without a new id.
-type Source = { id: string; category: string; sensitive?: boolean } & ({ title: string } | { synthetic: string; size: [number, number] })
+type Source = { id: string; category: string; sensitive?: boolean } & (
+  | { title: string }
+  | { synthetic: string; size: [number, number] }
+  | { openimages: string }
+)
 export interface CorpusImage {
   id: string
   category: string
@@ -78,17 +89,6 @@ async function download(url: string): Promise<Uint8Array> {
   throw new Error(`${url}: kept rate-limiting`)
 }
 
-/** A headless Chrome or Chromium binary: $CHROME, Playwright's cache, or Google Chrome. */
-function chrome(): string {
-  if (process.env['CHROME']) return process.env['CHROME']
-  const cache = join(homedir(), 'Library', 'Caches', 'ms-playwright')
-  const found = spawnRunner('find').run([cache, '-name', 'chrome-headless-shell', '-type', 'f'], { cwd: ROOT }).stdout.split('\n').filter(Boolean).sort()
-  if (found.length > 0) return found.at(-1)!
-  const app = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-  if (existsSync(app)) return app
-  throw new Error('no headless Chrome found; set CHROME')
-}
-
 function render(html: string, size: [number, number], out: string): Uint8Array {
   const res = spawnRunner(chrome()).run(
     ['--headless', '--hide-scrollbars', '--force-device-scale-factor=1', `--window-size=${size[0]},${size[1]}`, `--screenshot=${out}`, `file://${html}`],
@@ -113,14 +113,51 @@ mkdirSync(IMAGES, { recursive: true })
 const failures: string[] = []
 for (const s of sources) {
   const have = known.get(s.id)
-  const title = 'title' in s ? s.title : s.synthetic
+  const sameSource = (title: string) =>
+    'openimages' in s ? title.startsWith(`Open Images ${s.openimages}:`) : title === ('title' in s ? s.title : s.synthetic)
   if (have) {
     if (s.sensitive) have.sensitive = true
     else delete have.sensitive
     const path = join(CORPUS, have.file)
-    if (have.title !== title) failures.push(`${s.id}: source changed; give the new image a new id`)
+    if (!sameSource(have.title)) failures.push(`${s.id}: source changed; give the new image a new id`)
     else if (!existsSync(path)) failures.push(`${s.id}: in the manifest but corpus/${have.file} is missing`)
     else if (createHash('sha256').update(readFileSync(path)).digest('hex') !== have.sha256) failures.push(`${s.id}: image bytes changed`)
+    continue
+  }
+  if ('openimages' in s) {
+    const row = await oiImage(s.openimages)
+    if (!row) {
+      failures.push(`${s.id}: Open Images validation has no image ${s.openimages}`)
+      continue
+    }
+    if (row['License'] !== OI_LICENCE) {
+      failures.push(`${s.id}: licence ${row['License']} is not CC BY 2.0`)
+      continue
+    }
+    if (row['Rotation'] && Number(row['Rotation']) !== 0) {
+      failures.push(`${s.id}: rotated ${row['Rotation']} degrees; its boxes would not line up`)
+      continue
+    }
+    const original = await download(`https://s3.amazonaws.com/open-images-dataset/validation/${s.openimages}.jpg`)
+    // No .rotate() and no .withMetadata(): pixels stay as annotated, and EXIF/GPS are dropped.
+    const { data: bytes, info } = await sharp(original).resize({ width: WIDTH, withoutEnlargement: true }).jpeg({ quality: 88 }).toBuffer({ resolveWithObject: true })
+    const path = join(IMAGES, `${s.id}.jpg`)
+    writeFileSync(path, bytes)
+    manifest.push({
+      id: s.id,
+      category: s.category,
+      file: `images/${s.id}.jpg`,
+      title: `Open Images ${s.openimages}: ${row['Title'] || 'untitled'}`,
+      page: row['OriginalLandingURL']!,
+      author: row['Author'] || 'unknown',
+      licence: 'CC BY 2.0',
+      licence_url: OI_LICENCE,
+      width: info.width,
+      height: info.height,
+      sha256: createHash('sha256').update(bytes).digest('hex'),
+      ...(s.sensitive ? { sensitive: true as const } : {}),
+    })
+    console.log(`${s.id}: Open Images ${s.openimages}, ${info.width}x${info.height}`)
     continue
   }
   if ('synthetic' in s) {
@@ -187,7 +224,7 @@ const lines = [
   '# Attributions',
   '',
   'Generated by `scripts/fetch-corpus.ts` from `manifest.json`; do not edit.',
-  'Images are 768 px renditions of the Wikimedia Commons files linked below.',
+  'Images are 768 px renditions of the Wikimedia Commons files and Open Images photos linked below, or synthetic pages (CC0).',
   '',
   '| Image | Source | Author | Licence |',
   '| --- | --- | --- | --- |',

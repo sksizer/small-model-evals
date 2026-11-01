@@ -1,8 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro'
 import Compare from '../../components/Compare.astro'
+import Boxes from '../../components/Boxes.astro'
 import Shot from '../../components/Shot.astro'
-import { data, href, imageSuites, modelSlug, show, type Suite } from '../../lib/data'
+import { data, href, imageSuites, isRegions, modelSlug, show, type Suite } from '../../lib/data'
 
 export function getStaticPaths() {
   return imageSuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
@@ -10,16 +11,22 @@ export function getStaticPaths() {
 
 // Each image beside what every model read from it: the expected strings or
 // tags as chips, green when the model's reply has them, struck through when
-// not. The case's own expectations show above, so a case with no results yet
-// can be reviewed here too.
+// not; for the regions suite, the expected boxes on the image and each
+// model's boxes on its own copy. The case's own expectations show above, so a
+// case with no results yet can be reviewed here too.
 const { suite } = Astro.props as { suite: Suite }
 const results = data.results.filter((r) => r.suite === suite.id)
 const models = [...new Set(results.map((r) => r.model))].sort()
+const regions = suite.cases.some((c) => isRegions(c.expected))
 ---
 
 <Base
   title={`Gallery: ${suite.id}`}
-  description="Each image beside what every model read from it. Green chips were found in the reply; struck-through ones were missed; solid red ones are wrong tags the model gave. Open a reply to read it in full."
+  description={
+    regions
+      ? 'Each image with its expected boxes (dashed blue), then every model\'s boxes on its own copy: green matched an expected box, red is a box that matches nothing, dashed grey is an expected box the model missed. Open a reply to read it in full.'
+      : 'Each image beside what every model read from it. Green chips were found in the reply; struck-through ones were missed; solid red ones are wrong tags the model gave. Open a reply to read it in full.'
+  }
 >
   <div class="controls">
     <select id="g-model" aria-label="Model">
@@ -36,14 +43,24 @@ const models = [...new Set(results.map((r) => r.model))].sort()
         const rs = results.filter((r) => r.case === c.id)
         return (
           <section class="shot-case" id={c.id}>
-            <Shot path={c.input.image!} alt={c.description || c.id} wrapClass="shot-wrap" />
+            {isRegions(c.expected) ? (
+              <div class="shot-wrap">
+                <Boxes path={c.input.image!} alt={c.description || c.id} expected={c.expected} />
+              </div>
+            ) : (
+              <Shot path={c.input.image!} alt={c.description || c.id} wrapClass="shot-wrap" />
+            )}
             <div class="shot-body">
               <h3>
                 <code>{c.id}</code> {c.description && <span class="muted">{c.description}</span>}
               </h3>
               <p class="expect">
                 <span class="muted">Expected:</span>{' '}
-                {Array.isArray(c.expected)
+                {isRegions(c.expected)
+                  ? c.expected.boxes.length === 0
+                    ? `no ${(c.expected.labels ?? []).map((l) => (Array.isArray(l) ? l[0] : l)).join(', ')}`
+                    : c.expected.boxes.map((b) => <span class="want">{Array.isArray(b.label) ? b.label.join(' / ') : b.label}</span>)
+                  : Array.isArray(c.expected)
                   ? c.expected.map((e) => <span class="want">{Array.isArray(e) ? e.join(' / ') : show(e)}</span>)
                   : show(c.expected)}
                 {Array.isArray(c.absent) && c.absent.length > 0 && (
@@ -55,7 +72,7 @@ const models = [...new Set(results.map((r) => r.model))].sort()
               </p>
               {rs.length === 0 && <p class="muted">No results yet.</p>}
               {rs.map((r) => (
-                <div class="read" data-model={r.model} data-miss={r.hits?.some((h) => !h.found) || r.wrong?.some((w) => w.found) ? '1' : '0'}>
+                <div class="read" data-model={r.model} data-miss={r.hits?.some((h) => !h.found) || r.wrong?.some((w) => w.found) || r.regions?.some((x) => !x.ok) ? '1' : '0'}>
                   <div class="read-head">
                     <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
                     <span class={`pill ${r.pass ? 'pass' : 'fail'}`}>

@@ -3,8 +3,9 @@
 // expects, and how the models did on it in their latest runs. Retired cases
 // are listed too, marked, so a superseded case can still be traced.
 import Base from '../layouts/Base.astro'
+import Boxes from '../components/Boxes.astro'
 import Shot from '../components/Shot.astro'
-import { data, href, imageSuites, modelSlug, show, type CaseView } from '../lib/data'
+import { data, describeExpected, href, imageSuites, isRegions, modelSlug, show, type CaseView } from '../lib/data'
 
 const gallery = new Set(imageSuites.map((s) => s.id))
 const rows = data.suites
@@ -83,7 +84,7 @@ const images = live.filter((r) => r.c.input.image).length
                     <div class="muted clip">{c.input.text.slice(0, 90)}</div>
                   </td>
                   <td>
-                    <div class="muted clip">{show(c.expected).slice(0, 90)}</div>
+                    <div class="muted clip">{describeExpected(c.expected).slice(0, 90)}</div>
                   </td>
                   <td class="num" data-value={rs.length === 0 ? -1 : passed / rs.length}>
                     {rs.length === 0 ? <span class="muted">no results</span> : `${passed} / ${rs.length}`}
@@ -94,10 +95,19 @@ const images = live.filter((r) => r.c.input.image).length
                     <div class="detail-grid">
                       <div>
                         <h4>Input</h4>
-                        {c.input.image ? <Shot path={c.input.image} alt={c.description || c.id} class="shot" /> : <pre>{c.input.text}</pre>}
+                        {c.input.image ? (
+                          isRegions(c.expected) ? (
+                            <Boxes path={c.input.image} alt={c.description || c.id} expected={c.expected} />
+                          ) : (
+                            <Shot path={c.input.image} alt={c.description || c.id} class="shot" />
+                          )
+                        ) : (
+                          <pre>{c.input.text}</pre>
+                        )}
                       </div>
                       <div>
                         <h4>Expected</h4>
+                        {isRegions(c.expected) && <p>{describeExpected(c.expected)}</p>}
                         <pre>{show(c.expected)}</pre>
                         {Array.isArray(c.absent) && c.absent.length > 0 && (
                           <>

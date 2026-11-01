@@ -1,0 +1,297 @@
+---
+// Draw region boxes on a corpus image and get the regions case file for it.
+// Everything happens in the browser; nothing is saved here. Copy or download
+// the YAML into suites/regions/cases/<id>.yaml (cases are immutable once a
+// run uses them, so check it before the first run).
+//
+// Boxes are stored as fractions of the image size, as assertions/regions.ts
+// expects. A sensitive image stays covered until "Let me view".
+import Base from '../layouts/Base.astro'
+import { data, href } from '../lib/data'
+
+const images = data.corpus.map((m) => ({ id: m.id, file: m.path.replace(/^corpus\//, ''), path: m.path, src: href(`/${m.path}`), sensitive: !!m.sensitive, title: m.title }))
+---
+
+<Base
+  title="Label regions"
+  description="Draw boxes on a corpus image to make a regions case: pick an image, drag to draw, name each box (synonyms separated by commas), then copy or download the case file into suites/regions/cases/. Nothing is saved on this page."
+>
+  <div class="controls">
+    <select id="l-image" aria-label="Image">
+      {images.map((m) => <option value={m.id}>{m.id}</option>)}
+    </select>
+    <label>Case id <input id="l-id" type="text" size="28" /></label>
+    <label>Also in scope (comma separated, for "none here") <input id="l-scope" type="text" size="24" placeholder="face" /></label>
+  </div>
+  <div class="label-grid">
+    <div>
+      <div id="l-stage" class="stage">
+        <img id="l-img" alt="" draggable="false" />
+        <div id="l-boxes" class="l-boxes"></div>
+        <button type="button" id="l-reveal" class="l-reveal" hidden>Contains nudity · Let me view</button>
+      </div>
+      <p class="muted">Drag on the image to draw a box. Boxes are listed on the right in the order drawn.</p>
+    </div>
+    <div>
+      <h3>Boxes</h3>
+      <ol id="l-list" class="l-list"></ol>
+      <label>Description <input id="l-desc" type="text" size="40" /></label>
+      <h3>Case file</h3>
+      <pre id="l-yaml" class="l-yaml"></pre>
+      <div class="l-actions">
+        <button type="button" id="l-copy">Copy</button>
+        <button type="button" id="l-download">Download</button>
+        <button type="button" id="l-clear">Clear boxes</button>
+      </div>
+    </div>
+  </div>
+  <script is:inline type="application/json" id="l-data" set:html={JSON.stringify(images)} />
+  <script>
+    type Img = { id: string; file: string; src: string; sensitive: boolean; title: string }
+    type B = { label: string; box: [number, number, number, number] }
+    const images = JSON.parse(document.getElementById('l-data')!.textContent!) as Img[]
+    const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
+    const select = $<HTMLSelectElement>('l-image')
+    const img = $<HTMLImageElement>('l-img')
+    const stage = $<HTMLDivElement>('l-stage')
+    const layer = $<HTMLDivElement>('l-boxes')
+    const reveal = $<HTMLButtonElement>('l-reveal')
+    const list = $<HTMLOListElement>('l-list')
+    const yamlOut = $<HTMLPreElement>('l-yaml')
+    const idInput = $<HTMLInputElement>('l-id')
+    const scopeInput = $<HTMLInputElement>('l-scope')
+    const descInput = $<HTMLInputElement>('l-desc')
+    let boxes: B[] = []
+    let current: Img = images[0]!
+
+    const r3 = (n: number) => Math.round(n * 1000) / 1000
+    const q = (s: string) => (/^[a-z0-9 .-]+$/i.test(s) && !/^(yes|no|true|false|null|on|off)$/i.test(s) ? s : JSON.stringify(s))
+    const synonyms = (s: string) => s.split(',').map((x) => x.trim()).filter(Boolean)
+    const labelYaml = (s: string) => {
+      const syn = synonyms(s)
+      return syn.length === 1 ? q(syn[0]!) : `[${syn.map(q).join(', ')}]`
+    }
+
+    function render() {
+      layer.innerHTML = ''
+      list.innerHTML = ''
+      boxes.forEach((b, i) => {
+        const d = document.createElement('div')
+        d.className = 'l-box'
+        Object.assign(d.style, {
+          left: `${b.box[0] * 100}%`,
+          top: `${b.box[1] * 100}%`,
+          width: `${(b.box[2] - b.box[0]) * 100}%`,
+          height: `${(b.box[3] - b.box[1]) * 100}%`,
+        })
+        d.dataset['n'] = String(i + 1)
+        layer.append(d)
+        const li = document.createElement('li')
+        const input = document.createElement('input')
+        input.value = b.label
+        input.placeholder = 'label, synonym'
+        input.addEventListener('input', () => {
+          b.label = input.value
+          write()
+        })
+        const del = document.createElement('button')
+        del.type = 'button'
+        del.textContent = 'Remove'
+        del.addEventListener('click', () => {
+          boxes.splice(i, 1)
+          render()
+        })
+        li.append(input, ' ', del)
+        list.append(li)
+      })
+      write()
+    }
+
+    function write() {
+      const named = boxes.filter((b) => synonyms(b.label).length > 0)
+      const scope = synonyms(scopeInput.value)
+      const find = [...new Set([...named.map((b) => synonyms(b.label)[0]!), ...scope])]
+      const lines = [
+        `description: ${q(descInput.value || `regions: ${current.id}`)}`,
+        `metadata: { id: ${idInput.value || `${current.id}-regions`} }`,
+        'vars:',
+        `  image: file://../../corpus/${current.file}`,
+        `  find: [${find.map(q).join(', ')}]`,
+        '  expected:',
+        ...(scope.length > 0 ? [`    labels: [${scope.map(q).join(', ')}]`] : []),
+        named.length === 0 ? '    boxes: []' : '    boxes:',
+        ...named.map((b) => `      - { label: ${labelYaml(b.label)}, box: [${b.box.map(r3).join(', ')}] }`),
+      ]
+      yamlOut.textContent = `${lines.join('\n')}\n`
+    }
+
+    function load(id: string) {
+      current = images.find((m) => m.id === id) ?? images[0]!
+      boxes = []
+      idInput.value = `${current.id}-regions`
+      descInput.value = ''
+      if (current.sensitive) {
+        img.removeAttribute('src')
+        stage.classList.add('covered')
+        reveal.hidden = false
+      } else {
+        img.src = current.src
+        stage.classList.remove('covered')
+        reveal.hidden = true
+      }
+      const url = new URL(location.href)
+      url.searchParams.set('image', current.id)
+      history.replaceState(null, '', url)
+      render()
+    }
+
+    reveal.addEventListener('click', () => {
+      img.src = current.src
+      stage.classList.remove('covered')
+      reveal.hidden = true
+    })
+
+    let start: [number, number] | null = null
+    let ghost: HTMLDivElement | null = null
+    const at = (e: PointerEvent): [number, number] => {
+      const r = img.getBoundingClientRect()
+      return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))]
+    }
+    stage.addEventListener('pointerdown', (e) => {
+      if (stage.classList.contains('covered') || e.target === reveal) return
+      start = at(e)
+      ghost = document.createElement('div')
+      ghost.className = 'l-box ghost'
+      layer.append(ghost)
+      stage.setPointerCapture(e.pointerId)
+    })
+    stage.addEventListener('pointermove', (e) => {
+      if (!start || !ghost) return
+      const [x, y] = at(e)
+      Object.assign(ghost.style, {
+        left: `${Math.min(start[0], x) * 100}%`,
+        top: `${Math.min(start[1], y) * 100}%`,
+        width: `${Math.abs(x - start[0]) * 100}%`,
+        height: `${Math.abs(y - start[1]) * 100}%`,
+      })
+    })
+    stage.addEventListener('pointerup', (e) => {
+      if (!start) return
+      const [x, y] = at(e)
+      const box: [number, number, number, number] = [Math.min(start[0], x), Math.min(start[1], y), Math.max(start[0], x), Math.max(start[1], y)]
+      start = null
+      ghost?.remove()
+      ghost = null
+      if (box[2] - box[0] < 0.01 || box[3] - box[1] < 0.01) return
+      boxes.push({ label: '', box })
+      render()
+      ;(list.lastElementChild?.querySelector('input') as HTMLInputElement | null)?.focus()
+    })
+
+    select.addEventListener('change', () => load(select.value))
+    for (const el of [idInput, scopeInput, descInput]) el.addEventListener('input', write)
+    $('l-clear').addEventListener('click', () => {
+      boxes = []
+      render()
+    })
+    $('l-copy').addEventListener('click', () => void navigator.clipboard.writeText(yamlOut.textContent ?? ''))
+    $('l-download').addEventListener('click', () => {
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(new Blob([yamlOut.textContent ?? ''], { type: 'text/yaml' }))
+      a.download = `${idInput.value || `${current.id}-regions`}.yaml`
+      a.click()
+      URL.revokeObjectURL(a.href)
+    })
+
+    const wanted = new URLSearchParams(location.search).get('image')
+    if (wanted && images.some((m) => m.id === wanted)) select.value = wanted
+    load(select.value)
+  </script>
+</Base>
+
+<style>
+  .label-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, 1.3fr) minmax(280px, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .stage {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    cursor: crosshair;
+    user-select: none;
+    touch-action: none;
+  }
+  .stage img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  .stage.covered {
+    width: 100%;
+    min-height: 320px;
+    background: #2b2b2e;
+    border-radius: 6px;
+    cursor: default;
+  }
+  .l-reveal {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    padding: 0.4rem 1rem;
+    border: 1px solid #fff;
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+  }
+  .l-boxes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .l-boxes :global(.l-box) {
+    position: absolute;
+    box-sizing: border-box;
+    border: 2px solid #2f6fed;
+    background: rgb(47 111 237 / 0.08);
+  }
+  .l-boxes :global(.l-box[data-n])::after {
+    content: attr(data-n);
+    position: absolute;
+    left: -2px;
+    top: -1.4em;
+    font-size: 11px;
+    padding: 0 4px;
+    color: #fff;
+    background: #2f6fed;
+    border-radius: 3px;
+  }
+  .l-boxes :global(.l-box.ghost) {
+    border-style: dashed;
+  }
+  .l-list {
+    padding-left: 1.4em;
+    display: grid;
+    gap: 6px;
+  }
+  .l-yaml {
+    font-size: 12px;
+    white-space: pre-wrap;
+  }
+  .l-actions {
+    display: flex;
+    gap: 8px;
+  }
+  @media (max-width: 760px) {
+    .label-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

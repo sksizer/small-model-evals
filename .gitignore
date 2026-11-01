@@ -4,3 +4,4 @@ node_modules/
 results/runs/
 # Cases built from your own notes or photos stay on this machine.
 private/
+.cache/

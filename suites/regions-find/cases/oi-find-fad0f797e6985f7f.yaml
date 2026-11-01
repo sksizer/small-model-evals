@@ -1,0 +1,8 @@
+description: "find: poster (Open Images fad0f797e6985f7f)"
+metadata: { id: oi-find-fad0f797e6985f7f }
+vars:
+  image: file://../../corpus/images/oi-find-fad0f797e6985f7f.jpg
+  find: [poster]
+  expected:
+    boxes:
+      - { label: [poster], box: [0, 0, 0.9964, 0.9982] }

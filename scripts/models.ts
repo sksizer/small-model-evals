@@ -40,6 +40,17 @@ export const MODELS: ModelEntry[] = [
   // Dedicated classifiers age slowly next to generative models; the age limit is for the latter.
   { label: 'vit-nsfw-adamcodd-q8', tag: 'AdamCodd/vit-base-nsfw-detector', released: '2024-12', runtime: 'onnx', revision: '8587de998f441aac03fdd57a85d2e4cb808c7d64', dtype: 'q8', baseline: 'dedicated NSFW classifier, ~86M parameters' },
   { label: 'vit-nsfw-falconsai-q8', tag: 'onnx-community/nsfw_image_detection-ONNX', released: '2025-05', runtime: 'onnx', revision: '1ceb3c7fe1e9f3f2507e6df577437f23a9149fd5', dtype: 'q8', baseline: 'dedicated NSFW classifier, ~86M parameters (Falconsai, ONNX conversion)' },
+  // Region detectors (regions-* suites), in-process ONNX. Like the classifiers above, dedicated detectors age slowly.
+  { label: 'dfine-n', tag: 'onnx-community/dfine_n_coco-ONNX', released: '2024-10', runtime: 'onnx', revision: '380d2839c327efaf65dd0fe0c2c10ab7fadd5473', dtype: 'fp32', baseline: 'D-FINE nano, ~4M parameters, 80 COCO classes, Apache-2.0' },
+  { label: 'dfine-s', tag: 'onnx-community/dfine_s_coco-ONNX', released: '2024-10', runtime: 'onnx', revision: 'a3cf03147a9b86c78475139115c8ac142577352d', dtype: 'fp32', baseline: 'D-FINE small, ~10M parameters, 80 COCO classes, Apache-2.0' },
+  { label: 'rtdetr-r18', tag: 'onnx-community/rtdetr_r18vd', released: '2023-04', runtime: 'onnx', revision: 'f2bee7444f4c29003df7e9ef07c4c1c6632eca6f', dtype: 'fp32', baseline: 'RT-DETR ResNet-18, ~20M parameters, 80 COCO classes, Apache-2.0' },
+  { label: 'owlv2-base-q8', tag: 'onnx-community/owlv2-base-patch16-ensemble-ONNX', released: '2023-06', runtime: 'onnx', revision: '180d6ef7599bd69bb48db5c72bd49ad03ddfab80', dtype: 'q8', baseline: 'OWLv2 base, open-vocabulary detector, Apache-2.0' },
+  { label: 'grounding-dino-tiny-q8', tag: 'onnx-community/grounding-dino-tiny-ONNX', released: '2023-03', runtime: 'onnx', revision: 'ff690b0a8050566c290287545bd059350f3e9096', dtype: 'q8', baseline: 'Grounding DINO tiny, open-vocabulary detector, Apache-2.0' },
+  { label: 'florence2-base-od-q8', tag: 'onnx-community/Florence-2-base', released: '2024-06', runtime: 'onnx', revision: 'd59e079711c57174f29265539fb4cc9f0f335916', dtype: 'q8', baseline: 'Florence-2 base (~230M), <OD> task, MIT' },
+  { label: 'florence2-base-ground-q8', tag: 'onnx-community/Florence-2-base', released: '2024-06', runtime: 'onnx', revision: 'd59e079711c57174f29265539fb4cc9f0f335916', dtype: 'q8', baseline: 'Florence-2 base (~230M), phrase grounding, MIT' },
+  { label: 'florence2-base-ocr-q8', tag: 'onnx-community/Florence-2-base', released: '2024-06', runtime: 'onnx', revision: 'd59e079711c57174f29265539fb4cc9f0f335916', dtype: 'q8', baseline: 'Florence-2 base (~230M), <OCR_WITH_REGION>, MIT' },
+  { label: 'yunet-2023mar', tag: 'opencv/face_detection_yunet', released: '2023-03', runtime: 'onnx', revision: '3cc26e7f1014a5ee5d74a42acee58bafc9d0a310', dtype: 'fp32', baseline: 'YuNet face detector, 0.2 MB, MIT' },
+  { label: 'ppocr-v5-mobile-det', tag: 'PaddlePaddle/PP-OCRv5_mobile_det_onnx', released: '2025-05', runtime: 'onnx', revision: 'e6f4fa85f00e168c862bc462aebca69eef9b3d3d', dtype: 'fp32', baseline: 'PP-OCRv5 mobile text detector, 4.8 MB, Apache-2.0' },
   { label: 'd1-omni:600m', tag: 'd1-omni:600m', released: '2026-10', approx: true },
   { label: 'd1:2b', tag: 'd1:2b', released: '2026-10', approx: true },
 ]

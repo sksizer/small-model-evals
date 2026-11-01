@@ -1,0 +1,9 @@
+description: "objects: computer keyboard, laptop (Open Images 7408fef212a5d3bc)"
+metadata: { id: oi-objects-7408fef212a5d3bc }
+vars:
+  image: file://../../corpus/images/oi-objects-7408fef212a5d3bc.jpg
+  find: [keyboard, laptop]
+  expected:
+    boxes:
+      - { label: [keyboard], box: [0, 0.7042, 0.8828, 1] }
+      - { label: [laptop], box: [0.0484, 0, 0.5359, 0.6854] }

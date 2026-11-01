@@ -51,11 +51,24 @@ promptfoo runs every test against every provider and shows a pass/fail grid.
 | `workout` | extract | 16 free-form workout logs | Session fields, and every exercise with each set (reps, kg, seconds) or duration and distance; extra exercises count against; passes at 0.85 (`assertions/workout.ts`) |
 | `food-lookup` | orchestrate, extract | 12 food notes | The model searches a fixed USDA database with a `search_foods` tool, then gives each food's id and grams; a food counts when its name and energy per 100 g fit, grams within a tolerance; foods the database lacks must get no id (`assertions/food.ts`) |
 | `route` | classify (routing) | 18 captured items | Which handler takes the item and whether it needs a larger model; decision models (Liquid d1) answer with probabilities through Ollama's decision endpoint, chat models with the reply limited to the options (`providers/ollama-decide.ts`, `assertions/decide.ts`) |
-| `nudity-flag` | look (privacy) | 50 public negatives (the corpus); positives only in a private copy | Flag a photo that shows nudity; dedicated ONNX classifiers (`providers/image-classifier.ts`), d1 and vision chat models compared on one scorer (`assertions/decide.ts`) |
+| `nudity-flag` | look (privacy) | 77 corpus images: 9 adult nudes, 10 nude artworks and 8 swimwear photos (CC0 or public domain), plus 50 ordinary photos | Flag a photo that shows nudity (art and swimwear are not flagged); dedicated ONNX classifiers (`providers/image-classifier.ts`), d1 and vision chat models compared on one scorer (`assertions/decide.ts`) |
 | `orchestrate` | orchestrate | 15 requests, 5 tools | Right tool (half), right arguments (full); 3 need no tool |
 | `classify` | classify | 20 items, 5 labels | Exact label |
 | `ocr` | ocr, look | 8 synthetic pages and 2 printed tickets from `corpus/` | Share of visible strings read back; passes at 75% |
 | `tag-image` | look | 42 photos and scans from `corpus/` | Share of expected concepts tagged (synonyms count), minus a quarter per wrong tag; passes at 60% with no wrong tag (`assertions/tags.ts`) |
+| `regions-objects` | look (regions) | 14 Open Images photos | Box everyday things (dogs, cups, laptops, chairs); boxes match at IoU 0.5, F1 of precision and recall, passes at 0.7 (`assertions/regions.ts`) |
+| `regions-find` | look (regions) | 18 Open Images photos | Box one named thing a fixed-class detector does not know (whiteboard, sunglasses, envelope) |
+| `regions-faces` | look (regions, privacy) | 15 Open Images photos, 3 with no face | Box every face; any face box on a no-face photo is wrong |
+| `regions-text` | look (regions) | 8 synthetic pages, 143 lines | Box every line of text; the boxes are measured from the page layout (`scripts/text-boxes.ts`) |
+
+The regions suites compare small non-LLM detectors run in-process: fixed-class (D-FINE, RT-DETR),
+open-vocabulary (OWLv2, Grounding DINO), Florence-2, OpenCV's YuNet face detector and PaddleOCR's
+text detector (`providers/region-detector.ts`, `providers/florence2.ts`,
+`providers/onnx-detector.ts`); vision chat models can box through `providers/ollama-boxes.ts`.
+`docs/research/regions.md` has the model and dataset survey with licences. To add a regions case
+by hand, draw it on the site's `/label/` page (any corpus image) and save the YAML it gives into
+the suite's `cases/`. Nudity regions (boxes to blur) have no public data under a usable licence;
+they wait on hand-drawn cases.
 
 All cases are synthetic or from public-licence images. Cases built from your own notes or photos
 go in `private/`, which git ignores:
@@ -71,23 +84,27 @@ the published site.
 
 ## Image corpus
 
-`corpus/` holds images for the vision suites, from two sources:
+`corpus/` holds images for the vision suites, from three sources:
 
 | Source | What | Rules |
 | --- | --- | --- |
-| Wikimedia Commons | 42 photos and scans: food, pets, objects, scenes, outdoor, handwriting, documents | CC0, public domain or CC BY only (no share-alike); no people as subjects; no personal details such as real addresses or account numbers |
+| Wikimedia Commons | 42 photos and scans (food, pets, objects, scenes, outdoor, handwriting, documents) and 27 for nudity flagging (adult nudes, nude art, swimwear) | CC0, public domain or CC BY only (no share-alike); no personal details such as real addresses or account numbers; people as subjects only in the nudity set, which is CC0 or public domain, adults only, with no vintage or ethnographic nude photos |
+| Open Images (validation) | 44 photos for the regions suites, with the dataset's own boxes | CC BY 2.0 photos, CC BY 4.0 boxes; re-encoded at 768 px with all metadata (EXIF, GPS) dropped; picked by `scripts/pick-openimages.ts` after a contact-sheet review: no children, public figures, intimate or medical scenes |
 | Synthetic | 8 receipts, forms, labels and app screens, written as HTML in `corpus/synthetic/` and rendered once to PNG | Every name, address and number invented; released CC0 |
+
+An entry marked `sensitive: true` (nudity, including in art) is shown covered on the site until
+the viewer clicks "Let me view"; the page holds no address for it until then.
 
 | File | What |
 | --- | --- |
-| `corpus/sources.yaml` | The list: a permanent id, a category, and a Commons file title or a synthetic page and size. Edit this to extend. |
-| `corpus/images/<id>.jpg`, `.png` | A 768 px Commons rendition, or the rendered synthetic page. |
+| `corpus/sources.yaml` | The list: a permanent id, a category, and a Commons file title, an Open Images id, or a synthetic page and size. Edit this to extend. |
+| `corpus/images/<id>.jpg`, `.png` | A 768 px rendition, or the rendered synthetic page. |
 | `corpus/manifest.json` | Per image: source page, author, licence, licence URL, size, sha256. |
 | `corpus/ATTRIBUTIONS.md` | Generated credits (CC BY requires them). |
 
 To add images, add entries to `sources.yaml` and run `bun run corpus`. It handles only new ids,
-re-checks each Commons licence against the allow-list and refuses anything else. Images are immutable like
-cases: `check:evals` fails if a file's bytes no longer match the manifest. Replace an image by
+re-checks each licence (Commons against the allow-list, Open Images against its image list) and
+refuses anything else. Images are immutable like cases: `check:evals` fails if a file's bytes no longer match the manifest. Replace an image by
 adding it under a new id.
 
 A tag-image case lists `expected` concepts, each one tag or a list of synonyms, and `absent` tags
