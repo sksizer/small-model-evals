@@ -16,17 +16,29 @@
 // `sets` is shorthand, comma-separated: `3x5@100` (three sets of 5 at 100 kg),
 // `5@100` (one set), `3x10` (bodyweight), `3x30s` (timed), `10@12|24` (either
 // weight). Weights match within 1% or 0.6 kg, which absorbs lb conversions.
-// An exercise's name matches like a tag (assertions/tags.ts): a synonym's
-// words appear in the model's name. Fields an expected exercise leaves out
-// are not checked, except `sets`: left out, the model must give none.
+// An exercise's name matches when a synonym's words appear in order in the
+// model's name, after lower-casing, splitting on hyphens and stemming each
+// word (plural s, -ing, a final e), so "push-ups" is "push up", "rowing" is
+// "row" and "biking" is "bike". Fields an expected exercise leaves out are
+// not checked, except `sets`: left out, the model must give none. A set the
+// model gives with reps, weight and seconds all null is a placeholder and is
+// ignored.
 //
-// Score: each checked session field is one item, each expected exercise one
-// item scored by the share of its checked fields that match (sets by the
-// share of set positions that match), and each exercise the model adds that
-// the log does not describe is one failed item. Passes at 0.85, so a
-// missing exercise fails a case and a single wrong set does not.
+// A log of one cardio activity is often answered at session level: the
+// activity and duration on the session, no exercises. When an expected
+// exercise without sets finds no match, every exercise the model gave is
+// already matched, and the session's activity matches the exercise's name,
+// the session stands in for it: only its duration_min is checked, and a
+// distance_km the exercise expects is missed (the session has no distance).
+//
+// Score: each checked session field is one item; each expected exercise is
+// one item, scored by the share of its checked fields that match (sets by the
+// share of set positions that match, checked only when either side has sets);
+// each exercise the model adds that the log does not describe is one failed
+// item. Passes at 0.85, so a missing exercise fails a case and a single wrong
+// set does not.
 import { matches, parseJson, type Expected, type GradingResult } from './match.ts'
-import { tagMatches, type Concept } from './tags.ts'
+import type { Concept } from './tags.ts'
 
 const PASS_AT = 0.85
 
@@ -115,11 +127,43 @@ export interface Row {
   score: number
 }
 
+/** A word's stem for name matching: plural s, -ing (doubled consonant undone), final e. */
+function stem(w: string): string {
+  let x = w
+  if (x.length > 5 && x.endsWith('ing')) {
+    x = x.slice(0, -3)
+    if (/([bdgmnpt])\1$/.test(x)) x = x.slice(0, -1)
+  } else if (x.length > 2 && x.endsWith('s') && !x.endsWith('ss')) x = x.slice(0, -1)
+  if (x.length > 3 && x.endsWith('e')) x = x.slice(0, -1)
+  return x
+}
+const nameWords = (s: string) =>
+  s
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean)
+    .map(stem)
+
+/** Whether a model's exercise name matches any synonym of the expected name. */
+export function nameMatches(want: Concept, got: string): boolean {
+  const hay = nameWords(got)
+  return (Array.isArray(want) ? want : [want]).some((syn) => {
+    const needle = nameWords(syn)
+    for (let i = 0; needle.length > 0 && i + needle.length <= hay.length; i++) {
+      if (needle.every((w, j) => hay[i + j] === w)) return true
+    }
+    return false
+  })
+}
+
+const isPlaceholder = (s: Partial<Set>) => s.reps == null && s.weight_kg == null && s.seconds == null
+
 /** Compares a reply with the expectation, one row per checked item. */
 export function compareWorkout(expected: ExpectedWorkout, output: unknown): Row[] | null {
   const got = parseJson(output)
   if (!got || typeof got !== 'object' || Array.isArray(got)) return null
   const session = got as Partial<Record<'date' | 'activity' | 'duration_min', unknown>> & { exercises?: unknown }
+  let sessionUsed = false
   const rows: Row[] = []
   for (const key of ['date', 'activity', 'duration_min'] as const) {
     if (!(key in expected)) continue
@@ -130,23 +174,38 @@ export function compareWorkout(expected: ExpectedWorkout, output: unknown): Row[
   const used = new Set<number>()
   for (const want of expected.exercises) {
     const label = Array.isArray(want.name) ? want.name[0]! : want.name
-    const i = exercises.findIndex((e, j) => !used.has(j) && typeof e.name === 'string' && tagMatches(want.name, [e.name]))
-    if (i < 0) {
+    const i = exercises.findIndex((e, j) => !used.has(j) && typeof e.name === 'string' && nameMatches(want.name, e.name))
+    let e: Partial<Exercise>
+    let fromSession = false
+    if (i >= 0) {
+      used.add(i)
+      e = exercises[i]!
+    } else if (
+      !sessionUsed &&
+      want.sets === undefined &&
+      exercises.every((_, j) => used.has(j)) &&
+      typeof session.activity === 'string' &&
+      nameMatches(want.name, session.activity)
+    ) {
+      sessionUsed = true
+      fromSession = true
+      e = { name: session.activity, sets: [], duration_min: typeof session.duration_min === 'number' ? session.duration_min : null, distance_km: null }
+    } else {
       rows.push({ field: `exercise: ${label}`, want: describe(want), got: null, ok: false, score: 0 })
       continue
     }
-    used.add(i)
-    const e = exercises[i]!
     const checks: number[] = []
     const wantSets = parseSets(want.sets ?? '')
-    const gotSets = Array.isArray(e.sets) ? e.sets : []
+    const gotSets = (Array.isArray(e.sets) ? e.sets : []).filter((x) => !isPlaceholder(x))
     const hits = wantSets.filter((w, k) => setOk(w, gotSets[k])).length
     const longest = Math.max(wantSets.length, gotSets.length)
-    checks.push(longest === 0 ? 1 : hits / longest)
+    // Sets are a check only when either side has some: a cardio exercise
+    // (and a session stand-in) is judged on its duration and distance alone.
+    if (longest > 0) checks.push(hits / longest)
     if ('duration_min' in want) checks.push(matches(want.duration_min!, e.duration_min) ? 1 : 0)
     if ('distance_km' in want) checks.push(matches(want.distance_km!, e.distance_km) ? 1 : 0)
     const score = checks.reduce((a, b) => a + b, 0) / checks.length
-    rows.push({ field: `exercise: ${label}`, want: describe(want), got: describe(e), ok: score === 1, score })
+    rows.push({ field: `exercise: ${label}`, want: describe(want), got: `${fromSession ? '(session) ' : ''}${describe(e)}`, ok: score === 1, score })
   }
   exercises.forEach((e, j) => {
     if (!used.has(j)) rows.push({ field: `extra: ${String(e.name)}`, want: null, got: describe(e), ok: false, score: 0 })

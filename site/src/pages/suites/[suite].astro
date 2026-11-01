@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { data, href, imageSuites, modelSlug, pct, qualitySuites, show, tone, type Suite } from '../../lib/data'
+import { data, href, imageSuites, isSensitive, modelSlug, pct, qualitySuites, show, type Suite, tone } from '../../lib/data'
 
 export function getStaticPaths() {
   return qualitySuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
@@ -58,7 +58,17 @@ const rows = suite.cases.map((c) => {
                 {c.description && <div class="muted">{c.description}</div>}
                 {c.supersedes && <div class="muted">supersedes <code>{c.supersedes}</code></div>}
               </td>
-              <td class="input-col">{c.input.image ? <a href={href(`/${c.input.image}`)}>image</a> : c.input.text}</td>
+              <td class="input-col">
+                {c.input.image ? (
+                  isSensitive(c.input.image) ? (
+                    <a href={href(`/gallery/${suite.id}/#${c.id}`)} title="Contains nudity; covered until you ask to view it">image (covered)</a>
+                  ) : (
+                    <a href={href(`/${c.input.image}`)}>image</a>
+                  )
+                ) : (
+                  c.input.text
+                )}
+              </td>
               <td class="expected-col">
                 <code>{show(c.expected).slice(0, 160)}</code>
               </td>

@@ -14,6 +14,9 @@ providers:
     config: &config
       temperature: 0
       num_ctx: 4096
+      # Caps a reply that runs on after the JSON (lfm3:1.7b emitted whitespace
+      # until the 5-minute timeout); a right answer is about 10 tokens.
+      num_predict: 64
       think: false
       format: &schema
         type: object
@@ -28,7 +31,7 @@ providers:
   - { id: 'ollama:chat:lfm3:1.7b', label: lfm3:1.7b, config: *config }
   - id: ollama:chat:granite4:latest
     label: granite4
-    config: &plain { temperature: 0, num_ctx: 4096, format: *schema }
+    config: &plain { temperature: 0, num_ctx: 4096, num_predict: 64, format: *schema }
   - { id: 'ollama:chat:gemma3:4b', label: gemma3:4b, config: *plain }
 
 defaultTest:

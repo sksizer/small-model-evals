@@ -53,12 +53,16 @@ const active = (h: string) => (h === '/' ? path === href('/') || path === '/' : 
     position: relative;
     display: block;
   }
+  /* A covered image has no src (components/Shot.astro), so the frame
+     gives it a size and a dark ground. */
   .shot-frame.censored {
     overflow: hidden;
+    min-height: 190px;
+    background: #2b2b2e;
+    border-radius: 6px;
   }
   .shot-frame.censored img {
-    filter: blur(28px) saturate(0.4);
-    transform: scale(1.1);
+    visibility: hidden;
   }
   .shot-frame.censored a {
     pointer-events: none;
