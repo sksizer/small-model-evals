@@ -1,0 +1,4 @@
+metadata: { id: event-3 }
+vars:
+  item: "parent-teacher conference Tuesday afternoon"
+  expected: { label: event }

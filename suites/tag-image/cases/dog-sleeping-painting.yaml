@@ -1,0 +1,11 @@
+description: "painting of a sleeping dog beside a pot and basket"
+metadata: { id: dog-sleeping-painting }
+vars:
+  image: file://../../corpus/images/dog-sleeping-painting.jpg
+  expected:
+    - [dog, puppy]
+    - [sleeping, asleep, resting]
+    - [painting, oil painting, artwork, art]
+    - [pot, jug, vase, pottery, jar]
+    - [basket, sticks, firewood, kindling, wood]
+  absent: [cat, photo]

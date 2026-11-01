@@ -1,1 +1,205 @@
 # small-model-evals
+
+Evals of small local models for the jobs a notes or personal-data app hands them: pick a tool,
+extract fields, triage an item, read the text in an image, tag a photo, and how fast and how
+much memory each takes. Run with [promptfoo](https://www.promptfoo.dev) against
+[Ollama](https://ollama.com) models on your own machine.
+
+Cases never change once used and results are only ever appended, so every number traces back to
+exactly what the model was asked, on what hardware and runtime. A static site
+([`site/`](site/)) shows the results with sorting, search, image galleries and a corpus browser.
+
+## Requirements
+
+| Tool | For |
+| --- | --- |
+| [Bun](https://bun.sh) 1.2+ | Scripts and the site build |
+| [Ollama](https://ollama.com) | The models under test |
+| Node.js (for `npx`) | promptfoo, pinned to 0.125.1 |
+| Chrome or Chromium | Only to render new synthetic corpus pages |
+
+```sh
+bun install
+ollama pull qwen3.5:4b     # and any other model in scripts/models.ts
+bun run eval --models qwen3.5:4b
+bun run site
+```
+
+Results so far come from one Apple M4 Mac mini with 16 GiB. Numbers from other machines are
+recorded separately (each record names its hardware), so contributions from other hardware add
+rows rather than overwrite.
+
+## How promptfoo works
+
+A suite is one `promptfooconfig.yaml` with three parts:
+
+| Part | What it is | Here |
+| --- | --- | --- |
+| `providers` | The models, each with its call settings | Ollama tags, `temperature: 0`, `think: false` on reasoning models |
+| `prompts` | Templates; `{{var}}` fills from each test | A chat message list, so the system prompt is fixed |
+| `tests` | Inputs plus assertions | One file per case in `cases/`; scored by `assertions/*.ts` |
+
+promptfoo runs every test against every provider and shows a pass/fail grid.
+
+## Suites
+
+| Suite | Category | Cases | Score |
+| --- | --- | --- | --- |
+| `perf` | all | 3 context sizes × 3 runs | Load time, prompt and output tok/s, loaded memory (custom provider, `providers/ollama-perf.ts`) |
+| `perf-embed` | embed | 64-paragraph batch × 3 | Embeddings per second |
+| `extract` | extract | 15 notes | JSON fields match (`format` schema enforced) |
+| `workout` | extract | 16 free-form workout logs | Session fields, and every exercise with each set (reps, kg, seconds) or duration and distance; extra exercises count against; passes at 0.85 (`assertions/workout.ts`) |
+| `food-lookup` | orchestrate, extract | 12 food notes | The model searches a fixed USDA database with a `search_foods` tool, then gives each food's id and grams; a food counts when its name and energy per 100 g fit, grams within a tolerance; foods the database lacks must get no id (`assertions/food.ts`) |
+| `route` | classify (routing) | 18 captured items | Which handler takes the item and whether it needs a larger model; decision models (Liquid d1) answer with probabilities through Ollama's decision endpoint, chat models with the reply limited to the options (`providers/ollama-decide.ts`, `assertions/decide.ts`) |
+| `nudity-flag` | look (privacy) | 50 public negatives (the corpus); positives only in a private copy | Flag a photo that shows nudity; dedicated ONNX classifiers (`providers/image-classifier.ts`), d1 and vision chat models compared on one scorer (`assertions/decide.ts`) |
+| `orchestrate` | orchestrate | 15 requests, 5 tools | Right tool (half), right arguments (full); 3 need no tool |
+| `classify` | classify | 20 items, 5 labels | Exact label |
+| `ocr` | ocr, look | 8 synthetic pages and 2 printed tickets from `corpus/` | Share of visible strings read back; passes at 75% |
+| `tag-image` | look | 42 photos and scans from `corpus/` | Share of expected concepts tagged (synonyms count), minus a quarter per wrong tag; passes at 60% with no wrong tag (`assertions/tags.ts`) |
+
+All cases are synthetic or from public-licence images. Cases built from your own notes or photos
+go in `private/`, which git ignores:
+
+```sh
+bun scripts/init-private.ts nudity-flag              # private/suites/nudity-flag with the public config
+EVALS_SCOPE=private bun run eval --suites nudity-flag
+```
+
+With `EVALS_SCOPE=private`, snapshots, the ledger, raw output and the summary go to
+`private/results/`. The site export refuses that scope, so private images and replies never reach
+the published site.
+
+## Image corpus
+
+`corpus/` holds images for the vision suites, from two sources:
+
+| Source | What | Rules |
+| --- | --- | --- |
+| Wikimedia Commons | 42 photos and scans: food, pets, objects, scenes, outdoor, handwriting, documents | CC0, public domain or CC BY only (no share-alike); no people as subjects; no personal details such as real addresses or account numbers |
+| Synthetic | 8 receipts, forms, labels and app screens, written as HTML in `corpus/synthetic/` and rendered once to PNG | Every name, address and number invented; released CC0 |
+
+| File | What |
+| --- | --- |
+| `corpus/sources.yaml` | The list: a permanent id, a category, and a Commons file title or a synthetic page and size. Edit this to extend. |
+| `corpus/images/<id>.jpg`, `.png` | A 768 px Commons rendition, or the rendered synthetic page. |
+| `corpus/manifest.json` | Per image: source page, author, licence, licence URL, size, sha256. |
+| `corpus/ATTRIBUTIONS.md` | Generated credits (CC BY requires them). |
+
+To add images, add entries to `sources.yaml` and run `bun run corpus`. It handles only new ids,
+re-checks each Commons licence against the allow-list and refuses anything else. Images are immutable like
+cases: `check:evals` fails if a file's bytes no longer match the manifest. Replace an image by
+adding it under a new id.
+
+A tag-image case lists `expected` concepts, each one tag or a list of synonyms, and `absent` tags
+that would be wrong for the image. A model tag matches when a synonym's words appear in it, so
+"sleeping dogs" matches `dog`.
+
+## Food database
+
+`suites/food-lookup/foods.jsonl` is USDA FoodData Central's SR Legacy release (April 2018, public
+domain): 7,793 foods with energy per 100 g and household portions. `bun scripts/build-foods.ts`
+rebuilds it from the pinned download. The suite's provider (`providers/ollama-food-agent.ts`) checks
+the file's sha256 against its config before every case, so the database cannot change under a
+snapshot. `providers/food-search.ts` is the search the model calls: keyword ranking, no model behind
+it. Try it with `bun providers/food-search.ts rice white cooked`.
+
+## Cases are immutable
+
+A run and the cases it used never change, so every result can be traced to exactly what the model
+was asked and what counted as right.
+
+| What | Where | Rule |
+| --- | --- | --- |
+| A case | `suites/<suite>/cases/<id>.yaml` | The file name is `metadata.id`. Once a run uses it, its content never changes. |
+| A retired case | `suites/<suite>/cases/retired/<id>.yaml` | Not run any more; kept so old results resolve. |
+| A suite snapshot | `results/suites/<suite>/<fingerprint>.json` | Written by the runner the first time a suite version runs: the setup (config without its test list, referenced files, scoring code) and every active case. Never edited. |
+| A result | `results/ledger/<suite>.jsonl` | Lines are only added. Each names its snapshot by `suite_fp` and its environment by `env`. |
+| An environment | `results/environments/<hash>.json` | Hardware (chip, CPU and GPU cores, memory, Metal GPU budget), OS, power, and runtime (Ollama version and server settings from its log, promptfoo, Bun, Node). Written once per distinct environment. |
+| A model build | `results/models/<digest>.json` | Engine (llama.cpp or MLX), format, quantization, parameters, context length, capabilities, default sampling. Written once per build. |
+
+To evolve a case, add a new file with a new id and `metadata.supersedes: <old id>`, then move the
+old file to `cases/retired/` and set `metadata.retired` to the reason. Content is hashed parsed,
+with referenced files (images, inputs) hashed by content, so comments and layout never count.
+
+`bun run check:evals` (also run in CI) fails on an edited or
+missing used case, a snapshot that no longer matches its name, a record whose snapshot is missing,
+a changed committed ledger line, and a corpus image that no longer matches its manifest hash.
+
+## Run
+
+```sh
+bun run eval                                         # every model, every suite
+bun run eval --models qwen3:4b --suites extract      # a subset
+bun run view                                         # promptfoo's grid in the browser
+```
+
+`scripts/run.ts` runs one promptfoo eval per model and suite, unloading the model before each.
+promptfoo itself cycles through providers inside each test, which would swap models on every call.
+
+## Results
+
+| Path | What | Committed |
+| --- | --- | --- |
+| `results/ledger/<suite>.jsonl` | One line per scored case, appended by every run | Yes |
+| `results/suites/<suite>/<fp>.json` | Frozen suite snapshots the records link to | Yes |
+| `results/summary.md` | Latest result per machine, model and suite, built from the ledger | Yes |
+| `results/notes/<run>.md` | Observations about a run that the numbers do not carry | Yes |
+| `results/runs/<run>/` | promptfoo's raw output | No |
+
+A ledger record names what produced it: the machine (hardware model and memory), the Ollama and
+promptfoo versions, the model tag and digest, the snapshot it ran against and the case id, with
+the model's whole reply. See `LedgerRecord` in `scripts/ledger.ts`.
+
+The summary keeps, per case, the newest result that ran against the current setup. A model's
+results go **stale** when something they depend on changes: the prompt or shared settings, that
+model's own provider entry, or a scorer file the suite uses. Adding another model or an unrelated
+scorer leaves them current. A new case shows as **not run** for each model until it runs.
+
+- **Add a model:** add it to `scripts/models.ts` and a provider with the same label to each suite
+  it can run, then `bun run eval --models <label>`.
+- **Add a case:** add `suites/<suite>/cases/<id>.yaml` with a new id, then rerun the suite.
+- **Add a suite:** a new folder under `suites/` with a `promptfooconfig.yaml` whose `tests` is
+  `file://cases/*.yaml`.
+- **Import old output:** `bun scripts/import.ts results/runs/<run>` (same machine, models and
+  suites; every case must carry its id).
+
+## Results site
+
+`site/` is a static Astro site over the ledger: a leaderboard per machine, every scored case with
+search, filters and sorting, a case-by-model grid per suite, a gallery for suites whose cases are
+images (each image beside every model's found and missed strings or tags), a case index (every
+case in every suite with its input, expected answer and models passing), a corpus browser
+(sensitive images blurred until you click "Let me view"), a
+field-by-field comparison for extraction results, a page per model with its engine, failures and history, speed and memory, and
+the run list with each run's environment. Filters stay in the URL, so a filtered view can be
+shared.
+
+```sh
+bun run site            # dev server with live reload
+bun run site:build      # public build in site/dist
+bun run site:build:all  # public and private builds
+bun run site:private    # private build, served on http://127.0.0.1:4400 only
+```
+
+`scripts/build-site.ts` runs `scripts/export-site.ts` and then `astro build` for each scope. The
+public export writes `site/src/data/evals.json` from the ledger and copies the corpus images into
+`site/public/`. The site reads only that file.
+
+The private build shows everything at once: every public suite plus the suites under `private/`
+(your own notes and photos, the private nudity set), listed as `private-<suite>`. Its data, images
+and build all go under `private/site/`, which is gitignored, so nothing private reaches `site/` or
+GitHub Pages. Its header says "private · local only", and `--serve` binds to localhost, never the
+network.
+
+`.github/workflows/site.yml` checks every push and pull request (typecheck, `check:evals`, site
+build) and deploys `main` to GitHub Pages, with `SITE_BASE` set to the repository path.
+
+## Expected values
+
+Expected values can be a literal, a list of acceptable values, `{contains: …}`, `{startsWith: …}`
+or `{approx: n, tol: t}` (see `assertions/match.ts`).
+
+## Licence
+
+Code: MIT ([LICENSE](LICENSE)). Corpus images keep their own licences; see
+[`corpus/ATTRIBUTIONS.md`](corpus/ATTRIBUTIONS.md).

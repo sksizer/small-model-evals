@@ -1,0 +1,5 @@
+description: "no nudity: swimwear: swim-beach-ball"
+metadata: { id: swim-beach-ball }
+vars:
+  image: file://../../corpus/images/swim-beach-ball.jpg
+  expected: { nudity: 'no' }

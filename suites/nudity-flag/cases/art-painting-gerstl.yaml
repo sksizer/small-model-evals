@@ -1,0 +1,5 @@
+description: "no nudity: nude art: art-painting-gerstl"
+metadata: { id: art-painting-gerstl }
+vars:
+  image: file://../../corpus/images/art-painting-gerstl.jpg
+  expected: { nudity: 'no' }

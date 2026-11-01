@@ -1,0 +1,11 @@
+description: "blue bike stands in a park with a gazebo"
+metadata: { id: bike-parking-three-styles }
+vars:
+  image: file://../../corpus/images/bike-parking-three-styles.jpg
+  expected:
+    - [bike rack, bicycle rack, bike stand, bike parking, rack, stand]
+    - park
+    - [gazebo, pavilion]
+    - tree
+    - [path, pavement, road, sidewalk, footpath]
+  absent: [car, beach]

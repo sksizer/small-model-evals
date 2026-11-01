@@ -1,0 +1,559 @@
+{
+  "suite": "classify",
+  "fingerprint": "7bd1672c9286",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:2a6136ac8a705f1f2b60e4433d10aca545c70119588473a5c00cb3c5f18346ae"
+        }
+      ]
+    },
+    "description": "classify — inbox triage label",
+    "prompts": [
+      "[{\"role\": \"system\", \"content\": \"Label one inbox item for a personal notes app. task: something to do. event: something at a set time or date. journal: how the day went or how the writer feels. reference: a fact to keep and look up later. idea: a suggestion or something to explore. Reply with JSON.\"},\n {\"role\": \"user\", \"content\": {{ item | dump }}}]"
+    ],
+    "providers": [
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:4b",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:9b",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3:4b",
+        "label": "qwen3:4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:gemma4:e4b",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:openbmb/minicpm5-2b:latest",
+        "label": "minicpm5-2b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:granite4.2:3b",
+        "label": "granite4.2:3b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:lfm3:1.7b",
+        "label": "lfm3:1.7b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0
+        },
+        "id": "ollama:chat:granite4:latest",
+        "label": "granite4"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "label": {
+                "enum": [
+                  "task",
+                  "event",
+                  "journal",
+                  "reference",
+                  "idea"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 4096,
+          "temperature": 0
+        },
+        "id": "ollama:chat:gemma3:4b",
+        "label": "gemma3:4b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "67b69789f251",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "1482885f4b93",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a"
+  },
+  "setup_hash": "040143f1cd04",
+  "cases": {
+    "event-1": {
+      "hash": "37416bf7e068",
+      "def": {
+        "metadata": {
+          "id": "event-1"
+        },
+        "vars": {
+          "item": "Ana's birthday dinner Saturday 7pm",
+          "expected": {
+            "label": "event"
+          }
+        }
+      }
+    },
+    "event-2": {
+      "hash": "83ce464a81ab",
+      "def": {
+        "metadata": {
+          "id": "event-2"
+        },
+        "vars": {
+          "item": "flight UA 123 departs Nov 4 08:15",
+          "expected": {
+            "label": "event"
+          }
+        }
+      }
+    },
+    "event-3": {
+      "hash": "3658cd2c6f89",
+      "def": {
+        "metadata": {
+          "id": "event-3"
+        },
+        "vars": {
+          "item": "parent-teacher conference Tuesday afternoon",
+          "expected": {
+            "label": "event"
+          }
+        }
+      }
+    },
+    "event-4": {
+      "hash": "cefa74c1177a",
+      "def": {
+        "metadata": {
+          "id": "event-4"
+        },
+        "vars": {
+          "item": "concert at the Fillmore on the 20th",
+          "expected": {
+            "label": "event"
+          }
+        }
+      }
+    },
+    "idea-1": {
+      "hash": "07e29b620d2c",
+      "def": {
+        "metadata": {
+          "id": "idea-1"
+        },
+        "vars": {
+          "item": "What if the calendar view showed the weather?",
+          "expected": {
+            "label": "idea"
+          }
+        }
+      }
+    },
+    "idea-2": {
+      "hash": "c60fbd069392",
+      "def": {
+        "metadata": {
+          "id": "idea-2"
+        },
+        "vars": {
+          "item": "App idea: a habit tracker that uses photos as check-ins",
+          "expected": {
+            "label": "idea"
+          }
+        }
+      }
+    },
+    "idea-3": {
+      "hash": "df58f3e7c1ea",
+      "def": {
+        "metadata": {
+          "id": "idea-3"
+        },
+        "vars": {
+          "item": "Could we batch embeddings overnight to save battery?",
+          "expected": {
+            "label": "idea"
+          }
+        }
+      }
+    },
+    "idea-4": {
+      "hash": "512e6aefefe1",
+      "def": {
+        "metadata": {
+          "id": "idea-4"
+        },
+        "vars": {
+          "item": "Blog post idea: lessons from a year of running",
+          "expected": {
+            "label": "idea"
+          }
+        }
+      }
+    },
+    "journal-1": {
+      "hash": "95cdf6c3483a",
+      "def": {
+        "metadata": {
+          "id": "journal-1"
+        },
+        "vars": {
+          "item": "Today was rough; the meeting ran long and I skipped lunch",
+          "expected": {
+            "label": "journal"
+          }
+        }
+      }
+    },
+    "journal-2": {
+      "hash": "a9b90ba7ec84",
+      "def": {
+        "metadata": {
+          "id": "journal-2"
+        },
+        "vars": {
+          "item": "Feeling proud, finished the first draft at last",
+          "expected": {
+            "label": "journal"
+          }
+        }
+      }
+    },
+    "journal-3": {
+      "hash": "cb9c0cfc4fdf",
+      "def": {
+        "metadata": {
+          "id": "journal-3"
+        },
+        "vars": {
+          "item": "Slept 8 hours for once, much better mood",
+          "expected": {
+            "label": "journal"
+          }
+        }
+      }
+    },
+    "journal-4": {
+      "hash": "b7fba993357b",
+      "def": {
+        "metadata": {
+          "id": "journal-4"
+        },
+        "vars": {
+          "item": "Walked by the lake after work, very calm",
+          "expected": {
+            "label": "journal"
+          }
+        }
+      }
+    },
+    "reference-1": {
+      "hash": "df7632341f76",
+      "def": {
+        "metadata": {
+          "id": "reference-1"
+        },
+        "vars": {
+          "item": "Rust: cargo tree -d lists duplicate dependencies",
+          "expected": {
+            "label": "reference"
+          }
+        }
+      }
+    },
+    "reference-2": {
+      "hash": "31bc54a1d5c5",
+      "def": {
+        "metadata": {
+          "id": "reference-2"
+        },
+        "vars": {
+          "item": "Home insurance policy number is HX-55120",
+          "expected": {
+            "label": "reference"
+          }
+        }
+      }
+    },
+    "reference-3": {
+      "hash": "86ca5b808b24",
+      "def": {
+        "metadata": {
+          "id": "reference-3"
+        },
+        "vars": {
+          "item": "Bread: 500 g flour, 10 g salt, 350 ml water, 7 g yeast",
+          "expected": {
+            "label": "reference"
+          }
+        }
+      }
+    },
+    "reference-4": {
+      "hash": "e86c125f1444",
+      "def": {
+        "metadata": {
+          "id": "reference-4"
+        },
+        "vars": {
+          "item": "The bike shop on 3rd closes at 5 on Sundays",
+          "expected": {
+            "label": "reference"
+          }
+        }
+      }
+    },
+    "task-1": {
+      "hash": "052378abc668",
+      "def": {
+        "metadata": {
+          "id": "task-1"
+        },
+        "vars": {
+          "item": "buy printer ink",
+          "expected": {
+            "label": "task"
+          }
+        }
+      }
+    },
+    "task-2": {
+      "hash": "9243e8fc9da9",
+      "def": {
+        "metadata": {
+          "id": "task-2"
+        },
+        "vars": {
+          "item": "renew the car registration before it lapses",
+          "expected": {
+            "label": "task"
+          }
+        }
+      }
+    },
+    "task-3": {
+      "hash": "da14c92a5ca4",
+      "def": {
+        "metadata": {
+          "id": "task-3"
+        },
+        "vars": {
+          "item": "send the Q3 report to finance",
+          "expected": {
+            "label": "task"
+          }
+        }
+      }
+    },
+    "task-4": {
+      "hash": "700cfdf2b696",
+      "def": {
+        "metadata": {
+          "id": "task-4"
+        },
+        "vars": {
+          "item": "fix the leaky tap in the bathroom",
+          "expected": {
+            "label": "task"
+          }
+        }
+      }
+    }
+  }
+}

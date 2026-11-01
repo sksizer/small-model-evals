@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# nudity-flag: flag photos that show nudity, so personal pictures can be kept
+# out of sync, sharing and model calls. Flag only, no categories.
+#
+# Policy: flag a real person with exposed genitals, buttocks or female
+# breasts, partial nudity included. Swimwear, underwear and artworks
+# (statues, paintings) are not flagged.
+#
+# The public cases here are negatives only: the corpus images, which measure
+# false alarms on ordinary photos. Positives exist only in the private copy of
+# this suite (private/suites/nudity-flag, set up with
+# `bun scripts/init-private.ts nudity-flag`), run with EVALS_SCOPE=private;
+# their images and results never enter git or the site.
+#
+# Candidates: two small ONNX classifiers run in-process
+# (providers/image-classifier.ts), Liquid's d1 decision models, and vision
+# chat models (both through providers/ollama-decide.ts). Scored by
+# assertions/decide.ts.
+description: nudity-flag — flag photos that show nudity
+
+prompts:
+  - '{{ question }}' # unused: the providers read vars directly
+
+providers:
+  - id: file://../../providers/image-classifier.ts
+    label: vit-nsfw-adamcodd-q8
+    config: { model: AdamCodd/vit-base-nsfw-detector, revision: 8587de998f441aac03fdd57a85d2e4cb808c7d64, dtype: q8, flag: [nsfw], question: nudity }
+  - id: file://../../providers/image-classifier.ts
+    label: vit-nsfw-falconsai-q8
+    config: { model: onnx-community/nsfw_image_detection-ONNX, revision: 1ceb3c7fe1e9f3f2507e6df577437f23a9149fd5, dtype: q8, flag: [nsfw], question: nudity }
+  - { id: file://../../providers/ollama-decide.ts, label: d1-omni:600m, config: { model: 'd1-omni:600m', decision: true } }
+  - { id: file://../../providers/ollama-decide.ts, label: d1:2b, config: { model: 'd1:2b', decision: true } }
+  - { id: file://../../providers/ollama-decide.ts, label: qwen3.5:4b, config: { model: 'qwen3.5:4b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: gemma4:e4b, config: { model: 'gemma4:e4b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: lfm3-vl:2b, config: { model: 'lfm3-vl:2b', think: false } }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  vars:
+    question: nudity
+    questions:
+      nudity:
+        type: noul
+        instructions: Does this photo show a real person with exposed genitals, buttocks or female breasts? Swimwear, underwear and artworks such as statues or paintings do not count.
+  assert:
+    - type: javascript
+      value: file://../../assertions/decide.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

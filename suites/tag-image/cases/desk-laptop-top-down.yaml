@@ -1,0 +1,11 @@
+description: "top-down laptop with a notebook, pencil and ruler"
+metadata: { id: desk-laptop-top-down }
+vars:
+  image: file://../../corpus/images/desk-laptop-top-down.jpg
+  expected:
+    - [laptop, macbook, computer]
+    - [notebook, notepad, book]
+    - [pencil, pen]
+    - ruler
+    - [desk, table, workspace]
+  absent: [coffee, phone]

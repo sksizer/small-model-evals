@@ -1,0 +1,9 @@
+description: varying sets and a back-off
+metadata: { id: deadlift-pyramid }
+vars:
+  log: "deadlift: 5 @ 100, 3 @ 120, 1 @ 140, then 2x5 @ 100 back-off"
+  expected:
+    date: '2026-10-29'
+    activity: strength
+    exercises:
+      - { name: [deadlift], sets: '5@100, 3@120, 1@140, 2x5@100' }

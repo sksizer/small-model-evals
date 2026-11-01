@@ -1,0 +1,5 @@
+description: "no nudity: outdoor"
+metadata: { id: sunset-beach-colonia }
+vars:
+  image: file://../../corpus/images/sunset-beach-colonia.jpg
+  expected: { nudity: 'no' }

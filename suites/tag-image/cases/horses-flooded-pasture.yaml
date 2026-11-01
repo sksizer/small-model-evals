@@ -1,0 +1,10 @@
+description: "silhouettes of two horses grazing by floodwater"
+metadata: { id: horses-flooded-pasture }
+vars:
+  image: file://../../corpus/images/horses-flooded-pasture.jpg
+  expected:
+    - horse
+    - [water, flood, lake, river]
+    - [silhouette, reflection]
+    - [grazing, pasture, field, grass]
+  absent: [cow, dog]

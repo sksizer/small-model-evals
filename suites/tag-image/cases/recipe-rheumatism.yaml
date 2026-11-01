@@ -1,0 +1,10 @@
+description: "old handwritten medical recipe for rheumatism"
+metadata: { id: recipe-rheumatism }
+vars:
+  image: file://../../corpus/images/recipe-rheumatism.jpg
+  expected:
+    - [recipe, receipt, remedy, prescription, instruction]
+    - [handwriting, handwritten, manuscript, cursive, script]
+    - [paper, page, document, parchment]
+    - [old, antique, historical, vintage, ink, aged]
+  absent: [typed, printed]

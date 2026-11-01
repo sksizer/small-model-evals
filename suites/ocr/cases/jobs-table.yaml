@@ -1,0 +1,5 @@
+description: "dashboard cards and a jobs table"
+metadata: { id: jobs-table }
+vars:
+  image: file://../../corpus/images/jobs-table.png
+  expected: ["12 jobs", "2 failed", "$3.84", "nightly-backup", "thumbnail-rebuild", "18m 05s", "import-photos", "retrying", "search-reindex", "$1.07"]

@@ -1,0 +1,4 @@
+metadata: { id: reference-2 }
+vars:
+  item: "Home insurance policy number is HX-55120"
+  expected: { label: reference }

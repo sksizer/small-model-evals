@@ -1,0 +1,5 @@
+description: "no nudity: food"
+metadata: { id: salad-ham }
+vars:
+  image: file://../../corpus/images/salad-ham.jpg
+  expected: { nudity: 'no' }

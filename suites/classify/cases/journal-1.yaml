@@ -1,0 +1,4 @@
+metadata: { id: journal-1 }
+vars:
+  item: "Today was rough; the meeting ran long and I skipped lunch"
+  expected: { label: journal }

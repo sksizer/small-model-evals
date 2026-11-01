@@ -1,0 +1,8 @@
+description: household measures and a sized fruit
+metadata: { id: oatmeal-banana-peanut-butter }
+vars:
+  note: "bowl of oatmeal made with 1/2 cup dry oats, a sliced banana on top and a tablespoon of peanut butter"
+  expected:
+    - { text: [oat, oatmeal], food: [oat], kcal_100g: 379, grams: { approx: 40, tol: 8 } }
+    - { text: [banana], food: [banana], kcal_100g: 89, grams: { approx: 118, tol: 25 } }
+    - { text: [peanut butter], food: [peanut butter], kcal_100g: 588, grams: { approx: 16, tol: 4 } }

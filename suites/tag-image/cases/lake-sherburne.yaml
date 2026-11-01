@@ -1,0 +1,11 @@
+description: "panorama of snowy peaks reflected in a mountain lake"
+metadata: { id: lake-sherburne }
+vars:
+  image: file://../../corpus/images/lake-sherburne.jpg
+  expected:
+    - mountain
+    - [lake, water]
+    - reflection
+    - [snow, snowcap, snow-capped]
+    - [landscape, panorama, nature, sky]
+  absent: [city, beach]

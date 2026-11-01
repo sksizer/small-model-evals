@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# tag-image: tag a photo (the look category, for indexing photos and
+# attachments). Images come from corpus/ (README: Image corpus). Each case
+# lists the concepts the image plainly shows, with synonyms, and tags that
+# would be wrong; assertions/tags.ts scores recall and penalises the wrong ones.
+# Only models with the `vision` capability run here.
+description: tag-image — tag a photo
+
+prompts:
+  - |-
+    [{"role": "user", "content": "List 5 to 12 short lowercase tags for this image: the main subjects and objects, the setting, and what kind of image it is (photo, painting, document...). Use plain nouns or short noun phrases. Reply with JSON: {\"tags\": [...]}", "images": ["{{ image | replace('data:image/jpeg;base64,', '') }}"]}]
+
+providers:
+  - id: ollama:chat:qwen3.5:4b
+    label: qwen3.5:4b
+    config: &config
+      temperature: 0
+      num_ctx: 8192
+      num_predict: 512
+      think: false
+      format: { type: object, properties: { tags: { type: array, items: { type: string } } }, required: [tags] }
+  - { id: 'ollama:chat:qwen3.5:9b', label: qwen3.5:9b, config: *config }
+  - { id: 'ollama:chat:gemma4:e4b', label: gemma4:e4b, config: *config }
+  - { id: 'ollama:chat:lfm3-vl:2b', label: lfm3-vl:2b, config: *config }
+  - id: ollama:chat:gemma3:4b
+    label: gemma3:4b
+    config:
+      temperature: 0
+      num_ctx: 8192
+      num_predict: 512
+      format: { type: object, properties: { tags: { type: array, items: { type: string } } }, required: [tags] }
+
+defaultTest:
+  # `expected` and `absent` are lists to score against, not a matrix.
+  options: { disableVarExpansion: true }
+  assert:
+    - type: javascript
+      value: file://../../assertions/tags.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

@@ -1,0 +1,10 @@
+description: casual writing with typos and kilos
+metadata: { id: casual-typos }
+vars:
+  log: "did legs tdy. sqauts 3 sets 8 reps 70 kilos, leg curls 3x12 40kg. felt strong"
+  expected:
+    date: '2026-10-29'
+    activity: strength
+    exercises:
+      - { name: [squat], sets: '3x8@70' }
+      - { name: [leg curl, hamstring curl], sets: '3x12@40' }

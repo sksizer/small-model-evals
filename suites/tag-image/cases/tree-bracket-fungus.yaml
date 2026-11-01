@@ -1,0 +1,10 @@
+description: "tree trunk with bracket fungi in a forest"
+metadata: { id: tree-bracket-fungus }
+vars:
+  image: file://../../corpus/images/tree-bracket-fungus.jpg
+  expected:
+    - [tree, trunk]
+    - [fungus, fungi, mushroom, bracket fungus, shelf fungus]
+    - [forest, woods]
+    - [bark, green, nature]
+  absent: [snow, animal]

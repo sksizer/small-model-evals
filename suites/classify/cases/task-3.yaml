@@ -1,0 +1,4 @@
+metadata: { id: task-3 }
+vars:
+  item: "send the Q3 report to finance"
+  expected: { label: task }

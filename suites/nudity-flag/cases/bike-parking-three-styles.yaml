@@ -1,0 +1,5 @@
+description: "no nudity: objects"
+metadata: { id: bike-parking-three-styles }
+vars:
+  image: file://../../corpus/images/bike-parking-three-styles.jpg
+  expected: { nudity: 'no' }

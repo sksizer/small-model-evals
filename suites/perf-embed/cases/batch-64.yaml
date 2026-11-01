@@ -1,0 +1,4 @@
+description: embed a batch of 64 paragraphs
+metadata: { id: batch-64 }
+vars: { input: file://../perf/input.md, num_ctx: 2048 }
+options: { repeat: 3 }

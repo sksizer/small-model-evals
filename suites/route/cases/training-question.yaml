@@ -1,0 +1,5 @@
+description: a short advice question
+metadata: { id: training-question }
+vars:
+  input: "is it ok to train legs two days in a row? still sore"
+  expected: { handler: assistant, large: 'no' }

@@ -1,0 +1,129 @@
+---
+import Base from '../layouts/Base.astro'
+import Compare from '../components/Compare.astro'
+import Shot from '../components/Shot.astro'
+import { data, href, modelLabels, modelSlug, qualitySuites, show } from '../lib/data'
+
+const results = [...data.results].sort((a, b) => a.suite.localeCompare(b.suite) || a.case.localeCompare(b.case) || a.model.localeCompare(b.model))
+const fails = results.filter((r) => !r.pass).length
+---
+
+<Base
+  title="All results"
+  description={`Every scored case from each model's latest run: ${results.length} results, ${fails} failed. Search any text, filter, sort, and click a row for the input, the expected answer and the model's reply.`}
+>
+  <div class="controls">
+    <input type="search" data-search="results" placeholder="Search case, input, reason or reply…" aria-label="Search results" />
+    <select data-facet="results" name="suite" aria-label="Suite">
+      <option value="">All suites</option>
+      {qualitySuites.map((s) => <option value={s.id}>{s.id}</option>)}
+    </select>
+    <select data-facet="results" name="model" aria-label="Model">
+      <option value="">All models</option>
+      {modelLabels.map((m) => <option value={m}>{m}</option>)}
+    </select>
+    <select data-facet="results" name="outcome" aria-label="Outcome">
+      <option value="">Pass and fail</option>
+      <option value="pass">Passed</option>
+      <option value="fail">Failed</option>
+    </select>
+    {
+      data.machines.length > 1 && (
+        <select data-facet="results" name="machine" aria-label="Machine">
+          <option value="">All machines</option>
+          {data.machines.map((m) => <option value={m.key}>{m.key}</option>)}
+        </select>
+      )
+    }
+    <span class="count" data-count="results"></span>
+  </div>
+  <div class="scroll">
+    <table data-table id="results">
+      <thead>
+        <tr>
+          <th data-sort="text">Suite</th>
+          <th data-sort="text">Case</th>
+          <th data-sort="text">Model</th>
+          <th data-sort="text">Outcome</th>
+          <th data-sort="num" class="num">Score</th>
+          <th data-sort="num" class="num">Latency</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          results.map((r) => (
+            <>
+              <tr
+                data-toggle
+                aria-expanded="false"
+                data-suite={r.suite}
+                data-model={r.model}
+                data-machine={r.machine}
+                data-outcome={r.pass ? 'pass' : 'fail'}
+                data-search={[r.suite, r.case, r.model, r.description, r.input, r.reason, r.output].join(' ')}
+              >
+                <td>
+                  <a href={href(`/suites/${r.suite}/`)}>{r.suite}</a>
+                </td>
+                <td>
+                  <code>{r.case}</code>
+                  <div class="muted">{r.description || r.input.slice(0, 80)}</div>
+                </td>
+                <td>
+                  <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+                </td>
+                <td data-value={r.pass ? 'a' : 'b'}>
+                  <span class={`pill ${r.pass ? 'pass' : 'fail'}`}>{r.pass ? 'pass' : 'fail'}</span>
+                  {r.stale && <span class="pill stale">stale</span>}
+                </td>
+                <td class="num" data-value={r.score}>
+                  {r.score.toFixed(2)}
+                </td>
+                <td class="num" data-value={r.latency_ms}>
+                  {(r.latency_ms / 1000).toFixed(1)} s
+                </td>
+                <td class="muted">{r.error || (r.pass ? '' : r.reason)}</td>
+              </tr>
+              <tr class="detail" hidden>
+                <td colspan="7">
+                  <div class="detail-grid">
+                    <div>
+                      <h4>Input</h4>
+                      {r.image ? (
+                        <Shot path={r.image} alt={`Image for ${r.case}`} class="shot" />
+                      ) : (
+                        <pre>{r.input}</pre>
+                      )}
+                    </div>
+                    <div>
+                      <h4>Expected</h4>
+                      <pre>{show(r.expected)}{r.args ? `\nargs: ${show(r.args)}` : ''}</pre>
+                      <h4 style="margin-top:10px">Scorer</h4>
+                      <pre>{r.error || r.reason || '—'}</pre>
+                    </div>
+                    {(r.hits || r.fields) && (
+                      <div>
+                        <h4>Compared</h4>
+                        <Compare result={r} />
+                      </div>
+                    )}
+                    <div>
+                      <h4>Reply</h4>
+                      <pre>{r.output || '—'}</pre>
+                    </div>
+                  </div>
+                  <p class="note">
+                    Run <code>{r.run}</code> on <code>{r.machine}</code> · frozen case <code>{r.case_hash ?? 'unknown'}</code> in
+                    snapshot <code>{r.suite_fp}</code> (<code>results/suites/{r.suite}/{r.suite_fp}.json</code>). The input and
+                    expected answer shown are from that snapshot, as the model saw them.
+                  </p>
+                </td>
+              </tr>
+            </>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</Base>

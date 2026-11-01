@@ -1,0 +1,4 @@
+metadata: { id: journal-3 }
+vars:
+  item: "Slept 8 hours for once, much better mood"
+  expected: { label: journal }

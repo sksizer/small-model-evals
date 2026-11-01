@@ -1,0 +1,17 @@
+{
+  "tag": "granite4:latest",
+  "digest": "4235724a127c",
+  "engine": "default",
+  "format": "gguf",
+  "family": "granite",
+  "quantization": "Q4_K_M",
+  "parameter_size": "3.4B",
+  "parameter_count": 3402836480,
+  "context_length": 131072,
+  "capabilities": [
+    "completion",
+    "tools"
+  ],
+  "default_parameters": {},
+  "template_hash": "9fa3d9413163"
+}

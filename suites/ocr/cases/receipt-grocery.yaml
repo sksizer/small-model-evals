@@ -1,0 +1,5 @@
+description: "grocery receipt"
+metadata: { id: receipt-grocery }
+vars:
+  image: file://../../corpus/images/receipt-grocery.png
+  expected: ["MAPLE STREET MARKET", "2026-03-14", "20418", "Oat milk", "Sourdough loaf", "11.99", "27.69", "1.38", "29.07", "4417"]

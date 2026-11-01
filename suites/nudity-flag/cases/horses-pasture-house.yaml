@@ -1,0 +1,5 @@
+description: "no nudity: pets"
+metadata: { id: horses-pasture-house }
+vars:
+  image: file://../../corpus/images/horses-pasture-house.jpg
+  expected: { nudity: 'no' }

@@ -1,0 +1,19 @@
+{
+  "tag": "d1-omni:600m",
+  "digest": "1ba59f63e836",
+  "engine": "llamacpp",
+  "format": "gguf",
+  "family": "lfm2",
+  "quantization": "Q8_0",
+  "parameter_size": "380.73M",
+  "parameter_count": 380732161,
+  "context_length": 128000,
+  "capabilities": [
+    "decision",
+    "vision"
+  ],
+  "default_parameters": {
+    "num_ctx": "16384"
+  },
+  "template_hash": "b507b9c2f6ca"
+}

@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# Speed and memory per model. Each chat test summarizes a ~950-token note
+# with 256 tokens out, three times, at three context sizes; the custom
+# provider records Ollama's timings and the loaded size from /api/ps.
+description: perf — speed and memory per model
+
+prompts:
+  - |-
+    Summarize these meeting notes in about 150 words.
+
+    {{input}}
+
+providers:
+  - { id: file://../../providers/ollama-perf.ts, label: 'qwen3.5:4b', config: { model: 'qwen3.5:4b', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'qwen3.5:9b', config: { model: 'qwen3.5:9b', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'qwen3:4b', config: { model: 'qwen3:4b', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'granite4', config: { model: 'granite4:latest' } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'gemma3:4b', config: { model: 'gemma3:4b' } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'gemma4:e4b', config: { model: 'gemma4:e4b', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'minicpm5-2b', config: { model: 'openbmb/minicpm5-2b:latest', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'granite4.2:3b', config: { model: 'granite4.2:3b', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'lfm3:1.7b', config: { model: 'lfm3:1.7b', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'lfm3-vl:2b', config: { model: 'lfm3-vl:2b', think: false } }
+
+defaultTest:
+  vars:
+    input: file://input.md
+  options:
+    repeat: 3
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

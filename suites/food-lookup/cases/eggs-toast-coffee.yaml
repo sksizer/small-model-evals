@@ -1,0 +1,9 @@
+description: counts and unstated amounts at breakfast
+metadata: { id: eggs-toast-coffee }
+vars:
+  note: "breakfast: 2 scrambled eggs, a slice of whole wheat toast with butter, black coffee"
+  expected:
+    - { text: [egg], food: [egg], kcal_100g: 149, grams: { approx: 122, tol: 30 } }
+    - { text: [toast, bread], food: [bread], kcal_100g: 252, grams: { approx: 30, tol: 8 } }
+    - { text: [butter], food: [butter], kcal_100g: 717, grams: { approx: 9, tol: 6 } }
+    - { text: [coffee], food: [coffee], kcal_100g: 1, grams: { approx: 237, tol: 60 } }

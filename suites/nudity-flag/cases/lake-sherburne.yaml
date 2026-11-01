@@ -1,0 +1,5 @@
+description: "no nudity: outdoor"
+metadata: { id: lake-sherburne }
+vars:
+  image: file://../../corpus/images/lake-sherburne.jpg
+  expected: { nudity: 'no' }

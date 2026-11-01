@@ -1,0 +1,5 @@
+description: "event flyer"
+metadata: { id: event-flyer }
+vars:
+  image: file://../../corpus/images/event-flyer.png
+  expected: ["Spring Seed Swap", "Riverton Seed Library", "May 9", "10 am", "Old Mill Community Hall", "57 Weaver Lane", "Free entry", "seeds@riverton-library.example"]

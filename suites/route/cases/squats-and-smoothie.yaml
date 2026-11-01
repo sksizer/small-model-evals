@@ -1,0 +1,5 @@
+description: exercise and food in one item
+metadata: { id: squats-and-smoothie }
+vars:
+  input: "squats 5x5 @ 100kg, then a smoothie with banana and oats"
+  expected: { handler: [workout, food], large: 'no' }

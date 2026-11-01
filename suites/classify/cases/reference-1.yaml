@@ -1,0 +1,4 @@
+metadata: { id: reference-1 }
+vars:
+  item: "Rust: cargo tree -d lists duplicate dependencies"
+  expected: { label: reference }

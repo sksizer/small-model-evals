@@ -1,0 +1,5 @@
+description: a reminder
+metadata: { id: bins-reminder }
+vars:
+  input: "remind me to take the bins out tomorrow morning"
+  expected: { handler: task, large: 'no' }

@@ -1,0 +1,11 @@
+description: "turquoise reservoir between steep forested mountains"
+metadata: { id: mountain-lake-dam }
+vars:
+  image: file://../../corpus/images/mountain-lake-dam.jpg
+  expected:
+    - [mountain, alps]
+    - [lake, reservoir, water]
+    - [snow, glacier]
+    - [forest, tree, pine]
+    - [valley, landscape, cloud, sky]
+  absent: [city, beach]

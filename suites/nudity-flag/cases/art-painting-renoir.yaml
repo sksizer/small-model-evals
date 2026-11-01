@@ -1,0 +1,5 @@
+description: "no nudity: nude art: art-painting-renoir"
+metadata: { id: art-painting-renoir }
+vars:
+  image: file://../../corpus/images/art-painting-renoir.jpg
+  expected: { nudity: 'no' }

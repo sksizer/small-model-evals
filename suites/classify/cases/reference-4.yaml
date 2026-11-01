@@ -1,0 +1,4 @@
+metadata: { id: reference-4 }
+vars:
+  item: "The bike shop on 3rd closes at 5 on Sundays"
+  expected: { label: reference }

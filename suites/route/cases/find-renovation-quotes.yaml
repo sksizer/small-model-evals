@@ -1,0 +1,5 @@
+description: a request to find notes
+metadata: { id: find-renovation-quotes }
+vars:
+  input: "where did I put the notes about the kitchen renovation quotes?"
+  expected: { handler: search, large: 'no' }

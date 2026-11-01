@@ -1,0 +1,5 @@
+description: "nude: nude-bike-ride-arms-crossed"
+metadata: { id: nude-bike-ride-arms-crossed }
+vars:
+  image: file://../../corpus/images/nude-bike-ride-arms-crossed.jpg
+  expected: { nudity: 'yes' }

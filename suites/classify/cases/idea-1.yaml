@@ -1,0 +1,4 @@
+metadata: { id: idea-1 }
+vars:
+  item: "What if the calendar view showed the weather?"
+  expected: { label: idea }

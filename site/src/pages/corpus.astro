@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro'
+import Shot from '../components/Shot.astro'
+import { REPO_URL, data, href, sourceUrl } from '../lib/data'
+
+// Every image in corpus/, whether or not a case uses it yet: filter by
+// category, search by id, title or author, and see which cases use each one.
+const images = data.corpus
+const categories = [...new Set(images.map((m) => m.category))].sort()
+const count = (c: string) => images.filter((m) => m.category === c).length
+---
+
+<Base
+  title="Corpus"
+  description={`The ${images.length} images the vision suites draw on: Wikimedia Commons photos and scans under CC0, public domain or CC BY, and synthetic pages with invented text. Click an image for full size.`}
+>
+  <div class="controls">
+    <input type="search" id="c-q" placeholder="Search id, title or author" aria-label="Search the corpus" />
+    <div class="cats" role="group" aria-label="Category">
+      <button type="button" data-cat="" aria-pressed="true">All <span class="muted">{images.length}</span></button>
+      {categories.map((c) => <button type="button" data-cat={c} aria-pressed="false">{c} <span class="muted">{count(c)}</span></button>)}
+    </div>
+    <label><input type="checkbox" id="c-unused" /> Not used by a case</label>
+    <span class="count" id="c-count"></span>
+  </div>
+  <div class="grid">
+    {
+      images.map((m) => (
+        <figure
+          class="item"
+          id={m.id}
+          data-cat={m.category}
+          data-used={m.used_by.length > 0 ? '1' : '0'}
+          data-text={`${m.id} ${m.title} ${m.author}`.toLowerCase()}
+        >
+          <Shot path={m.path} alt={m.id} width={m.width} height={m.height} />
+          <figcaption>
+            <div class="id"><code>{m.id}</code> <span class="tag">{m.category}</span></div>
+            <div class="meta">
+              {m.licence_url ? <a href={m.licence_url}>{m.licence}</a> : m.licence} · {m.author}
+            </div>
+            <div class="meta">
+              <a href={sourceUrl(m)}>Source</a> · {m.width}×{m.height}
+            </div>
+            {m.used_by.length > 0 ? (
+              <div class="meta used">
+                {m.used_by.map((u) => (
+                  <a href={href(`/gallery/${u.suite}/#${u.case}`)} class={u.retired ? 'retired' : ''}>
+                    {u.suite}
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div class="meta muted">No case yet</div>
+            )}
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  <p class="note">
+    Licences and credits: <a href={`${REPO_URL}/blob/main/corpus/ATTRIBUTIONS.md`}>ATTRIBUTIONS.md</a>. To add
+    images, list them in <code>corpus/sources.yaml</code> and run <code>bun run corpus</code>.
+  </p>
+  <script>
+    const q = document.getElementById('c-q') as HTMLInputElement
+    const unused = document.getElementById('c-unused') as HTMLInputElement
+    const count = document.getElementById('c-count')!
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>('.cats button')]
+    const items = [...document.querySelectorAll<HTMLElement>('.item')]
+    let cat = new URLSearchParams(location.search).get('cat') ?? ''
+    const apply = () => {
+      const text = q.value.trim().toLowerCase()
+      let shown = 0
+      for (const el of items) {
+        el.hidden =
+          (!!cat && el.dataset['cat'] !== cat) ||
+          (!!text && !el.dataset['text']!.includes(text)) ||
+          (unused.checked && el.dataset['used'] === '1')
+        if (!el.hidden) shown++
+      }
+      for (const b of buttons) b.setAttribute('aria-pressed', String((b.dataset['cat'] ?? '') === cat))
+      count.textContent = `${shown} of ${items.length} images`
+      const url = new URL(location.href)
+      if (cat) url.searchParams.set('cat', cat)
+      else url.searchParams.delete('cat')
+      history.replaceState(null, '', url)
+    }
+    for (const b of buttons) {
+      b.addEventListener('click', () => {
+        cat = b.dataset['cat'] ?? ''
+        apply()
+      })
+    }
+    q.addEventListener('input', apply)
+    unused.addEventListener('change', apply)
+    apply()
+  </script>
+</Base>
+
+<style>
+  .cats { display: flex; flex-wrap: wrap; gap: 4px; }
+  .cats button {
+    font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--text);
+  }
+  .cats button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+  .cats button[aria-pressed='true'] .muted { color: inherit; opacity: 0.8; }
+  label { color: var(--muted); font-size: 14px; display: flex; gap: 6px; align-items: center; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  .item { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .item :global(img) { display: block; width: 100%; height: 190px; object-fit: contain; background: var(--code-bg); }
+  figcaption { padding: 8px 10px 10px; font-size: 13px; }
+  .id { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .tag { font-size: 11px; padding: 0 6px; border-radius: 999px; background: var(--code-bg); color: var(--muted); }
+  .meta { color: var(--muted); margin-top: 3px; overflow-wrap: anywhere; }
+  .used { display: flex; gap: 8px; flex-wrap: wrap; }
+  .used a.retired { text-decoration: line-through; }
+</style>

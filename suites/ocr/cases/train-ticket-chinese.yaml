@@ -1,0 +1,5 @@
+description: "printed Chinese train ticket (Commons)"
+metadata: { id: train-ticket-chinese }
+vars:
+  image: file://../../corpus/images/train-ticket-chinese.jpg
+  expected: ["D082989", "Z801", "Guangzhou dong", "Hung Hom", "Kowloon", "08:19", "HK$210.00", "CLASS:F", "COACH", "23711902090904D082989"]

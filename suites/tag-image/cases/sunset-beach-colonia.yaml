@@ -1,0 +1,11 @@
+description: "beach at dusk with a lone tree on the water"
+metadata: { id: sunset-beach-colonia }
+vars:
+  image: file://../../corpus/images/sunset-beach-colonia.jpg
+  expected:
+    - [sunset, dusk, twilight]
+    - [beach, shore, coast]
+    - [water, sea, ocean, river, lake]
+    - [tree, silhouette]
+    - sky
+  absent: [boat, mountain]

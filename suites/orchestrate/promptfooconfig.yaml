@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# orchestrate: pick the right tool with the right arguments, or none. One
+# turn only; a multi-step agent suite is later work. Only models that
+# advertise the `tools` capability run here (not gemma3:4b).
+description: orchestrate — one-turn tool choice
+
+prompts:
+  - |-
+    [{"role": "system", "content": "You are the assistant inside a personal notes and planning app. Today is Thursday 2026-10-29. Call a tool when the request needs one. Answer directly when it does not."},
+     {"role": "user", "content": {{ request | dump }}}]
+
+providers:
+  - id: ollama:chat:qwen3.5:4b
+    label: qwen3.5:4b
+    config: &config { temperature: 0, num_ctx: 8192, think: false, tools: file://tools.yaml }
+  - { id: 'ollama:chat:qwen3.5:9b', label: qwen3.5:9b, config: *config }
+  - { id: 'ollama:chat:qwen3:4b', label: qwen3:4b, config: *config }
+  - { id: 'ollama:chat:gemma4:e4b', label: gemma4:e4b, config: *config }
+  - { id: 'ollama:chat:openbmb/minicpm5-2b:latest', label: minicpm5-2b, config: *config }
+  - { id: 'ollama:chat:granite4.2:3b', label: granite4.2:3b, config: *config }
+  - { id: 'ollama:chat:lfm3:1.7b', label: lfm3:1.7b, config: *config }
+  - id: ollama:chat:granite4:latest
+    label: granite4
+    config: { temperature: 0, num_ctx: 8192, tools: file://tools.yaml }
+
+defaultTest:
+  assert:
+    - type: javascript
+      value: file://../../assertions/tool-call.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

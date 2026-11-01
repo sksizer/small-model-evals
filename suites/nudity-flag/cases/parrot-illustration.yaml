@@ -1,0 +1,5 @@
+description: "no nudity: pets"
+metadata: { id: parrot-illustration }
+vars:
+  image: file://../../corpus/images/parrot-illustration.jpg
+  expected: { nudity: 'no' }

@@ -1,0 +1,22 @@
+{
+  "tag": "gemma3:4b",
+  "digest": "a2af6cc3eb7f",
+  "engine": "default",
+  "format": "gguf",
+  "family": "gemma3",
+  "quantization": "Q4_K_M",
+  "parameter_size": "4.3B",
+  "parameter_count": 4299915632,
+  "context_length": 131072,
+  "capabilities": [
+    "completion",
+    "vision"
+  ],
+  "default_parameters": {
+    "stop": "\"<end_of_turn>\"",
+    "temperature": "1",
+    "top_k": "64",
+    "top_p": "0.95"
+  },
+  "template_hash": "e0a42594d802"
+}

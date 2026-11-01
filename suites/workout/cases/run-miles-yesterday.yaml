@@ -1,0 +1,9 @@
+description: run in miles with a clock time, yesterday
+metadata: { id: run-miles-yesterday }
+vars:
+  log: "easy 4 mile run yesterday, 38:30, kept HR low"
+  expected:
+    date: '2026-10-28'
+    activity: run
+    exercises:
+      - { name: [run], distance_km: { approx: 6.44, tol: 0.05 }, duration_min: { approx: 38.5, tol: 0.1 } }

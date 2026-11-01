@@ -1,0 +1,7 @@
+description: slices and a fraction of a fruit
+metadata: { id: two-slices-half-avocado }
+vars:
+  note: "avocado toast: two slices of white bread and half an avocado"
+  expected:
+    - { text: [bread, toast], food: [bread], kcal_100g: 266, grams: { approx: 56, tol: 12 } }
+    - { text: [avocado], food: [avocado], kcal_100g: 160, grams: { approx: 100, tol: 35 } }

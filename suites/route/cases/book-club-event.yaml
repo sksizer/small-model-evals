@@ -1,0 +1,5 @@
+description: an event with a thing to bring
+metadata: { id: book-club-event }
+vars:
+  input: "Book club Thursday 6:30, bring the Ishiguro"
+  expected: { handler: event, large: 'no' }

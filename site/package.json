@@ -1,0 +1,19 @@
+{
+  "name": "model-evals-site",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Static Astro site over the model-evals ledger: a leaderboard, every scored case with search and filters, per-suite and per-model pages, and the run history. Data comes from ../scripts/export-site.ts.",
+  "scripts": {
+    "data": "cd .. && bun scripts/export-site.ts",
+    "dev": "bun run data && astro dev",
+    "build": "bun run data && astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "astro": "^6.3.1",
+    "typescript": "^5.7.2"
+  }
+}

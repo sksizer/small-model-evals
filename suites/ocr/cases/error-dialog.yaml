@@ -1,0 +1,5 @@
+description: "error dialog with a path"
+metadata: { id: error-dialog }
+vars:
+  image: file://../../corpus/images/error-dialog.png
+  expected: ["export the album", "E-4031", "disk full", "2.3 GB", "640 MB", "/Volumes/Archive/Exports/Summer 2025", "14 of 212", "Choose another folder", "Try again"]

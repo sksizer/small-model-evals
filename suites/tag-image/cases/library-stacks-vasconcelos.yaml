@@ -1,0 +1,10 @@
+description: "multi-level library stacks with walkways"
+metadata: { id: library-stacks-vasconcelos }
+vars:
+  image: file://../../corpus/images/library-stacks-vasconcelos.jpg
+  expected:
+    - library
+    - [book, bookshelf, shelf, shelves, stack]
+    - [walkway, corridor, hallway, aisle, balcony]
+    - [architecture, interior, modern]
+  absent: [outdoor, tree]

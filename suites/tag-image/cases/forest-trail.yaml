@@ -1,0 +1,10 @@
+description: "dirt trail through a green forest"
+metadata: { id: forest-trail }
+vars:
+  image: file://../../corpus/images/forest-trail.jpg
+  expected:
+    - [forest, woods, woodland]
+    - [trail, path, footpath]
+    - tree
+    - [green, nature, summer, leaf, foliage]
+  absent: [snow, city]

@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# ocr: read the text in an image (the ocr and look categories). Images come
+# from corpus/: synthetic receipts, forms and app screens with known text,
+# and printed tickets from Wikimedia Commons. Each case lists strings plainly
+# visible in the image; the score is the share the model reads back.
+# Only models with the `vision` capability run here.
+description: ocr — read the text in an image
+
+prompts:
+  - |-
+    [{"role": "user", "content": "Transcribe all the text you can read in this image, line by line. Include numbers, labels and button text exactly as shown.", "images": ["{{ image | replace('data:image/png;base64,', '') | replace('data:image/jpeg;base64,', '') }}"]}]
+
+providers:
+  - id: ollama:chat:qwen3.5:4b
+    label: qwen3.5:4b
+    config: &config { temperature: 0, num_ctx: 8192, num_predict: 1024, think: false }
+  - { id: 'ollama:chat:qwen3.5:9b', label: qwen3.5:9b, config: *config }
+  - { id: 'ollama:chat:gemma4:e4b', label: gemma4:e4b, config: *config }
+  - { id: 'ollama:chat:lfm3-vl:2b', label: lfm3-vl:2b, config: *config }
+
+defaultTest:
+  # promptfoo expands an array var into one run per element; `expected` is
+  # one list to score against, not a matrix.
+  options: { disableVarExpansion: true }
+  assert:
+    - type: javascript
+      value: file://../../assertions/text-recall.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

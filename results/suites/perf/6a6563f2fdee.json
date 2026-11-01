@@ -1,0 +1,113 @@
+{
+  "suite": "perf",
+  "fingerprint": "6a6563f2fdee",
+  "setup": {
+    "defaultTest": {
+      "options": {
+        "repeat": 3
+      },
+      "vars": {
+        "input": "sha256:7b09712a9a486b3dbe2f7d33fbc78519e1a60f0600cfef7cefedf019a952512b"
+      }
+    },
+    "description": "perf — speed and memory per model",
+    "prompts": [
+      "Summarize these meeting notes in about 150 words.\n\n{{input}}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "model": "qwen3.5:4b",
+          "think": false
+        },
+        "id": "sha256:325cb330d06af0db13e6fc8822bca0b2d430198be0f9d5403f55fc30e8c81113",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:9b",
+          "think": false
+        },
+        "id": "sha256:325cb330d06af0db13e6fc8822bca0b2d430198be0f9d5403f55fc30e8c81113",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "model": "qwen3:4b",
+          "think": false
+        },
+        "id": "sha256:325cb330d06af0db13e6fc8822bca0b2d430198be0f9d5403f55fc30e8c81113",
+        "label": "qwen3:4b"
+      },
+      {
+        "config": {
+          "model": "granite4:latest"
+        },
+        "id": "sha256:325cb330d06af0db13e6fc8822bca0b2d430198be0f9d5403f55fc30e8c81113",
+        "label": "granite4"
+      },
+      {
+        "config": {
+          "model": "gemma3:4b"
+        },
+        "id": "sha256:325cb330d06af0db13e6fc8822bca0b2d430198be0f9d5403f55fc30e8c81113",
+        "label": "gemma3:4b"
+      },
+      {
+        "config": {
+          "model": "gemma4:e4b",
+          "think": false
+        },
+        "id": "sha256:325cb330d06af0db13e6fc8822bca0b2d430198be0f9d5403f55fc30e8c81113",
+        "label": "gemma4:e4b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/text-recall.ts": "9c8aaa12e787",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "providers/ollama-perf.ts": "325cb330d06a"
+  },
+  "setup_hash": "3c9c0dee5443",
+  "cases": {
+    "ctx-32k": {
+      "hash": "d367f61b0872",
+      "def": {
+        "description": "chat at 32K context",
+        "metadata": {
+          "id": "ctx-32k"
+        },
+        "vars": {
+          "num_ctx": 32768
+        }
+      }
+    },
+    "ctx-4k": {
+      "hash": "5a6eba1ca119",
+      "def": {
+        "description": "chat at 4K context",
+        "metadata": {
+          "id": "ctx-4k"
+        },
+        "vars": {
+          "num_ctx": 4096
+        }
+      }
+    },
+    "ctx-8k": {
+      "hash": "fd76a3f20ec5",
+      "def": {
+        "description": "chat at 8K context",
+        "metadata": {
+          "id": "ctx-8k"
+        },
+        "vars": {
+          "num_ctx": 8192
+        }
+      }
+    }
+  },
+  "legacy": "c62674e6b341"
+}

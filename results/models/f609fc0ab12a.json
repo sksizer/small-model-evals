@@ -1,0 +1,24 @@
+{
+  "tag": "lfm3:1.7b",
+  "digest": "f609fc0ab12a",
+  "engine": "mlx",
+  "format": "safetensors",
+  "family": "lfm3",
+  "quantization": "nvfp4",
+  "parameter_size": "1.7B",
+  "parameter_count": 1728801536,
+  "context_length": 262144,
+  "capabilities": [
+    "completion",
+    "tools",
+    "thinking"
+  ],
+  "default_parameters": {
+    "repeat_last_n": "-1",
+    "repeat_penalty": "1.1",
+    "temperature": "0.1",
+    "top_k": "50",
+    "top_p": "1"
+  },
+  "template_hash": "b507b9c2f6ca"
+}

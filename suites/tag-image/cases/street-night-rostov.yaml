@@ -1,0 +1,11 @@
+description: "empty city avenue at night under street lamps"
+metadata: { id: street-night-rostov }
+vars:
+  image: file://../../corpus/images/street-night-rostov.jpg
+  expected:
+    - [street, road, avenue]
+    - [night, nighttime]
+    - [streetlight, street lamp, lamp, light]
+    - tree
+    - [empty, city, urban]
+  absent: [beach, snow]

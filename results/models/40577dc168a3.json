@@ -1,0 +1,21 @@
+{
+  "tag": "granite4.2:3b",
+  "digest": "40577dc168a3",
+  "engine": "default",
+  "format": "gguf",
+  "family": "granite",
+  "quantization": "Q4_K_M",
+  "parameter_size": "3.7B",
+  "parameter_count": 3659737600,
+  "context_length": 131072,
+  "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+  ],
+  "default_parameters": {
+    "temperature": "1",
+    "top_p": "0.95"
+  },
+  "template_hash": "f0ba43f79b3c"
+}

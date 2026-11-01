@@ -1,0 +1,9 @@
+description: ride last Saturday, hours and minutes
+metadata: { id: ride-saturday-hours }
+vars:
+  log: "Saturday ride 2h15m, 64 km, hilly route with Ana"
+  expected:
+    date: '2026-10-24'
+    activity: ride
+    exercises:
+      - { name: [ride, cycling, bike, biking], distance_km: { approx: 64, tol: 0.5 }, duration_min: 135 }

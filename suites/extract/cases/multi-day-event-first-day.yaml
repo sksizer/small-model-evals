@@ -1,0 +1,5 @@
+description: multi-day event, first day
+metadata: { id: multi-day-event-first-day }
+vars:
+  note: Team offsite Nov 12-13 in Denver
+  expected: { kind: event, date: '2026-11-12', duration_min: null, distance_km: null }

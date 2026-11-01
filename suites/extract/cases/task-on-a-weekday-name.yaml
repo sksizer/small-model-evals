@@ -1,0 +1,5 @@
+description: task on a weekday name
+metadata: { id: task-on-a-weekday-name }
+vars:
+  note: call mom on Sunday
+  expected: { kind: task, date: '2026-11-01', duration_min: null, distance_km: null }

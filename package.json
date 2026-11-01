@@ -1,0 +1,37 @@
+{
+  "name": "small-model-evals",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Evals of small local models (Ollama, promptfoo) for app tasks: tool calls, extraction, classification, reading and tagging images, speed and memory. Immutable cases and an append-only results ledger, with a static results site.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "bun@1.4.2",
+  "engines": {
+    "node": ">=22.22.0",
+    "bun": ">=1.2"
+  },
+  "scripts": {
+    "eval": "bun scripts/run.ts",
+    "check:evals": "bun scripts/check.ts",
+    "summarize": "bun scripts/summarize.ts",
+    "import": "bun scripts/import.ts",
+    "corpus": "bun scripts/fetch-corpus.ts",
+    "site": "cd site && bun install && bun run dev",
+    "site:build": "cd site && bun install && cd .. && bun scripts/build-site.ts public",
+    "view": "PROMPTFOO_DISABLE_TELEMETRY=1 npx -y promptfoo@0.125.1 view",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint scripts assertions providers",
+    "site:build:all": "cd site && bun install && cd .. && bun scripts/build-site.ts",
+    "site:private": "cd site && bun install && cd .. && bun scripts/build-site.ts private --serve"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "4.3.1",
+    "@osdlc/command-seam": "^0.14.0"
+  },
+  "devDependencies": {
+    "@osdlc/tsconfig": "^0.4.1",
+    "@types/bun": "^1.2.0",
+    "oxlint": "^1.0.0",
+    "typescript": "^5.7.2"
+  }
+}

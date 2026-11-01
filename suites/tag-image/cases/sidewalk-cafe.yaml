@@ -1,0 +1,12 @@
+description: "cafe table with espresso cups on a town street"
+metadata: { id: sidewalk-cafe }
+vars:
+  image: file://../../corpus/images/sidewalk-cafe.jpg
+  expected:
+    - [coffee, espresso]
+    - cup
+    - [cafe, "café", restaurant, terrace, outdoor seating]
+    - table
+    - car
+    - [building, street, town]
+  absent: [beach, mountain]

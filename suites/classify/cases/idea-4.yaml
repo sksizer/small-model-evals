@@ -1,0 +1,4 @@
+metadata: { id: idea-4 }
+vars:
+  item: "Blog post idea: lessons from a year of running"
+  expected: { label: idea }

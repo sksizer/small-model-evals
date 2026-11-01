@@ -1,0 +1,5 @@
+metadata: { id: task-no-date }
+vars:
+  request: 'create a todo: book flights to Lisbon'
+  tool: create_task
+  args: { title: { contains: lisbon } }

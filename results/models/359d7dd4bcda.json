@@ -1,0 +1,24 @@
+{
+  "tag": "qwen3:4b",
+  "digest": "359d7dd4bcda",
+  "engine": "default",
+  "format": "gguf",
+  "family": "qwen3",
+  "quantization": "Q4_K_M",
+  "parameter_size": "4.0B",
+  "parameter_count": 4022468096,
+  "context_length": 262144,
+  "capabilities": [
+    "completion",
+    "tools",
+    "thinking"
+  ],
+  "default_parameters": {
+    "repeat_penalty": "1",
+    "stop": "\"<|im_end|>\"",
+    "temperature": "0.6",
+    "top_k": "20",
+    "top_p": "0.95"
+  },
+  "template_hash": "2d54db2b9bb2"
+}

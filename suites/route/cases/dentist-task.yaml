@@ -1,0 +1,5 @@
+description: a to-do with a deadline
+metadata: { id: dentist-task }
+vars:
+  input: "call the dentist to reschedule before friday"
+  expected: { handler: task, large: 'no' }

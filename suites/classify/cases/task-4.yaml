@@ -1,0 +1,4 @@
+metadata: { id: task-4 }
+vars:
+  item: "fix the leaky tap in the bathroom"
+  expected: { label: task }

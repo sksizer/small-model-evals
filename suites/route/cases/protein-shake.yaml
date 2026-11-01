@@ -1,0 +1,5 @@
+description: food logged after a gym mention
+metadata: { id: protein-shake }
+vars:
+  input: "protein shake after gym, 30g scoop + 300ml milk"
+  expected: { handler: food, large: 'no' }

@@ -1,0 +1,9 @@
+description: a session with only a duration
+metadata: { id: yoga-duration-only }
+vars:
+  log: "45 min yoga flow this morning"
+  expected:
+    date: '2026-10-29'
+    activity: yoga
+    exercises:
+      - { name: [yoga], duration_min: [45, null] }

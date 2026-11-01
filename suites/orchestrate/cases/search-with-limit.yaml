@@ -1,0 +1,5 @@
+metadata: { id: search-with-limit }
+vars:
+  request: search for anything mentioning Kubernetes, just the top 3
+  tool: search_notes
+  args: { query: { contains: kubernetes }, limit: 3 }

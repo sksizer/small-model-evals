@@ -1,0 +1,5 @@
+metadata: { id: log-ride-yesterday }
+vars:
+  request: I cycled 20 km yesterday in an hour
+  tool: log_workout
+  args: { distance_km: { approx: 20, tol: 0.05 }, duration_min: 60, date: '2026-10-28' }

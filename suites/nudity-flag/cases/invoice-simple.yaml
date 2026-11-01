@@ -1,0 +1,5 @@
+description: "no nudity: text"
+metadata: { id: invoice-simple }
+vars:
+  image: file://../../corpus/images/invoice-simple.png
+  expected: { nudity: 'no' }

@@ -1,0 +1,4 @@
+metadata: { id: event-4 }
+vars:
+  item: "concert at the Fillmore on the 20th"
+  expected: { label: event }

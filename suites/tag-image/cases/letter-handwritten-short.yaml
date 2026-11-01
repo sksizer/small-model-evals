@@ -1,0 +1,10 @@
+description: "short handwritten letter signed \"Jack\""
+metadata: { id: letter-handwritten-short }
+vars:
+  image: file://../../corpus/images/letter-handwritten-short.jpg
+  expected:
+    - [letter, note]
+    - [handwriting, handwritten, cursive, script]
+    - [paper, document, page]
+    - [ink, black and white, text]
+  absent: [typed, photo of a person]

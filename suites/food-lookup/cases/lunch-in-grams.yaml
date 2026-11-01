@@ -1,0 +1,8 @@
+description: amounts already in grams, cooking methods to match
+metadata: { id: lunch-in-grams }
+vars:
+  note: "lunch - 150g cooked white rice, 120 g grilled chicken breast, 80g steamed broccoli"
+  expected:
+    - { text: [rice], food: [rice], kcal_100g: 130, grams: { approx: 150, tol: 3 } }
+    - { text: [chicken], food: [chicken], kcal_100g: 165, grams: { approx: 120, tol: 3 } }
+    - { text: [broccoli], food: [broccoli], kcal_100g: 35, grams: { approx: 80, tol: 3 } }

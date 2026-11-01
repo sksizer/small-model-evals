@@ -1,0 +1,4 @@
+metadata: { id: task-2 }
+vars:
+  item: "renew the car registration before it lapses"
+  expected: { label: task }

@@ -1,0 +1,10 @@
+description: a journal entry where only part is exercise
+metadata: { id: journal-with-noise }
+vars:
+  log: "Slept 7 hours. Gym at 6: squats 5x5 at 90kg, then 10 min on the bike. Had 2 eggs after and drove to work."
+  expected:
+    date: '2026-10-29'
+    activity: [mixed, strength]
+    exercises:
+      - { name: [squat], sets: '5x5@90' }
+      - { name: [bike, cycling, ride], duration_min: 10 }

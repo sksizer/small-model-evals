@@ -1,0 +1,8 @@
+description: two drinks the database lacks, one brand it has
+metadata: { id: not-in-database }
+vars:
+  note: "a cup of Cheerios with oat milk, and a can of kombucha"
+  expected:
+    - { text: [cheerio], food: [cheerios], kcal_100g: 372, grams: { approx: 28, tol: 6 } }
+    - { text: [oat milk], fdc_id: null }
+    - { text: [kombucha], fdc_id: null }

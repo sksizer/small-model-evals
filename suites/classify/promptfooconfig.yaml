@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# classify: inbox triage into one of five labels, constrained by an enum
+# schema. An embedding-plus-centroids baseline is later work.
+description: classify — inbox triage label
+
+prompts:
+  - |-
+    [{"role": "system", "content": "Label one inbox item for a personal notes app. task: something to do. event: something at a set time or date. journal: how the day went or how the writer feels. reference: a fact to keep and look up later. idea: a suggestion or something to explore. Reply with JSON."},
+     {"role": "user", "content": {{ item | dump }}}]
+
+providers:
+  - id: ollama:chat:qwen3.5:4b
+    label: qwen3.5:4b
+    config: &config
+      temperature: 0
+      num_ctx: 4096
+      think: false
+      format: &schema
+        type: object
+        required: [label]
+        properties:
+          label: { type: string, enum: [task, event, journal, reference, idea] }
+  - { id: 'ollama:chat:qwen3.5:9b', label: qwen3.5:9b, config: *config }
+  - { id: 'ollama:chat:qwen3:4b', label: qwen3:4b, config: *config }
+  - { id: 'ollama:chat:gemma4:e4b', label: gemma4:e4b, config: *config }
+  - { id: 'ollama:chat:openbmb/minicpm5-2b:latest', label: minicpm5-2b, config: *config }
+  - { id: 'ollama:chat:granite4.2:3b', label: granite4.2:3b, config: *config }
+  - { id: 'ollama:chat:lfm3:1.7b', label: lfm3:1.7b, config: *config }
+  - id: ollama:chat:granite4:latest
+    label: granite4
+    config: &plain { temperature: 0, num_ctx: 4096, format: *schema }
+  - { id: 'ollama:chat:gemma3:4b', label: gemma3:4b, config: *plain }
+
+defaultTest:
+  assert:
+    - type: javascript
+      value: file://../../assertions/fields.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

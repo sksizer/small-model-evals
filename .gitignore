@@ -1,0 +1,6 @@
+node_modules/
+# promptfoo's raw output, one JSON per suite and model per run. Every scored
+# case is copied into results/ledger/, which is committed.
+results/runs/
+# Cases built from your own notes or photos stay on this machine.
+private/

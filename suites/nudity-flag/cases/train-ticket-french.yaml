@@ -1,0 +1,5 @@
+description: "no nudity: documents"
+metadata: { id: train-ticket-french }
+vars:
+  image: file://../../corpus/images/train-ticket-french.jpg
+  expected: { nudity: 'no' }

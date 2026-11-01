@@ -1,0 +1,5 @@
+metadata: { id: open-calendar }
+vars:
+  request: show me my calendar
+  tool: open_view
+  args: { view: calendar }

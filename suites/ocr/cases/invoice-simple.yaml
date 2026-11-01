@@ -1,0 +1,5 @@
+description: "invoice with line items"
+metadata: { id: invoice-simple }
+vars:
+  image: file://../../corpus/images/invoice-simple.png
+  expected: ["INVOICE", "Northwind Pottery Studio", "INV-2026-0087", "April 30, 2026", "Bluebird", "22 Harbour Road", "Stoneware mugs", "$432.00", "$255.00", "$722.00"]

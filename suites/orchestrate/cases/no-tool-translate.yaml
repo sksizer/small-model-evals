@@ -1,0 +1,4 @@
+metadata: { id: no-tool-translate }
+vars:
+  request: how do I say good morning in Spanish?
+  tool: none

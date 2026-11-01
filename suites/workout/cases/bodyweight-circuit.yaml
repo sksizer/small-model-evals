@@ -1,0 +1,11 @@
+description: a circuit repeated three times, with a timed hold
+metadata: { id: bodyweight-circuit }
+vars:
+  log: "circuit x3: 15 push-ups, 20 air squats, 30s plank"
+  expected:
+    date: '2026-10-29'
+    activity: strength
+    exercises:
+      - { name: [push up, pushup], sets: '3x15' }
+      - { name: [squat], sets: '3x20' }
+      - { name: [plank], sets: '3x30s' }

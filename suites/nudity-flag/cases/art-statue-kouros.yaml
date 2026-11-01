@@ -1,0 +1,5 @@
+description: "no nudity: nude art: art-statue-kouros"
+metadata: { id: art-statue-kouros }
+vars:
+  image: file://../../corpus/images/art-statue-kouros.jpg
+  expected: { nudity: 'no' }

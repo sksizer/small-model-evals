@@ -1,0 +1,52 @@
+# Five notes-app tools, in OpenAI function format.
+- type: function
+  function:
+    name: search_notes
+    description: Full-text search over the vault's notes.
+    parameters:
+      type: object
+      required: [query]
+      properties:
+        query: { type: string, description: Words to search for. }
+        limit: { type: integer, description: Most results to return. Default 10. }
+- type: function
+  function:
+    name: create_task
+    description: Add a task to the task list.
+    parameters:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string }
+        due_date: { type: string, description: 'Due day as YYYY-MM-DD.' }
+- type: function
+  function:
+    name: log_workout
+    description: Record a workout in the fitness log.
+    parameters:
+      type: object
+      required: [activity]
+      properties:
+        activity: { type: string, description: 'For example run, ride, swim, walk.' }
+        duration_min: { type: number }
+        distance_km: { type: number }
+        date: { type: string, description: 'YYYY-MM-DD. Default today.' }
+- type: function
+  function:
+    name: open_view
+    description: Switch the app to one of its views.
+    parameters:
+      type: object
+      required: [view]
+      properties:
+        view: { type: string, enum: [calendar, tasks, fitness, notes, search] }
+- type: function
+  function:
+    name: set_reminder
+    description: Notify the user at a time.
+    parameters:
+      type: object
+      required: [text, at]
+      properties:
+        text: { type: string }
+        at: { type: string, description: 'Local time as YYYY-MM-DDTHH:MM.' }

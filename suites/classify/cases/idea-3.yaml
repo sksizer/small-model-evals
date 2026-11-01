@@ -1,0 +1,4 @@
+metadata: { id: idea-3 }
+vars:
+  item: "Could we batch embeddings overnight to save battery?"
+  expected: { label: idea }

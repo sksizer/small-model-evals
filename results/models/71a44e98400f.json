@@ -1,0 +1,23 @@
+{
+  "tag": "openbmb/minicpm5-2b:latest",
+  "digest": "71a44e98400f",
+  "engine": "default",
+  "format": "gguf",
+  "family": "llama",
+  "quantization": "Q4_K_M",
+  "parameter_size": "2.5B",
+  "parameter_count": 2516756480,
+  "context_length": 131072,
+  "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+  ],
+  "default_parameters": {
+    "top_p": "0.95",
+    "num_ctx": "4096",
+    "stop": "\"[\\\"<|im_start|>\\\",\\\"<|im_end|>\\\",\\\"</s>\\\"]\"",
+    "temperature": "0.9"
+  },
+  "template_hash": "7451a05cf1e2"
+}

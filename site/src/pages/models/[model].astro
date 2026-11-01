@@ -1,0 +1,182 @@
+---
+import Base from '../../layouts/Base.astro'
+import { buildOf, data, fmt, href, modelSlug, pct, qualitySuites, tone } from '../../lib/data'
+
+export function getStaticPaths() {
+  return data.models.map((model) => ({ params: { model: modelSlug(model.label) }, props: { model } }))
+}
+
+const { model } = Astro.props as { model: (typeof data.models)[number] }
+const cells = data.cells.filter((c) => c.model === model.label)
+const perf = data.perf.filter((p) => p.model === model.label)
+const failures = data.results.filter((r) => r.model === model.label && !r.pass)
+const build = buildOf(model.label)
+const history = data.history.filter((h) => h.model === model.label).sort((a, b) => b.run.localeCompare(a.run))
+---
+
+<Base title={model.label} description={`Ollama tag ${model.tag}, build ${model.digest}.`}>
+  {
+    build && (
+      <div class="cards">
+        <div class="card">
+          <div class="k">Engine</div>
+          <div class="v">{build.engine === 'default' ? 'llama.cpp' : build.engine.toUpperCase()}</div>
+          <div class="muted">{build.format}</div>
+        </div>
+        <div class="card">
+          <div class="k">Weights</div>
+          <div class="v">{build.quantization}</div>
+          <div class="muted">
+            {build.parameter_size} parameters · {build.family}
+          </div>
+        </div>
+        <div class="card">
+          <div class="k">Max context</div>
+          <div class="v">{build.context_length ? `${Math.round(build.context_length / 1024)}K` : '—'}</div>
+          <div class="muted">{build.capabilities.join(', ')}</div>
+        </div>
+        <div class="card">
+          <div class="k">Default sampling</div>
+          <div class="muted">
+            {Object.entries(build.default_parameters)
+              .map(([k, v]) => `${k} ${v}`)
+              .join(' · ') || '—'}
+          </div>
+        </div>
+      </div>
+    )
+  }
+  <div class="cards">
+    {
+      qualitySuites.map((s) => {
+        const c = cells.find((x) => x.suite === s.id)
+        if (!c)
+          return (
+            <div class="card">
+              <div class="k">{s.id}</div>
+              <div class="v muted">not run</div>
+            </div>
+          )
+        const rate = pct(c.passed, c.total)
+        return (
+          <a class={`card heat ${tone(rate)}`} href={href(`/results/?suite=${s.id}&model=${encodeURIComponent(model.label)}`)}>
+            <div class="k">{s.id}</div>
+            <div class="v">{rate}%</div>
+            <div>
+              {c.passed}/{c.total} · {fmt((c.median_ms ?? 0) / 1000)} s{c.stale && ' · stale'}
+            </div>
+          </a>
+        )
+      })
+    }
+  </div>
+
+  <h2>Speed and memory</h2>
+  {
+    perf.length === 0 ? (
+      <p class="muted">No speed runs yet.</p>
+    ) : (
+      <div class="scroll">
+        <table data-table id="model-speed">
+          <thead>
+            <tr>
+              <th data-sort="text">Case</th>
+              <th data-sort="num" class="num">Output tok/s</th>
+              <th data-sort="num" class="num">Prompt tok/s</th>
+              <th data-sort="num" class="num">Loaded GB</th>
+              <th data-sort="num" class="num">Cold load s</th>
+            </tr>
+          </thead>
+          <tbody>
+            {perf.map((p) => (
+              <tr>
+                <td>
+                  <code>{p.case}</code>
+                </td>
+                <td class="num" data-value={p.decode_tps ?? p.embeds_per_s ?? -1}>
+                  {p.embeds_per_s !== null ? `${fmt(p.embeds_per_s, 0)} embeds/s` : fmt(p.decode_tps)}
+                </td>
+                <td class="num" data-value={p.prompt_tps ?? -1}>
+                  {p.prompt_cached ? <span class="muted">cached</span> : fmt(p.prompt_tps, 0)}
+                </td>
+                <td class="num" data-value={p.loaded_gb ?? -1}>{fmt(p.loaded_gb, 2)}</td>
+                <td class="num" data-value={p.load_s ?? -1}>{fmt(p.load_s)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  <h2>Failed cases ({failures.length})</h2>
+  {
+    failures.length === 0 ? (
+      <p class="muted">None in the latest runs.</p>
+    ) : (
+      <div class="scroll">
+        <table data-table id="model-fails">
+          <thead>
+            <tr>
+              <th data-sort="text">Suite</th>
+              <th data-sort="text">Case</th>
+              <th data-sort="num" class="num">Score</th>
+              <th>Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            {failures.map((f) => (
+              <tr>
+                <td>{f.suite}</td>
+                <td>
+                  <a href={href(`/results/?suite=${f.suite}&model=${encodeURIComponent(model.label)}&q=${encodeURIComponent(f.case)}`)}>
+                    <code>{f.case}</code>
+                  </a>
+                </td>
+                <td class="num" data-value={f.score}>
+                  {f.score.toFixed(2)}
+                </td>
+                <td class="muted">{f.error || f.reason}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  <h2>History</h2>
+  <p class="note">Pass count per run. A changed suite fingerprint means the cases changed between runs, so the counts are not directly comparable.</p>
+  <div class="scroll">
+    <table data-table id="model-history">
+      <thead>
+        <tr>
+          <th data-sort="text">Run</th>
+          <th data-sort="text">Suite</th>
+          <th data-sort="num" class="num">Passed</th>
+          <th>Fingerprint</th>
+          <th>Machine</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          history.map((h) => (
+            <tr>
+              <td>
+                <code>{h.run}</code>
+              </td>
+              <td>{h.suite}</td>
+              <td class="num" data-value={pct(h.passed, h.total)}>
+                {h.passed}/{h.total}
+              </td>
+              <td>
+                <code>{h.suite_fp}</code>
+              </td>
+              <td>{h.machine}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</Base>

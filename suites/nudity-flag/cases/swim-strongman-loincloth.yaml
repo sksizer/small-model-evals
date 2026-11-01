@@ -1,0 +1,5 @@
+description: "no nudity: swimwear: swim-strongman-loincloth"
+metadata: { id: swim-strongman-loincloth }
+vars:
+  image: file://../../corpus/images/swim-strongman-loincloth.jpg
+  expected: { nudity: 'no' }

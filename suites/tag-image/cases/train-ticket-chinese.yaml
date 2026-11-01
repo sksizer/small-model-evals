@@ -1,0 +1,11 @@
+description: "Guangzhou–Hung Hom through-train ticket with a QR code"
+metadata: { id: train-ticket-chinese }
+vars:
+  image: file://../../corpus/images/train-ticket-chinese.jpg
+  expected:
+    - [ticket, train ticket, railway ticket]
+    - [train, railway, rail]
+    - [qr code, qr, barcode]
+    - [chinese, china, hong kong, kowloon, guangzhou]
+    - [price, "hk$", seat, coach, date, pink]
+  absent: [receipt, envelope]

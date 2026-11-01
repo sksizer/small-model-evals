@@ -1,0 +1,12 @@
+description: "breakfast table with pancakes and hot chocolate"
+metadata: { id: pancakes-breakfast-table }
+vars:
+  image: file://../../corpus/images/pancakes-breakfast-table.jpg
+  expected:
+    - pancake
+    - breakfast
+    - [mug, cup]
+    - [plate, dish]
+    - table
+    - [hot chocolate, cocoa, coffee, drink]
+  absent: [dog, pizza]

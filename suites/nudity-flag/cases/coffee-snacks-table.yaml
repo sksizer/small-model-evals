@@ -1,0 +1,5 @@
+description: "no nudity: objects"
+metadata: { id: coffee-snacks-table }
+vars:
+  image: file://../../corpus/images/coffee-snacks-table.jpg
+  expected: { nudity: 'no' }

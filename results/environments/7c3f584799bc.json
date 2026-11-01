@@ -1,0 +1,39 @@
+{
+  "hardware": {
+    "key": "Mac16,10-16g",
+    "chip": "Apple M4",
+    "hw_model": "Mac16,10",
+    "mem_gib": 16,
+    "cpu_performance_cores": 4,
+    "cpu_efficiency_cores": 6,
+    "gpu_cores": 10,
+    "gpu_budget_mib": 12124,
+    "gpu_wired_limit_mb": 0
+  },
+  "os": {
+    "name": "macOS",
+    "version": "26.6.2",
+    "build": "25G83",
+    "kernel": "25.6.0"
+  },
+  "power": "AC Power",
+  "runtime": {
+    "ollama": "0.40.11",
+    "ollama_started": "2026-10-26T09:17:43.151-05:00",
+    "ollama_settings": {
+      "OLLAMA_CONTEXT_LENGTH": "0",
+      "OLLAMA_FLASH_ATTENTION": "false",
+      "OLLAMA_KV_CACHE_TYPE": "",
+      "OLLAMA_KEEP_ALIVE": "5m0s",
+      "OLLAMA_MAX_LOADED_MODELS": "0",
+      "OLLAMA_NUM_PARALLEL": "1",
+      "OLLAMA_GPU_OVERHEAD": "0",
+      "OLLAMA_SCHED_SPREAD": "false",
+      "OLLAMA_LLM_LIBRARY": "",
+      "OLLAMA_LOAD_TIMEOUT": "5m0s"
+    },
+    "promptfoo": "0.125.1",
+    "bun": "1.4.2",
+    "node": "v27.0.0-alpha.0.0.0"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "suite": "perf-embed",
+  "fingerprint": "6058a6e37b64",
+  "setup": {
+    "description": "perf-embed — embedding throughput",
+    "prompts": [
+      "{{input}}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "embed": true,
+          "model": "nomic-embed-text:latest"
+        },
+        "id": "sha256:325cb330d06af0db13e6fc8822bca0b2d430198be0f9d5403f55fc30e8c81113",
+        "label": "nomic-embed-text"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "67b69789f251",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "1482885f4b93",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a"
+  },
+  "setup_hash": "4fdd12fde0b7",
+  "cases": {
+    "batch-64": {
+      "hash": "8281bf465d7e",
+      "def": {
+        "description": "embed a batch of 64 paragraphs",
+        "metadata": {
+          "id": "batch-64"
+        },
+        "vars": {
+          "input": "file://../perf/input.md",
+          "num_ctx": 2048
+        },
+        "options": {
+          "repeat": 3
+        }
+      }
+    }
+  }
+}

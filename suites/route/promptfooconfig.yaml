@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# route: decide what should handle a captured item, and whether it needs a
+# larger model. Decision models (Liquid d1) answer through Ollama's decision
+# endpoint with probabilities; chat models answer the same questions with the
+# reply limited to the options. Scored by assertions/decide.ts.
+description: route — pick the handler and the model size
+
+prompts:
+  - '{{ input }}' # unused: providers/ollama-decide.ts reads vars directly
+
+providers:
+  - { id: file://../../providers/ollama-decide.ts, label: qwen3.5:4b, config: { model: 'qwen3.5:4b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: qwen3.5:9b, config: { model: 'qwen3.5:9b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: gemma4:e4b, config: { model: 'gemma4:e4b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: minicpm5-2b, config: { model: 'openbmb/minicpm5-2b:latest', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: granite4.2:3b, config: { model: 'granite4.2:3b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: lfm3:1.7b, config: { model: 'lfm3:1.7b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: granite4, config: { model: 'granite4:latest' } }
+  # Decision models: probabilities over the options, no text generated.
+  - { id: file://../../providers/ollama-decide.ts, label: d1-omni:600m, config: { model: 'd1-omni:600m', decision: true } }
+  - { id: file://../../providers/ollama-decide.ts, label: d1:2b, config: { model: 'd1:2b', decision: true } }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  vars:
+    questions:
+      handler:
+        type: choice
+        instructions: A note-taking app captured this item. Which handler should take it?
+        criteria:
+          workout: Logs exercise that was done
+          food: Logs food or drink that was consumed
+          task: Something to do, with or without a due date or reminder
+          event: Something happening at a set time, such as an appointment or meeting
+          note: A journal entry, idea, quote or reference to keep as it is
+          search: Asks to find something already in the notes
+          assistant: Asks for an answer, an explanation, advice or new writing
+      large:
+        type: noul
+        instructions: Does handling this item need a larger model, because it calls for multi-step reasoning, long writing, or synthesis across many notes? A log, a lookup, a short answer or filing does not.
+  assert:
+    - type: javascript
+      value: file://../../assertions/decide.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

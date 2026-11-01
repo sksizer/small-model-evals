@@ -1,0 +1,5 @@
+description: "shipping label"
+metadata: { id: shipping-label }
+vars:
+  image: file://../../corpus/images/shipping-label.png
+  expected: ["PRIORITY", "Hollow Oak Bindery", "9 Quarry Street", "05041", "Mira Okafor", "1406 Lakeview Ave", "55812", "9405 5118 2047 3316 82", "2.4 lb", "ORD-55120"]

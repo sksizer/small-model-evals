@@ -1,0 +1,94 @@
+# The image corpus: Wikimedia Commons files under licences that need no
+# share-alike (CC0, public domain, CC BY). scripts/fetch-corpus.ts downloads
+# each at 768 px into corpus/images/<id>.jpg, re-checks its licence and writes
+# manifest.json and ATTRIBUTIONS.md. To extend: add an entry with a new id
+# (ids are permanent; cases name them) and rerun the script. No people as
+# subjects, except in the nudity-flag section. Your own photos go in private/
+# (gitignored), not here. Sections in order: Commons photos, synthetic OCR
+# pages, nudity flagging.
+- { id: salad-ham, category: food, title: 'File:Stra-ham+salad.JPG' }
+- { id: salad-party-dish, category: food, title: 'File:Party food dish 8 salad tomatoes cheese lettuce spinach.jpg' }
+- { id: salad-rucola-plate, category: food, title: 'File:Food-plate-rucola-salad (23699968653).jpg' }
+- { id: pancakes-breakfast-table, category: food, title: 'File:Breakfast table with pancakes (Unsplash).jpg' }
+- { id: pancakes-stack, category: food, title: 'File:Eating Pancakes (Unsplash).jpg' }
+- { id: dog-sleeping-painting, category: pets, title: 'File:Gerrit Dou (Dutch, 1613–1675), Sleeping Dog, 1650. Oil on panel.jpg' }
+- { id: dog-border-terrier, category: pets, title: 'File:Sleeping Border Terrier.JPG' }
+- { id: dog-in-dog-bed, category: pets, title: 'File:Dog sleeping in a dog bed.JPG' }
+- { id: dog-autumn-sun, category: pets, title: 'File:Sleeping dog in autumn sun (30162628716).jpg' }
+- { id: parrot-illustration, category: pets, title: 'File:Parrots in captivity (Vol. 3. PL. 20) Jamaica Parrot, or White Fronted Amazon (8527258771).jpg' }
+- { id: horses-flooded-pasture, category: pets, title: 'File:FEMA - 34534 - Horses in a flooded Missouri pasture.jpg' }
+- { id: horses-pasture-house, category: pets, title: 'File:HORSES ARE SEEN IN A PASTURE IN FRONT OF THE "FIRST GENERATION (WHITE HOUSE)" OF JERRI FISHER. HE LIVES IN THE... - NARA - 556958.jpg' }
+- { id: bike-parking-oakland, category: objects, title: 'File:Bike parking at 19th Street Oakland (4), March 2012.jpg' }
+- { id: bike-parking-three-styles, category: objects, title: 'File:Three Style Of Bicycle Parking - Park Anička, Košica, SK.jpg' }
+- { id: sidewalk-cafe, category: objects, title: 'File:Champagnole Avenue de la Republique. Sidewalk cafe. Spielvogel 2013.JPG' }
+- { id: coffee-montreal, category: objects, title: 'File:Coffee in Montreal (Unsplash).jpg' }
+- { id: coffee-snacks-table, category: objects, title: 'File:Snacks and coffee on a table (Unsplash).jpg' }
+- { id: coffee-shop-counter, category: objects, title: 'File:BB Coffee Shop (Unsplash).jpg' }
+- { id: laptop-notepad, category: objects, title: 'File:Laptop picture with notepad.jpg' }
+- { id: desk-coffee-laptop-notebook, category: objects, title: 'File:Coffee-desk-laptop-notebook (24244320481).jpg' }
+- { id: desk-laptop-notebook-pen, category: objects, title: 'File:Desk-laptop-notebook-pen (23958719819).jpg' }
+- { id: desk-laptop-top-down, category: objects, title: 'File:Apple-desk-laptop-macbook-pro (23699397893).jpg' }
+- { id: diner-snow-night, category: scenes, title: 'File:Waffle House during Georgia Snow Storm.jpg' }
+- { id: kitchen-historic-bw, category: scenes, title: 'File:INTERIOR VIEW OF DALTON HOUSE KITCHEN. - Peter Dalton Ranch, Dalton House, 9005 South Virginia Street, Reno, Washoe County, NV HABS NEV,16-RENO,2A-8.tif' }
+- { id: library-stacks-vasconcelos, category: scenes, title: 'File:Pasillo de la Biblioteca Vasconcelos.jpg' }
+- { id: library-laukaa, category: scenes, title: 'File:Laukaa Main Library interior 3.jpg' }
+- { id: railway-station-dark, category: scenes, title: 'File:Empty bench at a dark railway station (Unsplash).jpg' }
+- { id: street-night-rostov, category: scenes, title: "File:Empty Bol'shaya Sadovaya Street at night, Rostov-on-Don, Russia.jpg" }
+- { id: lake-salagou, category: outdoor, title: 'File:La Roque, Salagou Lake 02.jpg' }
+- { id: lake-sherburne, category: outdoor, title: 'File:Lake-sherburne-964855.jpg' }
+- { id: mountain-lake-dam, category: outdoor, title: 'File:Mountain lake dam.jpg' }
+- { id: sunset-boats, category: outdoor, title: 'File:Juan Griego Sunset.jpg' }
+- { id: sunset-beach-colonia, category: outdoor, title: 'File:Sunset on the beach in Colonia del Sacramento.jpg' }
+- { id: millipede-moss, category: outdoor, title: 'File:Black Forest Trail (Revisited) (10) (21013184359).jpg' }
+- { id: forest-trail, category: outdoor, title: 'File:Black Forest Trail (Revisited) (17) (21012951939).jpg' }
+- { id: tree-bracket-fungus, category: outdoor, title: 'File:Black Forest Trail (Revisited) (19) (21199674825).jpg' }
+- { id: snow-forest-trail, category: outdoor, title: 'File:Snowshoe Trail in Winter, Willamette National Forest (34727463022).jpg' }
+- { id: letter-handwritten-short, category: handwriting, title: 'File:John F. Kennedy Choate Studies Letter - NARA - 192825.tif' }
+- { id: recipe-daffys-elixir, category: handwriting, title: "File:Handwritten recipe for 'Daffys Elixar' Wellcome L0063217.jpg" }
+- { id: recipe-rheumatism, category: handwriting, title: "File:Recipe for 'Ratcliffes Receipt for the Rheumatism' Wellcome L0063219.jpg" }
+- { id: train-ticket-french, category: documents, title: 'File:S.N.C.F.T. train ticket 06777.jpg' }
+- { id: train-ticket-chinese, category: documents, title: 'File:Canton-Kowloon Through Train Ticket 20160905.jpg' }
+
+# Synthetic pages for OCR: rendered once from corpus/synthetic/ with every
+# name, address and number invented, so the expected text is exact.
+- { id: receipt-grocery, category: text, synthetic: synthetic/receipt-grocery.html, size: [420, 640] }
+- { id: invoice-simple, category: text, synthetic: synthetic/invoice-simple.html, size: [760, 600] }
+- { id: settings-panel, category: text, synthetic: synthetic/settings-panel.html, size: [680, 520] }
+- { id: jobs-table, category: text, synthetic: synthetic/jobs-table.html, size: [760, 340] }
+- { id: event-flyer, category: text, synthetic: synthetic/event-flyer.html, size: [640, 460] }
+- { id: shipping-label, category: text, synthetic: synthetic/shipping-label.html, size: [490, 470] }
+- { id: error-dialog, category: text, synthetic: synthetic/error-dialog.html, size: [620, 400] }
+- { id: recipe-card, category: text, synthetic: synthetic/recipe-card.html, size: [640, 560] }
+
+# Nudity flagging (nudity-flag suite): adults only, CC0 or public domain
+# only; no vintage or ethnographic nude photos (age and consent cannot be
+# checked). `sensitive: true` makes the site blur the image until the viewer
+# clicks "Let me view". Positives (nude-*), then hard negatives: nude art
+# (art-*, not flagged) and swimwear (swim-*).
+- { id: nude-anatomy-back-pair, category: nude, sensitive: true, title: 'File:Posterior view of human female and male, without labels.jpg' }
+- { id: nude-anatomy-front-pair, category: nude, sensitive: true, title: 'File:Anterior view of human female and male, without labels.jpg' }
+- { id: nude-anatomy-front-labelled, category: nude, sensitive: true, title: 'File:Umzimba womuntu owesifazane lowesilisa, Phambili, Northen Ndebele.jpg' }
+- { id: nude-anatomy-front-male, category: nude, sensitive: true, title: 'File:Anterior view of human male, retouched.jpg' }
+- { id: nude-bike-ride-arms-crossed, category: nude, sensitive: true, title: 'File:WNBR World Naked Bike Ride.jpg' }
+- { id: nude-bike-ride-standing, category: nude, sensitive: true, title: 'File:World Naked Bike Ride, Cambridge (2023).jpg' }
+- { id: nude-bike-ride-crowd, category: nude, sensitive: true, title: 'File:London World Naked Bike Ride 2024.jpg' }
+- { id: nude-bike-ride-cycling, category: nude, sensitive: true, title: 'File:World Naked Bike Ride Los Angeles.jpg' }
+- { id: nude-bike-ride-from-behind, category: nude, sensitive: true, title: 'File:World naked bike ride Los Angeles 5.jpg' }
+- { id: art-statue-venus, category: art, sensitive: true, title: 'File:Esquiline Venus Musei Capitolini MC1141 n1.jpg' }
+- { id: art-statue-male-torso, category: art, sensitive: true, title: 'File:Marble male torso, Roman after Greek original, 2nd century CE, Honolulu Academy of Arts.jpg' }
+- { id: art-statue-kouros, category: art, sensitive: true, title: 'File:Marble statue of a kouros (youth) MET DT263.jpg' }
+- { id: art-statue-female-torso, category: art, sensitive: true, title: 'File:Marble statuette of Aphrodite MET DP271745.jpg' }
+- { id: art-painting-reclining, category: art, sensitive: true, title: 'File:Etty William Female Nude in a Landscape.jpg' }
+- { id: art-painting-modigliani, category: art, sensitive: true, title: 'File:Amedeo Modigliani (1884-1920) - Seated Nude, 1918.jpg' }
+- { id: art-painting-renoir, category: art, sensitive: true, title: 'File:Auguste Renoir - Large Nude - Google Art Project.jpg' }
+- { id: art-painting-caillebotte, category: art, sensitive: true, title: 'File:Gustave Caillebotte - Nude on a Couch - Google Art Project.jpg' }
+- { id: art-painting-gerstl, category: art, sensitive: true, title: 'File:Richard Gerstl - Nude Self-Portrait with Palette - Google Art Project.jpg' }
+- { id: art-painting-modersohn-becker, category: art, sensitive: true, title: 'File:Paula Moderson-Becker - Selbstbildnis am 6 Hochzeitstag (1906).jpg' }
+- { id: swim-vintage-beach, category: swimwear, title: 'File:ChicagoBikini1973.jpg' }
+- { id: swim-surf, category: swimwear, title: 'File:Fun in Waves.jpg' }
+- { id: swim-beach-ball, category: swimwear, title: 'File:Summer ready girl.jpg' }
+- { id: swim-wading, category: swimwear, title: 'File:Woman splashing water at beach (Unsplash).jpg' }
+- { id: swim-pool-shower, category: swimwear, title: 'File:After Beach (Unsplash).jpg' }
+- { id: swim-white-sand, category: swimwear, title: 'File:Woman in swimsuit posing (Unsplash).jpg' }
+- { id: swim-shallows, category: swimwear, title: 'File:A woman in bikini at a tropical beach at Great Exuma Island, the Bahamas.jpg' }
+- { id: swim-strongman-loincloth, category: swimwear, title: 'File:033- Brookes & Sandow, c.1900.jpg' }

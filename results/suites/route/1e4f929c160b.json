@@ -1,0 +1,424 @@
+{
+  "suite": "route",
+  "fingerprint": "1e4f929c160b",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:b91722d8cc8b34f2bdabe6513fe17064311fb01097cc315117bb158d1983fc4c"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      },
+      "vars": {
+        "questions": {
+          "handler": {
+            "criteria": {
+              "assistant": "Asks for an answer, an explanation, advice or new writing",
+              "event": "Something happening at a set time, such as an appointment or meeting",
+              "food": "Logs food or drink that was consumed",
+              "note": "A journal entry, idea, quote or reference to keep as it is",
+              "search": "Asks to find something already in the notes",
+              "task": "Something to do, with or without a due date or reminder",
+              "workout": "Logs exercise that was done"
+            },
+            "instructions": "A note-taking app captured this item. Which handler should take it?",
+            "type": "choice"
+          },
+          "large": {
+            "instructions": "Does handling this item need a larger model, because it calls for multi-step reasoning, long writing, or synthesis across many notes? A log, a lookup, a short answer or filing does not.",
+            "type": "noul"
+          }
+        }
+      }
+    },
+    "description": "route — pick the handler and the model size",
+    "prompts": [
+      "{{ input }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "model": "qwen3.5:4b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:9b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "model": "gemma4:e4b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "model": "openbmb/minicpm5-2b:latest",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "minicpm5-2b"
+      },
+      {
+        "config": {
+          "model": "granite4.2:3b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "granite4.2:3b"
+      },
+      {
+        "config": {
+          "model": "lfm3:1.7b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "lfm3:1.7b"
+      },
+      {
+        "config": {
+          "model": "granite4:latest"
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "granite4"
+      },
+      {
+        "config": {
+          "decision": true,
+          "model": "d1-omni:600m"
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "d1-omni:600m"
+      },
+      {
+        "config": {
+          "decision": true,
+          "model": "d1:2b"
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "d1:2b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "67b69789f251",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "1482885f4b93",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a"
+  },
+  "setup_hash": "96cf8a1f7358",
+  "cases": {
+    "anxious-journal": {
+      "hash": "cca2806210e3",
+      "def": {
+        "description": "a feelings journal entry, no exercise",
+        "metadata": {
+          "id": "anxious-journal"
+        },
+        "vars": {
+          "input": "felt anxious all day, couldn't focus. talking to mum in the evening helped",
+          "expected": {
+            "handler": "note",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "bins-reminder": {
+      "hash": "477862983723",
+      "def": {
+        "description": "a reminder",
+        "metadata": {
+          "id": "bins-reminder"
+        },
+        "vars": {
+          "input": "remind me to take the bins out tomorrow morning",
+          "expected": {
+            "handler": "task",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "book-club-event": {
+      "hash": "349dd498c0e8",
+      "def": {
+        "description": "an event with a thing to bring",
+        "metadata": {
+          "id": "book-club-event"
+        },
+        "vars": {
+          "input": "Book club Thursday 6:30, bring the Ishiguro",
+          "expected": {
+            "handler": "event",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "bookshelf-idea": {
+      "hash": "aa750e7b6ccf",
+      "def": {
+        "description": "an idea to keep",
+        "metadata": {
+          "id": "bookshelf-idea"
+        },
+        "vars": {
+          "input": "idea: a bookshelf that doubles as a room divider",
+          "expected": {
+            "handler": "note",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "breakfast-log": {
+      "hash": "1aae2e9ebc05",
+      "def": {
+        "description": "a meal",
+        "metadata": {
+          "id": "breakfast-log"
+        },
+        "vars": {
+          "input": "2 eggs and toast for breakfast",
+          "expected": {
+            "handler": "food",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "dentist-task": {
+      "hash": "e030d6c88582",
+      "def": {
+        "description": "a to-do with a deadline",
+        "metadata": {
+          "id": "dentist-task"
+        },
+        "vars": {
+          "input": "call the dentist to reschedule before friday",
+          "expected": {
+            "handler": "task",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "dinner-event": {
+      "hash": "cc9a47bae905",
+      "def": {
+        "description": "a dated social plan",
+        "metadata": {
+          "id": "dinner-event"
+        },
+        "vars": {
+          "input": "dinner with Sam and Priya next Tuesday 7pm at Lupa",
+          "expected": {
+            "handler": "event",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "find-renovation-quotes": {
+      "hash": "e3a1a66b4100",
+      "def": {
+        "description": "a request to find notes",
+        "metadata": {
+          "id": "find-renovation-quotes"
+        },
+        "vars": {
+          "input": "where did I put the notes about the kitchen renovation quotes?",
+          "expected": {
+            "handler": "search",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "job-offer-essay": {
+      "hash": "40cbe96f27a6",
+      "def": {
+        "description": "long writing from several notes",
+        "metadata": {
+          "id": "job-offer-essay"
+        },
+        "vars": {
+          "input": "write a 1,000-word comparison of my two job offers using my notes on each, and recommend one",
+          "expected": {
+            "handler": "assistant",
+            "large": "yes"
+          }
+        }
+      }
+    },
+    "miso-recipe-search": {
+      "hash": "6ddedbe0ba4b",
+      "def": {
+        "description": "finding a saved recipe",
+        "metadata": {
+          "id": "miso-recipe-search"
+        },
+        "vars": {
+          "input": "find the recipe I saved with miso and aubergine",
+          "expected": {
+            "handler": "search",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "percent-question": {
+      "hash": "1cebf33b5bb9",
+      "def": {
+        "description": "a one-line arithmetic question",
+        "metadata": {
+          "id": "percent-question"
+        },
+        "vars": {
+          "input": "what's 15% of 84?",
+          "expected": {
+            "handler": "assistant",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "protein-shake": {
+      "hash": "0013508fee49",
+      "def": {
+        "description": "food logged after a gym mention",
+        "metadata": {
+          "id": "protein-shake"
+        },
+        "vars": {
+          "input": "protein shake after gym, 30g scoop + 300ml milk",
+          "expected": {
+            "handler": "food",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "quote-note": {
+      "hash": "39afa98592bf",
+      "def": {
+        "description": "a quote to keep",
+        "metadata": {
+          "id": "quote-note"
+        },
+        "vars": {
+          "input": "quote I liked: \"The obstacle is the way.\"",
+          "expected": {
+            "handler": "note",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "run-log": {
+      "hash": "694da4c1899e",
+      "def": {
+        "description": "a run with time and distance",
+        "metadata": {
+          "id": "run-log"
+        },
+        "vars": {
+          "input": "ran 5k this morning, 27 min",
+          "expected": {
+            "handler": "workout",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "sleep-synthesis": {
+      "hash": "627497060c99",
+      "def": {
+        "description": "synthesis across a year of notes",
+        "metadata": {
+          "id": "sleep-synthesis"
+        },
+        "vars": {
+          "input": "summarise everything I wrote about my sleep this year and tell me what seems to help",
+          "expected": {
+            "handler": "assistant",
+            "large": "yes"
+          }
+        }
+      }
+    },
+    "squats-and-smoothie": {
+      "hash": "997cd7a5a253",
+      "def": {
+        "description": "exercise and food in one item",
+        "metadata": {
+          "id": "squats-and-smoothie"
+        },
+        "vars": {
+          "input": "squats 5x5 @ 100kg, then a smoothie with banana and oats",
+          "expected": {
+            "handler": [
+              "workout",
+              "food"
+            ],
+            "large": "no"
+          }
+        }
+      }
+    },
+    "training-question": {
+      "hash": "dc62d3e0f25c",
+      "def": {
+        "description": "a short advice question",
+        "metadata": {
+          "id": "training-question"
+        },
+        "vars": {
+          "input": "is it ok to train legs two days in a row? still sore",
+          "expected": {
+            "handler": "assistant",
+            "large": "no"
+          }
+        }
+      }
+    },
+    "week-planning": {
+      "hash": "4ba9916ab4dd",
+      "def": {
+        "description": "planning across several constraints",
+        "metadata": {
+          "id": "week-planning"
+        },
+        "vars": {
+          "input": "plan my week: 3 deadlines, gym 4 times, and I want to see friends twice. make me a schedule",
+          "expected": {
+            "handler": "assistant",
+            "large": "yes"
+          }
+        }
+      }
+    }
+  }
+}

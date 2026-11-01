@@ -1,0 +1,9 @@
+description: dumbbell sets with a drop set at a lighter weight
+metadata: { id: curls-drop-set }
+vars:
+  log: "dumbbell curls 12kg 3x10, last set dropped to 8kg for 6 more"
+  expected:
+    date: '2026-10-29'
+    activity: strength
+    exercises:
+      - { name: [curl], sets: '3x10@12, 6@8' }

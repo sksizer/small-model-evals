@@ -1,0 +1,5 @@
+description: mixed workout, partial duration
+metadata: { id: mixed-workout-partial-duration }
+vars:
+  note: did 3 sets of squats and 20 min of rowing
+  expected: { kind: workout, date: ['2026-10-29', null], duration_min: [20, null], distance_km: null }

@@ -1,0 +1,5 @@
+description: an idea to keep
+metadata: { id: bookshelf-idea }
+vars:
+  input: "idea: a bookshelf that doubles as a room divider"
+  expected: { handler: note, large: 'no' }

@@ -1,0 +1,6 @@
+/* Shared look for the synthetic corpus pages. Rendered once to PNG by
+   scripts/fetch-corpus.ts; the PNG, not this file, is what cases use. */
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #1d1d1f; background: #fff; }
+.mono { font-family: "SF Mono", Menlo, Consolas, monospace; }
+table { border-collapse: collapse; }

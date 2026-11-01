@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# extract: turn a quick-capture note into a typed entry. Ollama constrains the
+# reply to the JSON schema (`format`), so the score is about the values, not
+# the syntax. Today is fixed so relative dates have one right answer.
+description: extract — quick-capture note to JSON
+
+prompts:
+  - |-
+    [{"role": "system", "content": "You turn a quick-capture note into one JSON entry. Today is Thursday 2026-10-29. kind is workout, meal, task, event or note. date is the day the thing happened or is due, as YYYY-MM-DD, or null when the note gives no day. Convert distances to kilometres and durations to minutes. Use null for anything the note does not state."},
+     {"role": "user", "content": {{ note | dump }}}]
+
+providers:
+  - id: ollama:chat:qwen3.5:4b
+    label: qwen3.5:4b
+    config: &config
+      temperature: 0
+      num_ctx: 8192
+      think: false
+      format: &schema
+        type: object
+        required: [kind, title, date, duration_min, distance_km]
+        properties:
+          kind: { type: string, enum: [workout, meal, task, event, note] }
+          title: { type: string }
+          date: { type: [string, 'null'] }
+          duration_min: { type: [number, 'null'] }
+          distance_km: { type: [number, 'null'] }
+  - { id: 'ollama:chat:qwen3.5:9b', label: qwen3.5:9b, config: *config }
+  - { id: 'ollama:chat:qwen3:4b', label: qwen3:4b, config: *config }
+  - { id: 'ollama:chat:gemma4:e4b', label: gemma4:e4b, config: *config }
+  - { id: 'ollama:chat:openbmb/minicpm5-2b:latest', label: minicpm5-2b, config: *config }
+  - { id: 'ollama:chat:granite4.2:3b', label: granite4.2:3b, config: *config }
+  - { id: 'ollama:chat:lfm3:1.7b', label: lfm3:1.7b, config: *config }
+  - id: ollama:chat:granite4:latest
+    label: granite4
+    config: &plain { temperature: 0, num_ctx: 8192, format: *schema }
+  - { id: 'ollama:chat:gemma3:4b', label: gemma3:4b, config: *plain }
+
+defaultTest:
+  assert:
+    - type: javascript
+      value: file://../../assertions/fields.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

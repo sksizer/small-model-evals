@@ -1,0 +1,24 @@
+{
+  "tag": "gemma4:e4b",
+  "digest": "c6eb396dbd59",
+  "engine": "default",
+  "format": "gguf",
+  "family": "gemma4",
+  "quantization": "Q4_K_M",
+  "parameter_size": "8.0B",
+  "parameter_count": 7996157674,
+  "context_length": 131072,
+  "capabilities": [
+    "completion",
+    "vision",
+    "audio",
+    "tools",
+    "thinking"
+  ],
+  "default_parameters": {
+    "top_p": "0.95",
+    "temperature": "1",
+    "top_k": "64"
+  },
+  "template_hash": "b507b9c2f6ca"
+}

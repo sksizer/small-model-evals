@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro'
+import { data, href, imageSuites, modelSlug, pct, qualitySuites, show, tone, type Suite } from '../../lib/data'
+
+export function getStaticPaths() {
+  return qualitySuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
+}
+
+// Case by model: which cases each model passed, from its latest run. A case
+// every model fails may be a bad case rather than a weak model.
+const { suite } = Astro.props as { suite: Suite }
+const results = data.results.filter((r) => r.suite === suite.id)
+const models = [...new Set(results.map((r) => r.model))].sort()
+const cell = (caseId: string, model: string) => results.find((r) => r.case === caseId && r.model === model)
+const rows = suite.cases.map((c) => {
+  const outcomes = models.map((m) => cell(c.id, m))
+  const ran = outcomes.filter((o) => o !== undefined)
+  return { c, outcomes, rate: pct(ran.filter((o) => o.pass).length, ran.length) }
+})
+---
+
+<Base
+  title={`Suite: ${suite.id}`}
+  description={`${suite.cases.length} cases × ${models.length} models. Sort by "Passed by" to find the hardest cases; click a mark for that result.`}
+>
+  <p class="note">
+    Current fingerprint <code>{suite.fingerprint}</code>. Cases are immutable once run; a changed case is a new case that
+    supersedes the old one.
+  </p>
+  <div class="controls">
+    <input type="search" data-search="grid" placeholder="Search cases…" aria-label="Search cases" />
+    {imageSuites.some((s) => s.id === suite.id) && <a href={href(`/gallery/${suite.id}/`)}>Image gallery →</a>}
+    <span class="count" data-count="grid"></span>
+  </div>
+  <div class="scroll">
+    <table data-table id="grid">
+      <thead>
+        <tr>
+          <th data-sort="text">Case</th>
+          <th>Input</th>
+          <th>Expected</th>
+          <th data-sort="num" class="num">Passed by</th>
+          {
+            models.map((m) => (
+              <th data-sort="num" class="num">
+                <a href={href(`/models/${modelSlug(m)}/`)}>{m}</a>
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map(({ c, outcomes, rate }) => (
+            <tr data-search={[c.id, c.description, c.input.text, show(c.expected)].join(' ')}>
+              <td class="case-col">
+                <code>{c.id}</code>
+                {c.description && <div class="muted">{c.description}</div>}
+                {c.supersedes && <div class="muted">supersedes <code>{c.supersedes}</code></div>}
+              </td>
+              <td class="input-col">{c.input.image ? <a href={href(`/${c.input.image}`)}>image</a> : c.input.text}</td>
+              <td class="expected-col">
+                <code>{show(c.expected).slice(0, 160)}</code>
+              </td>
+              <td class={`heat ${tone(rate)}`} data-value={rate}>
+                {rate}%
+              </td>
+              {outcomes.map((o, i) =>
+                o ? (
+                  <td class="num" data-value={o.score}>
+                    <a
+                      href={href(`/results/?suite=${suite.id}&model=${encodeURIComponent(models[i]!)}&q=${encodeURIComponent(c.id)}`)}
+                      title={o.pass ? 'passed' : o.reason}
+                    >
+                      <span class={`pill ${o.pass ? 'pass' : 'fail'}`}>{o.pass ? '✓' : '✗'}</span>
+                    </a>
+                  </td>
+                ) : (
+                  <td class="num muted" data-value="-1">
+                    —
+                  </td>
+                ),
+              )}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  {
+    suite.retired.length > 0 && (
+      <>
+        <h2>Retired cases ({suite.retired.length})</h2>
+        <p class="note">No longer run. Kept so the results that used them still resolve.</p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Case</th>
+                <th>Why retired</th>
+                <th>Input</th>
+              </tr>
+            </thead>
+            <tbody>
+              {suite.retired.map((c) => (
+                <tr>
+                  <td>
+                    <code>{c.id}</code>
+                  </td>
+                  <td>{c.retired ?? '—'}</td>
+                  <td class="muted">{c.input.text}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    )
+  }
+</Base>
+
+<style>
+  .case-col { min-width: 200px; }
+  .case-col code { white-space: nowrap; }
+  .input-col { min-width: 180px; max-width: 280px; }
+  .expected-col { min-width: 240px; max-width: 320px; }
+  .expected-col code { font-size: 11px; word-break: break-word; background: none; padding: 0; color: var(--muted); }
+</style>

@@ -1,0 +1,5 @@
+description: planning across several constraints
+metadata: { id: week-planning }
+vars:
+  input: "plan my week: 3 deadlines, gym 4 times, and I want to see friends twice. make me a schedule"
+  expected: { handler: assistant, large: 'yes' }

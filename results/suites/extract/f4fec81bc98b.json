@@ -1,0 +1,748 @@
+{
+  "suite": "extract",
+  "fingerprint": "f4fec81bc98b",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:2a6136ac8a705f1f2b60e4433d10aca545c70119588473a5c00cb3c5f18346ae"
+        }
+      ]
+    },
+    "description": "extract — quick-capture note to JSON",
+    "prompts": [
+      "[{\"role\": \"system\", \"content\": \"You turn a quick-capture note into one JSON entry. Today is Thursday 2026-10-29. kind is workout, meal, task, event or note. date is the day the thing happened or is due, as YYYY-MM-DD, or null when the note gives no day. Convert distances to kilometres and durations to minutes. Use null for anything the note does not state.\"},\n {\"role\": \"user\", \"content\": {{ note | dump }}}]"
+    ],
+    "providers": [
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "distance_km": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "workout",
+                  "meal",
+                  "task",
+                  "event",
+                  "note"
+                ],
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "title",
+              "date",
+              "duration_min",
+              "distance_km"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:4b",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "distance_km": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "workout",
+                  "meal",
+                  "task",
+                  "event",
+                  "note"
+                ],
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "title",
+              "date",
+              "duration_min",
+              "distance_km"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:9b",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "distance_km": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "workout",
+                  "meal",
+                  "task",
+                  "event",
+                  "note"
+                ],
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "title",
+              "date",
+              "duration_min",
+              "distance_km"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3:4b",
+        "label": "qwen3:4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "distance_km": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "workout",
+                  "meal",
+                  "task",
+                  "event",
+                  "note"
+                ],
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "title",
+              "date",
+              "duration_min",
+              "distance_km"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:gemma4:e4b",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "distance_km": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "workout",
+                  "meal",
+                  "task",
+                  "event",
+                  "note"
+                ],
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "title",
+              "date",
+              "duration_min",
+              "distance_km"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:openbmb/minicpm5-2b:latest",
+        "label": "minicpm5-2b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "distance_km": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "workout",
+                  "meal",
+                  "task",
+                  "event",
+                  "note"
+                ],
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "title",
+              "date",
+              "duration_min",
+              "distance_km"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:granite4.2:3b",
+        "label": "granite4.2:3b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "distance_km": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "workout",
+                  "meal",
+                  "task",
+                  "event",
+                  "note"
+                ],
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "title",
+              "date",
+              "duration_min",
+              "distance_km"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "temperature": 0
+        },
+        "id": "ollama:chat:granite4:latest",
+        "label": "granite4"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "distance_km": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "workout",
+                  "meal",
+                  "task",
+                  "event",
+                  "note"
+                ],
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "title",
+              "date",
+              "duration_min",
+              "distance_km"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "temperature": 0
+        },
+        "id": "ollama:chat:gemma3:4b",
+        "label": "gemma3:4b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "9c8aaa12e787",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "providers/ollama-perf.ts": "325cb330d06a"
+  },
+  "setup_hash": "3368630e14f9",
+  "cases": {
+    "event-next-tuesday": {
+      "hash": "4995caffd645",
+      "def": {
+        "description": "event next Tuesday",
+        "metadata": {
+          "id": "event-next-tuesday"
+        },
+        "vars": {
+          "note": "dentist appointment next Tuesday at 3pm",
+          "expected": {
+            "kind": "event",
+            "date": "2026-11-03",
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "idea-nothing-to-extract": {
+      "hash": "76b157ba4cec",
+      "def": {
+        "description": "idea, nothing to extract",
+        "metadata": {
+          "id": "idea-nothing-to-extract"
+        },
+        "vars": {
+          "note": "idea: a vault view that groups notes by the weather that day",
+          "expected": {
+            "kind": "note",
+            "date": null,
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "journal-line-is-a-note": {
+      "hash": "2ebf700471c0",
+      "def": {
+        "description": "journal line is a note",
+        "metadata": {
+          "id": "journal-line-is-a-note"
+        },
+        "vars": {
+          "note": "Felt anxious most of the day, slept badly",
+          "expected": {
+            "kind": "note",
+            "date": [
+              "2026-10-29",
+              null
+            ],
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "meal-no-explicit-day": {
+      "hash": "324c08f1df1c",
+      "def": {
+        "description": "meal, no explicit day",
+        "metadata": {
+          "id": "meal-no-explicit-day"
+        },
+        "vars": {
+          "note": "lunch was a chicken burrito and a coke",
+          "expected": {
+            "kind": "meal",
+            "date": [
+              "2026-10-29",
+              null
+            ],
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "meal-with-a-time": {
+      "hash": "76dc61583d74",
+      "def": {
+        "description": "meal with a time",
+        "metadata": {
+          "id": "meal-with-a-time"
+        },
+        "vars": {
+          "note": "breakfast oatmeal w/ blueberries 7am",
+          "expected": {
+            "kind": "meal",
+            "date": [
+              "2026-10-29",
+              null
+            ],
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "miles-to-km-an-hour": {
+      "hash": "0aa462a42979",
+      "def": {
+        "description": "miles to km, an hour",
+        "metadata": {
+          "id": "miles-to-km-an-hour"
+        },
+        "vars": {
+          "note": "walked the dog 2.5 miles, took about an hour",
+          "expected": {
+            "kind": "workout",
+            "date": [
+              "2026-10-29",
+              null
+            ],
+            "duration_min": 60,
+            "distance_km": {
+              "approx": 4.02,
+              "tol": 0.1
+            }
+          }
+        }
+      }
+    },
+    "mixed-workout-partial-duration": {
+      "hash": "796c03eb10ce",
+      "def": {
+        "description": "mixed workout, partial duration",
+        "metadata": {
+          "id": "mixed-workout-partial-duration"
+        },
+        "vars": {
+          "note": "did 3 sets of squats and 20 min of rowing",
+          "expected": {
+            "kind": "workout",
+            "date": [
+              "2026-10-29",
+              null
+            ],
+            "duration_min": [
+              20,
+              null
+            ],
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "multi-day-event-first-day": {
+      "hash": "2d7b6083b881",
+      "def": {
+        "description": "multi-day event, first day",
+        "metadata": {
+          "id": "multi-day-event-first-day"
+        },
+        "vars": {
+          "note": "Team offsite Nov 12-13 in Denver",
+          "expected": {
+            "kind": "event",
+            "date": "2026-11-12",
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "past-saturday-metres": {
+      "hash": "ac53b889cb29",
+      "def": {
+        "description": "past Saturday, metres",
+        "metadata": {
+          "id": "past-saturday-metres"
+        },
+        "vars": {
+          "note": "Swam 1500m Saturday, 38 minutes",
+          "expected": {
+            "kind": "workout",
+            "date": "2026-10-24",
+            "duration_min": 38,
+            "distance_km": {
+              "approx": 1.5,
+              "tol": 0.01
+            }
+          }
+        }
+      }
+    },
+    "race-event-distance": {
+      "hash": "f90de54396c4",
+      "def": {
+        "description": "race as an event with a distance",
+        "metadata": {
+          "id": "race-event-distance"
+        },
+        "vars": {
+          "note": "half marathon on 2026-12-06",
+          "expected": {
+            "kind": "event",
+            "date": "2026-12-06",
+            "duration_min": null,
+            "distance_km": [
+              {
+                "approx": 21.1,
+                "tol": 0.2
+              },
+              null
+            ]
+          }
+        }
+      }
+    },
+    "run-relative-day-metric": {
+      "hash": "b23b4b9514a1",
+      "def": {
+        "description": "run, relative day, metric",
+        "metadata": {
+          "id": "run-relative-day-metric"
+        },
+        "vars": {
+          "note": "ran 5k this morning in 27 minutes, legs felt heavy",
+          "expected": {
+            "kind": "workout",
+            "date": "2026-10-29",
+            "duration_min": 27,
+            "distance_km": {
+              "approx": 5,
+              "tol": 0.05
+            }
+          }
+        }
+      }
+    },
+    "task-absolute-date": {
+      "hash": "5d4cf54b683d",
+      "def": {
+        "description": "task with an absolute due date",
+        "metadata": {
+          "id": "task-absolute-date"
+        },
+        "vars": {
+          "note": "remind me to renew passport by Nov 15",
+          "expected": {
+            "kind": "task",
+            "date": "2026-11-15",
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "task-on-a-weekday-name": {
+      "hash": "4d2e67a8bf73",
+      "def": {
+        "description": "task on a weekday name",
+        "metadata": {
+          "id": "task-on-a-weekday-name"
+        },
+        "vars": {
+          "note": "call mom on Sunday",
+          "expected": {
+            "kind": "task",
+            "date": "2026-11-01",
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "task-tomorrow": {
+      "hash": "eae62eb64cec",
+      "def": {
+        "description": "task tomorrow",
+        "metadata": {
+          "id": "task-tomorrow"
+        },
+        "vars": {
+          "note": "pay the electricity bill tomorrow",
+          "expected": {
+            "kind": "task",
+            "date": "2026-10-30",
+            "duration_min": null,
+            "distance_km": null
+          }
+        }
+      }
+    },
+    "yesterday-duration-only": {
+      "hash": "f05fd673a1af",
+      "def": {
+        "description": "yesterday, duration only",
+        "metadata": {
+          "id": "yesterday-duration-only"
+        },
+        "vars": {
+          "note": "Yesterday: 45 min spin class",
+          "expected": {
+            "kind": "workout",
+            "date": "2026-10-28",
+            "duration_min": 45,
+            "distance_km": null
+          }
+        }
+      }
+    }
+  }
+}

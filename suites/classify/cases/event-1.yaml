@@ -1,0 +1,4 @@
+metadata: { id: event-1 }
+vars:
+  item: "Ana's birthday dinner Saturday 7pm"
+  expected: { label: event }

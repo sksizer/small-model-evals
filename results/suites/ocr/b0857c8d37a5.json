@@ -1,0 +1,312 @@
+{
+  "suite": "ocr",
+  "fingerprint": "b0857c8d37a5",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:77cbe1fe43a770f7f6daec74f96f910fddcbdc30dfd074be4bbb1be6f21c721f"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "ocr — read the text in an image",
+    "prompts": [
+      "[{\"role\": \"user\", \"content\": \"Transcribe all the text you can read in this image, line by line. Include numbers, labels and button text exactly as shown.\", \"images\": [\"{{ image | replace('data:image/png;base64,', '') | replace('data:image/jpeg;base64,', '') }}\"]}]"
+    ],
+    "providers": [
+      {
+        "config": {
+          "num_ctx": 8192,
+          "num_predict": 1024,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:4b",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "num_predict": 1024,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:9b",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "num_predict": 1024,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:gemma4:e4b",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "num_predict": 1024,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:lfm3-vl:2b",
+        "label": "lfm3-vl:2b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "5615a27f63c4",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "67b69789f251",
+    "providers/food-search.ts": "cc6b0e6d9d95",
+    "providers/image-classifier.ts": "1482885f4b93",
+    "providers/ollama-decide.ts": "c15c7b371cf7",
+    "providers/ollama-food-agent.ts": "b5930e5f4c16",
+    "providers/ollama-perf.ts": "325cb330d06a"
+  },
+  "setup_hash": "a87c4c790d19",
+  "cases": {
+    "error-dialog": {
+      "hash": "e933b95f1b85",
+      "def": {
+        "description": "error dialog with a path",
+        "metadata": {
+          "id": "error-dialog"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/error-dialog.png",
+          "expected": [
+            "export the album",
+            "E-4031",
+            "disk full",
+            "2.3 GB",
+            "640 MB",
+            "/Volumes/Archive/Exports/Summer 2025",
+            "14 of 212",
+            "Choose another folder",
+            "Try again"
+          ]
+        }
+      }
+    },
+    "event-flyer": {
+      "hash": "152a808c1020",
+      "def": {
+        "description": "event flyer",
+        "metadata": {
+          "id": "event-flyer"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/event-flyer.png",
+          "expected": [
+            "Spring Seed Swap",
+            "Riverton Seed Library",
+            "May 9",
+            "10 am",
+            "Old Mill Community Hall",
+            "57 Weaver Lane",
+            "Free entry",
+            "seeds@riverton-library.example"
+          ]
+        }
+      }
+    },
+    "invoice-simple": {
+      "hash": "90452e2ec078",
+      "def": {
+        "description": "invoice with line items",
+        "metadata": {
+          "id": "invoice-simple"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/invoice-simple.png",
+          "expected": [
+            "INVOICE",
+            "Northwind Pottery Studio",
+            "INV-2026-0087",
+            "April 30, 2026",
+            "Bluebird",
+            "22 Harbour Road",
+            "Stoneware mugs",
+            "$432.00",
+            "$255.00",
+            "$722.00"
+          ]
+        }
+      }
+    },
+    "jobs-table": {
+      "hash": "9e046c01782c",
+      "def": {
+        "description": "dashboard cards and a jobs table",
+        "metadata": {
+          "id": "jobs-table"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/jobs-table.png",
+          "expected": [
+            "12 jobs",
+            "2 failed",
+            "$3.84",
+            "nightly-backup",
+            "thumbnail-rebuild",
+            "18m 05s",
+            "import-photos",
+            "retrying",
+            "search-reindex",
+            "$1.07"
+          ]
+        }
+      }
+    },
+    "receipt-grocery": {
+      "hash": "36b353b355b7",
+      "def": {
+        "description": "grocery receipt",
+        "metadata": {
+          "id": "receipt-grocery"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/receipt-grocery.png",
+          "expected": [
+            "MAPLE STREET MARKET",
+            "2026-03-14",
+            "20418",
+            "Oat milk",
+            "Sourdough loaf",
+            "11.99",
+            "27.69",
+            "1.38",
+            "29.07",
+            "4417"
+          ]
+        }
+      }
+    },
+    "recipe-card": {
+      "hash": "ee1dfb615b7e",
+      "def": {
+        "description": "recipe card",
+        "metadata": {
+          "id": "recipe-card"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recipe-card.png",
+          "expected": [
+            "Lemon Ginger Loaf",
+            "Serves 8",
+            "175",
+            "225 g plain flour",
+            "170 g caster sugar",
+            "120 ml milk",
+            "900 g loaf tin",
+            "skewer"
+          ]
+        }
+      }
+    },
+    "settings-panel": {
+      "hash": "fb14e2afa8f3",
+      "def": {
+        "description": "app settings panel",
+        "metadata": {
+          "id": "settings-panel"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/settings-panel.png",
+          "expected": [
+            "Sync settings",
+            "Sync over cellular",
+            "15 min",
+            "30 days",
+            "Encrypt attachments",
+            "Applies to new files only",
+            "Kitchen tablet",
+            "08:15",
+            "Save changes"
+          ]
+        }
+      }
+    },
+    "shipping-label": {
+      "hash": "13e791a2bd26",
+      "def": {
+        "description": "shipping label",
+        "metadata": {
+          "id": "shipping-label"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/shipping-label.png",
+          "expected": [
+            "PRIORITY",
+            "Hollow Oak Bindery",
+            "9 Quarry Street",
+            "05041",
+            "Mira Okafor",
+            "1406 Lakeview Ave",
+            "55812",
+            "9405 5118 2047 3316 82",
+            "2.4 lb",
+            "ORD-55120"
+          ]
+        }
+      }
+    },
+    "train-ticket-chinese": {
+      "hash": "878bbb232c53",
+      "def": {
+        "description": "printed Chinese train ticket (Commons)",
+        "metadata": {
+          "id": "train-ticket-chinese"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/train-ticket-chinese.jpg",
+          "expected": [
+            "D082989",
+            "Z801",
+            "Guangzhou dong",
+            "Hung Hom",
+            "Kowloon",
+            "08:19",
+            "HK$210.00",
+            "CLASS:F",
+            "COACH",
+            "23711902090904D082989"
+          ]
+        }
+      }
+    },
+    "train-ticket-french": {
+      "hash": "292557b823a7",
+      "def": {
+        "description": "punched Tunisian train ticket (Commons)",
+        "metadata": {
+          "id": "train-ticket-french"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/train-ticket-french.jpg",
+          "expected": [
+            "S.N.C.F.T",
+            "PRIX",
+            "Classe",
+            "PLACE",
+            "TUNIS",
+            "HAMMAMET",
+            "06777"
+          ]
+        }
+      }
+    }
+  }
+}

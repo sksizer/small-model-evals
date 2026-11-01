@@ -1,0 +1,5 @@
+description: "no nudity: outdoor"
+metadata: { id: millipede-moss }
+vars:
+  image: file://../../corpus/images/millipede-moss.jpg
+  expected: { nudity: 'no' }

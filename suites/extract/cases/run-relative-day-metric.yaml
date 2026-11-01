@@ -1,0 +1,5 @@
+description: run, relative day, metric
+metadata: { id: run-relative-day-metric }
+vars:
+  note: ran 5k this morning in 27 minutes, legs felt heavy
+  expected: { kind: workout, date: '2026-10-29', duration_min: 27, distance_km: { approx: 5, tol: 0.05 } }

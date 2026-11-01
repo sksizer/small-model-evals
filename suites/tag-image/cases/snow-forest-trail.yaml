@@ -1,0 +1,10 @@
+description: "snowy trail through fir trees under a bright sun"
+metadata: { id: snow-forest-trail }
+vars:
+  image: file://../../corpus/images/snow-forest-trail.jpg
+  expected:
+    - [snow, winter]
+    - [tree, fir, pine, evergreen, conifer, forest]
+    - [sun, sunshine, sky]
+    - [trail, path, track]
+  absent: [beach, city]

@@ -1,0 +1,5 @@
+metadata: { id: remind-9am-tomorrow }
+vars:
+  request: remind me tomorrow at 9am to call the bank
+  tool: set_reminder
+  args: { text: { contains: bank }, at: { startsWith: '2026-10-30T09' } }

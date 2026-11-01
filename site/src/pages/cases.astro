@@ -1,0 +1,184 @@
+---
+// Every test case in every suite: its input (text or image), the answer it
+// expects, and how the models did on it in their latest runs. Retired cases
+// are listed too, marked, so a superseded case can still be traced.
+import Base from '../layouts/Base.astro'
+import Shot from '../components/Shot.astro'
+import { data, href, imageSuites, modelSlug, show, type CaseView } from '../lib/data'
+
+const gallery = new Set(imageSuites.map((s) => s.id))
+const rows = data.suites
+  .flatMap((s) => [
+    ...s.cases.map((c) => ({ suite: s, c, retired: false })),
+    ...s.retired.map((c) => ({ suite: s, c, retired: true })),
+  ])
+  .sort((a, b) => a.suite.id.localeCompare(b.suite.id) || a.c.id.localeCompare(b.c.id))
+
+const resultsOf = (suite: string, id: string) =>
+  data.results.filter((r) => r.suite === suite && r.case === id).sort((a, b) => a.model.localeCompare(b.model))
+const kindOf = (c: CaseView) => (c.input.image ? 'image' : 'text')
+const live = rows.filter((r) => !r.retired)
+const images = live.filter((r) => r.c.input.image).length
+---
+
+<Base
+  title="Cases"
+  description={`Every test case: ${live.length} active in ${data.suites.length} suites (${images} image, ${live.length - images} text), plus ${rows.length - live.length} retired. A case is an input and the answer a model should derive from it. Click a row for the full input, the expected answer and each model's result.`}
+>
+  <div class="controls">
+    <input type="search" data-search="cases" placeholder="Search id, description, input or expected…" aria-label="Search cases" />
+    <select data-facet="cases" name="suite" aria-label="Suite">
+      <option value="">All suites</option>
+      {data.suites.map((s) => <option value={s.id}>{s.id}</option>)}
+    </select>
+    <select data-facet="cases" name="kind" aria-label="Input">
+      <option value="">Text and image</option>
+      <option value="text">Text</option>
+      <option value="image">Image</option>
+    </select>
+    <select data-facet="cases" name="status" aria-label="Status">
+      <option value="active">Active</option>
+      <option value="retired">Retired</option>
+      <option value="all" data-all>Active and retired</option>
+    </select>
+    <span class="count" data-count="cases"></span>
+  </div>
+  <div class="scroll">
+    <table data-table id="cases">
+      <thead>
+        <tr>
+          <th data-sort="text">Suite</th>
+          <th data-sort="text">Case</th>
+          <th data-sort="text">Input</th>
+          <th>Expected</th>
+          <th data-sort="num" class="num">Models passing</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map(({ suite, c, retired }) => {
+            const rs = resultsOf(suite.id, c.id)
+            const passed = rs.filter((r) => r.pass).length
+            return (
+              <>
+                <tr
+                  data-toggle
+                  aria-expanded="false"
+                  id={`${suite.id}--${c.id}`}
+                  data-suite={suite.id}
+                  data-kind={kindOf(c)}
+                  data-status={retired ? 'retired' : 'active'}
+                  data-search={[suite.id, c.id, c.description, c.input.text, show(c.expected), show(c.absent)].join(' ')}
+                >
+                  <td>
+                    <a href={href(`/suites/${suite.id}/`)}>{suite.id}</a>
+                  </td>
+                  <td>
+                    <code>{c.id}</code>
+                    {retired && <span class="pill stale">retired</span>}
+                    {c.description && <div class="muted">{c.description}</div>}
+                  </td>
+                  <td>
+                    <span class="tag">{kindOf(c)}</span>
+                    <div class="muted clip">{c.input.text.slice(0, 90)}</div>
+                  </td>
+                  <td>
+                    <div class="muted clip">{show(c.expected).slice(0, 90)}</div>
+                  </td>
+                  <td class="num" data-value={rs.length === 0 ? -1 : passed / rs.length}>
+                    {rs.length === 0 ? <span class="muted">no results</span> : `${passed} / ${rs.length}`}
+                  </td>
+                </tr>
+                <tr class="detail" hidden>
+                  <td colspan="5">
+                    <div class="detail-grid">
+                      <div>
+                        <h4>Input</h4>
+                        {c.input.image ? <Shot path={c.input.image} alt={c.description || c.id} class="shot" /> : <pre>{c.input.text}</pre>}
+                      </div>
+                      <div>
+                        <h4>Expected</h4>
+                        <pre>{show(c.expected)}</pre>
+                        {Array.isArray(c.absent) && c.absent.length > 0 && (
+                          <>
+                            <h4 style="margin-top:10px">Must not say</h4>
+                            <pre>{show(c.absent)}</pre>
+                          </>
+                        )}
+                        {c.args !== null && (
+                          <>
+                            <h4 style="margin-top:10px">Arguments</h4>
+                            <pre>{show(c.args)}</pre>
+                          </>
+                        )}
+                      </div>
+                      <div>
+                        <h4>Results</h4>
+                        {rs.length === 0 ? (
+                          <p class="muted">No results yet.</p>
+                        ) : (
+                          <ul class="case-results">
+                            {rs.map((r) => (
+                              <li>
+                                <span class={`pill ${r.pass ? 'pass' : 'fail'}`}>{r.pass ? 'pass' : 'fail'}</span>{' '}
+                                <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+                                {r.stale && <span class="pill stale">stale</span>}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        <p class="note">
+                          <a href={href(`/suites/${suite.id}/`)}>Suite grid</a>
+                          {gallery.has(suite.id) && (
+                            <>
+                              {' · '}
+                              <a href={href(`/gallery/${suite.id}/#${c.id}`)}>Gallery</a>
+                            </>
+                          )}
+                          {' · '}
+                          <a href={href(`/results/?suite=${suite.id}`)}>Results</a>
+                        </p>
+                      </div>
+                    </div>
+                    <p class="note">
+                      Case hash <code>{c.hash}</code>
+                      {c.supersedes && (
+                        <>
+                          {' · '}supersedes <code>{c.supersedes}</code>
+                        </>
+                      )}
+                      {c.retired && <> · retired: {c.retired}</>}. Cases never change once run; a new version is a new case.
+                    </p>
+                  </td>
+                </tr>
+              </>
+            )
+          })
+        }
+      </tbody>
+    </table>
+  </div>
+</Base>
+
+<style>
+  .tag {
+    font-size: 11px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    color: var(--muted);
+  }
+  .clip {
+    max-width: 22rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .case-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 4px;
+  }
+</style>

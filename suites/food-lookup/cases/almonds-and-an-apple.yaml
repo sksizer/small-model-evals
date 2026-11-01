@@ -1,0 +1,7 @@
+description: a counted handful and a whole fruit
+metadata: { id: almonds-and-an-apple }
+vars:
+  note: "afternoon snack: about 20 almonds and an apple"
+  expected:
+    - { text: [almond], food: [almond], kcal_100g: 579, grams: { approx: 24, tol: 6 } }
+    - { text: [apple], food: [apple], kcal_100g: 52, grams: { approx: 182, tol: 45 } }

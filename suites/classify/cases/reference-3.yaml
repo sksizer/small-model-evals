@@ -1,0 +1,4 @@
+metadata: { id: reference-3 }
+vars:
+  item: "Bread: 500 g flour, 10 g salt, 350 ml water, 7 g yeast"
+  expected: { label: reference }

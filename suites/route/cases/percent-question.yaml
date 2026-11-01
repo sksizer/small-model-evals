@@ -1,0 +1,5 @@
+description: a one-line arithmetic question
+metadata: { id: percent-question }
+vars:
+  input: "what's 15% of 84?"
+  expected: { handler: assistant, large: 'no' }

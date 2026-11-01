@@ -1,0 +1,5 @@
+description: race as an event with a distance
+metadata: { id: race-event-distance }
+vars:
+  note: half marathon on 2026-12-06
+  expected: { kind: event, date: '2026-12-06', duration_min: null, distance_km: [{ approx: 21.1, tol: 0.2 }, null] }

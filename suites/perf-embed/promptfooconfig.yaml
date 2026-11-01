@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# Embedding speed: the perf suite's note, split into paragraphs and embedded
+# as a batch of 64, three times. A separate suite because promptfoo rejects
+# a test that names a provider --filter-providers has dropped.
+description: perf-embed — embedding throughput
+
+prompts:
+  - '{{input}}'
+
+providers:
+  - { id: file://../../providers/ollama-perf.ts, label: nomic-embed-text, config: { model: 'nomic-embed-text:latest', embed: true } }
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

@@ -1,0 +1,4 @@
+metadata: { id: event-2 }
+vars:
+  item: "flight UA 123 departs Nov 4 08:15"
+  expected: { label: event }

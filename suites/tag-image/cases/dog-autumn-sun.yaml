@@ -1,0 +1,10 @@
+description: "dog with a blue collar asleep in the sun outdoors"
+metadata: { id: dog-autumn-sun }
+vars:
+  image: file://../../corpus/images/dog-autumn-sun.jpg
+  expected:
+    - dog
+    - collar
+    - [sleeping, asleep, resting, lying, nap]
+    - [outdoor, garden, yard, stone, rock]
+  absent: [cat, bed]

@@ -1,0 +1,17 @@
+{
+  "tag": "d1:2b",
+  "digest": "a3b89e90e6a3",
+  "engine": "mlx",
+  "format": "safetensors",
+  "family": "lfm3_vl",
+  "quantization": "BF16",
+  "parameter_size": "1.9B",
+  "parameter_count": 1918174720,
+  "context_length": 128000,
+  "capabilities": [
+    "decision",
+    "vision"
+  ],
+  "default_parameters": {},
+  "template_hash": "b507b9c2f6ca"
+}

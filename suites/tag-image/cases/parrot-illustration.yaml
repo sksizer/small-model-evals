@@ -1,0 +1,11 @@
+description: "botanical-style illustration of a green parrot on a branch"
+metadata: { id: parrot-illustration }
+vars:
+  image: file://../../corpus/images/parrot-illustration.jpg
+  expected:
+    - [parrot, amazon]
+    - bird
+    - green
+    - [branch, perch]
+    - [illustration, drawing, painting, print, artwork, art]
+  absent: [photo, cage]

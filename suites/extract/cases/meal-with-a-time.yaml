@@ -1,0 +1,5 @@
+description: meal with a time
+metadata: { id: meal-with-a-time }
+vars:
+  note: breakfast oatmeal w/ blueberries 7am
+  expected: { kind: meal, date: ['2026-10-29', null], duration_min: null, distance_km: null }

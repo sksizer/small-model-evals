@@ -1,0 +1,47 @@
+{
+  "suite": "perf-embed",
+  "fingerprint": "4b37c11e11ff",
+  "setup": {
+    "description": "perf-embed — embedding throughput",
+    "prompts": [
+      "{{input}}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "embed": true,
+          "model": "nomic-embed-text:latest"
+        },
+        "id": "sha256:325cb330d06af0db13e6fc8822bca0b2d430198be0f9d5403f55fc30e8c81113",
+        "label": "nomic-embed-text"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/text-recall.ts": "9c8aaa12e787",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "providers/ollama-perf.ts": "325cb330d06a"
+  },
+  "setup_hash": "830eba61e7ac",
+  "cases": {
+    "batch-64": {
+      "hash": "8281bf465d7e",
+      "def": {
+        "description": "embed a batch of 64 paragraphs",
+        "metadata": {
+          "id": "batch-64"
+        },
+        "vars": {
+          "input": "file://../perf/input.md",
+          "num_ctx": 2048
+        },
+        "options": {
+          "repeat": 3
+        }
+      }
+    }
+  },
+  "legacy": "7597eb0bcb37"
+}

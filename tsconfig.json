@@ -1,0 +1,4 @@
+{
+  "extends": "@osdlc/tsconfig/bun-lib",
+  "include": ["scripts/**/*.ts", "providers/**/*.ts", "assertions/**/*.ts"]
+}

@@ -1,0 +1,5 @@
+description: long writing from several notes
+metadata: { id: job-offer-essay }
+vars:
+  input: "write a 1,000-word comparison of my two job offers using my notes on each, and recommend one"
+  expected: { handler: assistant, large: 'yes' }

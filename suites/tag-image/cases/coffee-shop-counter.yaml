@@ -1,0 +1,11 @@
+description: "cappuccino beside a smartphone and earphones"
+metadata: { id: coffee-shop-counter }
+vars:
+  image: file://../../corpus/images/coffee-shop-counter.jpg
+  expected:
+    - [coffee, cappuccino, latte]
+    - [cup, mug, saucer]
+    - [phone, smartphone, iphone]
+    - [earphone, earbud, headphone]
+    - spoon
+  absent: [laptop, tea]

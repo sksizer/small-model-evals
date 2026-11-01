@@ -1,0 +1,11 @@
+description: gym shorthand, slash sets, AMRAP with counts
+metadata: { id: gym-shorthand }
+vars:
+  log: "BP 5/5/5 @ 80, rows 3x10 @ 50, chins 3xAMRAP (8, 7, 6)"
+  expected:
+    date: '2026-10-29'
+    activity: strength
+    exercises:
+      - { name: [bench press, bench], sets: '3x5@80' }
+      - { name: [row], sets: '3x10@50' }
+      - { name: [chin up, chinup, pull up], sets: '8, 7, 6' }

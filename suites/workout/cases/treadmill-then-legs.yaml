@@ -1,0 +1,12 @@
+description: cardio warm-up then leg work, dumbbell weight per hand
+metadata: { id: treadmill-then-legs }
+vars:
+  log: "20 min treadmill warmup then legs: leg press 3x12 @ 140kg, walking lunges 3x10 each leg holding 12kg dumbbells, calf raises 4x15"
+  expected:
+    date: '2026-10-29'
+    activity: [mixed, strength]
+    exercises:
+      - { name: [treadmill, run, walk], duration_min: 20 }
+      - { name: [leg press], sets: '3x12@140' }
+      - { name: [lunge], sets: '3x10@12' }
+      - { name: [calf raise], sets: '4x15' }

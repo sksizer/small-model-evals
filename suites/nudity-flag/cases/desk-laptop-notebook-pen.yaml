@@ -1,0 +1,5 @@
+description: "no nudity: objects"
+metadata: { id: desk-laptop-notebook-pen }
+vars:
+  image: file://../../corpus/images/desk-laptop-notebook-pen.jpg
+  expected: { nudity: 'no' }

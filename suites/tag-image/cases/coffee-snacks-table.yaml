@@ -1,0 +1,12 @@
+description: "toasted sandwiches, cucumber and tomato on a board with coffee"
+metadata: { id: coffee-snacks-table }
+vars:
+  image: file://../../corpus/images/coffee-snacks-table.jpg
+  expected:
+    - [sandwich, toast, panini, bread]
+    - cucumber
+    - tomato
+    - [coffee, drink, glass]
+    - [cutting board, board, wooden board]
+    - plate
+  absent: [pizza, cake]

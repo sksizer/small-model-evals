@@ -1,0 +1,4 @@
+metadata: { id: journal-4 }
+vars:
+  item: "Walked by the lake after work, very calm"
+  expected: { label: journal }

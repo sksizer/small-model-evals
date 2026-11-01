@@ -1,0 +1,12 @@
+description: "laptop, notebook, sticky notes, pen and highlighter on a desk"
+metadata: { id: desk-laptop-notebook-pen }
+vars:
+  image: file://../../corpus/images/desk-laptop-notebook-pen.jpg
+  expected:
+    - [laptop, computer, keyboard]
+    - [sticky note, post-it, note]
+    - pen
+    - [notebook, notepad, paper]
+    - [highlighter, marker]
+    - [desk, table, wood]
+  absent: [coffee, phone]

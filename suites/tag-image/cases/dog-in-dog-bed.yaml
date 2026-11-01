@@ -1,0 +1,9 @@
+description: "small dog asleep in a dog bed"
+metadata: { id: dog-in-dog-bed }
+vars:
+  image: file://../../corpus/images/dog-in-dog-bed.jpg
+  expected:
+    - [dog, puppy]
+    - [dog bed, pet bed, bed, cushion]
+    - [sleeping, asleep, resting, lying]
+  absent: [cat, grass]

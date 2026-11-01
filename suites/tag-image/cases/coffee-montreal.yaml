@@ -1,0 +1,10 @@
+description: "long wooden table with coffee cups and a phone in a cafe"
+metadata: { id: coffee-montreal }
+vars:
+  image: file://../../corpus/images/coffee-montreal.jpg
+  expected:
+    - [coffee, cup, mug]
+    - [table, wooden table]
+    - [cafe, "café", coffee shop, restaurant]
+    - [phone, smartphone]
+  absent: [laptop, beach]

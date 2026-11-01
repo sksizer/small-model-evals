@@ -1,0 +1,5 @@
+description: "no nudity: scenes"
+metadata: { id: street-night-rostov }
+vars:
+  image: file://../../corpus/images/street-night-rostov.jpg
+  expected: { nudity: 'no' }

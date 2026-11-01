@@ -1,0 +1,4 @@
+metadata: { id: task-1 }
+vars:
+  item: "buy printer ink"
+  expected: { label: task }

@@ -1,0 +1,11 @@
+description: "boats moored in a bay at sunset"
+metadata: { id: sunset-boats }
+vars:
+  image: file://../../corpus/images/sunset-boats.jpg
+  expected:
+    - [boat, ship, fishing boat]
+    - [sunset, sunrise, sun]
+    - [sea, ocean, water, bay]
+    - [beach, shore, sand]
+    - [sky, horizon]
+  absent: [mountain, city]

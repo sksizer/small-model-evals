@@ -1,0 +1,5 @@
+description: "no nudity: outdoor"
+metadata: { id: tree-bracket-fungus }
+vars:
+  image: file://../../corpus/images/tree-bracket-fungus.jpg
+  expected: { nudity: 'no' }

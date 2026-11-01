@@ -1,0 +1,10 @@
+description: "millipede crawling over moss and gravel"
+metadata: { id: millipede-moss }
+vars:
+  image: file://../../corpus/images/millipede-moss.jpg
+  expected:
+    - [millipede, centipede, insect, bug, arthropod]
+    - moss
+    - [ground, gravel, soil, rock, stone, dirt]
+    - [nature, forest, leaf, macro, close-up, closeup]
+  absent: [snake, worm]

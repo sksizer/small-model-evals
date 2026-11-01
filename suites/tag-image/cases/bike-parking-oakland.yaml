@@ -1,0 +1,9 @@
+description: "bicycles on a rack indoors"
+metadata: { id: bike-parking-oakland }
+vars:
+  image: file://../../corpus/images/bike-parking-oakland.jpg
+  expected:
+    - [bicycle, bike]
+    - [rack, bike rack, parking, storage]
+    - [indoor, floor, tile]
+  absent: [car, motorcycle]

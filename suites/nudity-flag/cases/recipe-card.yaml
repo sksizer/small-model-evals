@@ -1,0 +1,5 @@
+description: "no nudity: text"
+metadata: { id: recipe-card }
+vars:
+  image: file://../../corpus/images/recipe-card.png
+  expected: { nudity: 'no' }

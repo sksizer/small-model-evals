@@ -1,0 +1,5 @@
+description: a feelings journal entry, no exercise
+metadata: { id: anxious-journal }
+vars:
+  input: "felt anxious all day, couldn't focus. talking to mum in the evening helped"
+  expected: { handler: note, large: 'no' }

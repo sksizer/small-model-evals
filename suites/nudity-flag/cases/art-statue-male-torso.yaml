@@ -1,0 +1,5 @@
+description: "no nudity: nude art: art-statue-male-torso"
+metadata: { id: art-statue-male-torso }
+vars:
+  image: file://../../corpus/images/art-statue-male-torso.jpg
+  expected: { nudity: 'no' }

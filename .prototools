@@ -1,0 +1,5 @@
+# Unpinned, proto runs the newest installed Node, and promptfoo 0.125.1
+# refuses pre-release versions. Bun is pinned to the version the lockfile
+# was written with.
+node = "24.13.0"
+bun = "1.4.2"

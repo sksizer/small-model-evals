@@ -1,0 +1,5 @@
+description: journal line is a note
+metadata: { id: journal-line-is-a-note }
+vars:
+  note: Felt anxious most of the day, slept badly
+  expected: { kind: note, date: ['2026-10-29', null], duration_min: null, distance_km: null }

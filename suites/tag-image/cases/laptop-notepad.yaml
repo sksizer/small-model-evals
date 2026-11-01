@@ -1,0 +1,10 @@
+description: "laptop and a notepad with a pen on a wooden desk"
+metadata: { id: laptop-notepad }
+vars:
+  image: file://../../corpus/images/laptop-notepad.jpg
+  expected:
+    - [laptop, computer]
+    - [notepad, notebook, paper, pad]
+    - pen
+    - [desk, table, wood]
+  absent: [phone, coffee]

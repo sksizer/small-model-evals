@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# food-lookup: turn a free-form food note into database foods and gram
+# amounts. The model searches a fixed USDA database (foods.jsonl, built by
+# scripts/build-foods.ts) with a search_foods tool as often as it needs, then
+# answers. The search is plain keyword search, no model behind it, so a run is
+# repeatable. Scored by assertions/food.ts.
+description: food-lookup — food note to database foods and grams
+
+prompts:
+  - |-
+    [{"role": "system", "content": "You log what someone ate or drank from a free-form note. Today is Thursday 2026-10-29. Use the search_foods tool to find each food in the USDA food database; search again with other words (for example the cooking method, or raw) when the results do not fit. Then for each food or drink consumed give: text, the note's words for it; fdc_id, the best matching food's id from the search results, or null when nothing in the database fits; grams, the amount consumed in grams, converted with that food's portions, and estimated from a typical portion when the note gives a count or no amount. Leave out food that was only planned or mentioned, not eaten."},
+     {"role": "user", "content": {{ note | dump }}}]
+
+providers:
+  - id: file://../../providers/ollama-food-agent.ts
+    label: qwen3.5:4b
+    config: { model: 'qwen3.5:4b', think: false, db_sha256: &db 54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d }
+  - { id: file://../../providers/ollama-food-agent.ts, label: qwen3.5:9b, config: { model: 'qwen3.5:9b', think: false, db_sha256: *db } }
+  - { id: file://../../providers/ollama-food-agent.ts, label: qwen3:4b, config: { model: 'qwen3:4b', think: false, db_sha256: *db } }
+  - { id: file://../../providers/ollama-food-agent.ts, label: gemma4:e4b, config: { model: 'gemma4:e4b', think: false, db_sha256: *db } }
+  - { id: file://../../providers/ollama-food-agent.ts, label: minicpm5-2b, config: { model: 'openbmb/minicpm5-2b:latest', think: false, db_sha256: *db } }
+  - { id: file://../../providers/ollama-food-agent.ts, label: granite4.2:3b, config: { model: 'granite4.2:3b', think: false, db_sha256: *db } }
+  - { id: file://../../providers/ollama-food-agent.ts, label: lfm3:1.7b, config: { model: 'lfm3:1.7b', think: false, db_sha256: *db } }
+  - { id: file://../../providers/ollama-food-agent.ts, label: granite4, config: { model: 'granite4:latest', db_sha256: *db } }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  assert:
+    - type: javascript
+      value: file://../../assertions/food.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

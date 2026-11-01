@@ -1,0 +1,5 @@
+description: "no nudity: food"
+metadata: { id: pancakes-stack }
+vars:
+  image: file://../../corpus/images/pancakes-stack.jpg
+  expected: { nudity: 'no' }

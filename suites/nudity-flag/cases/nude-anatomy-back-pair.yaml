@@ -1,0 +1,5 @@
+description: "nude: nude-anatomy-back-pair"
+metadata: { id: nude-anatomy-back-pair }
+vars:
+  image: file://../../corpus/images/nude-anatomy-back-pair.jpg
+  expected: { nudity: 'yes' }

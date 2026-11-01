@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro'
+import { data, fmt, href, modelLabels, modelSlug } from '../lib/data'
+
+const rows = [...data.perf].sort((a, b) => a.model.localeCompare(b.model) || a.case.localeCompare(b.case))
+const cases = [...new Set(rows.map((r) => r.case))]
+---
+
+<Base
+  title="Speed & memory"
+  description="Each model freshly loaded, three runs per case. Load time and prompt speed come from the cold run; output speed is the median."
+>
+  <div class="controls">
+    <select data-facet="speed" name="case" aria-label="Case">
+      <option value="">All cases</option>
+      {cases.map((c) => <option value={c}>{c}</option>)}
+    </select>
+    <select data-facet="speed" name="model" aria-label="Model">
+      <option value="">All models</option>
+      {modelLabels.map((m) => <option value={m}>{m}</option>)}
+    </select>
+    <span class="count" data-count="speed"></span>
+  </div>
+  <div class="scroll">
+    <table data-table id="speed">
+      <thead>
+        <tr>
+          <th data-sort="text">Model</th>
+          <th data-sort="text">Case</th>
+          <th data-sort="num" class="num">Output tok/s</th>
+          <th data-sort="num" class="num">Prompt tok/s</th>
+          <th data-sort="num" class="num">Embeds/s</th>
+          <th data-sort="num" class="num">Loaded GB</th>
+          <th data-sort="num" class="num">GPU</th>
+          <th data-sort="num" class="num">Cold load s</th>
+          <th data-sort="text">Run</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((r) => (
+            <tr data-case={r.case} data-model={r.model}>
+              <td>
+                <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+              </td>
+              <td>
+                <code>{r.case}</code>
+              </td>
+              <td class="num" data-value={r.decode_tps ?? -1}>{fmt(r.decode_tps)}</td>
+              <td class="num" data-value={r.prompt_tps ?? -1} title={r.prompt_cached ? 'Ollama reused the loaded model, so the prompt was cached' : undefined}>
+                {r.prompt_cached ? <span class="muted">cached</span> : fmt(r.prompt_tps, 0)}
+              </td>
+              <td class="num" data-value={r.embeds_per_s ?? -1}>{fmt(r.embeds_per_s, 0)}</td>
+              <td class="num" data-value={r.loaded_gb ?? -1}>{fmt(r.loaded_gb, 2)}</td>
+              <td class="num" data-value={r.gpu_pct ?? -1}>{r.gpu_pct === null ? '—' : `${Math.round(r.gpu_pct)}%`}</td>
+              <td class="num" data-value={r.load_s ?? -1}>{fmt(r.load_s)}</td>
+              <td class="muted">
+                {r.run.slice(0, 10)}
+                {r.stale && <span class="pill stale">stale</span>}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="note">
+    Ollama 0.40.11 ignores the context size for the qwen3.5 models, so their 8K and 32K rows repeat the 4K load
+    ("cached"). The gemma4:e4b loaded size is implausibly small and likely leaves out its per-layer embeddings.
+  </p>
+</Base>

@@ -1,0 +1,5 @@
+description: finding a saved recipe
+metadata: { id: miso-recipe-search }
+vars:
+  input: "find the recipe I saved with miso and aubergine"
+  expected: { handler: search, large: 'no' }

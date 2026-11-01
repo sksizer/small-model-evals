@@ -1,0 +1,4 @@
+metadata: { id: journal-2 }
+vars:
+  item: "Feeling proud, finished the first draft at last"
+  expected: { label: journal }

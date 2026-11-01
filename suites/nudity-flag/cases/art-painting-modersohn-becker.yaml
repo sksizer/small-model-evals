@@ -1,0 +1,5 @@
+description: "no nudity: nude art: art-painting-modersohn-becker"
+metadata: { id: art-painting-modersohn-becker }
+vars:
+  image: file://../../corpus/images/art-painting-modersohn-becker.jpg
+  expected: { nudity: 'no' }

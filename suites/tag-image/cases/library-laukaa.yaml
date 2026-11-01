@@ -1,0 +1,11 @@
+description: "bright public library with shelves and a desk"
+metadata: { id: library-laukaa }
+vars:
+  image: file://../../corpus/images/library-laukaa.jpg
+  expected:
+    - library
+    - [bookshelf, shelf, shelves, bookcase, book]
+    - [desk, table, computer]
+    - chair
+    - [ceiling, light, interior, indoor]
+  absent: [outdoor, bed]

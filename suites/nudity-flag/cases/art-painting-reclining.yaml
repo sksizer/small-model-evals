@@ -1,0 +1,5 @@
+description: "no nudity: nude art: art-painting-reclining"
+metadata: { id: art-painting-reclining }
+vars:
+  image: file://../../corpus/images/art-painting-reclining.jpg
+  expected: { nudity: 'no' }

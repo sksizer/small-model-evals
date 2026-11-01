@@ -1,0 +1,5 @@
+description: "no nudity: text"
+metadata: { id: event-flyer }
+vars:
+  image: file://../../corpus/images/event-flyer.png
+  expected: { nudity: 'no' }

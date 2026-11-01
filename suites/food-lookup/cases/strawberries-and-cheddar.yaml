@@ -1,0 +1,7 @@
+description: a cup of fruit and an ounce of cheese
+metadata: { id: strawberries-and-cheddar }
+vars:
+  note: "cup of strawberries and 1 oz of cheddar"
+  expected:
+    - { text: [strawberries, strawberry], food: [strawberries], kcal_100g: 32, grams: { approx: 152, tol: 20 } }
+    - { text: [cheddar, cheese], food: [cheddar], kcal_100g: 403, grams: { approx: 28.35, tol: 2 } }

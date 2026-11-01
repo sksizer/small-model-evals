@@ -1,0 +1,5 @@
+description: "no nudity: outdoor"
+metadata: { id: snow-forest-trail }
+vars:
+  image: file://../../corpus/images/snow-forest-trail.jpg
+  expected: { nudity: 'no' }

@@ -1,0 +1,5 @@
+description: a dated social plan
+metadata: { id: dinner-event }
+vars:
+  input: "dinner with Sam and Priya next Tuesday 7pm at Lupa"
+  expected: { handler: event, large: 'no' }

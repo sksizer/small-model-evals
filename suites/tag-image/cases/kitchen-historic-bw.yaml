@@ -1,0 +1,11 @@
+description: "black-and-white photo of an old kitchen"
+metadata: { id: kitchen-historic-bw }
+vars:
+  image: file://../../corpus/images/kitchen-historic-bw.jpg
+  expected:
+    - kitchen
+    - [black and white, monochrome, black-and-white, bw]
+    - [sink, cabinet, cupboard, counter]
+    - window
+    - [stove, refrigerator, fridge, oven, appliance, chair, stool]
+  absent: [color, person]

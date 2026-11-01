@@ -1,0 +1,9 @@
+description: rowing machine in metres with a clock time
+metadata: { id: erg-metres-clock }
+vars:
+  log: "rowed 5000 m on the erg in 21:30"
+  expected:
+    date: '2026-10-29'
+    activity: row
+    exercises:
+      - { name: [row, erg], distance_km: { approx: 5, tol: 0.01 }, duration_min: { approx: 21.5, tol: 0.1 } }

@@ -1,0 +1,5 @@
+description: "recipe card"
+metadata: { id: recipe-card }
+vars:
+  image: file://../../corpus/images/recipe-card.png
+  expected: ["Lemon Ginger Loaf", "Serves 8", "175", "225 g plain flour", "170 g caster sugar", "120 ml milk", "900 g loaf tin", "skewer"]

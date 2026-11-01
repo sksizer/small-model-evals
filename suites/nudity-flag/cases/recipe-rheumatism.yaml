@@ -1,0 +1,5 @@
+description: "no nudity: handwriting"
+metadata: { id: recipe-rheumatism }
+vars:
+  image: file://../../corpus/images/recipe-rheumatism.jpg
+  expected: { nudity: 'no' }

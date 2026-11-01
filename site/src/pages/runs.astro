@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro'
+import { data } from '../lib/data'
+---
+
+<Base title="Runs" description="Every run in the ledger, newest first. A run can cover any subset of models and suites.">
+  <div class="scroll">
+    <table data-table id="runs">
+      <thead>
+        <tr>
+          <th data-sort="text">Run</th>
+          <th data-sort="text">Machine</th>
+          <th data-sort="text">Ollama</th>
+          <th data-sort="text">promptfoo</th>
+          <th>Models</th>
+          <th>Suites</th>
+          <th data-sort="num" class="num">Records</th>
+          <th>Environment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          data.runs.map((r) => (
+            <tr>
+              <td>
+                <code>{r.run}</code>
+              </td>
+              <td>{r.machine}</td>
+              <td>{r.ollama}</td>
+              <td>{r.promptfoo}</td>
+              <td>{r.models.join(', ')}</td>
+              <td>{r.suites.join(', ')}</td>
+              <td class="num" data-value={r.records}>{r.records}</td>
+              <td>
+                {r.envs.length === 0 ? (
+                  <span class="muted">not recorded (before environment capture)</span>
+                ) : (
+                  r.envs.map((id) => {
+                    const e = data.environments[id]
+                    return e ? (
+                      <details>
+                        <summary>
+                          {e.os.name} {e.os.version} · {e.hardware['gpu_cores']}-core GPU · {e.hardware['gpu_budget_mib']} MiB budget
+                        </summary>
+                        <pre>{JSON.stringify(e, null, 2)}</pre>
+                      </details>
+                    ) : (
+                      <code>{id}</code>
+                    )
+                  })
+                )}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</Base>

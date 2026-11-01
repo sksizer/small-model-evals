@@ -1,0 +1,5 @@
+description: meal, no explicit day
+metadata: { id: meal-no-explicit-day }
+vars:
+  note: lunch was a chicken burrito and a coke
+  expected: { kind: meal, date: ['2026-10-29', null], duration_min: null, distance_km: null }

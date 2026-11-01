@@ -1,0 +1,5 @@
+description: "no nudity: scenes"
+metadata: { id: diner-snow-night }
+vars:
+  image: file://../../corpus/images/diner-snow-night.jpg
+  expected: { nudity: 'no' }

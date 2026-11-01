@@ -1,0 +1,5 @@
+description: "app settings panel"
+metadata: { id: settings-panel }
+vars:
+  image: file://../../corpus/images/settings-panel.png
+  expected: ["Sync settings", "Sync over cellular", "15 min", "30 days", "Encrypt attachments", "Applies to new files only", "Kitchen tablet", "08:15", "Save changes"]

@@ -1,0 +1,5 @@
+description: "no nudity: scenes"
+metadata: { id: library-stacks-vasconcelos }
+vars:
+  image: file://../../corpus/images/library-stacks-vasconcelos.jpg
+  expected: { nudity: 'no' }

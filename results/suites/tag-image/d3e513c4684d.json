@@ -1,0 +1,1728 @@
+{
+  "suite": "tag-image",
+  "fingerprint": "d3e513c4684d",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:3f6f20fc3be99056d84cc1e2f0dcab6d8eda718232af059f6c5ca66d068ae035"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "tag-image — tag a photo",
+    "prompts": [
+      "[{\"role\": \"user\", \"content\": \"List 5 to 12 short lowercase tags for this image: the main subjects and objects, the setting, and what kind of image it is (photo, painting, document...). Use plain nouns or short noun phrases. Reply with JSON: {\\\"tags\\\": [...]}\", \"images\": [\"{{ image | replace('data:image/jpeg;base64,', '') }}\"]}]"
+    ],
+    "providers": [
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "tags": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "tags"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 512,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:4b",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "tags": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "tags"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 512,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:9b",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "tags": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "tags"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 512,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:gemma4:e4b",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "tags": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "tags"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 512,
+          "temperature": 0
+        },
+        "id": "ollama:chat:gemma3:4b",
+        "label": "gemma3:4b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "providers/ollama-perf.ts": "325cb330d06a"
+  },
+  "setup_hash": "0a55e25a0682",
+  "cases": {
+    "bike-parking-oakland": {
+      "hash": "acf9d0fe78f0",
+      "def": {
+        "description": "bicycles on a rack indoors",
+        "metadata": {
+          "id": "bike-parking-oakland"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/bike-parking-oakland.jpg",
+          "expected": [
+            [
+              "bicycle",
+              "bike"
+            ],
+            [
+              "rack",
+              "bike rack",
+              "parking",
+              "storage"
+            ],
+            [
+              "indoor",
+              "floor",
+              "tile"
+            ]
+          ],
+          "absent": [
+            "car",
+            "motorcycle"
+          ]
+        }
+      }
+    },
+    "bike-parking-three-styles": {
+      "hash": "0439396b0644",
+      "def": {
+        "description": "blue bike stands in a park with a gazebo",
+        "metadata": {
+          "id": "bike-parking-three-styles"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/bike-parking-three-styles.jpg",
+          "expected": [
+            [
+              "bike rack",
+              "bicycle rack",
+              "bike stand",
+              "bike parking",
+              "rack",
+              "stand"
+            ],
+            "park",
+            [
+              "gazebo",
+              "pavilion"
+            ],
+            "tree",
+            [
+              "path",
+              "pavement",
+              "road",
+              "sidewalk",
+              "footpath"
+            ]
+          ],
+          "absent": [
+            "car",
+            "beach"
+          ]
+        }
+      }
+    },
+    "coffee-montreal": {
+      "hash": "f58a57a51d9f",
+      "def": {
+        "description": "long wooden table with coffee cups and a phone in a cafe",
+        "metadata": {
+          "id": "coffee-montreal"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/coffee-montreal.jpg",
+          "expected": [
+            [
+              "coffee",
+              "cup",
+              "mug"
+            ],
+            [
+              "table",
+              "wooden table"
+            ],
+            [
+              "cafe",
+              "café",
+              "coffee shop",
+              "restaurant"
+            ],
+            [
+              "phone",
+              "smartphone"
+            ]
+          ],
+          "absent": [
+            "laptop",
+            "beach"
+          ]
+        }
+      }
+    },
+    "coffee-shop-counter": {
+      "hash": "7c3031edf2e6",
+      "def": {
+        "description": "cappuccino beside a smartphone and earphones",
+        "metadata": {
+          "id": "coffee-shop-counter"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/coffee-shop-counter.jpg",
+          "expected": [
+            [
+              "coffee",
+              "cappuccino",
+              "latte"
+            ],
+            [
+              "cup",
+              "mug",
+              "saucer"
+            ],
+            [
+              "phone",
+              "smartphone",
+              "iphone"
+            ],
+            [
+              "earphone",
+              "earbud",
+              "headphone"
+            ],
+            "spoon"
+          ],
+          "absent": [
+            "laptop",
+            "tea"
+          ]
+        }
+      }
+    },
+    "coffee-snacks-table": {
+      "hash": "ffc0220978ea",
+      "def": {
+        "description": "toasted sandwiches, cucumber and tomato on a board with coffee",
+        "metadata": {
+          "id": "coffee-snacks-table"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/coffee-snacks-table.jpg",
+          "expected": [
+            [
+              "sandwich",
+              "toast",
+              "panini",
+              "bread"
+            ],
+            "cucumber",
+            "tomato",
+            [
+              "coffee",
+              "drink",
+              "glass"
+            ],
+            [
+              "cutting board",
+              "board",
+              "wooden board"
+            ],
+            "plate"
+          ],
+          "absent": [
+            "pizza",
+            "cake"
+          ]
+        }
+      }
+    },
+    "desk-coffee-laptop-notebook": {
+      "hash": "22a96889b950",
+      "def": {
+        "description": "white laptop, coffee cup and yellow flowers on a white desk",
+        "metadata": {
+          "id": "desk-coffee-laptop-notebook"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/desk-coffee-laptop-notebook.jpg",
+          "expected": [
+            [
+              "laptop",
+              "computer"
+            ],
+            "flower",
+            [
+              "cup",
+              "coffee",
+              "mug"
+            ],
+            [
+              "desk",
+              "table"
+            ],
+            [
+              "vase",
+              "glass"
+            ]
+          ],
+          "absent": [
+            "phone",
+            "dog"
+          ]
+        }
+      }
+    },
+    "desk-laptop-notebook-pen": {
+      "hash": "a7e46081872d",
+      "def": {
+        "description": "laptop, notebook, sticky notes, pen and highlighter on a desk",
+        "metadata": {
+          "id": "desk-laptop-notebook-pen"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/desk-laptop-notebook-pen.jpg",
+          "expected": [
+            [
+              "laptop",
+              "computer",
+              "keyboard"
+            ],
+            [
+              "sticky note",
+              "post-it",
+              "note"
+            ],
+            "pen",
+            [
+              "notebook",
+              "notepad",
+              "paper"
+            ],
+            [
+              "highlighter",
+              "marker"
+            ],
+            [
+              "desk",
+              "table",
+              "wood"
+            ]
+          ],
+          "absent": [
+            "coffee",
+            "phone"
+          ]
+        }
+      }
+    },
+    "desk-laptop-top-down": {
+      "hash": "ca0e978aa05b",
+      "def": {
+        "description": "top-down laptop with a notebook, pencil and ruler",
+        "metadata": {
+          "id": "desk-laptop-top-down"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/desk-laptop-top-down.jpg",
+          "expected": [
+            [
+              "laptop",
+              "macbook",
+              "computer"
+            ],
+            [
+              "notebook",
+              "notepad",
+              "book"
+            ],
+            [
+              "pencil",
+              "pen"
+            ],
+            "ruler",
+            [
+              "desk",
+              "table",
+              "workspace"
+            ]
+          ],
+          "absent": [
+            "coffee",
+            "phone"
+          ]
+        }
+      }
+    },
+    "diner-snow-night": {
+      "hash": "87618f942b59",
+      "def": {
+        "description": "Waffle House diner at night on a wet street with snow",
+        "metadata": {
+          "id": "diner-snow-night"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/diner-snow-night.jpg",
+          "expected": [
+            [
+              "waffle house",
+              "diner",
+              "restaurant"
+            ],
+            [
+              "night",
+              "nighttime"
+            ],
+            [
+              "street",
+              "road",
+              "parking lot"
+            ],
+            "snow",
+            [
+              "sign",
+              "light",
+              "streetlight"
+            ]
+          ],
+          "absent": [
+            "day",
+            "beach"
+          ]
+        }
+      }
+    },
+    "dog-autumn-sun": {
+      "hash": "fece20c742ef",
+      "def": {
+        "description": "dog with a blue collar asleep in the sun outdoors",
+        "metadata": {
+          "id": "dog-autumn-sun"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-autumn-sun.jpg",
+          "expected": [
+            "dog",
+            "collar",
+            [
+              "sleeping",
+              "asleep",
+              "resting",
+              "lying",
+              "nap"
+            ],
+            [
+              "outdoor",
+              "garden",
+              "yard",
+              "stone",
+              "rock"
+            ]
+          ],
+          "absent": [
+            "cat",
+            "bed"
+          ]
+        }
+      }
+    },
+    "dog-border-terrier": {
+      "hash": "f512c57967a0",
+      "def": {
+        "description": "close-up of a sleeping terrier, paws in front",
+        "metadata": {
+          "id": "dog-border-terrier"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-border-terrier.jpg",
+          "expected": [
+            [
+              "dog",
+              "terrier"
+            ],
+            "paw",
+            [
+              "sleeping",
+              "asleep",
+              "resting",
+              "lying"
+            ],
+            "fur"
+          ],
+          "absent": [
+            "cat",
+            "grass"
+          ]
+        }
+      }
+    },
+    "dog-in-dog-bed": {
+      "hash": "eaf46ec9fb43",
+      "def": {
+        "description": "small dog asleep in a dog bed",
+        "metadata": {
+          "id": "dog-in-dog-bed"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-in-dog-bed.jpg",
+          "expected": [
+            [
+              "dog",
+              "puppy"
+            ],
+            [
+              "dog bed",
+              "pet bed",
+              "bed",
+              "cushion"
+            ],
+            [
+              "sleeping",
+              "asleep",
+              "resting",
+              "lying"
+            ]
+          ],
+          "absent": [
+            "cat",
+            "grass"
+          ]
+        }
+      }
+    },
+    "dog-sleeping-painting": {
+      "hash": "4964ee8ac11b",
+      "def": {
+        "description": "painting of a sleeping dog beside a pot and basket",
+        "metadata": {
+          "id": "dog-sleeping-painting"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-sleeping-painting.jpg",
+          "expected": [
+            [
+              "dog",
+              "puppy"
+            ],
+            [
+              "sleeping",
+              "asleep",
+              "resting"
+            ],
+            [
+              "painting",
+              "oil painting",
+              "artwork",
+              "art"
+            ],
+            [
+              "pot",
+              "jug",
+              "vase",
+              "pottery",
+              "jar"
+            ],
+            [
+              "basket",
+              "sticks",
+              "firewood",
+              "kindling",
+              "wood"
+            ]
+          ],
+          "absent": [
+            "cat",
+            "photo"
+          ]
+        }
+      }
+    },
+    "forest-trail": {
+      "hash": "ceb212f7f2bd",
+      "def": {
+        "description": "dirt trail through a green forest",
+        "metadata": {
+          "id": "forest-trail"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/forest-trail.jpg",
+          "expected": [
+            [
+              "forest",
+              "woods",
+              "woodland"
+            ],
+            [
+              "trail",
+              "path",
+              "footpath"
+            ],
+            "tree",
+            [
+              "green",
+              "nature",
+              "summer",
+              "leaf",
+              "foliage"
+            ]
+          ],
+          "absent": [
+            "snow",
+            "city"
+          ]
+        }
+      }
+    },
+    "horses-flooded-pasture": {
+      "hash": "3e4c4af3122c",
+      "def": {
+        "description": "silhouettes of two horses grazing by floodwater",
+        "metadata": {
+          "id": "horses-flooded-pasture"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/horses-flooded-pasture.jpg",
+          "expected": [
+            "horse",
+            [
+              "water",
+              "flood",
+              "lake",
+              "river"
+            ],
+            [
+              "silhouette",
+              "reflection"
+            ],
+            [
+              "grazing",
+              "pasture",
+              "field",
+              "grass"
+            ]
+          ],
+          "absent": [
+            "cow",
+            "dog"
+          ]
+        }
+      }
+    },
+    "horses-pasture-house": {
+      "hash": "c001b6b36b93",
+      "def": {
+        "description": "two horses in a pasture before a farmhouse",
+        "metadata": {
+          "id": "horses-pasture-house"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/horses-pasture-house.jpg",
+          "expected": [
+            "horse",
+            [
+              "house",
+              "farmhouse",
+              "farm",
+              "building"
+            ],
+            [
+              "pasture",
+              "field",
+              "meadow",
+              "grass"
+            ],
+            [
+              "fence",
+              "tree"
+            ]
+          ],
+          "absent": [
+            "cow",
+            "car"
+          ]
+        }
+      }
+    },
+    "kitchen-historic-bw": {
+      "hash": "a58328975a3d",
+      "def": {
+        "description": "black-and-white photo of an old kitchen",
+        "metadata": {
+          "id": "kitchen-historic-bw"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/kitchen-historic-bw.jpg",
+          "expected": [
+            "kitchen",
+            [
+              "black and white",
+              "monochrome",
+              "black-and-white",
+              "bw"
+            ],
+            [
+              "sink",
+              "cabinet",
+              "cupboard",
+              "counter"
+            ],
+            "window",
+            [
+              "stove",
+              "refrigerator",
+              "fridge",
+              "oven",
+              "appliance",
+              "chair",
+              "stool"
+            ]
+          ],
+          "absent": [
+            "color",
+            "person"
+          ]
+        }
+      }
+    },
+    "lake-salagou": {
+      "hash": "7c47ca4675da",
+      "def": {
+        "description": "lake shore with bare trees and a rocky hill under clouds",
+        "metadata": {
+          "id": "lake-salagou"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lake-salagou.jpg",
+          "expected": [
+            [
+              "lake",
+              "water",
+              "reservoir"
+            ],
+            "tree",
+            [
+              "cloud",
+              "sky"
+            ],
+            [
+              "hill",
+              "rock",
+              "mountain"
+            ],
+            [
+              "landscape",
+              "nature",
+              "shore",
+              "reflection"
+            ]
+          ],
+          "absent": [
+            "city",
+            "snow"
+          ]
+        }
+      }
+    },
+    "lake-sherburne": {
+      "hash": "c2b79a5cc29d",
+      "def": {
+        "description": "panorama of snowy peaks reflected in a mountain lake",
+        "metadata": {
+          "id": "lake-sherburne"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lake-sherburne.jpg",
+          "expected": [
+            "mountain",
+            [
+              "lake",
+              "water"
+            ],
+            "reflection",
+            [
+              "snow",
+              "snowcap",
+              "snow-capped"
+            ],
+            [
+              "landscape",
+              "panorama",
+              "nature",
+              "sky"
+            ]
+          ],
+          "absent": [
+            "city",
+            "beach"
+          ]
+        }
+      }
+    },
+    "laptop-notepad": {
+      "hash": "5ed5271056c7",
+      "def": {
+        "description": "laptop and a notepad with a pen on a wooden desk",
+        "metadata": {
+          "id": "laptop-notepad"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/laptop-notepad.jpg",
+          "expected": [
+            [
+              "laptop",
+              "computer"
+            ],
+            [
+              "notepad",
+              "notebook",
+              "paper",
+              "pad"
+            ],
+            "pen",
+            [
+              "desk",
+              "table",
+              "wood"
+            ]
+          ],
+          "absent": [
+            "phone",
+            "coffee"
+          ]
+        }
+      }
+    },
+    "letter-handwritten-short": {
+      "hash": "43fd2bbd3ecf",
+      "def": {
+        "description": "short handwritten letter signed \"Jack\"",
+        "metadata": {
+          "id": "letter-handwritten-short"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/letter-handwritten-short.jpg",
+          "expected": [
+            [
+              "letter",
+              "note"
+            ],
+            [
+              "handwriting",
+              "handwritten",
+              "cursive",
+              "script"
+            ],
+            [
+              "paper",
+              "document",
+              "page"
+            ],
+            [
+              "ink",
+              "black and white",
+              "text"
+            ]
+          ],
+          "absent": [
+            "typed",
+            "photo of a person"
+          ]
+        }
+      }
+    },
+    "library-laukaa": {
+      "hash": "e57a74daa6fd",
+      "def": {
+        "description": "bright public library with shelves and a desk",
+        "metadata": {
+          "id": "library-laukaa"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/library-laukaa.jpg",
+          "expected": [
+            "library",
+            [
+              "bookshelf",
+              "shelf",
+              "shelves",
+              "bookcase",
+              "book"
+            ],
+            [
+              "desk",
+              "table",
+              "computer"
+            ],
+            "chair",
+            [
+              "ceiling",
+              "light",
+              "interior",
+              "indoor"
+            ]
+          ],
+          "absent": [
+            "outdoor",
+            "bed"
+          ]
+        }
+      }
+    },
+    "library-stacks-vasconcelos": {
+      "hash": "bdb8ab9bd65e",
+      "def": {
+        "description": "multi-level library stacks with walkways",
+        "metadata": {
+          "id": "library-stacks-vasconcelos"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/library-stacks-vasconcelos.jpg",
+          "expected": [
+            "library",
+            [
+              "book",
+              "bookshelf",
+              "shelf",
+              "shelves",
+              "stack"
+            ],
+            [
+              "walkway",
+              "corridor",
+              "hallway",
+              "aisle",
+              "balcony"
+            ],
+            [
+              "architecture",
+              "interior",
+              "modern"
+            ]
+          ],
+          "absent": [
+            "outdoor",
+            "tree"
+          ]
+        }
+      }
+    },
+    "millipede-moss": {
+      "hash": "90348779514d",
+      "def": {
+        "description": "millipede crawling over moss and gravel",
+        "metadata": {
+          "id": "millipede-moss"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/millipede-moss.jpg",
+          "expected": [
+            [
+              "millipede",
+              "centipede",
+              "insect",
+              "bug",
+              "arthropod"
+            ],
+            "moss",
+            [
+              "ground",
+              "gravel",
+              "soil",
+              "rock",
+              "stone",
+              "dirt"
+            ],
+            [
+              "nature",
+              "forest",
+              "leaf",
+              "macro",
+              "close-up",
+              "closeup"
+            ]
+          ],
+          "absent": [
+            "snake",
+            "worm"
+          ]
+        }
+      }
+    },
+    "mountain-lake-dam": {
+      "hash": "120b106deed9",
+      "def": {
+        "description": "turquoise reservoir between steep forested mountains",
+        "metadata": {
+          "id": "mountain-lake-dam"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/mountain-lake-dam.jpg",
+          "expected": [
+            [
+              "mountain",
+              "alps"
+            ],
+            [
+              "lake",
+              "reservoir",
+              "water"
+            ],
+            [
+              "snow",
+              "glacier"
+            ],
+            [
+              "forest",
+              "tree",
+              "pine"
+            ],
+            [
+              "valley",
+              "landscape",
+              "cloud",
+              "sky"
+            ]
+          ],
+          "absent": [
+            "city",
+            "beach"
+          ]
+        }
+      }
+    },
+    "pancakes-breakfast-table": {
+      "hash": "1f3fe98b3837",
+      "def": {
+        "description": "breakfast table with pancakes and hot chocolate",
+        "metadata": {
+          "id": "pancakes-breakfast-table"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/pancakes-breakfast-table.jpg",
+          "expected": [
+            "pancake",
+            "breakfast",
+            [
+              "mug",
+              "cup"
+            ],
+            [
+              "plate",
+              "dish"
+            ],
+            "table",
+            [
+              "hot chocolate",
+              "cocoa",
+              "coffee",
+              "drink"
+            ]
+          ],
+          "absent": [
+            "dog",
+            "pizza"
+          ]
+        }
+      }
+    },
+    "pancakes-stack": {
+      "hash": "edba514a5210",
+      "def": {
+        "description": "stack of pancakes with cream and syrup",
+        "metadata": {
+          "id": "pancakes-stack"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/pancakes-stack.jpg",
+          "expected": [
+            "pancake",
+            [
+              "cream",
+              "whipped cream"
+            ],
+            [
+              "syrup",
+              "maple syrup"
+            ],
+            "plate",
+            [
+              "breakfast",
+              "food"
+            ]
+          ],
+          "absent": [
+            "waffle",
+            "pizza"
+          ]
+        }
+      }
+    },
+    "parrot-illustration": {
+      "hash": "d05cf1015b25",
+      "def": {
+        "description": "botanical-style illustration of a green parrot on a branch",
+        "metadata": {
+          "id": "parrot-illustration"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/parrot-illustration.jpg",
+          "expected": [
+            [
+              "parrot",
+              "amazon"
+            ],
+            "bird",
+            "green",
+            [
+              "branch",
+              "perch"
+            ],
+            [
+              "illustration",
+              "drawing",
+              "painting",
+              "print",
+              "artwork",
+              "art"
+            ]
+          ],
+          "absent": [
+            "photo",
+            "cage"
+          ]
+        }
+      }
+    },
+    "railway-station-dark": {
+      "hash": "674e1c09c16e",
+      "def": {
+        "description": "empty bench on a dark railway platform",
+        "metadata": {
+          "id": "railway-station-dark"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/railway-station-dark.jpg",
+          "expected": [
+            [
+              "station",
+              "railway station",
+              "train station",
+              "platform",
+              "subway"
+            ],
+            "bench",
+            [
+              "dark",
+              "night"
+            ],
+            "empty"
+          ],
+          "absent": [
+            "beach",
+            "day"
+          ]
+        }
+      }
+    },
+    "recipe-daffys-elixir": {
+      "hash": "b9e2f1a1925e",
+      "def": {
+        "description": "old handwritten recipe in brown ink",
+        "metadata": {
+          "id": "recipe-daffys-elixir"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recipe-daffys-elixir.jpg",
+          "expected": [
+            [
+              "recipe",
+              "receipt",
+              "instruction"
+            ],
+            [
+              "handwriting",
+              "handwritten",
+              "manuscript",
+              "cursive",
+              "script"
+            ],
+            [
+              "paper",
+              "page",
+              "document",
+              "parchment"
+            ],
+            [
+              "old",
+              "antique",
+              "historical",
+              "vintage",
+              "ink",
+              "aged"
+            ]
+          ],
+          "absent": [
+            "typed",
+            "printed"
+          ]
+        }
+      }
+    },
+    "recipe-rheumatism": {
+      "hash": "9d61ef662fec",
+      "def": {
+        "description": "old handwritten medical recipe for rheumatism",
+        "metadata": {
+          "id": "recipe-rheumatism"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recipe-rheumatism.jpg",
+          "expected": [
+            [
+              "recipe",
+              "receipt",
+              "remedy",
+              "prescription",
+              "instruction"
+            ],
+            [
+              "handwriting",
+              "handwritten",
+              "manuscript",
+              "cursive",
+              "script"
+            ],
+            [
+              "paper",
+              "page",
+              "document",
+              "parchment"
+            ],
+            [
+              "old",
+              "antique",
+              "historical",
+              "vintage",
+              "ink",
+              "aged"
+            ]
+          ],
+          "absent": [
+            "typed",
+            "printed"
+          ]
+        }
+      }
+    },
+    "salad-ham": {
+      "hash": "94ae55ca42a7",
+      "def": {
+        "description": "plate of sliced ham with salad",
+        "metadata": {
+          "id": "salad-ham"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/salad-ham.jpg",
+          "expected": [
+            [
+              "ham",
+              "meat",
+              "pork"
+            ],
+            "salad",
+            "plate",
+            [
+              "lettuce",
+              "greens",
+              "leaves"
+            ],
+            [
+              "food",
+              "meal",
+              "dish"
+            ]
+          ],
+          "absent": [
+            "dog",
+            "pizza"
+          ]
+        }
+      }
+    },
+    "salad-party-dish": {
+      "hash": "085fae02d0aa",
+      "def": {
+        "description": "caprese salad on a platter",
+        "metadata": {
+          "id": "salad-party-dish"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/salad-party-dish.jpg",
+          "expected": [
+            "tomato",
+            [
+              "mozzarella",
+              "cheese"
+            ],
+            [
+              "basil",
+              "spinach",
+              "greens",
+              "herb"
+            ],
+            "salad",
+            [
+              "plate",
+              "platter",
+              "dish"
+            ],
+            "fork"
+          ],
+          "absent": [
+            "meat",
+            "bread"
+          ]
+        }
+      }
+    },
+    "salad-rucola-plate": {
+      "hash": "53aa82719a21",
+      "def": {
+        "description": "pasta salad with tomatoes and rocket",
+        "metadata": {
+          "id": "salad-rucola-plate"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/salad-rucola-plate.jpg",
+          "expected": [
+            [
+              "pasta",
+              "penne"
+            ],
+            "tomato",
+            [
+              "rocket",
+              "arugula",
+              "rucola",
+              "greens",
+              "leaves"
+            ],
+            [
+              "salad",
+              "food",
+              "dish"
+            ],
+            [
+              "plate",
+              "spoon"
+            ]
+          ],
+          "absent": [
+            "rice",
+            "meat"
+          ]
+        }
+      }
+    },
+    "sidewalk-cafe": {
+      "hash": "8419c60177df",
+      "def": {
+        "description": "cafe table with espresso cups on a town street",
+        "metadata": {
+          "id": "sidewalk-cafe"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sidewalk-cafe.jpg",
+          "expected": [
+            [
+              "coffee",
+              "espresso"
+            ],
+            "cup",
+            [
+              "cafe",
+              "café",
+              "restaurant",
+              "terrace",
+              "outdoor seating"
+            ],
+            "table",
+            "car",
+            [
+              "building",
+              "street",
+              "town"
+            ]
+          ],
+          "absent": [
+            "beach",
+            "mountain"
+          ]
+        }
+      }
+    },
+    "snow-forest-trail": {
+      "hash": "a07cdfaae19a",
+      "def": {
+        "description": "snowy trail through fir trees under a bright sun",
+        "metadata": {
+          "id": "snow-forest-trail"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/snow-forest-trail.jpg",
+          "expected": [
+            [
+              "snow",
+              "winter"
+            ],
+            [
+              "tree",
+              "fir",
+              "pine",
+              "evergreen",
+              "conifer",
+              "forest"
+            ],
+            [
+              "sun",
+              "sunshine",
+              "sky"
+            ],
+            [
+              "trail",
+              "path",
+              "track"
+            ]
+          ],
+          "absent": [
+            "beach",
+            "city"
+          ]
+        }
+      }
+    },
+    "street-night-rostov": {
+      "hash": "460eb2977375",
+      "def": {
+        "description": "empty city avenue at night under street lamps",
+        "metadata": {
+          "id": "street-night-rostov"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/street-night-rostov.jpg",
+          "expected": [
+            [
+              "street",
+              "road",
+              "avenue"
+            ],
+            [
+              "night",
+              "nighttime"
+            ],
+            [
+              "streetlight",
+              "street lamp",
+              "lamp",
+              "light"
+            ],
+            "tree",
+            [
+              "empty",
+              "city",
+              "urban"
+            ]
+          ],
+          "absent": [
+            "beach",
+            "snow"
+          ]
+        }
+      }
+    },
+    "sunset-beach-colonia": {
+      "hash": "7a97bb2a6b22",
+      "def": {
+        "description": "beach at dusk with a lone tree on the water",
+        "metadata": {
+          "id": "sunset-beach-colonia"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sunset-beach-colonia.jpg",
+          "expected": [
+            [
+              "sunset",
+              "dusk",
+              "twilight"
+            ],
+            [
+              "beach",
+              "shore",
+              "coast"
+            ],
+            [
+              "water",
+              "sea",
+              "ocean",
+              "river",
+              "lake"
+            ],
+            [
+              "tree",
+              "silhouette"
+            ],
+            "sky"
+          ],
+          "absent": [
+            "boat",
+            "mountain"
+          ]
+        }
+      }
+    },
+    "sunset-boats": {
+      "hash": "7dc66514c1be",
+      "def": {
+        "description": "boats moored in a bay at sunset",
+        "metadata": {
+          "id": "sunset-boats"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sunset-boats.jpg",
+          "expected": [
+            [
+              "boat",
+              "ship",
+              "fishing boat"
+            ],
+            [
+              "sunset",
+              "sunrise",
+              "sun"
+            ],
+            [
+              "sea",
+              "ocean",
+              "water",
+              "bay"
+            ],
+            [
+              "beach",
+              "shore",
+              "sand"
+            ],
+            [
+              "sky",
+              "horizon"
+            ]
+          ],
+          "absent": [
+            "mountain",
+            "city"
+          ]
+        }
+      }
+    },
+    "train-ticket-chinese": {
+      "hash": "6613cd82973c",
+      "def": {
+        "description": "Guangzhou–Hung Hom through-train ticket with a QR code",
+        "metadata": {
+          "id": "train-ticket-chinese"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/train-ticket-chinese.jpg",
+          "expected": [
+            [
+              "ticket",
+              "train ticket",
+              "railway ticket"
+            ],
+            [
+              "train",
+              "railway",
+              "rail"
+            ],
+            [
+              "qr code",
+              "qr",
+              "barcode"
+            ],
+            [
+              "chinese",
+              "china",
+              "hong kong",
+              "kowloon",
+              "guangzhou"
+            ],
+            [
+              "price",
+              "hk$",
+              "seat",
+              "coach",
+              "date",
+              "pink"
+            ]
+          ],
+          "absent": [
+            "receipt",
+            "envelope"
+          ]
+        }
+      }
+    },
+    "train-ticket-french": {
+      "hash": "951ac808eeb4",
+      "def": {
+        "description": "green second-class SNCFT train ticket from Tunis to Hammamet",
+        "metadata": {
+          "id": "train-ticket-french"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/train-ticket-french.jpg",
+          "expected": [
+            [
+              "ticket",
+              "train ticket",
+              "railway ticket"
+            ],
+            [
+              "train",
+              "railway",
+              "rail"
+            ],
+            [
+              "french",
+              "tunisia",
+              "tunisian",
+              "sncft"
+            ],
+            [
+              "second class",
+              "2nd class",
+              "paper",
+              "punched",
+              "hole",
+              "green"
+            ]
+          ],
+          "absent": [
+            "receipt",
+            "envelope"
+          ]
+        }
+      }
+    },
+    "tree-bracket-fungus": {
+      "hash": "b7ed2a66a753",
+      "def": {
+        "description": "tree trunk with bracket fungi in a forest",
+        "metadata": {
+          "id": "tree-bracket-fungus"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/tree-bracket-fungus.jpg",
+          "expected": [
+            [
+              "tree",
+              "trunk"
+            ],
+            [
+              "fungus",
+              "fungi",
+              "mushroom",
+              "bracket fungus",
+              "shelf fungus"
+            ],
+            [
+              "forest",
+              "woods"
+            ],
+            [
+              "bark",
+              "green",
+              "nature"
+            ]
+          ],
+          "absent": [
+            "snow",
+            "animal"
+          ]
+        }
+      }
+    }
+  }
+}

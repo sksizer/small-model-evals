@@ -1,0 +1,5 @@
+description: "no nudity: handwriting"
+metadata: { id: recipe-daffys-elixir }
+vars:
+  image: file://../../corpus/images/recipe-daffys-elixir.jpg
+  expected: { nudity: 'no' }

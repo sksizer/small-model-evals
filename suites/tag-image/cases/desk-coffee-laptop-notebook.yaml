@@ -1,0 +1,11 @@
+description: "white laptop, coffee cup and yellow flowers on a white desk"
+metadata: { id: desk-coffee-laptop-notebook }
+vars:
+  image: file://../../corpus/images/desk-coffee-laptop-notebook.jpg
+  expected:
+    - [laptop, computer]
+    - flower
+    - [cup, coffee, mug]
+    - [desk, table]
+    - [vase, glass]
+  absent: [phone, dog]

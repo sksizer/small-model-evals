@@ -1,0 +1,7 @@
+description: a fraction of a cup and counted vegetables
+metadata: { id: hummus-and-carrots }
+vars:
+  note: "half a cup of hummus with 3 carrots"
+  expected:
+    - { text: [hummus], food: [hummus], kcal_100g: 207, grams: { approx: 123, tol: 20 } }
+    - { text: [carrot], food: [carrot], kcal_100g: 41, grams: { approx: 183, tol: 45 } }

@@ -1,0 +1,7 @@
+description: no workout happened; nothing to log
+metadata: { id: skipped-no-workout }
+vars:
+  log: "skipped the gym today, too tired. will do legs tomorrow"
+  expected:
+    activity: null
+    exercises: []

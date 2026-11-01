@@ -1,0 +1,12 @@
+description: "caprese salad on a platter"
+metadata: { id: salad-party-dish }
+vars:
+  image: file://../../corpus/images/salad-party-dish.jpg
+  expected:
+    - tomato
+    - [mozzarella, cheese]
+    - [basil, spinach, greens, herb]
+    - salad
+    - [plate, platter, dish]
+    - fork
+  absent: [meat, bread]

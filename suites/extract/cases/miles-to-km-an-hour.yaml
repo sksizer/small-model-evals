@@ -1,0 +1,5 @@
+description: miles to km, an hour
+metadata: { id: miles-to-km-an-hour }
+vars:
+  note: walked the dog 2.5 miles, took about an hour
+  expected: { kind: workout, date: ['2026-10-29', null], duration_min: 60, distance_km: { approx: 4.02, tol: 0.1 } }

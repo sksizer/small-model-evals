@@ -1,0 +1,5 @@
+description: "no nudity: scenes"
+metadata: { id: railway-station-dark }
+vars:
+  image: file://../../corpus/images/railway-station-dark.jpg
+  expected: { nudity: 'no' }

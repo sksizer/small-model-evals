@@ -1,0 +1,11 @@
+description: "Waffle House diner at night on a wet street with snow"
+metadata: { id: diner-snow-night }
+vars:
+  image: file://../../corpus/images/diner-snow-night.jpg
+  expected:
+    - [waffle house, diner, restaurant]
+    - [night, nighttime]
+    - [street, road, parking lot]
+    - snow
+    - [sign, light, streetlight]
+  absent: [day, beach]

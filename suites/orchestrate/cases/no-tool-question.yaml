@@ -1,0 +1,4 @@
+metadata: { id: no-tool-question }
+vars:
+  request: what does BYOK stand for?
+  tool: none

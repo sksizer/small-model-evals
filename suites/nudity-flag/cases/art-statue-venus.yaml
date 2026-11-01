@@ -1,0 +1,5 @@
+description: "no nudity: nude art: art-statue-venus"
+metadata: { id: art-statue-venus }
+vars:
+  image: file://../../corpus/images/art-statue-venus.jpg
+  expected: { nudity: 'no' }

@@ -1,0 +1,5 @@
+description: a run with time and distance
+metadata: { id: run-log }
+vars:
+  input: "ran 5k this morning, 27 min"
+  expected: { handler: workout, large: 'no' }

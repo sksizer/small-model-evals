@@ -1,0 +1,5 @@
+description: synthesis across a year of notes
+metadata: { id: sleep-synthesis }
+vars:
+  input: "summarise everything I wrote about my sleep this year and tell me what seems to help"
+  expected: { handler: assistant, large: 'yes' }

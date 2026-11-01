@@ -1,0 +1,6 @@
+description: a drink in millilitres
+metadata: { id: milk-millilitres }
+vars:
+  note: "glass of 2% milk, about 250 ml"
+  expected:
+    - { text: [milk], food: [milk], kcal_100g: 50, grams: { approx: 255, tol: 15 } }

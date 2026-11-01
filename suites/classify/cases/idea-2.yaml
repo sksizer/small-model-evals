@@ -1,0 +1,4 @@
+metadata: { id: idea-2 }
+vars:
+  item: "App idea: a habit tracker that uses photos as check-ins"
+  expected: { label: idea }

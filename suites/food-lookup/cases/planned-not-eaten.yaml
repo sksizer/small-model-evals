@@ -1,0 +1,7 @@
+description: ignore a planned meal; an unstated amount of berries
+metadata: { id: planned-not-eaten }
+vars:
+  note: "had a greek yogurt with blueberries. planning pasta for dinner"
+  expected:
+    - { text: [yogurt, yoghurt], food: [yogurt], kcal_100g: 66, grams: { approx: 170, tol: 50 } }
+    - { text: [blueberries, blueberry], food: [blueberries], kcal_100g: 57 }

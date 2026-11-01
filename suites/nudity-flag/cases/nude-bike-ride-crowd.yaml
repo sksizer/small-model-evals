@@ -1,0 +1,5 @@
+description: "nude: nude-bike-ride-crowd"
+metadata: { id: nude-bike-ride-crowd }
+vars:
+  image: file://../../corpus/images/nude-bike-ride-crowd.jpg
+  expected: { nudity: 'yes' }

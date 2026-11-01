@@ -1,0 +1,5 @@
+metadata: { id: search-sourdough }
+vars:
+  request: what did I write about sourdough?
+  tool: search_notes
+  args: { query: { contains: sourdough } }

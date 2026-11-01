@@ -1,0 +1,10 @@
+description: "two horses in a pasture before a farmhouse"
+metadata: { id: horses-pasture-house }
+vars:
+  image: file://../../corpus/images/horses-pasture-house.jpg
+  expected:
+    - horse
+    - [house, farmhouse, farm, building]
+    - [pasture, field, meadow, grass]
+    - [fence, tree]
+  absent: [cow, car]

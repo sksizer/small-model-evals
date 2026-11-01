@@ -1,0 +1,7 @@
+description: drinks counted in cans
+metadata: { id: cans-of-drinks }
+vars:
+  note: "2 cans of coke and a beer at the game"
+  expected:
+    - { text: [coke, cola], food: [cola], kcal_100g: 42, grams: { approx: 740, tol: 60 } }
+    - { text: [beer], food: [beer], kcal_100g: 43, grams: { approx: 356, tol: 40 } }

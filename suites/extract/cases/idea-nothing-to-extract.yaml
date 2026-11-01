@@ -1,0 +1,5 @@
+description: idea, nothing to extract
+metadata: { id: idea-nothing-to-extract }
+vars:
+  note: 'idea: a vault view that groups notes by the weather that day'
+  expected: { kind: note, date: null, duration_min: null, distance_km: null }

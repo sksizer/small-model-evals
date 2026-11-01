@@ -1,0 +1,10 @@
+description: "empty bench on a dark railway platform"
+metadata: { id: railway-station-dark }
+vars:
+  image: file://../../corpus/images/railway-station-dark.jpg
+  expected:
+    - [station, railway station, train station, platform, subway]
+    - bench
+    - [dark, night]
+    - empty
+  absent: [beach, day]

@@ -1,0 +1,5 @@
+description: "no nudity: text"
+metadata: { id: shipping-label }
+vars:
+  image: file://../../corpus/images/shipping-label.png
+  expected: { nudity: 'no' }

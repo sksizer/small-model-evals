@@ -1,0 +1,5 @@
+description: "no nudity: pets"
+metadata: { id: dog-border-terrier }
+vars:
+  image: file://../../corpus/images/dog-border-terrier.jpg
+  expected: { nudity: 'no' }

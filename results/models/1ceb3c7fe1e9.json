@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/nsfw_image_detection-ONNX",
+  "digest": "1ceb3c7fe1e9",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "q8",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-classification"
+  ],
+  "default_parameters": {
+    "revision": "1ceb3c7fe1e9f3f2507e6df577437f23a9149fd5"
+  },
+  "template_hash": ""
+}

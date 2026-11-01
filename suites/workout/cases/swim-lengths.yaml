@@ -1,0 +1,9 @@
+description: swim counted in pool lengths
+metadata: { id: swim-lengths }
+vars:
+  log: "swam 40 lengths of the 25m pool, about 35 min"
+  expected:
+    date: '2026-10-29'
+    activity: swim
+    exercises:
+      - { name: [swim], distance_km: { approx: 1, tol: 0.01 }, duration_min: 35 }

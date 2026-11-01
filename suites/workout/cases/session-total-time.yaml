@@ -1,0 +1,12 @@
+description: a stated session length with mixed weights and kg/lb
+metadata: { id: session-total-time }
+vars:
+  log: "1hr upper body. incline db press 3x10 w/ 50lb dbs, lat pulldown 3x12 @ 55kg, face pulls 3x15 light"
+  expected:
+    date: '2026-10-29'
+    activity: strength
+    duration_min: 60
+    exercises:
+      - { name: [incline dumbbell press, incline press, incline bench], sets: '3x10@22.7' }
+      - { name: [lat pulldown, pulldown], sets: '3x12@55' }
+      - { name: [face pull], sets: '3x15' }

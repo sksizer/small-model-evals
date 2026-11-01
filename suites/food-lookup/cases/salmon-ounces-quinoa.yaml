@@ -1,0 +1,7 @@
+description: ounces to grams, a cup of a cooked grain
+metadata: { id: salmon-ounces-quinoa }
+vars:
+  note: "dinner was a 6 oz baked salmon fillet and a cup of quinoa"
+  expected:
+    - { text: [salmon], food: [salmon], kcal_100g: 206, grams: { approx: 170, tol: 10 } }
+    - { text: [quinoa], food: [quinoa], kcal_100g: 120, grams: { approx: 185, tol: 25 } }

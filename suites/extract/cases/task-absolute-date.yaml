@@ -1,0 +1,5 @@
+description: task with an absolute due date
+metadata: { id: task-absolute-date }
+vars:
+  note: remind me to renew passport by Nov 15
+  expected: { kind: task, date: '2026-11-15', duration_min: null, distance_km: null }

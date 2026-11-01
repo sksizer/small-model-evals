@@ -1,0 +1,12 @@
+description: strength, sets x reps at kg, bodyweight dips
+metadata: { id: push-day-kg }
+vars:
+  log: "Push day: bench 4x8 @ 60kg, OHP 3x10 at 35, tricep dips 3x12"
+  expected:
+    date: '2026-10-29'
+    activity: strength
+    duration_min: null
+    exercises:
+      - { name: [bench press, bench], sets: '4x8@60' }
+      - { name: [overhead press, shoulder press, military press], sets: '3x10@35' }
+      - { name: [dip], sets: '3x12' }

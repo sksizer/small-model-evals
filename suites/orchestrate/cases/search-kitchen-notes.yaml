@@ -1,0 +1,5 @@
+metadata: { id: search-kitchen-notes }
+vars:
+  request: find my notes about the kitchen renovation
+  tool: search_notes
+  args: { query: { contains: kitchen } }

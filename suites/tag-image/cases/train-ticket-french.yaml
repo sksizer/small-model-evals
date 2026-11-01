@@ -1,0 +1,10 @@
+description: "green second-class SNCFT train ticket from Tunis to Hammamet"
+metadata: { id: train-ticket-french }
+vars:
+  image: file://../../corpus/images/train-ticket-french.jpg
+  expected:
+    - [ticket, train ticket, railway ticket]
+    - [train, railway, rail]
+    - [french, tunisia, tunisian, sncft]
+    - [second class, "2nd class", paper, punched, hole, green]
+  absent: [receipt, envelope]

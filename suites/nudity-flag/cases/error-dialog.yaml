@@ -1,0 +1,5 @@
+description: "no nudity: text"
+metadata: { id: error-dialog }
+vars:
+  image: file://../../corpus/images/error-dialog.png
+  expected: { nudity: 'no' }

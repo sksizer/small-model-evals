@@ -1,0 +1,18 @@
+{
+  "tag": "AdamCodd/vit-base-nsfw-detector",
+  "digest": "8587de998f44",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "q8",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-classification"
+  ],
+  "default_parameters": {
+    "revision": "8587de998f441aac03fdd57a85d2e4cb808c7d64"
+  },
+  "template_hash": ""
+}

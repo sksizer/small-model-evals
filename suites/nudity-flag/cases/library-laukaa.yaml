@@ -1,0 +1,5 @@
+description: "no nudity: scenes"
+metadata: { id: library-laukaa }
+vars:
+  image: file://../../corpus/images/library-laukaa.jpg
+  expected: { nudity: 'no' }

@@ -1,0 +1,11 @@
+description: "plate of sliced ham with salad"
+metadata: { id: salad-ham }
+vars:
+  image: file://../../corpus/images/salad-ham.jpg
+  expected:
+    - [ham, meat, pork]
+    - salad
+    - plate
+    - [lettuce, greens, leaves]
+    - [food, meal, dish]
+  absent: [dog, pizza]

@@ -1,0 +1,5 @@
+description: "no nudity: nude art: art-painting-caillebotte"
+metadata: { id: art-painting-caillebotte }
+vars:
+  image: file://../../corpus/images/art-painting-caillebotte.jpg
+  expected: { nudity: 'no' }

@@ -1,0 +1,11 @@
+description: "lake shore with bare trees and a rocky hill under clouds"
+metadata: { id: lake-salagou }
+vars:
+  image: file://../../corpus/images/lake-salagou.jpg
+  expected:
+    - [lake, water, reservoir]
+    - tree
+    - [cloud, sky]
+    - [hill, rock, mountain]
+    - [landscape, nature, shore, reflection]
+  absent: [city, snow]

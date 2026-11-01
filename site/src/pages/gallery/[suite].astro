@@ -1,0 +1,109 @@
+---
+import Base from '../../layouts/Base.astro'
+import Compare from '../../components/Compare.astro'
+import Shot from '../../components/Shot.astro'
+import { data, href, imageSuites, modelSlug, show, type Suite } from '../../lib/data'
+
+export function getStaticPaths() {
+  return imageSuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
+}
+
+// Each image beside what every model read from it: the expected strings or
+// tags as chips, green when the model's reply has them, struck through when
+// not. The case's own expectations show above, so a case with no results yet
+// can be reviewed here too.
+const { suite } = Astro.props as { suite: Suite }
+const results = data.results.filter((r) => r.suite === suite.id)
+const models = [...new Set(results.map((r) => r.model))].sort()
+---
+
+<Base
+  title={`Gallery: ${suite.id}`}
+  description="Each image beside what every model read from it. Green chips were found in the reply; struck-through ones were missed; solid red ones are wrong tags the model gave. Open a reply to read it in full."
+>
+  <div class="controls">
+    <select id="g-model" aria-label="Model">
+      <option value="">All models</option>
+      {models.map((m) => <option value={m}>{m}</option>)}
+    </select>
+    <label><input type="checkbox" id="g-misses" /> Only results with misses</label>
+    <a href={href(`/suites/${suite.id}/`)}>Case grid →</a>
+  </div>
+  {
+    suite.cases
+      .filter((c) => c.input.image)
+      .map((c) => {
+        const rs = results.filter((r) => r.case === c.id)
+        return (
+          <section class="shot-case" id={c.id}>
+            <Shot path={c.input.image!} alt={c.description || c.id} wrapClass="shot-wrap" />
+            <div class="shot-body">
+              <h3>
+                <code>{c.id}</code> {c.description && <span class="muted">{c.description}</span>}
+              </h3>
+              <p class="expect">
+                <span class="muted">Expected:</span>{' '}
+                {Array.isArray(c.expected)
+                  ? c.expected.map((e) => <span class="want">{Array.isArray(e) ? e.join(' / ') : show(e)}</span>)
+                  : show(c.expected)}
+                {Array.isArray(c.absent) && c.absent.length > 0 && (
+                  <>
+                    <br />
+                    <span class="muted">Wrong if tagged:</span> {c.absent.map((a) => <span class="want no">{a}</span>)}
+                  </>
+                )}
+              </p>
+              {rs.length === 0 && <p class="muted">No results yet.</p>}
+              {rs.map((r) => (
+                <div class="read" data-model={r.model} data-miss={r.hits?.some((h) => !h.found) || r.wrong?.some((w) => w.found) ? '1' : '0'}>
+                  <div class="read-head">
+                    <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+                    <span class={`pill ${r.pass ? 'pass' : 'fail'}`}>
+                      {r.hits ? `${r.hits.filter((h) => h.found).length}/${r.hits.length}` : r.pass ? 'pass' : 'fail'}
+                    </span>
+                    <span class="muted">{(r.latency_ms / 1000).toFixed(1)} s</span>
+                  </div>
+                  <Compare result={r} />
+                  <details>
+                    <summary>Reply</summary>
+                    <pre>{r.output || '—'}</pre>
+                  </details>
+                </div>
+              ))}
+            </div>
+          </section>
+        )
+      })
+  }
+  <script>
+    const model = document.getElementById('g-model') as HTMLSelectElement
+    const misses = document.getElementById('g-misses') as HTMLInputElement
+    const apply = () => {
+      for (const el of document.querySelectorAll<HTMLElement>('.read')) {
+        el.hidden = (!!model.value && el.dataset['model'] !== model.value) || (misses.checked && el.dataset['miss'] !== '1')
+      }
+      for (const sec of document.querySelectorAll<HTMLElement>('.shot-case')) {
+        sec.hidden = ![...sec.querySelectorAll<HTMLElement>('.read')].some((r) => !r.hidden)
+      }
+    }
+    model.addEventListener('change', apply)
+    misses.addEventListener('change', apply)
+  </script>
+</Base>
+
+<style>
+  .shot-case {
+    display: grid; grid-template-columns: minmax(280px, 1fr) minmax(320px, 1fr); gap: 16px;
+    padding: 16px; margin: 16px 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  }
+  :global(.shot-wrap img) { width: 100%; max-height: 70vh; object-fit: contain; border: 1px solid var(--line); border-radius: 6px; position: sticky; top: 64px; }
+  .shot-body h3 { margin: 0 0 8px; font-size: 15px; }
+  .expect { margin: 0 0 8px; font-size: 13px; line-height: 2; }
+  .want { display: inline-block; margin: 0 4px 0 0; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; line-height: 1.6; }
+  .want.no { border-style: dashed; color: var(--muted); }
+  .read { padding: 8px 0; border-top: 1px solid var(--line); }
+  .read-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 12px; margin-top: 4px; }
+  label { color: var(--muted); font-size: 14px; display: flex; gap: 6px; align-items: center; }
+  @media (max-width: 760px) { .shot-case { grid-template-columns: 1fr; } }
+</style>

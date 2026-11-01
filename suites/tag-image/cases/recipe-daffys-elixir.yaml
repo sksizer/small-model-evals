@@ -1,0 +1,10 @@
+description: "old handwritten recipe in brown ink"
+metadata: { id: recipe-daffys-elixir }
+vars:
+  image: file://../../corpus/images/recipe-daffys-elixir.jpg
+  expected:
+    - [recipe, receipt, instruction]
+    - [handwriting, handwritten, manuscript, cursive, script]
+    - [paper, page, document, parchment]
+    - [old, antique, historical, vintage, ink, aged]
+  absent: [typed, printed]

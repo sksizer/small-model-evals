@@ -1,0 +1,5 @@
+metadata: { id: task-due-friday }
+vars:
+  request: add a task to email Sam about the invoice, due Friday
+  tool: create_task
+  args: { title: { contains: invoice }, due_date: '2026-10-30' }

@@ -1,0 +1,5 @@
+metadata: { id: log-run-30min-5k }
+vars:
+  request: log a 30 minute run, 5k
+  tool: log_workout
+  args: { activity: { contains: run }, duration_min: 30, distance_km: { approx: 5, tol: 0.05 } }

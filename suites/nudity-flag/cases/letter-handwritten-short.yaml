@@ -1,0 +1,5 @@
+description: "no nudity: handwriting"
+metadata: { id: letter-handwritten-short }
+vars:
+  image: file://../../corpus/images/letter-handwritten-short.jpg
+  expected: { nudity: 'no' }

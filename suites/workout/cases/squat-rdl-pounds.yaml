@@ -1,0 +1,10 @@
+description: strength in pounds, weight-first notation
+metadata: { id: squat-rdl-pounds }
+vars:
+  log: "squat 225x5x3, RDL 185 for 3 sets of 8"
+  expected:
+    date: '2026-10-29'
+    activity: strength
+    exercises:
+      - { name: [squat], sets: '3x5@102.1' }
+      - { name: [romanian deadlift, rdl], sets: '3x8@83.9' }

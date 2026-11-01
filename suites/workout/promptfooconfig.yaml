@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# workout: shape a free-form workout log into a structured session: date,
+# activity, duration and every exercise with each set written out. Logs are
+# written the way people type them: shorthand (3x5, 5/5/5, BP), pounds and
+# miles, typos, notes that are not exercise. Today is fixed so relative dates
+# have one right answer. Scored by assertions/workout.ts.
+description: workout — free-form log to structured sets
+
+prompts:
+  - |-
+    [{"role": "system", "content": "You turn a free-form workout log into one JSON session. Today is Thursday 2026-10-29.\n- date: the day the workout happened, YYYY-MM-DD; today when the log reads as today's; null when no workout happened.\n- activity: the session's main type (strength, run, ride, swim, walk, row, yoga, mixed for a session that combines types, other), or null when no workout happened.\n- duration_min: the whole session's length when the log states it, else null.\n- exercises: one entry per exercise, in order. name: the common lowercase name, spelled out (bench press, not BP). sets: one object per set performed, in order, so 3x5 is three sets; reps per set; weight_kg per set, converting pounds to kilograms (1 lb = 0.4536 kg), the weight of one dumbbell for dumbbell work, null for bodyweight; seconds for timed sets such as planks. For cardio, sets is empty and duration_min and distance_km describe it (1 mile = 1.609 km).\n- Use null for anything the log does not state. Leave out anything that is not exercise."},
+     {"role": "user", "content": {{ log | dump }}}]
+
+providers:
+  - id: ollama:chat:qwen3.5:4b
+    label: qwen3.5:4b
+    config: &config
+      temperature: 0
+      num_ctx: 8192
+      # Caps a reply that repeats itself; the longest right answer is ~600 tokens.
+      num_predict: 1536
+      think: false
+      format: &schema
+        type: object
+        required: [date, activity, duration_min, exercises]
+        properties:
+          date: { type: [string, 'null'] }
+          activity: { type: [string, 'null'], enum: [strength, run, ride, swim, walk, row, yoga, mixed, other, null] }
+          duration_min: { type: [number, 'null'] }
+          exercises:
+            type: array
+            items:
+              type: object
+              required: [name, sets, duration_min, distance_km]
+              properties:
+                name: { type: string }
+                sets:
+                  type: array
+                  items:
+                    type: object
+                    required: [reps, weight_kg, seconds]
+                    properties:
+                      reps: { type: [integer, 'null'] }
+                      weight_kg: { type: [number, 'null'] }
+                      seconds: { type: [number, 'null'] }
+                duration_min: { type: [number, 'null'] }
+                distance_km: { type: [number, 'null'] }
+  - { id: 'ollama:chat:qwen3.5:9b', label: qwen3.5:9b, config: *config }
+  - { id: 'ollama:chat:qwen3:4b', label: qwen3:4b, config: *config }
+  - { id: 'ollama:chat:gemma4:e4b', label: gemma4:e4b, config: *config }
+  - { id: 'ollama:chat:openbmb/minicpm5-2b:latest', label: minicpm5-2b, config: *config }
+  - { id: 'ollama:chat:granite4.2:3b', label: granite4.2:3b, config: *config }
+  - { id: 'ollama:chat:lfm3:1.7b', label: lfm3:1.7b, config: *config }
+  - id: ollama:chat:granite4:latest
+    label: granite4
+    config: { temperature: 0, num_ctx: 8192, num_predict: 1536, format: *schema }
+
+defaultTest:
+  assert:
+    - type: javascript
+      value: file://../../assertions/workout.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

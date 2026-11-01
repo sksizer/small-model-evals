@@ -1,0 +1,5 @@
+metadata: { id: open-tasks }
+vars:
+  request: open my task list
+  tool: open_view
+  args: { view: tasks }

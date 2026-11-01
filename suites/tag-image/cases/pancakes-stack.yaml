@@ -1,0 +1,11 @@
+description: "stack of pancakes with cream and syrup"
+metadata: { id: pancakes-stack }
+vars:
+  image: file://../../corpus/images/pancakes-stack.jpg
+  expected:
+    - pancake
+    - [cream, whipped cream]
+    - [syrup, maple syrup]
+    - plate
+    - [breakfast, food]
+  absent: [waffle, pizza]

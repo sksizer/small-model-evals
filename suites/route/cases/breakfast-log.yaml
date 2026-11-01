@@ -1,0 +1,5 @@
+description: a meal
+metadata: { id: breakfast-log }
+vars:
+  input: "2 eggs and toast for breakfast"
+  expected: { handler: food, large: 'no' }

@@ -1,0 +1,5 @@
+description: "no nudity: text"
+metadata: { id: jobs-table }
+vars:
+  image: file://../../corpus/images/jobs-table.png
+  expected: { nudity: 'no' }

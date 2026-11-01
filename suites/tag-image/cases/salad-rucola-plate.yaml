@@ -1,0 +1,11 @@
+description: "pasta salad with tomatoes and rocket"
+metadata: { id: salad-rucola-plate }
+vars:
+  image: file://../../corpus/images/salad-rucola-plate.jpg
+  expected:
+    - [pasta, penne]
+    - tomato
+    - [rocket, arugula, rucola, greens, leaves]
+    - [salad, food, dish]
+    - [plate, spoon]
+  absent: [rice, meat]

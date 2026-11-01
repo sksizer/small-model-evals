@@ -1,0 +1,5 @@
+description: a quote to keep
+metadata: { id: quote-note }
+vars:
+  input: "quote I liked: \"The obstacle is the way.\""
+  expected: { handler: note, large: 'no' }

@@ -1,0 +1,5 @@
+description: "no nudity: scenes"
+metadata: { id: kitchen-historic-bw }
+vars:
+  image: file://../../corpus/images/kitchen-historic-bw.jpg
+  expected: { nudity: 'no' }

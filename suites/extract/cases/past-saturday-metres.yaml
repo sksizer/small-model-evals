@@ -1,0 +1,5 @@
+description: past Saturday, metres
+metadata: { id: past-saturday-metres }
+vars:
+  note: Swam 1500m Saturday, 38 minutes
+  expected: { kind: workout, date: '2026-10-24', duration_min: 38, distance_km: { approx: 1.5, tol: 0.01 } }
