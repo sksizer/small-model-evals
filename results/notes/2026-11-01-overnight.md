@@ -25,8 +25,9 @@ Pass means F1 ≥ 0.7, with boxes matched at IoU ≥ 0.5 and the same label (`as
 
 - **The small vision LLMs box things well.** qwen3.5:4b and lfm3-vl:2b beat every dedicated
   detector on objects and named things. Their boxes are on a 0–1000 grid in [x0, y0, x1, y1];
-  gemma4 is read as [y0, x0, y1, x1] (its documented order) and still scores poorly. Either it
-  isn't following that order consistently, or it's genuinely weak at this. Worth a look at its raw replies.
+  gemma4 is read as [y0, x0, y1, x1] (its documented order) and still scores poorly. The order is
+  right: its boxes overlap the expected ones better as read (mean best IoU 0.39–0.59 across
+  objects, find and faces) than with the axes swapped (0.17–0.33). It's genuinely weak at boxing.
 - **Specialists win in their own lane:**
   - Florence-2 OCR found every text line on all 8 pages, at 0.99 F1.
   - YuNet matched the LLMs on faces in under 10 ms.
@@ -35,9 +36,9 @@ Pass means F1 ≥ 0.7, with boxes matched at IoU ≥ 0.5 and the same label (`as
   visual line (`ask` in the config), lfm3-vl got 5/8, but qwen3.5:4b still merges or misplaces
   lines (0/8, mean F1 0.11). The open-vocabulary detectors (OWLv2, Grounding DINO) can't do text
   lines at all.
-- **dfine-n is under-confident.** At threshold 0.3 it returns almost nothing (F1 0.11). dfine-s
-  at the same threshold is fine. Lowering dfine-n's threshold is a fair follow-up; it doesn't
-  justify a code change.
+- **dfine-n is just weak.** At threshold 0.5 it returns almost nothing (F1 0.11). Rerun at 0.3
+  (`dfine-n-t0.3`, 2026-11-02) it barely improves: 1/14, F1 0.16. dfine-s scores 5/14 through the same code,
+  so the threshold isn't the cause.
 - Fixed-class detectors (D-FINE, RT-DETR) need a label map: they use the old VOC names
   (`pottedplant`, `diningtable`, `tvmonitor`...).
 - Grounding DINO only works with one joined prompt (`"dog . car ."`); a label list errors in the

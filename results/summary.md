@@ -15,6 +15,7 @@ Each cell: cases passed / total · mean score (partial credit) · median latency
 | d1-omni:600m | n/a | n/a | n/a | 66/77 · 0.86 · 1.2 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | 6/18 · 0.53 · 0.1 s · 2026-11-01 | n/a | n/a |
 | d1:2b | n/a | n/a | n/a | 65/77 · 0.84 · 1.0 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | 15/18 · 0.89 · 0.2 s · 2026-11-01 | n/a | n/a |
 | dfine-n | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 0/14 · 0.11 · 0.0 s · 2026-11-01 | n/a | n/a | n/a | n/a |
+| dfine-n-t0.3 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 1/14 · 0.16 · 0.1 s · 2026-11-02 | n/a | n/a | n/a | n/a |
 | dfine-s | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 5/14 · 0.66 · 0.1 s · 2026-11-01 | n/a | n/a | n/a | n/a |
 | florence2-base-ground-q8 | n/a | n/a | n/a | n/a | n/a | n/a | 5/15 · 0.58 · 0.8 s · 2026-11-01 | 14/18 · 0.89 · 0.8 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a |
 | florence2-base-ocr-q8 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 8/8 · 0.99 · 1.8 s · 2026-11-01 | n/a | n/a | n/a |
