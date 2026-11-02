@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro'
-import { data, fmt, href, modelSlug, pct, qualitySuites, tone } from '../lib/data'
+import { data, fmt, fmtParams, href, modelSlug, pct, qualitySuites, tone } from '../lib/data'
 
 // One leaderboard per machine: a model's latest result on each suite, its
 // average pass rate, and its speed and memory at 8K context.
@@ -34,6 +34,9 @@ const machines = data.machines.map((m) => {
             <thead>
               <tr>
                 <th data-sort="text">Model</th>
+                <th data-sort="text">Kind</th>
+                <th data-sort="num" class="num" title="Total weights, from the Hugging Face metadata">Params</th>
+                <th data-sort="text">Licence</th>
                 {qualitySuites.map((s) => (
                   <th data-sort="num" class="num">
                     {s.id} <span class="muted">({s.cases.length})</span>
@@ -50,6 +53,10 @@ const machines = data.machines.map((m) => {
                   <td data-value={r.model}>
                     <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
                     {(() => {
+                      const url = data.models.find((x) => x.label === r.model)?.catalog?.url
+                      return url && <a href={url} title="Where to get it" aria-label={`Where to get ${r.model}`}> ↗</a>
+                    })()}
+                    {(() => {
                       const m = data.models.find((x) => x.label === r.model)
                       return (
                         <div class="muted" style="font-size:12px">
@@ -60,6 +67,16 @@ const machines = data.machines.map((m) => {
                       )
                     })()}
                   </td>
+                  {(() => {
+                    const cat = data.models.find((x) => x.label === r.model)?.catalog
+                    return (
+                      <>
+                        <td data-value={cat?.kind ?? ''} style="white-space:nowrap;font-size:12px">{cat?.kind ?? '—'}</td>
+                        <td class="num" data-value={cat?.parameters ?? -1} title={cat?.parameters_note} style="white-space:nowrap">{fmtParams(cat?.parameters)}</td>
+                        <td data-value={cat?.licence ?? ''} style="white-space:nowrap;font-size:12px">{cat?.licence ?? '—'}</td>
+                      </>
+                    )
+                  })()}
                   {qualitySuites.map((s) => {
                     const c = r.bySuite[s.id]
                     if (!c) return <td class="heat muted" data-value="-1">n/a</td>

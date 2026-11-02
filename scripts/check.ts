@@ -6,6 +6,7 @@
 // - a ledger record names a snapshot that does not exist;
 // - a record names an environment or model build with no frozen file;
 // - a ledger line at EVALS_BASE was changed or removed (lines may only be added);
+// - a registry model has no scripts/catalog.ts entry with url, kind, publisher and licence;
 // - a corpus image differs from the sha256 in corpus/manifest.json, or a case
 //   names a corpus image the manifest does not list.
 //
@@ -15,7 +16,9 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { spawnRunner } from '@osdlc/command-seam'
 import type { CorpusImage } from './fetch-corpus.ts'
+import { CATALOG } from './catalog.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
+import { MODELS } from './models.ts'
 import { LEDGER_DIR, ROOT, SCOPE, SUITES_DIR, listSnapshots, loadCases, readLedger, readSnapshot, snapshotIntegrity } from './ledger.ts'
 
 const problems: string[] = []
@@ -90,6 +93,16 @@ for (const suite of readdirSync(SUITES_DIR)) {
     // Private cases may also use the public corpus; those are checked in the public scope.
     if (m && !listed.has(m[1]!)) problems.push(`${suite}/${c.id}: image ${m[1]} is not in corpus/manifest.json`)
   }
+}
+
+// Catalogue: every registry model says where it comes from and under what licence.
+for (const m of MODELS) {
+  const c = CATALOG[m.label]
+  if (!c) problems.push(`${m.label}: in scripts/models.ts but has no entry in scripts/catalog.ts`)
+  else for (const k of ['url', 'kind', 'publisher', 'licence'] as const) if (!c[k]) problems.push(`${m.label}: scripts/catalog.ts entry lacks ${k}`)
+}
+for (const label of Object.keys(CATALOG)) {
+  if (!MODELS.some((m) => m.label === label)) problems.push(`${label}: in scripts/catalog.ts but not in scripts/models.ts`)
 }
 
 if (problems.length > 0) {
