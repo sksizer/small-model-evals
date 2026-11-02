@@ -87,3 +87,18 @@ counted correct when it is not flagged. Swimwear and everything else should also
 - Staleness is now per model. A result depends on the shared suite setup, that model's own
   provider entry, and the scorer files those reference. Previously, editing one provider file
   (`ollama-boxes.ts`) staled every detector in the same suite.
+
+## edit (added 2026-11-02)
+
+FLUX.2 klein 4B, 4-bit MLX build (`mflux-community/flux2-klein-4b-mflux-q4`, Apache 2.0), run by
+mflux 0.24.0. It passed 9 of 10 cases, taking 35–45 s per edit (4 steps, loading included) and
+peaking at about 11.5 GB of the 16 GB machine. It's the largest editor this machine can run: the
+other candidates are 9–20B (Qwen-Image-Edit, FLUX.2 klein 9B, Kontext) or gated under custom
+licences (FLUX 3 klein, Bria Fibo).
+
+- The only failure is real: asked to remove a bowl, it removed it but added a cup in its place.
+- The judge's yes/no answers matched what I saw on the edits I checked by eye (recolour, removal,
+  title text, pencil sketch).
+- Preservation outside the edit region was 3–12 out of 255. The armchair recolour came close to
+  the limit (11.7 of 12) because its region covers most of the image. The limit may need
+  revisiting once there are more edits.
