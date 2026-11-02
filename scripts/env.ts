@@ -173,6 +173,29 @@ export function freezeOnnxModel(id: string, revision: string, dtype: string): vo
   writeFileSync(path, `${JSON.stringify(model, null, 2)}\n`)
 }
 
+/** Writes an MLX image-editing model's details (run by the mflux CLI) once, keyed by its pinned revision. */
+export function freezeMfluxModel(id: string, revision: string, quantization: string, baseModel: string): void {
+  const digest = revision.slice(0, 12)
+  const path = join(MODEL_DIR, `${digest}.json`)
+  if (existsSync(path)) return
+  const model: ModelInfo = {
+    tag: id,
+    digest,
+    engine: 'mflux (MLX)',
+    format: 'safetensors',
+    family: baseModel,
+    quantization,
+    parameter_size: '4B',
+    parameter_count: null,
+    context_length: null,
+    capabilities: ['image-editing'],
+    default_parameters: { revision, base_model: baseModel },
+    template_hash: '',
+  }
+  mkdirSync(MODEL_DIR, { recursive: true })
+  writeFileSync(path, `${JSON.stringify(model, null, 2)}\n`)
+}
+
 /** Writes a model build's details once, keyed by its digest. */
 export async function freezeModel(tag: string, digest: string): Promise<void> {
   const path = join(MODEL_DIR, `${digest}.json`)

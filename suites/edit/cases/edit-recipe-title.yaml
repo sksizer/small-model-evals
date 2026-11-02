@@ -1,0 +1,9 @@
+description: "text: rename the recipe (synthetic page)"
+metadata: { id: edit-recipe-title }
+vars:
+  image: file://../../corpus/images/recipe-card.png
+  instruction: "Change the title from \"Lemon Ginger Loaf\" to \"Lemon Ginger Cake\". Keep everything else the same."
+  expected:
+    changed: ["Does the title read \"Lemon Ginger Cake\"?"]
+    kept: ["Is there an INGREDIENTS heading?", "Does the list include \"3 eggs\"?"]
+    region: [0.08, 0.09, 0.7, 0.19]

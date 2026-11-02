@@ -98,8 +98,11 @@ for (const scope of exports) step('bun', ['scripts/export-site.ts'], ROOT, { EVA
 if (scopes.includes('private')) {
   const read = (p: string) => JSON.parse(readFileSync(p, 'utf8')) as Data
   writeFileSync(PRIVATE_DATA, JSON.stringify(mergePublicInto(read(PUBLIC_DATA), read(PRIVATE_DATA))))
-  const publicImages = join(ROOT, 'site', 'public', 'corpus')
-  if (existsSync(publicImages)) cpSync(publicImages, join(ROOT, 'private', 'site', 'public', 'corpus'), { recursive: true })
+  // The public images the merged results show: corpus images and edited images.
+  for (const dir of ['corpus', 'results']) {
+    const from = join(ROOT, 'site', 'public', dir)
+    if (existsSync(from)) cpSync(from, join(ROOT, 'private', 'site', 'public', dir), { recursive: true })
+  }
 }
 
 for (const scope of scopes) {

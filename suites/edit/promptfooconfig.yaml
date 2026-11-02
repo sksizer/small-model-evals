@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# edit: give an image-editing model a photo (or a synthetic page) and an
+# instruction, then judge the edited image. Kinds of edit: recolour, remove,
+# add, weather and time of day, style, text on a page.
+#
+# The editor is run by the mflux CLI (providers/mflux-edit.ts), one process
+# per case that exits when done. Each edited image is saved under
+# results/edits/edit/<model label>/ for the site. assertions/edit.ts then asks
+# an Ollama vision model (qwen3.5:4b, unloaded after each answer) yes/no
+# questions about the edit: the `changed` ones must now be yes, the `kept`
+# ones must still be yes, and where a case gives a `region` the image outside
+# it must stay close to the original.
+#
+# The weights are pinned by commit and read from .cache/models/<repo>/<revision>
+# (the provider errors if they are missing; it does not download).
+description: edit — change an image as instructed
+
+prompts:
+  - '{{ instruction }}' # unused: the provider reads vars directly
+
+providers:
+  - { id: file://../../providers/mflux-edit.ts, label: flux2-klein-4b-q4, config: { label: flux2-klein-4b-q4, repo: mflux-community/flux2-klein-4b-mflux-q4, revision: 794cd159538149ad9830848508c31f0ea7088e58, base_model: flux2-klein-4b, seed: 42 } }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  assert:
+    - type: javascript
+      value: file://../../assertions/edit.ts
+      config: { judge: 'qwen3.5:4b' }
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

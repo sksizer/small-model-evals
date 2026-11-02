@@ -1,0 +1,9 @@
+description: "style: pencil sketch (Open Images d8cac8b54e9fa89c)"
+metadata: { id: edit-basset-sketch }
+vars:
+  image: file://../../corpus/images/oi-objects-d8cac8b54e9fa89c.jpg
+  instruction: "Turn the picture into a pencil sketch. Keep the same scene."
+  expected:
+    changed: ["Is this a pencil sketch rather than a photograph?"]
+    kept: ["Is there a dog?", "Is there a window?"]
+

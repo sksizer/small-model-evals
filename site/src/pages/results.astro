@@ -91,7 +91,10 @@ const fails = results.filter((r) => !r.pass).length
                     <div>
                       <h4>Input</h4>
                       {r.image ? (
-                        <Shot path={r.image} alt={`Image for ${r.case}`} class="shot" />
+                        <>
+                          <Shot path={r.image} alt={`Image for ${r.case}`} class="shot" />
+                          {r.instruction && <p>{r.instruction}</p>}
+                        </>
                       ) : (
                         <pre>{r.input}</pre>
                       )}
@@ -102,7 +105,7 @@ const fails = results.filter((r) => !r.pass).length
                       <h4 style="margin-top:10px">Scorer</h4>
                       <pre>{r.error || r.reason || '—'}</pre>
                     </div>
-                    {(r.hits || r.fields || r.regions) && (
+                    {(r.hits || r.fields || r.regions || r.edit) && (
                       <div>
                         <h4>Compared</h4>
                         <Compare result={r} />

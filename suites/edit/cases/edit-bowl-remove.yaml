@@ -1,0 +1,9 @@
+description: "remove: the bowl behind the cup (Open Images 25d107f1590c1772)"
+metadata: { id: edit-bowl-remove }
+vars:
+  image: file://../../corpus/images/oi-objects-25d107f1590c1772.jpg
+  instruction: "Remove the bowl at the top left. Keep everything else the same."
+  expected:
+    changed: ["Is the cup of coffee the only dish in the picture?"]
+    kept: ["Is there a cup of coffee?", "Is this a photograph?"]
+    region: [0, 0.0354, 0.3375, 0.4396]

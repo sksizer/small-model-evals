@@ -29,7 +29,7 @@ import {
   freeze,
   recordsFromPromptfoo,
 } from './ledger.ts'
-import { captureEnvironment, freezeEnvironment, freezeModel, freezeOnnxModel } from './env.ts'
+import { captureEnvironment, freezeEnvironment, freezeMfluxModel, freezeModel, freezeOnnxModel } from './env.ts'
 import { summarize } from './summarize.ts'
 
 const PROMPTFOO = `promptfoo@${PROMPTFOO_VERSION}`
@@ -77,12 +77,14 @@ for (const model of MODELS.filter((m) => !onlyModels || onlyModels.has(m.label))
     console.log(`\n--- skipping ${model.label}: ${skip}`)
     continue
   }
-  const digest = model.runtime === 'onnx' ? model.revision!.slice(0, 12) : digests.get(model.tag)
+  const digest = model.runtime ? model.revision!.slice(0, 12) : digests.get(model.tag)
   if (!digest) {
     failures.push(`${model.label}: not installed (${model.tag})`)
     continue
   }
+  // Only Ollama models are looked up in Ollama; the ONNX and mflux ones are pinned by revision.
   if (model.runtime === 'onnx') freezeOnnxModel(model.tag, model.revision!, model.dtype ?? 'fp32')
+  else if (model.runtime === 'mflux') freezeMfluxModel(model.tag, model.revision!, model.dtype ?? '', model.base_model ?? '')
   else await freezeModel(model.tag, digest)
   for (const suite of suites.filter((s) => labels.get(s)!.has(model.label))) {
     // Unload before every suite, not just every model: a model kept loaded

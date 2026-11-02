@@ -15,12 +15,18 @@ export interface ModelEntry {
   released: string
   approx?: true
   baseline?: string
-  /** `onnx`: run in-process with transformers.js (providers/image-classifier.ts), not by Ollama. */
-  runtime?: 'onnx'
-  /** For an ONNX model: the pinned Hugging Face commit, used as its digest. */
+  /**
+   * `onnx`: run in-process with transformers.js (providers/image-classifier.ts), not by Ollama.
+   * `mflux`: an image editor run by the mflux CLI (providers/mflux-edit.ts), weights in
+   * .cache/models/<tag>/<revision>.
+   */
+  runtime?: 'onnx' | 'mflux'
+  /** For an ONNX or mflux model: the pinned Hugging Face commit, used as its digest. */
   revision?: string
   /** For an ONNX model: the weights' precision, as transformers.js names it. */
   dtype?: string
+  /** For an mflux model: mflux's name for the architecture (`--base-model`). */
+  base_model?: string
 }
 
 export const MAX_AGE_MONTHS = 12
@@ -52,6 +58,8 @@ export const MODELS: ModelEntry[] = [
   { label: 'florence2-base-ocr-q8', tag: 'onnx-community/Florence-2-base', released: '2024-06', runtime: 'onnx', revision: 'd59e079711c57174f29265539fb4cc9f0f335916', dtype: 'q8', baseline: 'Florence-2 base (~230M), <OCR_WITH_REGION>, MIT' },
   { label: 'yunet-2023mar', tag: 'opencv/face_detection_yunet', released: '2023-03', runtime: 'onnx', revision: '3cc26e7f1014a5ee5d74a42acee58bafc9d0a310', dtype: 'fp32', baseline: 'YuNet face detector, 0.2 MB, MIT' },
   { label: 'ppocr-v5-mobile-det', tag: 'PaddlePaddle/PP-OCRv5_mobile_det_onnx', released: '2025-05', runtime: 'onnx', revision: 'e6f4fa85f00e168c862bc462aebca69eef9b3d3d', dtype: 'fp32', baseline: 'PP-OCRv5 mobile text detector, 4.8 MB, Apache-2.0' },
+  // Image editors (edit suite), run by the mflux CLI, not Ollama.
+  { label: 'flux2-klein-4b-q4', tag: 'mflux-community/flux2-klein-4b-mflux-q4', released: '2026-01', runtime: 'mflux', base_model: 'flux2-klein-4b', revision: '794cd159538149ad9830848508c31f0ea7088e58', dtype: 'q4', baseline: 'FLUX.2 klein 4B, 4-bit MLX build for mflux, Apache-2.0 (base black-forest-labs/FLUX.2-klein-4B)' },
   { label: 'd1-omni:600m', tag: 'd1-omni:600m', released: '2026-10', approx: true },
   { label: 'd1:2b', tag: 'd1:2b', released: '2026-10', approx: true },
 ]

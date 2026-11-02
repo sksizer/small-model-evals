@@ -60,6 +60,7 @@ promptfoo runs every test against every provider and shows a pass/fail grid.
 | `regions-find` | look (regions) | 18 Open Images photos | Box one named thing a fixed-class detector does not know (whiteboard, sunglasses, envelope) |
 | `regions-faces` | look (regions, privacy) | 15 Open Images photos, 3 with no face | Box every face; any face box on a no-face photo is wrong |
 | `regions-text` | look (regions) | 8 synthetic pages, 143 lines | Box every line of text; the boxes are measured from the page layout (`scripts/text-boxes.ts`) |
+| `edit` | edit | 10 Open Images photos and synthetic pages | Change the image as instructed (recolour, remove, add, weather, time of day, style, text); a judge answers yes/no questions about the edit, and outside the allowed region the image must stay close to the original (`providers/mflux-edit.ts`, `assertions/edit.ts`) |
 
 The regions suites compare small non-LLM detectors run in-process: fixed-class (D-FINE, RT-DETR),
 open-vocabulary (OWLv2, Grounding DINO), Florence-2, OpenCV's YuNet face detector and PaddleOCR's
@@ -69,6 +70,17 @@ text detector (`providers/region-detector.ts`, `providers/florence2.ts`,
 by hand, draw it on the site's `/label/` page (any corpus image) and save the YAML it gives into
 the suite's `cases/`. Nudity regions (boxes to blur) have no public data under a usable licence;
 they wait on hand-drawn cases.
+
+The `edit` suite hands an image editor a corpus image and an instruction. The editor is FLUX.2 klein 4B
+(4-bit MLX build) run by the [mflux](https://github.com/filipstrand/mflux) CLI, one process per case that exits
+when done; the weights are read from `.cache/models/<repo>/<revision>` and never downloaded by the suite. Each
+edited image is saved as a JPEG under `results/edits/` (committed) for the site's gallery. A case lists
+`changed` questions (must be yes after the edit), `kept` questions (must still be yes) and, where the edit is
+local, a `region` (fractions of the image). An Ollama vision model (`qwen3.5:4b`, unloaded right after each
+answer so it is never in memory with the editor) answers each question about the edited image. Where there is a
+region, the mean per-pixel difference from the original outside it must be at most 12 of 255. The score is the
+mean of the answers and the preservation check; a case passes only when every question is yes and the image is
+preserved. Time and peak memory of each edit are recorded as `edit_ms` and `peak_mb`.
 
 All cases are synthetic or from public-licence images. Cases built from your own notes or photos
 go in `private/`, which git ignores:

@@ -1,0 +1,9 @@
+description: "recolour: car red (Open Images 0fd512f1bffb8cf3)"
+metadata: { id: edit-car-red }
+vars:
+  image: file://../../corpus/images/oi-objects-0fd512f1bffb8cf3.jpg
+  instruction: "Make the car bright red. Keep everything else the same."
+  expected:
+    changed: ["Is the car red?"]
+    kept: ["Are there two dogs?", "Is this a photograph?"]
+

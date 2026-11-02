@@ -4,3 +4,4 @@ dist/
 # Written by ../scripts/export-site.ts from the committed ledger.
 src/data/
 public/corpus/
+public/results/

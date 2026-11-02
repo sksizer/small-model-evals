@@ -1,0 +1,9 @@
+description: "text: change a setting value (synthetic page)"
+metadata: { id: edit-sync-interval }
+vars:
+  image: file://../../corpus/images/settings-panel.png
+  instruction: "Change the Sync every value from 15 min to 30 min. Keep everything else the same."
+  expected:
+    changed: ["Does the Sync every field show \"30 min\"?"]
+    kept: ["Is the title \"Sync settings\"?", "Is there a blue Save changes button?"]
+    region: [0.77, 0.32, 0.94, 0.41]

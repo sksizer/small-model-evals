@@ -16,6 +16,7 @@ import { compareWorkout, type ExpectedWorkout } from '../assertions/workout.ts'
 import { compareFood, type ExpectedFood } from '../assertions/food.ts'
 import { compareDecide } from '../assertions/decide.ts'
 import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
+import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
 import { MODELS, ageMonths, skipReason } from './models.ts'
@@ -38,7 +39,9 @@ function inputOf(suite: string, vars: Record<string, unknown> = {}): { text: str
     if (key === 'image') {
       // `file://` vars resolve against the suite folder, as promptfoo does.
       const path = relative(ROOT, resolve(SUITES_DIR, suite, v.replace(/^file:\/\//, '')))
-      return { text: path, image: path }
+      // An edit case reads as its instruction, with the image beside it.
+      const instruction = vars['instruction']
+      return { text: typeof instruction === 'string' ? instruction : path, image: path }
     }
     if (v.startsWith('file://')) return { text: v.slice('file://'.length) }
     return { text: v }
@@ -53,7 +56,12 @@ function inputOf(suite: string, vars: Record<string, unknown> = {}): { text: str
  * fields (extraction), what the model returned for each. Uses the scorers'
  * own matcher, so the view agrees with the score.
  */
-function compare(expected: unknown, absent: unknown, output: string) {
+function compare(expected: unknown, absent: unknown, output: string, detail?: unknown) {
+  // Edits: the judge's answers and the preservation number, as the scorer recorded them, and the edited image.
+  if (isEdit(expected)) {
+    const d = detail as EditGrading['metadata'] | undefined
+    return { edit: { image: parseEdit(output), judge: d?.judge ?? null, answers: d?.answers ?? [], preservation: d?.preservation ?? null } }
+  }
   // Tags: concepts with synonyms, matched against the reply's tag list.
   const tags = Array.isArray(absent) ? parseTags(output) : null
   if (Array.isArray(expected) && Array.isArray(absent)) {
@@ -101,6 +109,9 @@ function compare(expected: unknown, absent: unknown, output: string) {
   return {}
 }
 
+const isEdit = (e: unknown): e is ExpectedEdit =>
+  !!e && typeof e === 'object' && Array.isArray((e as { changed?: unknown }).changed) && Array.isArray((e as { kept?: unknown }).kept)
+
 /** What the site shows of a case, from its definition as written. */
 function caseView(suite: string, id: string, raw: Record<string, unknown>, hash: string) {
   const c = raw as CaseDef
@@ -111,6 +122,7 @@ function caseView(suite: string, id: string, raw: Record<string, unknown>, hash:
     input: inputOf(suite, c.vars),
     expected: c.vars?.['expected'] ?? c.vars?.['tool'] ?? null,
     absent: c.vars?.['absent'] ?? null,
+    instruction: typeof c.vars?.['instruction'] === 'string' ? c.vars['instruction'] : null,
     args: c.vars?.['args'] ?? null,
     supersedes: c.metadata?.supersedes ?? null,
     retired: c.metadata?.retired ?? null,
@@ -223,7 +235,8 @@ const results = view
         case_hash: c?.hash ?? null,
         env: r.env ?? null,
         metrics: r.metrics ?? null,
-        ...compare(c?.expected, c?.absent, r.output ?? ''),
+        instruction: c?.instruction ?? null,
+        ...compare(c?.expected, c?.absent, r.output ?? '', r.detail),
       }
     }),
   )
@@ -293,9 +306,12 @@ const corpus = existsSync(manifestPath)
     }))
   : []
 
-// Copy every image a case or the corpus shows into the site's public folder,
-// at its repo path.
-for (const path of new Set([...usedBy.keys(), ...corpus.map((m) => m.path)])) {
+// Copy every image a case or the corpus shows, and every edited image a
+// result shows (results/edits/, from the edit suite), into the site's public
+// folder, at its repo path.
+const edited = results.flatMap((r) => (r.edit?.image ? [r.edit.image] : []))
+for (const path of new Set([...usedBy.keys(), ...corpus.map((m) => m.path), ...edited])) {
+  if (edited.includes(path) && !existsSync(join(ROOT, path))) continue // a stale record whose image was removed
   const to = join(PUBLIC_OUT, path)
   mkdirSync(dirname(to), { recursive: true })
   copyFileSync(join(ROOT, path), to)

@@ -1,0 +1,9 @@
+description: "weather: snow instead of dry grass (Open Images 5b7ab3baf4c0492f)"
+metadata: { id: edit-dogs-snow }
+vars:
+  image: file://../../corpus/images/oi-objects-5b7ab3baf4c0492f.jpg
+  instruction: "Change the scene to a snowy winter day, with snow on the ground. Keep the dogs the same."
+  expected:
+    changed: ["Is there snow on the ground?"]
+    kept: ["Are there two dogs?", "Is this a photograph?"]
+

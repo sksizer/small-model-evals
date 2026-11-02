@@ -1,0 +1,19 @@
+{
+  "tag": "mflux-community/flux2-klein-4b-mflux-q4",
+  "digest": "794cd1595381",
+  "engine": "mflux (MLX)",
+  "format": "safetensors",
+  "family": "flux2-klein-4b",
+  "quantization": "q4",
+  "parameter_size": "4B",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-editing"
+  ],
+  "default_parameters": {
+    "revision": "794cd159538149ad9830848508c31f0ea7088e58",
+    "base_model": "flux2-klein-4b"
+  },
+  "template_hash": ""
+}

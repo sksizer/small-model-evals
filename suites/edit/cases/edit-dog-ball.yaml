@@ -1,0 +1,9 @@
+description: "add: a red ball in front of the dog (Open Images 948794bfee784412)"
+metadata: { id: edit-dog-ball }
+vars:
+  image: file://../../corpus/images/oi-objects-948794bfee784412.jpg
+  instruction: "Add a red ball on the ground in front of the dog. Keep everything else the same."
+  expected:
+    changed: ["Is there a red ball on the ground?"]
+    kept: ["Is there a brown dog standing on the ground?", "Is this a photograph?"]
+    region: [0, 0.6, 1, 1]

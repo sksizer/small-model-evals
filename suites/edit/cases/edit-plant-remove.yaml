@@ -1,0 +1,9 @@
+description: "remove: the potted plant beside the bicycle (Open Images 2fba54286aaac20e)"
+metadata: { id: edit-plant-remove }
+vars:
+  image: file://../../corpus/images/oi-objects-2fba54286aaac20e.jpg
+  instruction: "Remove the potted plant on the left. Keep everything else the same."
+  expected:
+    changed: ["Is the bicycle the only object standing in front of the wall?"]
+    kept: ["Is there a black bicycle?", "Is there a wall behind the bicycle?"]
+    region: [0, 0.2683, 0.3132, 0.9113]

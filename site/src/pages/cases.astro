@@ -5,7 +5,7 @@
 import Base from '../layouts/Base.astro'
 import Boxes from '../components/Boxes.astro'
 import Shot from '../components/Shot.astro'
-import { data, describeExpected, href, imageSuites, isRegions, modelSlug, show, type CaseView } from '../lib/data'
+import { data, describeExpected, href, imageSuites, isEdit, isRegions, modelSlug, show, type CaseView } from '../lib/data'
 
 const gallery = new Set(imageSuites.map((s) => s.id))
 const rows = data.suites
@@ -98,16 +98,19 @@ const images = live.filter((r) => r.c.input.image).length
                         {c.input.image ? (
                           isRegions(c.expected) ? (
                             <Boxes path={c.input.image} alt={c.description || c.id} expected={c.expected} />
+                          ) : isEdit(c.expected) && c.expected.region ? (
+                            <Boxes path={c.input.image} alt={c.description || c.id} expected={{ boxes: [{ label: 'edit area', box: c.expected.region }] }} />
                           ) : (
                             <Shot path={c.input.image} alt={c.description || c.id} class="shot" />
                           )
                         ) : (
                           <pre>{c.input.text}</pre>
                         )}
+                        {c.instruction && <p>{c.instruction}</p>}
                       </div>
                       <div>
                         <h4>Expected</h4>
-                        {isRegions(c.expected) && <p>{describeExpected(c.expected)}</p>}
+                        {(isRegions(c.expected) || isEdit(c.expected)) && <p>{describeExpected(c.expected)}</p>}
                         <pre>{show(c.expected)}</pre>
                         {Array.isArray(c.absent) && c.absent.length > 0 && (
                           <>

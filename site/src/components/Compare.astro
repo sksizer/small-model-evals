@@ -3,8 +3,11 @@
 // (found or missed) plus any wrong tags the model gave; a field table for
 // expected fields; or, for a regions result, the model's boxes drawn on the
 // image (components/Boxes.astro) with what it found, missed and added, and
-// the detector's time and memory. Renders nothing otherwise.
+// the detector's time and memory; or, for an edit result, the edited image,
+// the judge's yes/no on each question, the preservation number and the
+// editor's time and memory. Renders nothing otherwise.
 import Boxes from './Boxes.astro'
+import Shot from './Shot.astro'
 import { show, type Result } from '../lib/data'
 
 interface Props {
@@ -19,6 +22,7 @@ const expectedN = regions?.filter((x) => x.want).length ?? 0
 const missed = regions?.filter((x) => x.want && !x.ok).map((x) => x.label) ?? []
 const extra = regions?.filter((x) => !x.want).map((x) => x.label) ?? []
 const m = result.metrics ?? {}
+const edit = result.edit
 ---
 
 {
@@ -57,6 +61,31 @@ const m = result.metrics ?? {}
     </div>
   )
 }
+{
+  edit && (
+    <div class="edit">
+      {image && edit.image && <Shot path={edit.image} alt={`${result.model} edit for ${result.case}`} wrapClass="edit-link" class="edit-img" />}
+      <ul class="judged">
+        {edit.answers.map((a) => (
+          <li class={a.ok ? 'ok' : 'bad'}>
+            <span class="kind">{a.kind}</span> {a.question}{' '}<b>{a.answer ?? 'no answer'}</b>
+          </li>
+        ))}
+        {edit.preservation && (
+          <li class={edit.preservation.ok ? 'ok' : 'bad'}>
+            <span class="kind">outside region</span> differs by {edit.preservation.diff.toFixed(1)} of 255 (limit {edit.preservation.max}){' '}
+            <b>{edit.preservation.ok ? 'preserved' : 'changed'}</b>
+          </li>
+        )}
+      </ul>
+      <p class="muted">
+        {edit.judge && `judge ${edit.judge}`}
+        {m['edit_ms'] !== undefined && ` · ${(m['edit_ms'] / 1000).toFixed(0)} s per edit`}
+        {m['peak_mb'] !== undefined && ` · ${(m['peak_mb'] / 1024).toFixed(1)} GB peak memory`}
+      </p>
+    </div>
+  )
+}
 {result.tags && <p class="tags">Tags given: {result.tags.join(', ') || '—'}</p>}
 {
   result.fields && (
@@ -88,6 +117,13 @@ const m = result.metrics ?? {}
 }
 
 <style>
+  /* The img is rendered inside Shot, outside this component's scope. */
+  :global(.edit-img) { display: block; width: 100%; max-width: 360px; height: auto; max-height: 50vh; object-fit: contain; border: 1px solid var(--line); border-radius: 6px; }
+  .judged { list-style: none; margin: 6px 0; padding: 0; font-size: 13px; }
+  .judged li { padding: 2px 8px; border-left: 3px solid transparent; }
+  .judged li.ok { border-color: var(--good); }
+  .judged li.bad { border-color: var(--bad); background: var(--bad-bg); }
+  .judged .kind { color: var(--muted); font-size: 11px; text-transform: uppercase; margin-right: 4px; }
   .region-sum { margin: 4px 0 6px; font-size: 13px; }
   .missed-l { color: var(--muted); }
   .extra-l { color: var(--bad, #d93025); }

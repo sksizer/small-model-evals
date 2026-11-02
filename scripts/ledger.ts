@@ -75,6 +75,8 @@ export interface LedgerRecord {
   output?: string
   /** Speed and memory, from the perf provider. */
   metrics?: Record<string, number>
+  /** What the scorer recorded beyond a score and reason (the edit suite's judge answers), from the assertion's `metadata`. */
+  detail?: unknown
 }
 
 export function machine(): Machine {
@@ -264,7 +266,7 @@ interface PromptfooRow {
   failureReason?: number
   testCase: { description?: string; metadata?: { id?: string } }
   response?: { output?: unknown; tokenUsage?: { prompt?: number; completion?: number }; metadata?: Record<string, unknown> }
-  gradingResult?: { reason?: string }
+  gradingResult?: { reason?: string; metadata?: Record<string, unknown>; componentResults?: { metadata?: Record<string, unknown> }[] }
 }
 
 /** promptfoo's ResultFailureReason for a call that errored, as against an assertion that failed. */
@@ -280,6 +282,13 @@ export interface RunContext {
   suite: string
   suite_fp: string
   env?: string
+}
+
+/** The scorer's `metadata`, from the grading itself or, for one assertion, its component. */
+const detailOf = (r: PromptfooRow): Record<string, unknown> | undefined => {
+  const g = r.gradingResult
+  const m = g?.metadata && Object.keys(g.metadata).length > 0 ? g.metadata : g?.componentResults?.find((c) => c.metadata && Object.keys(c.metadata).length > 0)?.metadata
+  return m
 }
 
 export function recordsFromPromptfoo(file: string, ctx: RunContext): LedgerRecord[] {
@@ -304,6 +313,7 @@ export function recordsFromPromptfoo(file: string, ctx: RunContext): LedgerRecor
       ...(r.response?.tokenUsage ? { tokens: { prompt: r.response.tokenUsage.prompt, completion: r.response.tokenUsage.completion } } : {}),
       ...(r.gradingResult?.reason ? { reason: r.gradingResult.reason } : {}),
       ...(r.failureReason === CALL_ERROR && r.error ? { error: r.error } : {}),
+      ...(detailOf(r) ? { detail: detailOf(r) } : {}),
       ...(output === undefined ? {} : { output: typeof output === 'string' ? output : JSON.stringify(output) }),
       ...(Object.keys(metrics).length > 0 ? { metrics } : {}),
     }

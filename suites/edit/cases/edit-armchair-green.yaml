@@ -1,0 +1,9 @@
+description: "recolour: armchair dark green (Open Images ee47ccab89a75d0d)"
+metadata: { id: edit-armchair-green }
+vars:
+  image: file://../../corpus/images/oi-objects-ee47ccab89a75d0d.jpg
+  instruction: "Make the armchair dark green. Keep everything else the same."
+  expected:
+    changed: ["Is the armchair green?"]
+    kept: ["Is there a pillow on the armchair?", "Is this a photograph?"]
+    region: [0.0649, 0.073, 0.9499, 0.9956]

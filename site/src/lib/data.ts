@@ -63,6 +63,10 @@ export interface Result {
   metrics?: Record<string, number> | null
   /** For regions: each expected box with the box matched to it (or null), then each extra box. Boxes are [x0, y0, x1, y1] as fractions. */
   regions?: { label: string; want: Box | null; got: Box | null; iou: number | null; ok: boolean }[] | null
+  /** The instruction an edit case gives the model. */
+  instruction?: string | null
+  /** For an edit: the edited image (a repo path), the judge's answer to each question, and how much of the image outside the allowed region stayed the same. */
+  edit?: { image: string | null; judge: string | null; answers: { question: string; kind: 'changed' | 'kept'; answer: 'yes' | 'no' | null; ok: boolean }[]; preservation: { diff: number; max: number; ok: boolean } | null }
   /** For expected fields: what the model returned for each. */
   fields?: { field: string; want: unknown; got: unknown; ok: boolean }[] | null
 }
@@ -102,8 +106,19 @@ export const isRegions = (e: unknown): e is ExpectedRegions =>
 
 const firstLabel = (l: string | string[]) => (Array.isArray(l) ? l[0]! : l)
 
+/** An edit case's expectation (assertions/edit.ts). */
+export interface ExpectedEdit {
+  changed: string[]
+  kept: string[]
+  region?: Box
+}
+
+export const isEdit = (e: unknown): e is ExpectedEdit =>
+  !!e && typeof e === 'object' && Array.isArray((e as { changed?: unknown }).changed) && Array.isArray((e as { kept?: unknown }).kept)
+
 /** A case's expectation in a few words: a regions case as its box count and labels, anything else as JSON. */
 export const describeExpected = (e: unknown): string => {
+  if (isEdit(e)) return `${e.changed.length} changed, ${e.kept.length} kept${e.region ? ', edit confined to a region' : ''}: ${[...e.changed, ...e.kept].join(' ')}`
   if (!isRegions(e)) return show(e)
   if (e.boxes.length === 0) return `no ${(e.labels ?? []).map(firstLabel).join(', ') || 'boxes'}`
   const counts = new Map<string, number>()
@@ -119,6 +134,8 @@ export interface CaseView {
   expected: unknown
   /** Tags that would be wrong for the image (tag-image suite). */
   absent: unknown
+  /** The instruction an edit case gives the model. */
+  instruction: string | null
   args: unknown
   supersedes: string | null
   retired: string | null
