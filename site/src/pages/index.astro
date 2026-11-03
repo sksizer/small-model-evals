@@ -1,108 +1,122 @@
 ---
 import Base from '../layouts/Base.astro'
-import { data, fmt, fmtParams, href, modelSlug, pct, qualitySuites, tone } from '../lib/data'
-
-// One leaderboard per machine: a model's latest result on each suite, its
-// average pass rate, and its speed and memory at 8K context.
-const machines = data.machines.map((m) => {
-  const cells = data.cells.filter((c) => c.machine === m.key)
-  const models = [...new Set(cells.map((c) => c.model))]
-  const rows = models.map((model) => {
-    const bySuite = Object.fromEntries(qualitySuites.map((s) => [s.id, cells.find((c) => c.model === model && c.suite === s.id)]))
-    const present = Object.values(bySuite).filter((c) => c !== undefined)
-    const avg = present.length === 0 ? null : present.reduce((sum, c) => sum + pct(c.passed, c.total), 0) / present.length
-    const speed = data.perf.find((p) => p.machine === m.key && p.model === model && p.case === 'ctx-8k')
-    return { model, bySuite, avg, covered: present.length, speed }
-  })
-  rows.sort((a, b) => (b.avg ?? -1) - (a.avg ?? -1))
-  return { machine: m, rows }
-})
+import { data, fmt, fmtParams, fmtTime, href, modelSlug, pct, tone } from '../lib/data'
 ---
 
 <Base
   title="Leaderboard"
-  description="Each model's latest result on every suite, per machine. Click a header to sort, a score to see that suite's cases, or a model for its detail."
+  description="Each suite's models ranked, then every model's latest result per task family, per machine. Click a header to sort, a score to see that suite's cases, or a model for its detail."
 >
   {
-    machines.map(({ machine, rows }) => (
+    data.leaderboard.map(({ machine, families }) => (
       <section>
         <h2>
           {machine.chip}, {machine.mem_gib} GiB <span class="muted">({machine.key})</span>
         </h2>
-        <div class="scroll">
-          <table data-table id={`lb-${machine.key}`}>
-            <thead>
-              <tr>
-                <th data-sort="text" class="pin">Model</th>
-                <th data-sort="text">Kind</th>
-                <th data-sort="num" class="num" title="Total weights, from the Hugging Face metadata">Params</th>
-                <th data-sort="text">Licence</th>
-                {qualitySuites.map((s) => (
-                  <th data-sort="num" class="num suite-h">
-                    {s.id.split('-').map((part, i) => (i === 0 ? part : <>-<wbr />{part}</>))}
-                    <br /><span class="muted">({s.cases.length})</span>
-                  </th>
-                ))}
-                <th data-sort="num" class="num suite-h" title="Mean pass rate over the suites the model ran">Average</th>
-                <th data-sort="num" class="num suite-h" title="Output tokens per second at 8K context">Output tok/s</th>
-                <th data-sort="num" class="num suite-h" title="Loaded size at 8K context, from Ollama /api/ps">Loaded GB</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr>
-                  <td data-value={r.model} class="pin">
-                    <a class="model-name" href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
-                    {(() => {
-                      const url = data.models.find((x) => x.label === r.model)?.catalog?.url
-                      return url && <a href={url} title="Where to get it" aria-label={`Where to get ${r.model}`}> ↗</a>
-                    })()}
-                    {(() => {
-                      const m = data.models.find((x) => x.label === r.model)
-                      return (
-                        <div class="muted" style="font-size:12px">
-                          {m?.released && `${m.released}${m.released_approx ? ' (approx)' : ''}`}
-                          {m?.baseline && <span class="pill stale" title={m.baseline}> baseline</span>}
-                          {m?.retired && <span class="pill fail" title={m.retired}> retired</span>}
-                        </div>
-                      )
-                    })()}
-                  </td>
-                  {(() => {
-                    const cat = data.models.find((x) => x.label === r.model)?.catalog
-                    return (
-                      <>
-                        <td data-value={cat?.kind ?? ''} style="white-space:nowrap;font-size:12px">{cat?.kind ?? '—'}</td>
-                        <td class="num" data-value={cat?.parameters ?? -1} title={cat?.parameters_note} style="white-space:nowrap">{fmtParams(cat?.parameters)}</td>
-                        <td data-value={cat?.licence ?? ''} style="font-size:12px;min-width:7em">{cat?.licence ?? '—'}</td>
-                      </>
-                    )
-                  })()}
-                  {qualitySuites.map((s) => {
-                    const c = r.bySuite[s.id]
-                    if (!c) return <td class="heat muted" data-value="-1">n/a</td>
-                    const rate = pct(c.passed, c.total)
-                    return (
-                      <td class={`heat ${tone(rate)}`} data-value={rate}>
-                        <a href={href(`/results/?suite=${s.id}&model=${encodeURIComponent(r.model)}`)}>{rate}%</a>
-                        <small>
-                          {c.passed}/{c.total} · {fmt((c.median_ms ?? 0) / 1000)} s{c.stale && ' · stale'}
-                          {c.missing.length > 0 && ` · ${c.missing.length} not run`}
-                        </small>
-                      </td>
-                    )
-                  })}
-                  <td class="num" data-value={r.avg ?? -1}>
-                    <strong>{r.avg === null ? '—' : `${Math.round(r.avg)}%`}</strong>
-                    <span class="muted"> · {r.covered}/{qualitySuites.length}</span>
-                  </td>
-                  <td class="num" data-value={r.speed?.decode_tps ?? -1}>{fmt(r.speed?.decode_tps)}</td>
-                  <td class="num" data-value={r.speed?.loaded_gb ?? -1}>{fmt(r.speed?.loaded_gb, 2)}</td>
-                </tr>
+        <h3 class="part">Rankings by suite</h3>
+        <p class="note">
+          Each suite's models by pass rate, then mean score, then speed. Speed is the median case time for a language
+          model and the median time per image for an in-process model or an image editor.
+        </p>
+        {families.map((f) => (
+          <>
+            <h4 class="family">{f.title} <span class="muted">{f.blurb}</span></h4>
+            <div class="ranks">
+              {f.ranking.map((r) => (
+                <div class="card rank">
+                  <a class="k" href={href(`/suites/${r.suite}/`)}>{r.suite}</a>
+                  <div class="muted about">{r.about} · {r.cases} cases</div>
+                  <table class="mini">
+                    <tbody>
+                      {r.ranks.map((m, i) => {
+                        const rate = pct(m.passed, m.total)
+                        return (
+                          <tr>
+                            <td class="muted pos">{i + 1}</td>
+                            <td class="who"><a href={href(`/models/${modelSlug(m.model)}/`)}>{m.model}</a></td>
+                            <td class="num">
+                              <a href={href(`/results/?suite=${r.suite}&model=${encodeURIComponent(m.model)}`)}>{m.passed}/{m.total}</a>
+                            </td>
+                            <td class="num"><span class={`pill-heat heat ${tone(rate)}`}>{rate}%</span></td>
+                            <td class="num muted" title="Mean score">{fmt(m.mean, 2)}</td>
+                            <td class="num muted" title={m.time_per === 'image' ? 'Median time per image' : 'Median time per case'}>{fmtTime(m.time_ms, m.time_per)}</td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
+          </>
+        ))}
+
+        <h3 class="part">Full matrix</h3>
+        <p class="note">One table per task family, listing the models with a result in it. Cells show pass rate, passed/total and the median time.</p>
+        {families.map((f) => (
+          <>
+            <h4 class="family">{f.title}</h4>
+            <div class="scroll">
+              <table data-table id={`lb-${machine.key}-${f.id}`}>
+                <thead>
+                  <tr>
+                    <th data-sort="text" class="pin">Model</th>
+                    <th data-sort="text">Kind</th>
+                    <th data-sort="num" class="num" title="Total weights, from the Hugging Face metadata">Params</th>
+                    <th data-sort="text">Licence</th>
+                    {f.suites.map((s) => (
+                      <th data-sort="num" class="num suite-h" title={s.about}>
+                        {s.id.split('-').map((part, i) => (i === 0 ? part : <>-<wbr />{part}</>))}
+                        <br /><span class="muted">({s.cases})</span>
+                      </th>
+                    ))}
+                    <th data-sort="num" class="num suite-h" title="Mean pass rate over this family's suites the model ran">Average</th>
+                    {f.has_speed && <th data-sort="num" class="num suite-h" title="Output tokens per second at 8K context">Output tok/s</th>}
+                    {f.has_speed && <th data-sort="num" class="num suite-h" title="Loaded size at 8K context, from Ollama /api/ps">Loaded GB</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {f.rows.map((r) => (
+                    <tr>
+                      <td data-value={r.model} class="pin">
+                        <a class="model-name" href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+                        {r.url && <a href={r.url} title="Where to get it" aria-label={`Where to get ${r.model}`}> ↗</a>}
+                        <div class="muted" style="font-size:12px">
+                          {r.released && `${r.released}${r.released_approx ? ' (approx)' : ''}`}
+                          {r.baseline && <span class="pill stale" title={r.baseline}> baseline</span>}
+                          {r.retired && <span class="pill fail" title={r.retired}> retired</span>}
+                        </div>
+                      </td>
+                      <td data-value={r.kind ?? ''} style="white-space:nowrap;font-size:12px">{r.kind ?? '—'}</td>
+                      <td class="num" data-value={r.parameters ?? -1} title={r.parameters_note ?? undefined} style="white-space:nowrap">{fmtParams(r.parameters)}</td>
+                      <td data-value={r.licence ?? ''} style="font-size:12px;min-width:7em">{r.licence ?? '—'}</td>
+                      {f.suites.map((s) => {
+                        const c = r.cells[s.id]
+                        if (!c) return <td class="heat muted" data-value="-1">n/a</td>
+                        const rate = pct(c.passed, c.total)
+                        return (
+                          <td class={`heat ${tone(rate)}`} data-value={rate}>
+                            <a href={href(`/results/?suite=${s.id}&model=${encodeURIComponent(r.model)}`)}>{rate}%</a>
+                            <small>
+                              {c.passed}/{c.total} · {fmtTime(c.time_ms, c.time_per)}{c.stale && ' · stale'}
+                              {c.missing.length > 0 && ` · ${c.missing.length} not run`}
+                            </small>
+                          </td>
+                        )
+                      })}
+                      <td class="num" data-value={r.avg}>
+                        <strong>{Math.round(r.avg)}%</strong>
+                        <span class="muted"> · {r.covered}/{f.suites.length}</span>
+                      </td>
+                      {f.has_speed && <td class="num" data-value={r.decode_tps ?? -1}>{fmt(r.decode_tps)}</td>}
+                      {f.has_speed && <td class="num" data-value={r.loaded_gb ?? -1}>{fmt(r.loaded_gb, 2)}</td>}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ))}
       </section>
     ))
   }
@@ -111,18 +125,6 @@ const machines = data.machines.map((m) => {
     yardstick, not a recommendation. <strong>retired</strong>: older than 12 months and no longer run. Hover either for
     the reason.
   </p>
-  <h2>Suites</h2>
-  <div class="cards">
-    {
-      qualitySuites.map((s) => (
-        <a class="card" href={href(`/suites/${s.id}/`)}>
-          <div class="k">{s.id}</div>
-          <div class="v">{s.cases.length} cases</div>
-          <div class="muted">fingerprint {s.fingerprint}</div>
-        </a>
-      ))
-    }
-  </div>
   <p class="note">
     Average is over the suites a model can run (no tool calls for models without tools, no images for text-only
     models), so compare it alongside the coverage count. Suites have 8–20 cases: a gap of one or two cases is noise.
@@ -136,4 +138,17 @@ const machines = data.machines.map((m) => {
   /* The model column stays in view when a narrow window scrolls the table. */
   .pin { position: sticky; left: 0; z-index: 1; background: var(--panel); }
   th.pin { z-index: 2; }
+  .part { font-size: 16px; margin: 24px 0 4px; }
+  .family { font-size: 14px; margin: 20px 0 6px; }
+  .family .muted { font-weight: 400; margin-left: 6px; }
+  /* One compact card per suite: the models ranked, a line each. */
+  .ranks { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; margin: 8px 0 16px; }
+  .rank { padding: 10px 12px; }
+  .rank .k { font-size: 13px; font-weight: 650; text-transform: none; color: var(--text); }
+  .rank .about { font-size: 12px; margin-bottom: 6px; }
+  .mini { font-size: 13px; }
+  .mini td { padding: 3px 6px; border-bottom: 0; white-space: nowrap; }
+  .mini .pos { width: 1.5em; padding-left: 0; }
+  .mini .who { white-space: normal; overflow-wrap: anywhere; }
+  .pill-heat { display: inline-block; min-width: 3.2em; padding: 0 6px; border-radius: 999px; text-align: center; }
 </style>

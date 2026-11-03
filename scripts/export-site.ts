@@ -184,12 +184,35 @@ const records = readLedger()
 const view = latest(records)
 const suites = readdirSync(SUITES_DIR).sort()
 
+/**
+ * The task families the site groups quality suites by (leaderboard sections), in
+ * display order. The one place that says which suite belongs where: a suite no
+ * family claims lands in `other`.
+ */
+const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string) => boolean }[] = [
+  { id: 'text', title: 'Text', blurb: 'Notes and logs in, a label, fields or a tool choice out.', has: (s) => ['classify', 'extract', 'food-lookup', 'orchestrate', 'route', 'workout'].includes(s) },
+  { id: 'vision', title: 'Vision understanding', blurb: 'A photo in, text or a flag out.', has: (s) => ['ocr', 'tag-image', 'nudity-flag'].includes(s) },
+  { id: 'regions', title: 'Regions', blurb: 'A photo in, boxes around things out.', has: (s) => s.startsWith('regions-') },
+  { id: 'image', title: 'Image', blurb: 'Edit an image as told, or tell which images are alike.', has: (s) => ['edit', 'similarity'].includes(s) },
+]
+const familyOf = (suite: string) => FAMILIES.find((f) => f.has(suite))?.id ?? 'other'
+
+/** The provider labels a suite's current setup runs. */
+const providersOf = (setup: unknown): string[] =>
+  ((setup as { providers?: { label?: string }[] } | null)?.providers ?? []).flatMap((p) => (p.label ? [p.label] : []))
+
 const suiteData = suites.map((suite) => {
   const snap = currentSnapshot(suite)
   const files = loadCases(suite)
+  const description = (snap.setup as { description?: string } | null)?.description ?? suite
   return {
     id: suite,
     kind: suite.startsWith('perf') ? 'perf' : 'quality',
+    family: familyOf(suite),
+    /** What the suite tests: its description after the "<name> — ". */
+    about: description.replace(/^[^—]*—\s*/, ''),
+    /** The models the suite's current setup lists as providers. */
+    models: providersOf(snap.setup),
     fingerprint: snap.fingerprint,
     cases: files.filter((c) => !c.retired).map((c) => caseView(c.suite, c.id, c.def, c.hash)),
     retired: files.filter((c) => c.retired).map((c) => caseView(c.suite, c.id, c.def, c.hash)),
@@ -200,6 +223,27 @@ const suiteData = suites.map((suite) => {
 function ranCase(r: LedgerRecord) {
   const frozen = readSnapshot(r.suite, r.suite_fp)?.cases[r.case]
   return frozen ? caseView(r.suite, r.case, frozen.def, frozen.hash) : null
+}
+
+/** The per-image time a provider reports (detect_ms, classify_ms, embed_ms, edit_ms), when it does. */
+const IMAGE_MS = ['detect_ms', 'classify_ms', 'embed_ms', 'edit_ms']
+const imageMs = (r: LedgerRecord): number | null => {
+  for (const k of IMAGE_MS) {
+    const v = r.metrics?.[k]
+    if (v !== undefined && Number.isFinite(v)) return v
+  }
+  return null
+}
+const runtimeOf = (label: string): 'ollama' | 'onnx' | 'mflux' | 'local' => MODELS.find((e) => e.label === label)?.runtime ?? 'ollama'
+
+/**
+ * How long a model takes on a suite: the median per-image time when the
+ * provider reports one (a cached embedding makes later cases ~0 s, so case
+ * latency would mislead), else the median case latency.
+ */
+function timeOf(rs: LedgerRecord[]): { time_ms: number | null; time_per: 'image' | 'case' } {
+  const per = median(rs.flatMap((r) => imageMs(r) ?? []))
+  return per !== null ? { time_ms: per, time_per: 'image' } : { time_ms: median(rs.map((r) => r.latency_ms)), time_per: 'case' }
 }
 
 const cells = view
@@ -214,8 +258,31 @@ const cells = view
     total: v.records.length,
     missing: v.missing,
     mean: v.records.reduce((s, r) => s + r.score, 0) / v.records.length,
-    median_ms: median(v.records.map((r) => r.latency_ms)),
+    ...timeOf(v.records),
   }))
+const cellTime = new Map(cells.map((c) => [[c.machine, c.model, c.suite].join('\u0000'), c] as const))
+
+/** In-process and local models: per suite, the per-image time, load time and memory. */
+const inproc = view
+  .filter((v) => !v.suite.startsWith('perf') && runtimeOf(v.model) !== 'ollama')
+  .map((v) => {
+    const metrics = (key: string) => v.records.flatMap((r) => (r.metrics?.[key] !== undefined && Number.isFinite(r.metrics[key]) ? [r.metrics[key]!] : []))
+    const peak = metrics('peak_mb')
+    const rss = metrics('rss_mb')
+    const mem = peak.length > 0 ? peak : rss
+    return {
+      machine: v.machine,
+      model: v.model,
+      suite: v.suite,
+      run: v.run,
+      stale: v.stale,
+      per_image_ms: median(metrics('detect_ms').concat(metrics('classify_ms'), metrics('embed_ms'), metrics('edit_ms'))),
+      load_ms: median(metrics('load_ms')),
+      /** The largest reading: `rss` is the whole process's resident memory (an upper bound for the model), `peak` the editor's own peak. */
+      mem_mb: mem.length > 0 ? Math.max(...mem) : null,
+      mem_kind: peak.length > 0 ? ('peak' as const) : ('rss' as const),
+    }
+  })
 
 const perf = view
   .filter((v) => v.suite.startsWith('perf'))
@@ -262,6 +329,12 @@ const results = view
         pass: r.pass,
         score: r.score,
         latency_ms: r.latency_ms,
+        // Per-image time when the provider reports one (this case's, else the model's median on the suite), else case latency.
+        ...(() => {
+          const own = imageMs(r)
+          const cell = cellTime.get([v.machine, v.model, v.suite].join('\u0000'))
+          return own !== null ? { time_ms: own, time_per: 'image' as const } : cell?.time_per === 'image' ? { time_ms: cell.time_ms, time_per: 'image' as const } : { time_ms: r.latency_ms, time_per: 'case' as const }
+        })(),
         reason: r.reason ?? '',
         error: r.error ?? '',
         output: r.output ?? '',
@@ -314,8 +387,19 @@ const models = [...new Map(records.map((r) => [r.model.label, r.model])).values(
   .sort((a, b) => a.label.localeCompare(b.label))
   .map((m) => {
     const entry = MODELS.find((e) => e.label === m.label)
+    const runtime = entry?.runtime ?? 'ollama'
+    const hf = runtime === 'onnx' || runtime === 'mflux'
     return {
       ...m,
+      runtime,
+      /** Where the weights come from, for a subtitle and a link; `revision` is the pinned commit (or code version). */
+      source: {
+        label: hf ? 'Hugging Face' : runtime === 'local' ? 'Local code' : 'Ollama tag',
+        id: m.tag,
+        url: hf ? `https://huggingface.co/${m.tag}` : null,
+        revision: entry?.revision ?? null,
+        revision_url: hf && entry?.revision ? `https://huggingface.co/${m.tag}/commit/${entry.revision}` : null,
+      },
       released: entry?.released ?? null,
       released_approx: entry?.approx ?? false,
       age_months: entry ? ageMonths(entry.released) : null,
@@ -324,6 +408,51 @@ const models = [...new Map(records.map((r) => [r.model.label, r.model])).values(
       retired: entry ? skipReason(entry) : 'no longer in scripts/models.ts',
     }
   })
+
+/** The leaderboard, per machine: task families, each with its suites' rankings and a matrix of models that have a result in it. */
+const quality = suiteData.filter((s) => s.kind === 'quality')
+const familyDefs = [...FAMILIES.map((f) => ({ id: f.id, title: f.title, blurb: f.blurb })), { id: 'other', title: 'Other', blurb: '' }]
+const leaderboard = machines.map((machine) => {
+  const mine = cells.filter((c) => c.machine === machine.key)
+  const families = familyDefs.flatMap((f) => {
+    const fs = quality.filter((s) => s.family === f.id)
+    const fc = mine.filter((c) => fs.some((s) => s.id === c.suite))
+    if (fc.length === 0) return []
+    const rows = [...new Set(fc.map((c) => c.model))].map((label) => {
+      const m = models.find((x) => x.label === label)
+      const bySuite = Object.fromEntries(fc.filter((c) => c.model === label).map((c) => [c.suite, c]))
+      const present = Object.values(bySuite)
+      const speed = perf.find((p) => p.machine === machine.key && p.model === label && p.case === 'ctx-8k')
+      return {
+        model: label,
+        url: m?.catalog?.url ?? null,
+        released: m?.released ?? null,
+        released_approx: m?.released_approx ?? false,
+        baseline: m?.baseline ?? null,
+        retired: m?.retired ?? null,
+        kind: m?.catalog?.kind ?? null,
+        parameters: m?.catalog?.parameters ?? null,
+        parameters_note: m?.catalog?.parameters_note ?? null,
+        licence: m?.catalog?.licence ?? null,
+        cells: bySuite,
+        avg: present.reduce((sum, c) => sum + (100 * c.passed) / c.total, 0) / present.length,
+        covered: present.length,
+        decode_tps: speed?.decode_tps ?? null,
+        loaded_gb: speed?.loaded_gb ?? null,
+      }
+    })
+    rows.sort((a, b) => b.avg - a.avg || a.model.localeCompare(b.model))
+    const ranking = fs.flatMap((s) => {
+      const ranks = fc
+        .filter((c) => c.suite === s.id)
+        .map((c) => ({ model: c.model, passed: c.passed, total: c.total, mean: c.mean, time_ms: c.time_ms, time_per: c.time_per, stale: c.stale }))
+        .sort((a, b) => b.passed / b.total - a.passed / a.total || b.mean - a.mean || (a.time_ms ?? Infinity) - (b.time_ms ?? Infinity))
+      return ranks.length === 0 ? [] : [{ suite: s.id, about: s.about, cases: s.cases.length, ranks }]
+    })
+    return { ...f, suites: fs.filter((s) => ranking.some((r) => r.suite === s.id)).map((s) => ({ id: s.id, about: s.about, cases: s.cases.length })), ranking, rows, has_speed: rows.some((r) => r.decode_tps !== null) }
+  })
+  return { machine, families }
+})
 
 // The image corpus for the corpus browser: each image with the cases that
 // use it.
@@ -372,6 +501,6 @@ const builds = frozen(MODEL_DIR)
 mkdirSync(DATA_OUT, { recursive: true })
 writeFileSync(
   join(DATA_OUT, 'evals.json'),
-  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, results, history, runs, environments, builds, corpus }),
+  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, leaderboard, results, history, runs, environments, builds, corpus }),
 )
 console.log(`${results.length} results, ${perf.length} speed rows, ${runs.length} runs → ${relative(ROOT, join(DATA_OUT, 'evals.json'))}`)

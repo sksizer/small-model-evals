@@ -4,7 +4,7 @@ import Compare from '../../components/Compare.astro'
 import Boxes from '../../components/Boxes.astro'
 import Shot from '../../components/Shot.astro'
 import SimilarityTable from '../../components/SimilarityTable.astro'
-import { data, describeExpected, href, imageSuites, isEdit, isRegions, isSimilarity, modelSlug, show, type Suite } from '../../lib/data'
+import { data, describeExpected, fmtTime, href, imageSuites, isEdit, isRegions, isSimilarity, modelSlug, show, type Suite } from '../../lib/data'
 
 export function getStaticPaths() {
   return imageSuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
@@ -93,7 +93,7 @@ const similarity = suite.cases.some((c) => isSimilarity(c.expected))
                     <span class={`pill ${r.pass ? 'pass' : 'fail'}`}>
                       {r.hits ? `${r.hits.filter((h) => h.found).length}/${r.hits.length}` : r.similarity ? `AP ${r.score.toFixed(2)}` : r.pass ? 'pass' : 'fail'}
                     </span>
-                    <span class="muted">{(r.latency_ms / 1000).toFixed(1)} s</span>
+                    <span class="muted">{fmtTime(r.time_ms, r.time_per)}</span>
                   </div>
                   <Compare result={r} />
                   <details>

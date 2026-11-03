@@ -13,7 +13,66 @@ export interface Cell {
   total: number
   missing: string[]
   mean: number
-  median_ms: number | null
+  /** Median time: per image when the provider reports one (`time_per` is `image`), else per case. */
+  time_ms: number | null
+  time_per: TimePer
+}
+
+/** What a time is per: one image (the provider's own measure) or one case (the case's latency). */
+export type TimePer = 'image' | 'case'
+
+/** A model's per-image cost on one suite, for an in-process or local model. */
+export interface InProc {
+  machine: string
+  model: string
+  suite: string
+  run: string
+  stale: boolean
+  per_image_ms: number | null
+  load_ms: number | null
+  mem_mb: number | null
+  /** `rss` is the whole process's resident memory (an upper bound); `peak` the editor's own peak. */
+  mem_kind: 'rss' | 'peak'
+}
+
+export interface Ranked {
+  model: string
+  passed: number
+  total: number
+  mean: number
+  time_ms: number | null
+  time_per: TimePer
+  stale: boolean
+}
+
+export interface LeaderRow {
+  model: string
+  url: string | null
+  released: string | null
+  released_approx: boolean
+  baseline: string | null
+  retired: string | null
+  kind: string | null
+  parameters: number | null
+  parameters_note: string | null
+  licence: string | null
+  cells: Record<string, Cell>
+  /** Mean pass rate (percent) over the family's suites the model ran. */
+  avg: number
+  covered: number
+  decode_tps: number | null
+  loaded_gb: number | null
+}
+
+/** A task family on the leaderboard: its suites ranked, and the matrix of models that have a result in it. */
+export interface LeaderFamily {
+  id: string
+  title: string
+  blurb: string
+  suites: { id: string; about: string; cases: number }[]
+  ranking: { suite: string; about: string; cases: number; ranks: Ranked[] }[]
+  rows: LeaderRow[]
+  has_speed: boolean
 }
 
 export interface Perf {
@@ -45,6 +104,9 @@ export interface Result {
   pass: boolean
   score: number
   latency_ms: number
+  /** The time to show: per image when the provider reports one, else the case's latency. */
+  time_ms: number
+  time_per: TimePer
   reason: string
   error: string
   output: string
@@ -202,6 +264,12 @@ export interface CaseView {
 export interface Suite {
   id: string
   kind: 'perf' | 'quality'
+  /** The task family (scripts/export-site.ts FAMILIES). */
+  family: string
+  /** What the suite tests, one line. */
+  about: string
+  /** The models the suite lists as providers. */
+  models: string[]
   fingerprint: string
   cases: CaseView[]
   retired: CaseView[]
@@ -280,10 +348,14 @@ export const data = raw as unknown as {
     baseline: string | null
     catalog: Catalog | null
     retired: string | null
+    runtime: 'ollama' | 'onnx' | 'mflux' | 'local'
+    source: { label: string; id: string; url: string | null; revision: string | null; revision_url: string | null }
   }[]
   suites: Suite[]
   cells: Cell[]
   perf: Perf[]
+  inproc: InProc[]
+  leaderboard: { machine: Machine; families: LeaderFamily[] }[]
   results: Result[]
   history: History[]
   runs: Run[]
@@ -311,6 +383,12 @@ export const shortUrl = (u: string) => u.replace(/^https?:\/\/(www\.)?/, '').rep
 
 export const pct = (passed: number, total: number) => (total === 0 ? 0 : Math.round((100 * passed) / total))
 export const fmt = (n: number | null | undefined, digits = 1) => (n === null || n === undefined || !Number.isFinite(n) ? '—' : n.toFixed(digits))
+/** A time as people read it: ms below a second, else seconds; "/img" when it is per image. */
+export const fmtTime = (ms: number | null | undefined, per: TimePer = 'case') => {
+  if (ms === null || ms === undefined || !Number.isFinite(ms)) return '—'
+  const t = ms >= 1000 ? `${(ms / 1000).toFixed(1)} s` : ms >= 10 ? `${Math.round(ms)} ms` : `${ms.toFixed(1)} ms`
+  return per === 'image' ? `${t}/img` : t
+}
 export const runDate = (run: string) => run.slice(0, 10)
 
 /** A tone for a pass rate, for heat-coloured cells. */
