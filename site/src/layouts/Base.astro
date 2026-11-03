@@ -165,7 +165,13 @@ const active = (h: string) => (h === '/' ? path === href('/') || path === '/' : 
   }
   .controls input[type='search'] { min-width: 260px; flex: 1; max-width: 420px; }
   .count { color: var(--muted); font-size: 13px; margin-left: auto; }
-  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+  /* A table takes the width it needs: at least the content column, at most
+     the window (centred on the column), and scrolls only beyond that. */
+  .scroll {
+    overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
+    width: max-content; min-width: 100%; max-width: calc(100vw - 32px);
+    position: relative; left: 50%; transform: translateX(-50%);
+  }
   table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
   th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
   th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); font-weight: 600; white-space: nowrap; background: var(--panel); position: sticky; top: 0; }
