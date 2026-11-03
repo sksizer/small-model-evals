@@ -19,6 +19,7 @@ import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
+import { CATALOG } from './catalog.ts'
 import { MODELS, ageMonths, skipReason } from './models.ts'
 import { ROOT, SCOPE, SUITES_DIR, currentSnapshot, latest, loadCases, readLedger, readSnapshot, type LedgerRecord } from './ledger.ts'
 
@@ -284,6 +285,7 @@ const models = [...new Map(records.map((r) => [r.model.label, r.model])).values(
       released_approx: entry?.approx ?? false,
       age_months: entry ? ageMonths(entry.released) : null,
       baseline: entry?.baseline ?? null,
+      catalog: CATALOG[m.label] ?? null,
       retired: entry ? skipReason(entry) : 'no longer in scripts/models.ts',
     }
   })

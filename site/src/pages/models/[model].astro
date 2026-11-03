@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { buildOf, data, fmt, href, modelSlug, pct, qualitySuites, tone } from '../../lib/data'
+import { buildOf, data, fmt, fmtDisk, fmtParams, href, modelSlug, pct, qualitySuites, shortUrl, tone } from '../../lib/data'
 
 export function getStaticPaths() {
   return data.models.map((model) => ({ params: { model: modelSlug(model.label) }, props: { model } }))
@@ -11,10 +11,102 @@ const cells = data.cells.filter((c) => c.model === model.label)
 const perf = data.perf.filter((p) => p.model === model.label)
 const failures = data.results.filter((r) => r.model === model.label && !r.pass)
 const build = buildOf(model.label)
+const cat = model.catalog
 const history = data.history.filter((h) => h.model === model.label).sort((a, b) => b.run.localeCompare(a.run))
 ---
 
 <Base title={model.label} description={`Ollama tag ${model.tag}, build ${model.digest}.`}>
+  {
+    cat && (
+      <>
+        <h2>About this model</h2>
+        <div class="scroll facts">
+          <table>
+            <tbody>
+              <tr>
+                <th>Get it</th>
+                <td>
+                  <a href={cat.url}>{shortUrl(cat.url)}</a>
+                  {cat.source_url && (
+                    <>
+                      {' · '}source <a href={cat.source_url}>{shortUrl(cat.source_url)}</a>
+                    </>
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <th>Kind</th>
+                <td>
+                  {cat.kind} · takes {cat.inputs.join(', ')} · returns {cat.outputs.join(', ')}
+                </td>
+              </tr>
+              <tr>
+                <th>Publisher</th>
+                <td>{cat.publisher}</td>
+              </tr>
+              <tr>
+                <th>Licence</th>
+                <td>{cat.licence_url ? <a href={cat.licence_url}>{cat.licence}</a> : cat.licence}</td>
+              </tr>
+              {cat.parameters !== undefined && (
+                <tr>
+                  <th>Parameters</th>
+                  <td>
+                    {fmtParams(cat.parameters)} <span class="muted">({cat.parameters.toLocaleString('en-US')})</span>
+                    {cat.parameters_note && <div class="muted">{cat.parameters_note}</div>}
+                  </td>
+                </tr>
+              )}
+              {cat.architecture && (
+                <tr>
+                  <th>Architecture</th>
+                  <td>{cat.architecture}</td>
+                </tr>
+              )}
+              {cat.base_model && (
+                <tr>
+                  <th>Derived from</th>
+                  <td>
+                    <a href={`https://huggingface.co/${cat.base_model}`}>{cat.base_model}</a>
+                  </td>
+                </tr>
+              )}
+              {cat.disk_gb !== undefined && (
+                <tr>
+                  <th>Download</th>
+                  <td>{fmtDisk(cat.disk_gb)} as run</td>
+                </tr>
+              )}
+              {cat.languages && (
+                <tr>
+                  <th>Languages</th>
+                  <td>{cat.languages}</td>
+                </tr>
+              )}
+              {cat.paper && (
+                <tr>
+                  <th>Paper</th>
+                  <td>
+                    <a href={cat.paper}>{shortUrl(cat.paper)}</a>
+                  </td>
+                </tr>
+              )}
+              {model.released && (
+                <tr>
+                  <th>Released</th>
+                  <td>
+                    {model.released}
+                    {model.released_approx && <span class="muted"> (from memory, unchecked)</span>}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <p class="note">{cat.notes}</p>
+      </>
+    )
+  }
   {
     build && (
       <div class="cards">
@@ -180,3 +272,14 @@ const history = data.history.filter((h) => h.model === model.label).sort((a, b) 
     </table>
   </div>
 </Base>
+
+<style>
+  .facts th {
+    width: 9rem;
+    position: static;
+    white-space: nowrap;
+  }
+  .facts td {
+    overflow-wrap: anywhere;
+  }
+</style>

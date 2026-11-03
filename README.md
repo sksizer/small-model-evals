@@ -17,13 +17,28 @@ exactly what the model was asked, on what hardware and runtime. A static site
 | [Ollama](https://ollama.com) | The models under test |
 | Node.js (for `npx`) | promptfoo, pinned to 0.125.1 |
 | Chrome or Chromium | Only to render new synthetic corpus pages |
+| [mflux](https://github.com/filipstrand/mflux) 0.24.0, via [uv](https://docs.astral.sh/uv/) | Only the `edit` suite; Apple silicon only |
 
 ```sh
 bun install
-ollama pull qwen3.5:4b     # and any other model in scripts/models.ts
+uv tool install mflux==0.24.0   # Apple silicon, for the edit suite
+bun scripts/setup.ts            # pulls the Ollama models, downloads the editor weights
 bun run eval --models qwen3.5:4b
 bun run site
 ```
+
+`scripts/setup.ts` pulls every Ollama model the runner would run (models past the age limit are
+skipped), downloads the pinned mflux weights into `.cache/models/`, and lists what is still
+missing. `--dry-run` only reports; `--models a,b` limits it. ONNX models download themselves on
+first use. On a machine that isn't Apple silicon, the mflux editors are skipped by setup and by the
+runner.
+
+### On another machine
+
+Clone, run the setup above, then `bun run eval`. Each ledger record names its machine
+(`machine.key`, e.g. `Mac16,10-16g`), so results from a second machine add rows rather than
+replacing this one's. Commit `results/` from there and the site shows both. Expect large
+downloads: the Ollama models are a few GB each, and the edit model is 4.6 GB.
 
 Results so far come from one Apple M4 Mac mini with 16 GiB. Numbers from other machines are
 recorded separately (each record names its hardware), so contributions from other hardware add

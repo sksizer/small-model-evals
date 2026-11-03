@@ -1,0 +1,113 @@
+---
+// Every model that has results: what it is, where to get it, its size and
+// licence (scripts/catalog.ts), beside its build details. Sorting, search and
+// filters come from scripts/table.ts.
+import Base from '../../layouts/Base.astro'
+import { buildOf, data, fmtDisk, fmtParams, href, modelSlug, shortUrl } from '../../lib/data'
+
+const rows = data.models.map((m) => ({ m, c: m.catalog, build: buildOf(m.label) }))
+const kinds = [...new Set(rows.flatMap((r) => (r.c ? [r.c.kind] : [])))].sort()
+const licences = [...new Set(rows.flatMap((r) => (r.c ? [r.c.licence] : [])))].sort()
+---
+
+<Base
+  title="Models"
+  description={`${rows.length} models with results: what each is, where to get it, its size and licence. Click a header to sort; the model name opens its scores.`}
+>
+  <div class="controls">
+    <input type="search" data-search="models" placeholder="Search name, publisher, architecture or notes…" aria-label="Search models" />
+    <select data-facet="models" name="kind" aria-label="Kind">
+      <option value="">All kinds</option>
+      {kinds.map((k) => <option value={k}>{k}</option>)}
+    </select>
+    <select data-facet="models" name="licence" aria-label="Licence">
+      <option value="">All licences</option>
+      {licences.map((l) => <option value={l}>{l}</option>)}
+    </select>
+    <select data-facet="models" name="input" aria-label="Input">
+      <option value="">Any input</option>
+      <option value="text">Takes text</option>
+      <option value="image">Takes images</option>
+    </select>
+    <span class="count" data-count="models"></span>
+  </div>
+  <div class="scroll">
+    <table data-table id="models">
+      <thead>
+        <tr>
+          <th data-sort="text">Model</th>
+          <th data-sort="text">Kind</th>
+          <th data-sort="num" class="num" title="Total weights, from the Hugging Face metadata">Parameters</th>
+          <th data-sort="num" class="num" title="Download size as run">Disk</th>
+          <th data-sort="text">Licence</th>
+          <th data-sort="text">Publisher</th>
+          <th data-sort="text" title="Released, as scripts/models.ts records it">Released</th>
+          <th>Where</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map(({ m, c, build }) => (
+            <tr
+              data-kind={c?.kind ?? ''}
+              data-licence={c?.licence ?? ''}
+              data-input={(c?.inputs ?? []).join(' ')}
+              data-search={[m.label, m.tag, c?.kind, c?.publisher, c?.licence, c?.architecture, c?.base_model, c?.notes].join(' ')}
+            >
+              <td data-value={m.label}>
+                <a href={href(`/models/${modelSlug(m.label)}/`)}>{m.label}</a>
+                {m.baseline && <span class="pill stale" title={m.baseline}> baseline</span>}
+                {m.retired && <span class="pill fail" title={m.retired}> retired</span>}
+              </td>
+              <td>{c ? <span class="tag">{c.kind}</span> : <span class="muted">—</span>}</td>
+              <td class="num" data-value={c?.parameters ?? build?.parameter_count ?? -1} title={c?.parameters_note}>
+                {c?.parameters ? fmtParams(c.parameters) : build?.parameter_count ? fmtParams(build.parameter_count) : '—'}
+              </td>
+              <td class="num" data-value={c?.disk_gb ?? -1}>{fmtDisk(c?.disk_gb)}</td>
+              <td data-value={c?.licence ?? ''}>
+                {c ? (c.licence_url ? <a href={c.licence_url}>{c.licence}</a> : c.licence) : '—'}
+              </td>
+              <td>{c?.publisher ?? '—'}</td>
+              <td data-value={m.released ?? ''}>
+                {m.released ?? '—'}
+                {m.released_approx && <span class="muted"> ~</span>}
+              </td>
+              <td class="links">
+                {c && <a href={c.url}>{shortUrl(c.url)}</a>}
+                {c?.source_url && (
+                  <div class="muted">
+                    source <a href={c.source_url}>{shortUrl(c.source_url)}</a>
+                  </div>
+                )}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="note">
+    Parameters are the weights in the Hugging Face metadata, vision and embedding towers included, so a "4B" model can
+    show more; hover for the caveat. Disk is the download as run. <code>~</code> after a date means the month is from
+    memory, not checked.
+  </p>
+</Base>
+
+<style>
+  .tag {
+    font-size: 11px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  td.num {
+    white-space: nowrap;
+  }
+  .links {
+    max-width: 22rem;
+    overflow-wrap: anywhere;
+    font-size: 12.5px;
+  }
+</style>

@@ -12,10 +12,11 @@
 //
 // promptfoo's raw output lands in results/runs/<timestamp>/ (not committed);
 // the records go to results/ledger/, and results/summary.md is rewritten.
-import { readdirSync, mkdirSync } from 'node:fs'
+import { existsSync, readdirSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import { streamRunner } from '@osdlc/command-seam'
+import { mfluxProblem, mfluxWeights } from './mflux.ts'
 import { MODELS, skipReason } from './models.ts'
 import {
   OLLAMA,
@@ -72,7 +73,7 @@ const runner = streamRunner('npx')
 const failures: string[] = []
 
 for (const model of MODELS.filter((m) => !onlyModels || onlyModels.has(m.label))) {
-  const skip = skipReason(model)
+  const skip = skipReason(model) ?? (model.runtime === 'mflux' ? mfluxProblem() ?? (existsSync(mfluxWeights(model)) ? null : 'weights missing: run `bun scripts/setup.ts`') : null)
   if (skip) {
     console.log(`\n--- skipping ${model.label}: ${skip}`)
     continue

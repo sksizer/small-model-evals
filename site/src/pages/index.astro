@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro'
-import { data, fmt, href, modelSlug, pct, qualitySuites, tone } from '../lib/data'
+import { data, fmt, fmtParams, href, modelSlug, pct, qualitySuites, tone } from '../lib/data'
 
 // One leaderboard per machine: a model's latest result on each suite, its
 // average pass rate, and its speed and memory at 8K context.
@@ -33,22 +33,30 @@ const machines = data.machines.map((m) => {
           <table data-table id={`lb-${machine.key}`}>
             <thead>
               <tr>
-                <th data-sort="text">Model</th>
+                <th data-sort="text" class="pin">Model</th>
+                <th data-sort="text">Kind</th>
+                <th data-sort="num" class="num" title="Total weights, from the Hugging Face metadata">Params</th>
+                <th data-sort="text">Licence</th>
                 {qualitySuites.map((s) => (
-                  <th data-sort="num" class="num">
-                    {s.id} <span class="muted">({s.cases.length})</span>
+                  <th data-sort="num" class="num suite-h">
+                    {s.id.split('-').map((part, i) => (i === 0 ? part : <>-<wbr />{part}</>))}
+                    <br /><span class="muted">({s.cases.length})</span>
                   </th>
                 ))}
-                <th data-sort="num" class="num" title="Mean pass rate over the suites the model ran">Average</th>
-                <th data-sort="num" class="num" title="Output tokens per second at 8K context">Output tok/s</th>
-                <th data-sort="num" class="num" title="Loaded size at 8K context, from Ollama /api/ps">Loaded GB</th>
+                <th data-sort="num" class="num suite-h" title="Mean pass rate over the suites the model ran">Average</th>
+                <th data-sort="num" class="num suite-h" title="Output tokens per second at 8K context">Output tok/s</th>
+                <th data-sort="num" class="num suite-h" title="Loaded size at 8K context, from Ollama /api/ps">Loaded GB</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
                 <tr>
-                  <td data-value={r.model}>
-                    <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+                  <td data-value={r.model} class="pin">
+                    <a class="model-name" href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+                    {(() => {
+                      const url = data.models.find((x) => x.label === r.model)?.catalog?.url
+                      return url && <a href={url} title="Where to get it" aria-label={`Where to get ${r.model}`}> ↗</a>
+                    })()}
                     {(() => {
                       const m = data.models.find((x) => x.label === r.model)
                       return (
@@ -60,6 +68,16 @@ const machines = data.machines.map((m) => {
                       )
                     })()}
                   </td>
+                  {(() => {
+                    const cat = data.models.find((x) => x.label === r.model)?.catalog
+                    return (
+                      <>
+                        <td data-value={cat?.kind ?? ''} style="white-space:nowrap;font-size:12px">{cat?.kind ?? '—'}</td>
+                        <td class="num" data-value={cat?.parameters ?? -1} title={cat?.parameters_note} style="white-space:nowrap">{fmtParams(cat?.parameters)}</td>
+                        <td data-value={cat?.licence ?? ''} style="font-size:12px;min-width:7em">{cat?.licence ?? '—'}</td>
+                      </>
+                    )
+                  })()}
                   {qualitySuites.map((s) => {
                     const c = r.bySuite[s.id]
                     if (!c) return <td class="heat muted" data-value="-1">n/a</td>
@@ -110,3 +128,12 @@ const machines = data.machines.map((m) => {
     models), so compare it alongside the coverage count. Suites have 8–20 cases: a gap of one or two cases is noise.
   </p>
 </Base>
+
+<style>
+  .model-name { white-space: nowrap; }
+  /* Suite and figure headers wrap (suite names at hyphens), so a column is as wide as its values, not its name. */
+  .suite-h { white-space: normal; }
+  /* The model column stays in view when a narrow window scrolls the table. */
+  .pin { position: sticky; left: 0; z-index: 1; background: var(--panel); }
+  th.pin { z-index: 2; }
+</style>

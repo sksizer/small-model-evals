@@ -85,6 +85,26 @@ export interface Build {
   default_parameters: Record<string, string>
 }
 
+/** What a model is and where to get it (scripts/catalog.ts). */
+export interface Catalog {
+  url: string
+  source_url?: string
+  publisher: string
+  licence: string
+  licence_url?: string
+  kind: string
+  inputs: string[]
+  outputs: string[]
+  parameters?: number
+  parameters_note?: string
+  architecture?: string
+  base_model?: string
+  disk_gb?: number
+  languages?: string
+  paper?: string
+  notes: string
+}
+
 export interface Environment {
   hardware: Record<string, string | number>
   os: { name: string; version: string; build: string; kernel: string }
@@ -217,6 +237,7 @@ export const data = raw as unknown as {
     released_approx: boolean
     age_months: number | null
     baseline: string | null
+    catalog: Catalog | null
     retired: string | null
   }[]
   suites: Suite[]
@@ -235,6 +256,17 @@ export const modelLabels = data.models.map((m) => m.label)
 
 /** A URL-safe slug for a model label such as `qwen3.5:4b`. */
 export const modelSlug = (label: string) => label.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '')
+
+/** A parameter count as people write it: 137M, 4.0B. */
+export const fmtParams = (n: number | null | undefined) =>
+  n === null || n === undefined ? '—' : n >= 1e9 ? `${(n / 1e9).toFixed(n >= 1e10 ? 0 : 1)}B` : `${Math.round(n / 1e6)}M`
+
+/** A download size in GB or MB. */
+export const fmtDisk = (gb: number | null | undefined) =>
+  gb === null || gb === undefined ? '—' : gb >= 1 ? `${gb.toFixed(1)} GB` : gb >= 0.01 ? `${Math.round(gb * 1000)} MB` : `${(gb * 1000).toFixed(2)} MB`
+
+/** A link's host and path, for showing a URL compactly. */
+export const shortUrl = (u: string) => u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
 
 export const pct = (passed: number, total: number) => (total === 0 ? 0 : Math.round((100 * passed) / total))
 export const fmt = (n: number | null | undefined, digits = 1) => (n === null || n === undefined || !Number.isFinite(n) ? '—' : n.toFixed(digits))
