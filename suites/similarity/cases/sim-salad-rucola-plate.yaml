@@ -1,0 +1,7 @@
+description: "similarity: salad-rucola-plate (2 copy, 2 class of 153)"
+metadata: { id: sim-salad-rucola-plate }
+vars:
+  query: salad-rucola-plate
+  expected:
+    copy: [copy-bright-salad-rucola-plate, copy-jpeg40-salad-rucola-plate]
+    class: [salad-ham, salad-party-dish]

@@ -1,0 +1,8 @@
+description: "similarity: recipe-card (2 copy, 1 edit, 4 class of 153)"
+metadata: { id: sim-recipe-card }
+vars:
+  query: recipe-card
+  expected:
+    copy: [copy-crop10-recipe-card, copy-bright-recipe-card]
+    edit: [edit-recipe-title]
+    class: [receipt-grocery, invoice-simple, event-flyer, shipping-label]

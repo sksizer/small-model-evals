@@ -3,7 +3,8 @@ import Base from '../../layouts/Base.astro'
 import Compare from '../../components/Compare.astro'
 import Boxes from '../../components/Boxes.astro'
 import Shot from '../../components/Shot.astro'
-import { data, describeExpected, href, imageSuites, isEdit, isRegions, modelSlug, show, type Suite } from '../../lib/data'
+import SimilarityTable from '../../components/SimilarityTable.astro'
+import { data, describeExpected, href, imageSuites, isEdit, isRegions, isSimilarity, modelSlug, show, type Suite } from '../../lib/data'
 
 export function getStaticPaths() {
   return imageSuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
@@ -19,24 +20,28 @@ const results = data.results.filter((r) => r.suite === suite.id)
 const models = [...new Set(results.map((r) => r.model))].sort()
 const regions = suite.cases.some((c) => isRegions(c.expected))
 const edits = suite.cases.some((c) => isEdit(c.expected))
+const similarity = suite.cases.some((c) => isSimilarity(c.expected))
 ---
 
 <Base
   title={`Gallery: ${suite.id}`}
   description={
-    edits
+    similarity
+      ? 'Each query photo beside every model\'s five most alike candidates with the model\'s score. Green outline: a copy, an edit or the same scene (what should match). Amber: the same kind of thing. Red: unrelated. The table gives recall per level for each model.'
+      : edits
       ? 'Each original (the dashed box is the only area the edit may change) beside every model\'s edited image, with the instruction. Under each edit, the judge\'s yes/no per question: green met, red not met, and how much the image outside the box differs from the original. Open a reply to read it in full.'
       : regions
       ? 'Each image with its expected boxes (dashed blue), then every model\'s boxes on its own copy: green matched an expected box, red is a box that matches nothing, dashed grey is an expected box the model missed. Open a reply to read it in full.'
       : 'Each image beside what every model read from it. Green chips were found in the reply; struck-through ones were missed; solid red ones are wrong tags the model gave. Open a reply to read it in full.'
   }
 >
+  {similarity && <SimilarityTable results={results} />}
   <div class="controls">
     <select id="g-model" aria-label="Model">
       <option value="">All models</option>
       {models.map((m) => <option value={m}>{m}</option>)}
     </select>
-    <label><input type="checkbox" id="g-misses" /> Only results with misses</label>
+    <label><input type="checkbox" id="g-misses" /> {similarity ? 'Only results below the pass mark' : 'Only results with misses'}</label>
     <a href={href(`/suites/${suite.id}/`)}>Case grid →</a>
   </div>
   {
@@ -64,7 +69,7 @@ const edits = suite.cases.some((c) => isEdit(c.expected))
               {c.instruction && <p class="instruction">{c.instruction}</p>}
               <p class="expect">
                 <span class="muted">Expected:</span>{' '}
-                {isEdit(c.expected)
+                {isEdit(c.expected) || isSimilarity(c.expected)
                   ? describeExpected(c.expected)
                   : isRegions(c.expected)
                   ? c.expected.boxes.length === 0
@@ -82,11 +87,11 @@ const edits = suite.cases.some((c) => isEdit(c.expected))
               </p>
               {rs.length === 0 && <p class="muted">No results yet.</p>}
               {rs.map((r) => (
-                <div class="read" data-model={r.model} data-miss={r.hits?.some((h) => !h.found) || r.wrong?.some((w) => w.found) || r.regions?.some((x) => !x.ok) || r.edit?.answers.some((a) => !a.ok) || r.edit?.preservation?.ok === false ? '1' : '0'}>
+                <div class="read" data-model={r.model} data-miss={r.hits?.some((h) => !h.found) || r.wrong?.some((w) => w.found) || r.regions?.some((x) => !x.ok) || r.edit?.answers.some((a) => !a.ok) || r.edit?.preservation?.ok === false || (r.similarity && !r.pass) ? '1' : '0'}>
                   <div class="read-head">
                     <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
                     <span class={`pill ${r.pass ? 'pass' : 'fail'}`}>
-                      {r.hits ? `${r.hits.filter((h) => h.found).length}/${r.hits.length}` : r.pass ? 'pass' : 'fail'}
+                      {r.hits ? `${r.hits.filter((h) => h.found).length}/${r.hits.length}` : r.similarity ? `AP ${r.score.toFixed(2)}` : r.pass ? 'pass' : 'fail'}
                     </span>
                     <span class="muted">{(r.latency_ms / 1000).toFixed(1)} s</span>
                   </div>

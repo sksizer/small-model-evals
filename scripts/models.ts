@@ -19,10 +19,13 @@ export interface ModelEntry {
    * `onnx`: run in-process with transformers.js (providers/image-classifier.ts), not by Ollama.
    * `mflux`: an image editor run by the mflux CLI (providers/mflux-edit.ts), weights in
    * .cache/models/<tag>/<revision>.
+   * `local`: plain code with no weights (the perceptual hashes of providers/image-embed.ts).
    */
-  runtime?: 'onnx' | 'mflux'
-  /** For an ONNX or mflux model: the pinned Hugging Face commit, used as its digest. */
+  runtime?: 'onnx' | 'mflux' | 'local'
+  /** For an ONNX or mflux model: the pinned Hugging Face commit, used as its digest. For a `local` one: the version of its code, bumped when its output could change. */
   revision?: string
+  /** What an ONNX or local model does, recorded in its build file (default `image-classification`). */
+  capability?: string
   /** For an ONNX model: the weights' precision, as transformers.js names it. */
   dtype?: string
   /** For an mflux model: mflux's name for the architecture (`--base-model`). */
@@ -58,6 +61,15 @@ export const MODELS: ModelEntry[] = [
   { label: 'florence2-base-ocr-q8', tag: 'onnx-community/Florence-2-base', released: '2024-06', runtime: 'onnx', revision: 'd59e079711c57174f29265539fb4cc9f0f335916', dtype: 'q8', baseline: 'Florence-2 base (~230M), <OCR_WITH_REGION>, MIT' },
   { label: 'yunet-2023mar', tag: 'opencv/face_detection_yunet', released: '2023-03', runtime: 'onnx', revision: '3cc26e7f1014a5ee5d74a42acee58bafc9d0a310', dtype: 'fp32', baseline: 'YuNet face detector, 0.2 MB, MIT' },
   { label: 'ppocr-v5-mobile-det', tag: 'PaddlePaddle/PP-OCRv5_mobile_det_onnx', released: '2025-05', runtime: 'onnx', revision: 'e6f4fa85f00e168c862bc462aebca69eef9b3d3d', dtype: 'fp32', baseline: 'PP-OCRv5 mobile text detector, 4.8 MB, Apache-2.0' },
+  // Image similarity (similarity suite): hashes with no weights, then image encoders. Like the detectors, encoders age slowly.
+  { label: 'phash', tag: 'phash', released: '2010-01', approx: true, runtime: 'local', revision: 'phash-v1', capability: 'image-hash', baseline: 'perceptual hash, 64-bit DCT: the no-ML yardstick for near-copies' },
+  { label: 'dhash', tag: 'dhash', released: '2013-01', approx: true, runtime: 'local', revision: 'dhash-v1', capability: 'image-hash', baseline: 'difference hash, 64-bit gradient: the cheapest no-ML yardstick for near-copies' },
+  { label: 'dinov2-small', tag: 'onnx-community/dinov2-small', released: '2023-04', approx: true, runtime: 'onnx', revision: '8b1f705a3a7f6f062f6bdd21986c1583d3ef105d', dtype: 'fp32', capability: 'image-embedding', baseline: 'DINOv2 ViT-S/14, 22M parameters, Apache-2.0' },
+  { label: 'dinov2-base', tag: 'onnx-community/dinov2-base', released: '2023-04', approx: true, runtime: 'onnx', revision: '31ef06cac16d5d301c5930d147002a058c85a5e4', dtype: 'fp32', capability: 'image-embedding', baseline: 'DINOv2 ViT-B/14, 86M parameters, Apache-2.0' },
+  { label: 'dinov3-vits16', tag: 'onnx-community/dinov3-vits16-pretrain-lvd1689m-ONNX', released: '2025-08', runtime: 'onnx', revision: '48988dfe73065df8d6f5ccc0edc7c8bcf307de41', dtype: 'fp32', capability: 'image-embedding', baseline: 'DINOv3 ViT-S/16, 21.6M parameters, under Meta\'s custom DINOv3 licence (not Apache or MIT)' },
+  { label: 'siglip2-base', tag: 'onnx-community/siglip2-base-patch16-224-ONNX', released: '2025-02', runtime: 'onnx', revision: 'ba1f3b0843f24bc5417d38e19c37b287d719b2f4', dtype: 'fp32', capability: 'image-embedding', baseline: 'SigLIP 2 base, vision tower only (~93M of 375M parameters), Apache-2.0' },
+  { label: 'clip-vit-b32', tag: 'Xenova/clip-vit-base-patch32', released: '2021-01', approx: true, runtime: 'onnx', revision: '6b7c523703ae26e39be4b03774966f8571c7f523', dtype: 'fp32', capability: 'image-embedding', baseline: 'OpenAI CLIP ViT-B/32, vision tower only, MIT' },
+  { label: 'clip-vit-b16', tag: 'Xenova/clip-vit-base-patch16', released: '2021-01', approx: true, runtime: 'onnx', revision: '342fdf2f67aded64d138ff074745fb4a5d2bba5f', dtype: 'fp32', capability: 'image-embedding', baseline: 'OpenAI CLIP ViT-B/16, vision tower only, MIT' },
   // Image editors (edit suite), run by the mflux CLI, not Ollama.
   { label: 'flux2-klein-4b-q4', tag: 'mflux-community/flux2-klein-4b-mflux-q4', released: '2026-01', runtime: 'mflux', base_model: 'flux2-klein-4b', revision: '794cd159538149ad9830848508c31f0ea7088e58', dtype: 'q4', baseline: 'FLUX.2 klein 4B, 4-bit MLX build for mflux, Apache-2.0 (base black-forest-labs/FLUX.2-klein-4B)' },
   { label: 'd1-omni:600m', tag: 'd1-omni:600m', released: '2026-10', approx: true },

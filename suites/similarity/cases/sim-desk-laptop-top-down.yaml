@@ -1,0 +1,7 @@
+description: "similarity: desk-laptop-top-down (2 copy, 5 class of 153)"
+metadata: { id: sim-desk-laptop-top-down }
+vars:
+  query: desk-laptop-top-down
+  expected:
+    copy: [copy-jpeg40-desk-laptop-top-down, copy-flip-desk-laptop-top-down]
+    class: [laptop-notepad, desk-coffee-laptop-notebook, desk-laptop-notebook-pen, oi-objects-a7e5d2727af4299d, oi-objects-7408fef212a5d3bc]

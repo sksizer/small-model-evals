@@ -1,0 +1,157 @@
+# The candidates every similarity case is ranked against: each non-sensitive corpus photo, the
+# copies made of the queries (kind: copy) and the edit suite's outputs (kind: edit). `of` names the
+# photo a copy or edit came from. Written by scripts/pick-similarity.ts.
+- { id: salad-ham, file: corpus/images/salad-ham.jpg, kind: original }
+- { id: salad-party-dish, file: corpus/images/salad-party-dish.jpg, kind: original }
+- { id: salad-rucola-plate, file: corpus/images/salad-rucola-plate.jpg, kind: original }
+- { id: pancakes-breakfast-table, file: corpus/images/pancakes-breakfast-table.jpg, kind: original }
+- { id: pancakes-stack, file: corpus/images/pancakes-stack.jpg, kind: original }
+- { id: dog-sleeping-painting, file: corpus/images/dog-sleeping-painting.jpg, kind: original }
+- { id: dog-border-terrier, file: corpus/images/dog-border-terrier.jpg, kind: original }
+- { id: dog-in-dog-bed, file: corpus/images/dog-in-dog-bed.jpg, kind: original }
+- { id: dog-autumn-sun, file: corpus/images/dog-autumn-sun.jpg, kind: original }
+- { id: parrot-illustration, file: corpus/images/parrot-illustration.jpg, kind: original }
+- { id: horses-flooded-pasture, file: corpus/images/horses-flooded-pasture.jpg, kind: original }
+- { id: horses-pasture-house, file: corpus/images/horses-pasture-house.jpg, kind: original }
+- { id: bike-parking-oakland, file: corpus/images/bike-parking-oakland.jpg, kind: original }
+- { id: bike-parking-three-styles, file: corpus/images/bike-parking-three-styles.jpg, kind: original }
+- { id: sidewalk-cafe, file: corpus/images/sidewalk-cafe.jpg, kind: original }
+- { id: coffee-montreal, file: corpus/images/coffee-montreal.jpg, kind: original }
+- { id: coffee-snacks-table, file: corpus/images/coffee-snacks-table.jpg, kind: original }
+- { id: coffee-shop-counter, file: corpus/images/coffee-shop-counter.jpg, kind: original }
+- { id: laptop-notepad, file: corpus/images/laptop-notepad.jpg, kind: original }
+- { id: desk-coffee-laptop-notebook, file: corpus/images/desk-coffee-laptop-notebook.jpg, kind: original }
+- { id: desk-laptop-notebook-pen, file: corpus/images/desk-laptop-notebook-pen.jpg, kind: original }
+- { id: desk-laptop-top-down, file: corpus/images/desk-laptop-top-down.jpg, kind: original }
+- { id: diner-snow-night, file: corpus/images/diner-snow-night.jpg, kind: original }
+- { id: kitchen-historic-bw, file: corpus/images/kitchen-historic-bw.jpg, kind: original }
+- { id: library-stacks-vasconcelos, file: corpus/images/library-stacks-vasconcelos.jpg, kind: original }
+- { id: library-laukaa, file: corpus/images/library-laukaa.jpg, kind: original }
+- { id: railway-station-dark, file: corpus/images/railway-station-dark.jpg, kind: original }
+- { id: street-night-rostov, file: corpus/images/street-night-rostov.jpg, kind: original }
+- { id: lake-salagou, file: corpus/images/lake-salagou.jpg, kind: original }
+- { id: lake-sherburne, file: corpus/images/lake-sherburne.jpg, kind: original }
+- { id: mountain-lake-dam, file: corpus/images/mountain-lake-dam.jpg, kind: original }
+- { id: sunset-boats, file: corpus/images/sunset-boats.jpg, kind: original }
+- { id: sunset-beach-colonia, file: corpus/images/sunset-beach-colonia.jpg, kind: original }
+- { id: millipede-moss, file: corpus/images/millipede-moss.jpg, kind: original }
+- { id: forest-trail, file: corpus/images/forest-trail.jpg, kind: original }
+- { id: tree-bracket-fungus, file: corpus/images/tree-bracket-fungus.jpg, kind: original }
+- { id: snow-forest-trail, file: corpus/images/snow-forest-trail.jpg, kind: original }
+- { id: letter-handwritten-short, file: corpus/images/letter-handwritten-short.jpg, kind: original }
+- { id: recipe-daffys-elixir, file: corpus/images/recipe-daffys-elixir.jpg, kind: original }
+- { id: recipe-rheumatism, file: corpus/images/recipe-rheumatism.jpg, kind: original }
+- { id: train-ticket-french, file: corpus/images/train-ticket-french.jpg, kind: original }
+- { id: train-ticket-chinese, file: corpus/images/train-ticket-chinese.jpg, kind: original }
+- { id: receipt-grocery, file: corpus/images/receipt-grocery.png, kind: original }
+- { id: invoice-simple, file: corpus/images/invoice-simple.png, kind: original }
+- { id: settings-panel, file: corpus/images/settings-panel.png, kind: original }
+- { id: jobs-table, file: corpus/images/jobs-table.png, kind: original }
+- { id: event-flyer, file: corpus/images/event-flyer.png, kind: original }
+- { id: shipping-label, file: corpus/images/shipping-label.png, kind: original }
+- { id: error-dialog, file: corpus/images/error-dialog.png, kind: original }
+- { id: recipe-card, file: corpus/images/recipe-card.png, kind: original }
+- { id: oi-objects-948794bfee784412, file: corpus/images/oi-objects-948794bfee784412.jpg, kind: original }
+- { id: oi-objects-0fd512f1bffb8cf3, file: corpus/images/oi-objects-0fd512f1bffb8cf3.jpg, kind: original }
+- { id: oi-objects-25d107f1590c1772, file: corpus/images/oi-objects-25d107f1590c1772.jpg, kind: original }
+- { id: oi-objects-a7e5d2727af4299d, file: corpus/images/oi-objects-a7e5d2727af4299d.jpg, kind: original }
+- { id: oi-objects-28bd6c6b1050e055, file: corpus/images/oi-objects-28bd6c6b1050e055.jpg, kind: original }
+- { id: oi-objects-e51e3156ed41b3a8, file: corpus/images/oi-objects-e51e3156ed41b3a8.jpg, kind: original }
+- { id: oi-objects-d8cac8b54e9fa89c, file: corpus/images/oi-objects-d8cac8b54e9fa89c.jpg, kind: original }
+- { id: oi-objects-5b7ab3baf4c0492f, file: corpus/images/oi-objects-5b7ab3baf4c0492f.jpg, kind: original }
+- { id: oi-objects-eccb080e57b2aac5, file: corpus/images/oi-objects-eccb080e57b2aac5.jpg, kind: original }
+- { id: oi-objects-7408fef212a5d3bc, file: corpus/images/oi-objects-7408fef212a5d3bc.jpg, kind: original }
+- { id: oi-objects-2b2c4fe6d63a13e4, file: corpus/images/oi-objects-2b2c4fe6d63a13e4.jpg, kind: original }
+- { id: oi-objects-ee47ccab89a75d0d, file: corpus/images/oi-objects-ee47ccab89a75d0d.jpg, kind: original }
+- { id: oi-objects-2fba54286aaac20e, file: corpus/images/oi-objects-2fba54286aaac20e.jpg, kind: original }
+- { id: oi-objects-5ea13fbbd1a1474f, file: corpus/images/oi-objects-5ea13fbbd1a1474f.jpg, kind: original }
+- { id: oi-find-e916dd0b766b2f40, file: corpus/images/oi-find-e916dd0b766b2f40.jpg, kind: original }
+- { id: oi-find-743dbcab02a9971e, file: corpus/images/oi-find-743dbcab02a9971e.jpg, kind: original }
+- { id: oi-find-2dcab96f79ef52c4, file: corpus/images/oi-find-2dcab96f79ef52c4.jpg, kind: original }
+- { id: oi-find-07caab7b663b7e86, file: corpus/images/oi-find-07caab7b663b7e86.jpg, kind: original }
+- { id: oi-find-0f730eda466be34c, file: corpus/images/oi-find-0f730eda466be34c.jpg, kind: original }
+- { id: oi-find-a1b604b5548bfc1f, file: corpus/images/oi-find-a1b604b5548bfc1f.jpg, kind: original }
+- { id: oi-find-6022a450df278025, file: corpus/images/oi-find-6022a450df278025.jpg, kind: original }
+- { id: oi-find-8f08cb18c27fbaa7, file: corpus/images/oi-find-8f08cb18c27fbaa7.jpg, kind: original }
+- { id: oi-find-864e6f2e549e9542, file: corpus/images/oi-find-864e6f2e549e9542.jpg, kind: original }
+- { id: oi-find-030c5a10124e6252, file: corpus/images/oi-find-030c5a10124e6252.jpg, kind: original }
+- { id: oi-find-489076e07c213206, file: corpus/images/oi-find-489076e07c213206.jpg, kind: original }
+- { id: oi-find-66a342dcdafc7607, file: corpus/images/oi-find-66a342dcdafc7607.jpg, kind: original }
+- { id: oi-find-149a74e86e8161a5, file: corpus/images/oi-find-149a74e86e8161a5.jpg, kind: original }
+- { id: oi-find-29de4e35add89b69, file: corpus/images/oi-find-29de4e35add89b69.jpg, kind: original }
+- { id: oi-find-c4d62e55691ed1e4, file: corpus/images/oi-find-c4d62e55691ed1e4.jpg, kind: original }
+- { id: oi-find-01d3fdb0f6383edb, file: corpus/images/oi-find-01d3fdb0f6383edb.jpg, kind: original }
+- { id: oi-find-fad0f797e6985f7f, file: corpus/images/oi-find-fad0f797e6985f7f.jpg, kind: original }
+- { id: oi-find-a90c22661fe961ff, file: corpus/images/oi-find-a90c22661fe961ff.jpg, kind: original }
+- { id: oi-scene-spitfire-a, file: corpus/images/oi-scene-spitfire-a.jpg, kind: original }
+- { id: oi-scene-spitfire-b, file: corpus/images/oi-scene-spitfire-b.jpg, kind: original }
+- { id: oi-scene-monaco-a, file: corpus/images/oi-scene-monaco-a.jpg, kind: original }
+- { id: oi-scene-monaco-b, file: corpus/images/oi-scene-monaco-b.jpg, kind: original }
+- { id: copy-resize-oi-objects-ee47ccab89a75d0d, file: corpus/images/copy-resize-oi-objects-ee47ccab89a75d0d.jpg, kind: copy, of: oi-objects-ee47ccab89a75d0d }
+- { id: copy-crop10-oi-objects-ee47ccab89a75d0d, file: corpus/images/copy-crop10-oi-objects-ee47ccab89a75d0d.jpg, kind: copy, of: oi-objects-ee47ccab89a75d0d }
+- { id: copy-jpeg40-oi-objects-25d107f1590c1772, file: corpus/images/copy-jpeg40-oi-objects-25d107f1590c1772.jpg, kind: copy, of: oi-objects-25d107f1590c1772 }
+- { id: copy-flip-oi-objects-25d107f1590c1772, file: corpus/images/copy-flip-oi-objects-25d107f1590c1772.jpg, kind: copy, of: oi-objects-25d107f1590c1772 }
+- { id: copy-crop10-recipe-card, file: corpus/images/copy-crop10-recipe-card.jpg, kind: copy, of: recipe-card }
+- { id: copy-bright-recipe-card, file: corpus/images/copy-bright-recipe-card.jpg, kind: copy, of: recipe-card }
+- { id: copy-flip-settings-panel, file: corpus/images/copy-flip-settings-panel.jpg, kind: copy, of: settings-panel }
+- { id: copy-resize-settings-panel, file: corpus/images/copy-resize-settings-panel.jpg, kind: copy, of: settings-panel }
+- { id: copy-bright-oi-objects-28bd6c6b1050e055, file: corpus/images/copy-bright-oi-objects-28bd6c6b1050e055.jpg, kind: copy, of: oi-objects-28bd6c6b1050e055 }
+- { id: copy-jpeg40-oi-objects-28bd6c6b1050e055, file: corpus/images/copy-jpeg40-oi-objects-28bd6c6b1050e055.jpg, kind: copy, of: oi-objects-28bd6c6b1050e055 }
+- { id: copy-resize-oi-objects-948794bfee784412, file: corpus/images/copy-resize-oi-objects-948794bfee784412.jpg, kind: copy, of: oi-objects-948794bfee784412 }
+- { id: copy-crop10-oi-objects-948794bfee784412, file: corpus/images/copy-crop10-oi-objects-948794bfee784412.jpg, kind: copy, of: oi-objects-948794bfee784412 }
+- { id: copy-jpeg40-oi-objects-0fd512f1bffb8cf3, file: corpus/images/copy-jpeg40-oi-objects-0fd512f1bffb8cf3.jpg, kind: copy, of: oi-objects-0fd512f1bffb8cf3 }
+- { id: copy-flip-oi-objects-0fd512f1bffb8cf3, file: corpus/images/copy-flip-oi-objects-0fd512f1bffb8cf3.jpg, kind: copy, of: oi-objects-0fd512f1bffb8cf3 }
+- { id: copy-crop10-oi-objects-d8cac8b54e9fa89c, file: corpus/images/copy-crop10-oi-objects-d8cac8b54e9fa89c.jpg, kind: copy, of: oi-objects-d8cac8b54e9fa89c }
+- { id: copy-bright-oi-objects-d8cac8b54e9fa89c, file: corpus/images/copy-bright-oi-objects-d8cac8b54e9fa89c.jpg, kind: copy, of: oi-objects-d8cac8b54e9fa89c }
+- { id: copy-flip-oi-objects-5b7ab3baf4c0492f, file: corpus/images/copy-flip-oi-objects-5b7ab3baf4c0492f.jpg, kind: copy, of: oi-objects-5b7ab3baf4c0492f }
+- { id: copy-resize-oi-objects-5b7ab3baf4c0492f, file: corpus/images/copy-resize-oi-objects-5b7ab3baf4c0492f.jpg, kind: copy, of: oi-objects-5b7ab3baf4c0492f }
+- { id: copy-bright-oi-objects-2fba54286aaac20e, file: corpus/images/copy-bright-oi-objects-2fba54286aaac20e.jpg, kind: copy, of: oi-objects-2fba54286aaac20e }
+- { id: copy-jpeg40-oi-objects-2fba54286aaac20e, file: corpus/images/copy-jpeg40-oi-objects-2fba54286aaac20e.jpg, kind: copy, of: oi-objects-2fba54286aaac20e }
+- { id: copy-resize-millipede-moss, file: corpus/images/copy-resize-millipede-moss.jpg, kind: copy, of: millipede-moss }
+- { id: copy-crop10-millipede-moss, file: corpus/images/copy-crop10-millipede-moss.jpg, kind: copy, of: millipede-moss }
+- { id: copy-jpeg40-forest-trail, file: corpus/images/copy-jpeg40-forest-trail.jpg, kind: copy, of: forest-trail }
+- { id: copy-flip-forest-trail, file: corpus/images/copy-flip-forest-trail.jpg, kind: copy, of: forest-trail }
+- { id: copy-crop10-tree-bracket-fungus, file: corpus/images/copy-crop10-tree-bracket-fungus.jpg, kind: copy, of: tree-bracket-fungus }
+- { id: copy-bright-tree-bracket-fungus, file: corpus/images/copy-bright-tree-bracket-fungus.jpg, kind: copy, of: tree-bracket-fungus }
+- { id: copy-flip-oi-scene-spitfire-a, file: corpus/images/copy-flip-oi-scene-spitfire-a.jpg, kind: copy, of: oi-scene-spitfire-a }
+- { id: copy-resize-oi-scene-spitfire-a, file: corpus/images/copy-resize-oi-scene-spitfire-a.jpg, kind: copy, of: oi-scene-spitfire-a }
+- { id: copy-bright-oi-scene-spitfire-b, file: corpus/images/copy-bright-oi-scene-spitfire-b.jpg, kind: copy, of: oi-scene-spitfire-b }
+- { id: copy-jpeg40-oi-scene-spitfire-b, file: corpus/images/copy-jpeg40-oi-scene-spitfire-b.jpg, kind: copy, of: oi-scene-spitfire-b }
+- { id: copy-resize-oi-scene-monaco-a, file: corpus/images/copy-resize-oi-scene-monaco-a.jpg, kind: copy, of: oi-scene-monaco-a }
+- { id: copy-crop10-oi-scene-monaco-a, file: corpus/images/copy-crop10-oi-scene-monaco-a.jpg, kind: copy, of: oi-scene-monaco-a }
+- { id: copy-jpeg40-oi-scene-monaco-b, file: corpus/images/copy-jpeg40-oi-scene-monaco-b.jpg, kind: copy, of: oi-scene-monaco-b }
+- { id: copy-flip-oi-scene-monaco-b, file: corpus/images/copy-flip-oi-scene-monaco-b.jpg, kind: copy, of: oi-scene-monaco-b }
+- { id: copy-crop10-dog-border-terrier, file: corpus/images/copy-crop10-dog-border-terrier.jpg, kind: copy, of: dog-border-terrier }
+- { id: copy-bright-dog-border-terrier, file: corpus/images/copy-bright-dog-border-terrier.jpg, kind: copy, of: dog-border-terrier }
+- { id: copy-flip-horses-flooded-pasture, file: corpus/images/copy-flip-horses-flooded-pasture.jpg, kind: copy, of: horses-flooded-pasture }
+- { id: copy-resize-horses-flooded-pasture, file: corpus/images/copy-resize-horses-flooded-pasture.jpg, kind: copy, of: horses-flooded-pasture }
+- { id: copy-bright-salad-rucola-plate, file: corpus/images/copy-bright-salad-rucola-plate.jpg, kind: copy, of: salad-rucola-plate }
+- { id: copy-jpeg40-salad-rucola-plate, file: corpus/images/copy-jpeg40-salad-rucola-plate.jpg, kind: copy, of: salad-rucola-plate }
+- { id: copy-resize-bike-parking-oakland, file: corpus/images/copy-resize-bike-parking-oakland.jpg, kind: copy, of: bike-parking-oakland }
+- { id: copy-crop10-bike-parking-oakland, file: corpus/images/copy-crop10-bike-parking-oakland.jpg, kind: copy, of: bike-parking-oakland }
+- { id: copy-jpeg40-desk-laptop-top-down, file: corpus/images/copy-jpeg40-desk-laptop-top-down.jpg, kind: copy, of: desk-laptop-top-down }
+- { id: copy-flip-desk-laptop-top-down, file: corpus/images/copy-flip-desk-laptop-top-down.jpg, kind: copy, of: desk-laptop-top-down }
+- { id: copy-crop10-lake-sherburne, file: corpus/images/copy-crop10-lake-sherburne.jpg, kind: copy, of: lake-sherburne }
+- { id: copy-bright-lake-sherburne, file: corpus/images/copy-bright-lake-sherburne.jpg, kind: copy, of: lake-sherburne }
+- { id: copy-flip-library-laukaa, file: corpus/images/copy-flip-library-laukaa.jpg, kind: copy, of: library-laukaa }
+- { id: copy-resize-library-laukaa, file: corpus/images/copy-resize-library-laukaa.jpg, kind: copy, of: library-laukaa }
+- { id: copy-bright-oi-find-149a74e86e8161a5, file: corpus/images/copy-bright-oi-find-149a74e86e8161a5.jpg, kind: copy, of: oi-find-149a74e86e8161a5 }
+- { id: copy-jpeg40-oi-find-149a74e86e8161a5, file: corpus/images/copy-jpeg40-oi-find-149a74e86e8161a5.jpg, kind: copy, of: oi-find-149a74e86e8161a5 }
+- { id: copy-resize-oi-find-c4d62e55691ed1e4, file: corpus/images/copy-resize-oi-find-c4d62e55691ed1e4.jpg, kind: copy, of: oi-find-c4d62e55691ed1e4 }
+- { id: copy-crop10-oi-find-c4d62e55691ed1e4, file: corpus/images/copy-crop10-oi-find-c4d62e55691ed1e4.jpg, kind: copy, of: oi-find-c4d62e55691ed1e4 }
+- { id: copy-jpeg40-train-ticket-french, file: corpus/images/copy-jpeg40-train-ticket-french.jpg, kind: copy, of: train-ticket-french }
+- { id: copy-flip-train-ticket-french, file: corpus/images/copy-flip-train-ticket-french.jpg, kind: copy, of: train-ticket-french }
+- { id: copy-crop10-recipe-daffys-elixir, file: corpus/images/copy-crop10-recipe-daffys-elixir.jpg, kind: copy, of: recipe-daffys-elixir }
+- { id: copy-bright-recipe-daffys-elixir, file: corpus/images/copy-bright-recipe-daffys-elixir.jpg, kind: copy, of: recipe-daffys-elixir }
+- { id: copy-flip-street-night-rostov, file: corpus/images/copy-flip-street-night-rostov.jpg, kind: copy, of: street-night-rostov }
+- { id: copy-resize-street-night-rostov, file: corpus/images/copy-resize-street-night-rostov.jpg, kind: copy, of: street-night-rostov }
+- { id: edit-armchair-green, file: results/edits/edit/flux2-klein-4b-q4/edit-armchair-green-7a905b97.jpg, kind: edit, of: oi-objects-ee47ccab89a75d0d }
+- { id: edit-bowl-remove, file: results/edits/edit/flux2-klein-4b-q4/edit-bowl-remove-20fa682e.jpg, kind: edit, of: oi-objects-25d107f1590c1772 }
+- { id: edit-recipe-title, file: results/edits/edit/flux2-klein-4b-q4/edit-recipe-title-e9df156a.jpg, kind: edit, of: recipe-card }
+- { id: edit-sync-interval, file: results/edits/edit/flux2-klein-4b-q4/edit-sync-interval-b8769f79.jpg, kind: edit, of: settings-panel }
+- { id: edit-audi-night, file: results/edits/edit/flux2-klein-4b-q4/edit-audi-night-837b7b6d.jpg, kind: edit, of: oi-objects-28bd6c6b1050e055 }
+- { id: edit-dog-ball, file: results/edits/edit/flux2-klein-4b-q4/edit-dog-ball-c589592d.jpg, kind: edit, of: oi-objects-948794bfee784412 }
+- { id: edit-car-red, file: results/edits/edit/flux2-klein-4b-q4/edit-car-red-3f1af9e9.jpg, kind: edit, of: oi-objects-0fd512f1bffb8cf3 }
+- { id: edit-basset-sketch, file: results/edits/edit/flux2-klein-4b-q4/edit-basset-sketch-f96df565.jpg, kind: edit, of: oi-objects-d8cac8b54e9fa89c }
+- { id: edit-dogs-snow, file: results/edits/edit/flux2-klein-4b-q4/edit-dogs-snow-441a1d96.jpg, kind: edit, of: oi-objects-5b7ab3baf4c0492f }
+- { id: edit-plant-remove, file: results/edits/edit/flux2-klein-4b-q4/edit-plant-remove-ae9282a3.jpg, kind: edit, of: oi-objects-2fba54286aaac20e }

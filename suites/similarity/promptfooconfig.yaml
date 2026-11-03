@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# similarity: how well can a small model tell "the same image" from "the same
+# scene" from "the same kind of thing"? Each case is one query photo ranked
+# against a pool of 153 candidates (pool.yaml: every non-sensitive corpus photo,
+# resized/recompressed/cropped/flipped/brightened copies of the queries, and
+# the edit suite's outputs). A candidate relates to the query as a `copy`, an
+# `edit`, the same `scene`, the same `class` of thing, or `other`; the case lists
+# the first four and the rest of the pool is `other`.
+#
+# No Ollama: two perceptual hashes (pHash, dHash; no weights, the no-ML
+# baseline) and image encoders (DINOv2, DINOv3, SigLIP 2, CLIP) run in-process
+# by providers/image-embed.ts. Similarity is the Hamming similarity of the
+# hashes or the cosine of the encoders' L2-normalised vectors. Scored by
+# assertions/similarity.ts: average precision over the copy, edit and scene
+# items, with recall@1 and @5 per level (stronger levels set aside), pass at 0.7. Encoders run at fp32;
+# CLIP and SigLIP load their vision tower only. CLIP is Xenova's ONNX export
+# because onnx-community's CLIP repos hold one combined model with no
+# separate vision file.
+#
+# Weights are pinned by commit. The first case embeds the whole pool (the
+# provider keeps every image's vector for the rest of the run), so its latency
+# is the pool's embedding time; embed_ms in each result is the per-image cost.
+description: similarity — copy, edit, scene, class or other
+
+prompts:
+  - '{{ query }}' # unused: the provider reads vars directly
+
+providers:
+  - { id: file://../../providers/image-embed.ts, label: phash, config: { kind: phash } }
+  - { id: file://../../providers/image-embed.ts, label: dhash, config: { kind: dhash } }
+  - { id: file://../../providers/image-embed.ts, label: dinov2-small, config: { kind: embed, tower: dino, model: onnx-community/dinov2-small, revision: 8b1f705a3a7f6f062f6bdd21986c1583d3ef105d, dtype: fp32 } }
+  - { id: file://../../providers/image-embed.ts, label: dinov2-base, config: { kind: embed, tower: dino, model: onnx-community/dinov2-base, revision: 31ef06cac16d5d301c5930d147002a058c85a5e4, dtype: fp32 } }
+  - { id: file://../../providers/image-embed.ts, label: dinov3-vits16, config: { kind: embed, tower: dino, model: onnx-community/dinov3-vits16-pretrain-lvd1689m-ONNX, revision: 48988dfe73065df8d6f5ccc0edc7c8bcf307de41, dtype: fp32 } }
+  - { id: file://../../providers/image-embed.ts, label: siglip2-base, config: { kind: embed, tower: siglip, model: onnx-community/siglip2-base-patch16-224-ONNX, revision: ba1f3b0843f24bc5417d38e19c37b287d719b2f4, dtype: fp32 } }
+  - { id: file://../../providers/image-embed.ts, label: clip-vit-b32, config: { kind: embed, tower: clip, model: Xenova/clip-vit-base-patch32, revision: 6b7c523703ae26e39be4b03774966f8571c7f523, dtype: fp32 } }
+  - { id: file://../../providers/image-embed.ts, label: clip-vit-b16, config: { kind: embed, tower: clip, model: Xenova/clip-vit-base-patch16, revision: 342fdf2f67aded64d138ff074745fb4a5d2bba5f, dtype: fp32 } }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  vars:
+    pool: file://pool.yaml
+  assert:
+    - type: javascript
+      value: file://../../assertions/similarity.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

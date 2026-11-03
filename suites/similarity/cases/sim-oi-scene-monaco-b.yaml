@@ -1,0 +1,7 @@
+description: "similarity: oi-scene-monaco-b (2 copy, 3 scene of 153)"
+metadata: { id: sim-oi-scene-monaco-b }
+vars:
+  query: oi-scene-monaco-b
+  expected:
+    copy: [copy-jpeg40-oi-scene-monaco-b, copy-flip-oi-scene-monaco-b]
+    scene: [oi-scene-monaco-a, copy-resize-oi-scene-monaco-a, copy-crop10-oi-scene-monaco-a]

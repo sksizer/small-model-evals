@@ -17,6 +17,7 @@ import { compareFood, type ExpectedFood } from '../assertions/food.ts'
 import { compareDecide } from '../assertions/decide.ts'
 import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
+import { compareSimilarity, type ExpectedSimilarity, type SimilarityDetail } from '../assertions/similarity.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
 import { CATALOG } from './catalog.ts'
@@ -32,8 +33,26 @@ interface CaseDef {
 /** The vars that a person reads as the case's input, by suite. */
 const INPUT_VARS = ['note', 'log', 'request', 'item', 'image', 'input']
 
+/** A candidate in a similarity suite's pool (suites/<suite>/pool.yaml). */
+interface PoolEntry { id: string; file: string; kind: string; of?: string }
+
+/** A suite's candidate pool by id, read from a snapshot's setup (`defaultTest.vars.pool`, with the file inlined); empty for suites without one. */
+function poolOf(setup: unknown): Map<string, PoolEntry> {
+  const pool = (setup as { defaultTest?: { vars?: { pool?: unknown } } } | null)?.defaultTest?.vars?.pool
+  return new Map(Array.isArray(pool) ? (pool as PoolEntry[]).map((p) => [p.id, p] as const) : [])
+}
+const currentPools = new Map<string, Map<string, PoolEntry>>()
+const currentPool = (suite: string) => {
+  if (!currentPools.has(suite)) currentPools.set(suite, poolOf(currentSnapshot(suite).setup))
+  return currentPools.get(suite)!
+}
+
 
 function inputOf(suite: string, vars: Record<string, unknown> = {}): { text: string; image?: string } {
+  // A similarity case names its query by candidate id; the pool says where the image is.
+  const query = vars['query']
+  const file = typeof query === 'string' ? currentPool(suite).get(query)?.file : undefined
+  if (typeof query === 'string' && file) return { text: query, image: file }
   for (const key of INPUT_VARS) {
     const v = vars[key]
     if (typeof v !== 'string') continue
@@ -57,7 +76,20 @@ function inputOf(suite: string, vars: Record<string, unknown> = {}): { text: str
  * fields (extraction), what the model returned for each. Uses the scorers'
  * own matcher, so the view agrees with the score.
  */
-function compare(expected: unknown, absent: unknown, output: string, detail?: unknown) {
+function compare(expected: unknown, absent: unknown, output: string, detail?: unknown, pool = new Map<string, PoolEntry>()) {
+  // Similarity: the top candidates with their levels, and the per-level numbers the scorer recorded.
+  if (isSimilarity(expected)) {
+    const top = compareSimilarity(expected, output)
+    return {
+      similarity: {
+        top: (top ?? []).flatMap((t) => {
+          const file = pool.get(t.id)?.file
+          return file ? [{ ...t, path: file }] : []
+        }),
+        detail: (detail as SimilarityDetail | null | undefined) ?? null,
+      },
+    }
+  }
   // Edits: the judge's answers and the preservation number, as the scorer recorded them, and the edited image.
   if (isEdit(expected)) {
     const d = detail as EditGrading['metadata'] | undefined
@@ -109,6 +141,9 @@ function compare(expected: unknown, absent: unknown, output: string, detail?: un
   }
   return {}
 }
+
+const isSimilarity = (e: unknown): e is ExpectedSimilarity =>
+  !!e && typeof e === 'object' && !Array.isArray(e) && ['copy', 'edit', 'scene', 'class'].some((k) => Array.isArray((e as Record<string, unknown>)[k])) && !('changed' in e)
 
 const isEdit = (e: unknown): e is ExpectedEdit =>
   !!e && typeof e === 'object' && Array.isArray((e as { changed?: unknown }).changed) && Array.isArray((e as { kept?: unknown }).kept)
@@ -237,7 +272,7 @@ const results = view
         env: r.env ?? null,
         metrics: r.metrics ?? null,
         instruction: c?.instruction ?? null,
-        ...compare(c?.expected, c?.absent, r.output ?? '', r.detail),
+        ...compare(c?.expected, c?.absent, r.output ?? '', r.detail, poolOf(readSnapshot(r.suite, r.suite_fp)?.setup)),
       }
     }),
   )
@@ -312,8 +347,11 @@ const corpus = existsSync(manifestPath)
 // result shows (results/edits/, from the edit suite), into the site's public
 // folder, at its repo path.
 const edited = results.flatMap((r) => (r.edit?.image ? [r.edit.image] : []))
-for (const path of new Set([...usedBy.keys(), ...corpus.map((m) => m.path), ...edited])) {
-  if (edited.includes(path) && !existsSync(join(ROOT, path))) continue // a stale record whose image was removed
+// A similarity result shows its top candidates: corpus images, copies and edit outputs.
+const ranked = results.flatMap((r) => r.similarity?.top.map((t) => t.path) ?? [])
+const optional = new Set([...edited, ...ranked])
+for (const path of new Set([...usedBy.keys(), ...corpus.map((m) => m.path), ...optional])) {
+  if (optional.has(path) && !existsSync(join(ROOT, path))) continue // a stale record whose image was removed
   const to = join(PUBLIC_OUT, path)
   mkdirSync(dirname(to), { recursive: true })
   copyFileSync(join(ROOT, path), to)

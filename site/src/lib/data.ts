@@ -67,8 +67,30 @@ export interface Result {
   instruction?: string | null
   /** For an edit: the edited image (a repo path), the judge's answer to each question, and how much of the image outside the allowed region stayed the same. */
   edit?: { image: string | null; judge: string | null; answers: { question: string; kind: 'changed' | 'kept'; answer: 'yes' | 'no' | null; ok: boolean }[]; preservation: { diff: number; max: number; ok: boolean } | null }
+  /** For a similarity result: the model's top candidates with how they relate to the query, and the scorer's per-level numbers. */
+  similarity?: { top: RankedCandidate[]; detail: SimilarityDetail | null }
   /** For expected fields: what the model returned for each. */
   fields?: { field: string; want: unknown; got: unknown; ok: boolean }[] | null
+}
+
+/** How a candidate relates to a similarity query: the case lists the first four, the rest of the pool is `other`. */
+export type Level = 'copy' | 'edit' | 'scene' | 'class' | 'other'
+
+/** One ranked candidate of a similarity result (assertions/similarity.ts); `path` is the image's repo path. */
+export interface RankedCandidate {
+  id: string
+  path: string
+  score: number
+  level: Level
+}
+
+/** What assertions/similarity.ts records per case. */
+export interface SimilarityDetail {
+  levels: Partial<Record<Exclude<Level, 'other'>, { n: number; r1: number; r5: number }>>
+  other5: number
+  ap: number
+  copy_cut: { cut: number; mistakes: number } | null
+  same_cut: { cut: number; mistakes: number } | null
 }
 
 export interface Build {
@@ -136,8 +158,24 @@ export interface ExpectedEdit {
 export const isEdit = (e: unknown): e is ExpectedEdit =>
   !!e && typeof e === 'object' && Array.isArray((e as { changed?: unknown }).changed) && Array.isArray((e as { kept?: unknown }).kept)
 
+/** A similarity case's expectation (assertions/similarity.ts): the candidate ids at each level. */
+export interface ExpectedSimilarity {
+  copy?: string[]
+  edit?: string[]
+  scene?: string[]
+  class?: string[]
+}
+
+export const isSimilarity = (e: unknown): e is ExpectedSimilarity =>
+  !!e && typeof e === 'object' && !Array.isArray(e) && ['copy', 'edit', 'scene', 'class'].some((k) => Array.isArray((e as Record<string, unknown>)[k])) && !('changed' in e)
+
+/** The levels in the order the site lists them, and the ones that mean "the same thing" (the scored ones). */
+export const LEVELS: Exclude<Level, 'other'>[] = ['copy', 'edit', 'scene', 'class']
+export const SAME_THING: Level[] = ['copy', 'edit', 'scene']
+
 /** A case's expectation in a few words: a regions case as its box count and labels, anything else as JSON. */
 export const describeExpected = (e: unknown): string => {
+  if (isSimilarity(e)) return LEVELS.flatMap((l) => (e[l]?.length ? [`${e[l]!.length} ${l}`] : [])).join(', ')
   if (isEdit(e)) return `${e.changed.length} changed, ${e.kept.length} kept${e.region ? ', edit confined to a region' : ''}: ${[...e.changed, ...e.kept].join(' ')}`
   if (!isRegions(e)) return show(e)
   if (e.boxes.length === 0) return `no ${(e.labels ?? []).map(firstLabel).join(', ') || 'boxes'}`
@@ -215,6 +253,9 @@ export interface CorpusImage {
   sha256: string
   /** Shown blurred until the viewer asks to see it (components/Shot.astro). */
   sensitive?: true
+  /** For a derived copy (the similarity suite): the corpus image it was made from, and how. */
+  derived_from?: string
+  recipe?: string
   used_by: { suite: string; case: string; retired: boolean }[]
 }
 

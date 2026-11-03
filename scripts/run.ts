@@ -30,7 +30,7 @@ import {
   freeze,
   recordsFromPromptfoo,
 } from './ledger.ts'
-import { captureEnvironment, freezeEnvironment, freezeMfluxModel, freezeModel, freezeOnnxModel } from './env.ts'
+import { captureEnvironment, freezeEnvironment, freezeLocalModel, freezeMfluxModel, freezeModel, freezeOnnxModel } from './env.ts'
 import { summarize } from './summarize.ts'
 
 const PROMPTFOO = `promptfoo@${PROMPTFOO_VERSION}`
@@ -83,8 +83,9 @@ for (const model of MODELS.filter((m) => !onlyModels || onlyModels.has(m.label))
     failures.push(`${model.label}: not installed (${model.tag})`)
     continue
   }
-  // Only Ollama models are looked up in Ollama; the ONNX and mflux ones are pinned by revision.
-  if (model.runtime === 'onnx') freezeOnnxModel(model.tag, model.revision!, model.dtype ?? 'fp32')
+  // Only Ollama models are looked up in Ollama; the ONNX, mflux and local ones are pinned by revision.
+  if (model.runtime === 'onnx') freezeOnnxModel(model.tag, model.revision!, model.dtype ?? 'fp32', model.capability)
+  else if (model.runtime === 'local') freezeLocalModel(model.tag, model.revision!, model.capability ?? 'image-hash')
   else if (model.runtime === 'mflux') freezeMfluxModel(model.tag, model.revision!, model.dtype ?? '', model.base_model ?? '')
   else await freezeModel(model.tag, digest)
   for (const suite of suites.filter((s) => labels.get(s)!.has(model.label))) {

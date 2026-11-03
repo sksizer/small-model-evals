@@ -1,0 +1,18 @@
+{
+  "tag": "Xenova/clip-vit-base-patch32",
+  "digest": "6b7c523703ae",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-embedding"
+  ],
+  "default_parameters": {
+    "revision": "6b7c523703ae26e39be4b03774966f8571c7f523"
+  },
+  "template_hash": ""
+}

@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/dinov3-vits16-pretrain-lvd1689m-ONNX",
+  "digest": "48988dfe7306",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-embedding"
+  ],
+  "default_parameters": {
+    "revision": "48988dfe73065df8d6f5ccc0edc7c8bcf307de41"
+  },
+  "template_hash": ""
+}

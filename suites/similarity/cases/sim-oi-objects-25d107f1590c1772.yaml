@@ -1,0 +1,8 @@
+description: "similarity: oi-objects-25d107f1590c1772 (2 copy, 1 edit, 3 class of 153)"
+metadata: { id: sim-oi-objects-25d107f1590c1772 }
+vars:
+  query: oi-objects-25d107f1590c1772
+  expected:
+    copy: [copy-jpeg40-oi-objects-25d107f1590c1772, copy-flip-oi-objects-25d107f1590c1772]
+    edit: [edit-bowl-remove]
+    class: [coffee-montreal, coffee-snacks-table, coffee-shop-counter]

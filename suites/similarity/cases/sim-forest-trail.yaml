@@ -1,0 +1,8 @@
+description: "similarity: forest-trail (2 copy, 6 scene, 1 class of 153)"
+metadata: { id: sim-forest-trail }
+vars:
+  query: forest-trail
+  expected:
+    copy: [copy-jpeg40-forest-trail, copy-flip-forest-trail]
+    scene: [millipede-moss, tree-bracket-fungus, copy-resize-millipede-moss, copy-crop10-millipede-moss, copy-crop10-tree-bracket-fungus, copy-bright-tree-bracket-fungus]
+    class: [snow-forest-trail]

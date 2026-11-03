@@ -25,6 +25,10 @@ export type ModelKind =
   /** One model that does several prompted vision tasks (Florence-2). */
   | 'multitask-vision'
   | 'image-editor'
+  /** An image encoder whose vectors rank images by likeness (DINO, CLIP, SigLIP). */
+  | 'image-embedder'
+  /** A fixed-size fingerprint computed by plain code, no weights. */
+  | 'perceptual-hash'
 
 export type Modality = 'text' | 'image' | 'audio' | 'boxes' | 'labels' | 'probabilities' | 'embedding'
 
@@ -64,6 +68,27 @@ const arxiv = (id: string) => `https://arxiv.org/abs/${id}`
 const LFM_LANGS = 'English, Arabic, Chinese, French, German, Italian, Japanese, Korean, Portuguese, Spanish, Vietnamese, Thai, Indonesian, Hindi, Russian, Polish'
 const LFM_LICENCE = 'LFM Open License v1.0'
 const lfmLicence = (repo: string) => hf(`${repo}/blob/main/LICENSE`)
+const DINOV3_LICENCE = 'DINOv3 License (Meta, custom; not Apache or MIT)'
+
+const encoder = (e: Pick<CatalogEntry, 'url' | 'source_url' | 'publisher' | 'licence' | 'parameters' | 'parameters_note' | 'architecture' | 'base_model' | 'disk_gb' | 'paper' | 'notes'> & { licence_url?: string }): CatalogEntry => ({
+  kind: 'image-embedder',
+  inputs: ['image'],
+  outputs: ['embedding'],
+  ...e,
+})
+
+const hash = (notes: string, architecture: string): CatalogEntry => ({
+  url: 'https://github.com/sksizer/small-model-evals/blob/main/providers/image-embed.ts',
+  source_url: 'https://github.com/JohannesBuchner/imagehash',
+  publisher: 'This repo (code over sharp), after the published algorithm',
+  licence: 'MIT (our code)',
+  kind: 'perceptual-hash',
+  inputs: ['image'],
+  outputs: ['embedding'],
+  architecture,
+  notes,
+})
+
 const GRANITE_LANGS = 'English, German, Spanish, French, Japanese, Portuguese, Arabic, Czech, Italian, Korean, Dutch, Chinese'
 
 const florence = (task: string, notes: string): CatalogEntry => ({
@@ -407,6 +432,91 @@ export const CATALOG: Record<string, CatalogEntry> = {
     disk_gb: 0.005,
     notes: 'Finds text-line boxes only; 6/8 on regions-text in under 50 ms. Parameter count and paper not confirmed.',
   },
+  'phash': hash(
+    'Our own 64-bit DCT hash (providers/image-embed.ts): grayscale 32x32, lowest 8x8 frequencies, bit set above the median; no weights. The source link is the imagehash library whose recipe it follows; we do not run it. Compare with Hamming similarity.',
+    'Perceptual hash: DCT of a 32x32 grayscale thumbnail, 64 bits',
+  ),
+  'dhash': hash(
+    'Our own 64-bit gradient hash (providers/image-embed.ts): grayscale 9x8, one bit per pixel that is darker than its right neighbour; no weights. The source link is the imagehash library whose recipe it follows; we do not run it. Compare with Hamming similarity.',
+    'Difference hash: left-to-right gradient of a 9x8 grayscale thumbnail, 64 bits',
+  ),
+  'dinov2-small': encoder({
+    url: hf('onnx-community/dinov2-small'),
+    source_url: hf('facebook/dinov2-small'),
+    publisher: 'Meta AI',
+    licence: 'Apache-2.0',
+    parameters: 22_056_576,
+    parameters_note: 'The original facebook/dinov2-small checkpoint.',
+    architecture: 'DINOv2 ViT-S/14, self-supervised; the CLS token of the final layer is the image vector',
+    base_model: 'facebook/dinov2-small',
+    disk_gb: 0.0885,
+    paper: arxiv('2304.07193'),
+    notes: 'The ONNX repo carries no licence tag; Apache-2.0 is the licence of the original. fp32, 224 px (resize 256, centre crop 224, so a 10% crop loses the edge it was already missing). Image-only: it has no text tower, so it cannot search by text.',
+  }),
+  'dinov2-base': encoder({
+    url: hf('onnx-community/dinov2-base'),
+    source_url: hf('facebook/dinov2-base'),
+    publisher: 'Meta AI',
+    licence: 'Apache-2.0',
+    parameters: 86_580_480,
+    parameters_note: 'The original facebook/dinov2-base checkpoint.',
+    architecture: 'DINOv2 ViT-B/14, self-supervised; the CLS token of the final layer is the image vector',
+    base_model: 'facebook/dinov2-base',
+    disk_gb: 0.3466,
+    paper: arxiv('2304.07193'),
+    notes: 'The ONNX repo carries no licence tag; Apache-2.0 is the licence of the original. fp32, 224 px.',
+  }),
+  'dinov3-vits16': encoder({
+    url: hf('onnx-community/dinov3-vits16-pretrain-lvd1689m-ONNX'),
+    source_url: hf('facebook/dinov3-vits16-pretrain-lvd1689m'),
+    publisher: 'Meta AI',
+    licence: DINOV3_LICENCE,
+    licence_url: hf('onnx-community/dinov3-vits16-pretrain-lvd1689m-ONNX/blob/main/LICENSE.md'),
+    parameters: 21_596_544,
+    parameters_note: 'The original facebook/dinov3-vits16-pretrain-lvd1689m checkpoint (gated upstream; the ONNX conversion is not).',
+    architecture: 'DINOv3 ViT-S/16 with 4 register tokens, self-supervised; the pooled CLS token is the image vector',
+    base_model: 'facebook/dinov3-vits16-pretrain-lvd1689m',
+    disk_gb: 0.0864,
+    paper: arxiv('2508.10104'),
+    notes: 'NOT Apache or MIT. Meta\'s custom DINOv3 licence (read it before shipping): a limited, non-transferable, royalty-free grant; redistribution must carry the agreement; use must comply with trade controls and may not serve military or warfare, nuclear or espionage ends; no reverse engineering; it ends if you sue Meta over the materials; Meta may amend it. Checked against the LICENSE.md in the ONNX repo, 2026-11-03. fp32, 224 px.',
+  }),
+  'siglip2-base': encoder({
+    url: hf('onnx-community/siglip2-base-patch16-224-ONNX'),
+    source_url: hf('google/siglip2-base-patch16-224'),
+    publisher: 'Google',
+    licence: 'Apache-2.0',
+    parameters: 375_187_970,
+    parameters_note: 'Both towers of the original google/siglip2-base-patch16-224; only the vision tower (about a quarter of it, unconfirmed) runs for similarity.',
+    architecture: 'SigLIP 2 ViT-B/16 vision tower with an attention-pooling head; the pooled output is the image vector',
+    base_model: 'google/siglip2-base-patch16-224',
+    disk_gb: 0.3718,
+    paper: arxiv('2502.14786'),
+    notes: 'The ONNX repo carries no licence tag; Apache-2.0 is the licence of the original. Runs onnx/vision_model.onnx at fp32, so the 1.1 GB text tower is never read. Also embeds text, so the same vectors can serve text-to-image search.',
+  }),
+  'clip-vit-b32': encoder({
+    url: hf('Xenova/clip-vit-base-patch32'),
+    source_url: hf('openai/clip-vit-base-patch32'),
+    publisher: 'OpenAI',
+    licence: 'MIT',
+    licence_url: 'https://github.com/openai/CLIP/blob/main/LICENSE',
+    architecture: 'CLIP ViT-B/32 vision tower with its projection; the projected image embedding is the vector',
+    base_model: 'openai/clip-vit-base-patch32',
+    disk_gb: 0.3517,
+    paper: arxiv('2103.00020'),
+    notes: 'MIT per OpenAI\'s GitHub release (confirmed); the Hugging Face repos list MIT or no licence. Xenova\'s export rather than onnx-community\'s, which holds only one combined text+vision model. Runs onnx/vision_model.onnx at fp32. Parameter count not confirmed.',
+  }),
+  'clip-vit-b16': encoder({
+    url: hf('Xenova/clip-vit-base-patch16'),
+    source_url: hf('openai/clip-vit-base-patch16'),
+    publisher: 'OpenAI',
+    licence: 'MIT',
+    licence_url: 'https://github.com/openai/CLIP/blob/main/LICENSE',
+    architecture: 'CLIP ViT-B/16 vision tower with its projection; the projected image embedding is the vector',
+    base_model: 'openai/clip-vit-base-patch16',
+    disk_gb: 0.3451,
+    paper: arxiv('2103.00020'),
+    notes: 'MIT per OpenAI\'s GitHub release (confirmed); the Hugging Face repo has no licence tag. Xenova\'s export rather than onnx-community\'s, which holds only one combined text+vision model. Runs onnx/vision_model.onnx at fp32. Parameter count not confirmed.',
+  }),
   'flux2-klein-4b-q4': {
     url: hf('mflux-community/flux2-klein-4b-mflux-q4'),
     source_url: hf('black-forest-labs/FLUX.2-klein-4B'),

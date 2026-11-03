@@ -1,0 +1,8 @@
+description: "similarity: settings-panel (2 copy, 1 edit, 2 class of 153)"
+metadata: { id: sim-settings-panel }
+vars:
+  query: settings-panel
+  expected:
+    copy: [copy-flip-settings-panel, copy-resize-settings-panel]
+    edit: [edit-sync-interval]
+    class: [jobs-table, error-dialog]

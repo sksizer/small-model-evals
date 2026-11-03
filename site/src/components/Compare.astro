@@ -5,7 +5,10 @@
 // image (components/Boxes.astro) with what it found, missed and added, and
 // the detector's time and memory; or, for an edit result, the edited image,
 // the judge's yes/no on each question, the preservation number and the
-// editor's time and memory. Renders nothing otherwise.
+// editor's time and memory; or, for a similarity result, its top five
+// candidates as thumbnails with the model's score, outlined by how each
+// relates to the query (green: copy, edit or scene; amber: same class;
+// red: unrelated). Renders nothing otherwise.
 import Boxes from './Boxes.astro'
 import Shot from './Shot.astro'
 import { show, type Result } from '../lib/data'
@@ -23,6 +26,9 @@ const missed = regions?.filter((x) => x.want && !x.ok).map((x) => x.label) ?? []
 const extra = regions?.filter((x) => !x.want).map((x) => x.label) ?? []
 const m = result.metrics ?? {}
 const edit = result.edit
+const sim = result.similarity
+const levels = sim?.detail?.levels
+const pc = (x: number) => `${Math.round(x * 100)}%`
 ---
 
 {
@@ -86,6 +92,28 @@ const edit = result.edit
     </div>
   )
 }
+{
+  sim && (
+    <div class="sim">
+      <ol class="rank">
+        {sim.top.map((t) => (
+          <li class={`lv lv-${t.level}`} title={`${t.id}: ${t.level}`}>
+            <Shot path={t.path} alt={`${t.id} (${t.level})`} class="rank-img" />
+            <span class="lv-name">{t.level}</span>
+            <span class="lv-score">{t.score.toFixed(3)}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="muted">
+        {sim.detail ? `AP ${sim.detail.ap.toFixed(2)}` : 'no ranking'}
+        {levels && Object.entries(levels).map(([l, r]) => ` · ${l} @1 ${pc(r.r1)} @5 ${pc(r.r5)}`)}
+        {sim.detail && ` · other in top 5 ${pc(sim.detail.other5)}`}
+        {m['embed_ms'] !== undefined && ` · ${m['embed_ms'].toFixed(m['embed_ms'] < 10 ? 1 : 0)} ms per image`}
+        {m['rss_mb'] !== undefined && ` · ${Math.round(m['rss_mb'])} MB process memory`}
+      </p>
+    </div>
+  )
+}
 {result.tags && <p class="tags">Tags given: {result.tags.join(', ') || '—'}</p>}
 {
   result.fields && (
@@ -119,6 +147,14 @@ const edit = result.edit
 <style>
   /* The img is rendered inside Shot, outside this component's scope. */
   :global(.edit-img) { display: block; width: 100%; max-width: 360px; height: auto; max-height: 50vh; object-fit: contain; border: 1px solid var(--line); border-radius: 6px; }
+  :global(.rank-img) { display: block; width: 100%; height: 72px; object-fit: cover; border-radius: 3px; }
+  .rank { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 4px 0; padding: 0; }
+  .rank li { border: 2px solid var(--line); border-radius: 6px; padding: 2px; font-size: 11px; line-height: 1.3; }
+  .rank li.lv-copy, .rank li.lv-edit, .rank li.lv-scene { border-color: var(--good); background: var(--good-bg); }
+  .rank li.lv-class { border-color: var(--warn); background: var(--warn-bg); }
+  .rank li.lv-other { border-color: var(--bad); background: var(--bad-bg); }
+  .lv-name { display: inline-block; font-weight: 600; }
+  .lv-score { float: right; color: var(--muted); font-variant-numeric: tabular-nums; }
   .judged { list-style: none; margin: 6px 0; padding: 0; font-size: 13px; }
   .judged li { padding: 2px 8px; border-left: 3px solid transparent; }
   .judged li.ok { border-color: var(--good); }

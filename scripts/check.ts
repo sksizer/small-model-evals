@@ -8,7 +8,10 @@
 // - a ledger line at EVALS_BASE was changed or removed (lines may only be added);
 // - a registry model has no scripts/catalog.ts entry with url, kind, publisher and licence;
 // - a corpus image differs from the sha256 in corpus/manifest.json, or a case
-//   names a corpus image the manifest does not list.
+//   names a corpus image the manifest does not list;
+// - a suite's candidate pool (suites/<suite>/pool.yaml) names a file that is
+//   missing, a corpus image the manifest does not list, or a case's query or
+//   expected id that is not in the pool.
 //
 //   bun scripts/check.ts
 import { createHash } from 'node:crypto'
@@ -92,6 +95,26 @@ for (const suite of readdirSync(SUITES_DIR)) {
     const m = typeof image === 'string' ? /corpus\/(images\/[^/]+)$/.exec(image) : null
     // Private cases may also use the public corpus; those are checked in the public scope.
     if (m && !listed.has(m[1]!)) problems.push(`${suite}/${c.id}: image ${m[1]} is not in corpus/manifest.json`)
+  }
+}
+
+// Candidate pools (the similarity suite): the files exist and the cases' ids resolve.
+for (const suite of readdirSync(SUITES_DIR)) {
+  const poolPath = join(SUITES_DIR, suite, 'pool.yaml')
+  if (!existsSync(poolPath)) continue
+  const pool = Bun.YAML.parse(readFileSync(poolPath, 'utf8')) as { id: string; file: string; of?: string }[]
+  const ids = new Set(pool.map((p) => p.id))
+  for (const p of pool) {
+    if (!existsSync(join(ROOT, p.file))) problems.push(`${suite}/pool.yaml: ${p.id}: ${p.file} is missing`)
+    const m = /^corpus\/(images\/[^/]+)$/.exec(p.file)
+    if (m && !listed.has(m[1]!)) problems.push(`${suite}/pool.yaml: ${p.id}: ${m[1]} is not in corpus/manifest.json`)
+    if (p.of && !ids.has(p.of)) problems.push(`${suite}/pool.yaml: ${p.id}: of ${p.of} is not in the pool`)
+  }
+  for (const c of loadCases(suite)) {
+    const vars = c.def['vars'] as { query?: string; expected?: Record<string, string[]> } | undefined
+    for (const id of [vars?.query, ...Object.values(vars?.expected ?? {}).flat()]) {
+      if (typeof id === 'string' && !ids.has(id)) problems.push(`${suite}/${c.id}: ${id} is not in pool.yaml`)
+    }
   }
 }
 
