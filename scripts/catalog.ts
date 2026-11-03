@@ -80,7 +80,7 @@ const encoder = (e: Pick<CatalogEntry, 'url' | 'source_url' | 'publisher' | 'lic
 const hash = (notes: string, architecture: string): CatalogEntry => ({
   url: 'https://github.com/sksizer/small-model-evals/blob/main/providers/image-embed.ts',
   source_url: 'https://github.com/JohannesBuchner/imagehash',
-  publisher: 'This repo (code over sharp), after the published algorithm',
+  publisher: 'this repo',
   licence: 'MIT (our code)',
   kind: 'perceptual-hash',
   inputs: ['image'],
