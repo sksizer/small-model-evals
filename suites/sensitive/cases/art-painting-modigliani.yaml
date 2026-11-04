@@ -1,0 +1,5 @@
+description: "sensitive: none: nude art, hard negative (as nudity-flag)"
+metadata: { id: art-painting-modigliani }
+vars:
+  image: file://../../corpus/images/art-painting-modigliani.jpg
+  expected: { categories: [] }

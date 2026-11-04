@@ -35,6 +35,7 @@ import sharp from 'sharp'
 import { ROOT, SCOPE } from './ledger.ts'
 import { OI_LICENCE, oiImage } from './openimages.ts'
 import { chrome } from './chrome.ts'
+import { ALLOWED, OI_LICENCE_NAME } from './licences.ts'
 import { RECIPES, type Recipe } from './recipes.ts'
 
 // EVALS_SCOPE=private builds private/corpus (gitignored) the same way.
@@ -43,7 +44,6 @@ const IMAGES = join(CORPUS, 'images')
 const MANIFEST = join(CORPUS, 'manifest.json')
 const WIDTH = 768
 const UA = 'small-model-evals/0.1 (local eval corpus; https://github.com/sksizer/small-model-evals)'
-const ALLOWED = /^(CC0( 1\.0)?|Public domain|PD\b.*|CC BY \d(\.\d)?)$/i
 
 // `sensitive: true` marks an image the site shows blurred until the viewer
 // asks to see it (nudity, including in art). It is display metadata, so it
@@ -166,7 +166,7 @@ for (const s of sources) {
       title: `Open Images ${s.openimages}: ${row['Title'] || 'untitled'}`,
       page: row['OriginalLandingURL']!,
       author: row['Author'] || 'unknown',
-      licence: 'CC BY 2.0',
+      licence: OI_LICENCE_NAME,
       licence_url: OI_LICENCE,
       width: info.width,
       height: info.height,

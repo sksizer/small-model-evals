@@ -67,6 +67,7 @@ promptfoo runs every test against every provider and shows a pass/fail grid.
 | `food-lookup` | orchestrate, extract | 12 food notes | The model searches a fixed USDA database with a `search_foods` tool, then gives each food's id and grams; a food counts when its name and energy per 100 g fit, grams within a tolerance; foods the database lacks must get no id (`assertions/food.ts`) |
 | `route` | classify (routing) | 18 captured items | Which handler takes the item and whether it needs a larger model; decision models (Liquid d1) answer with probabilities through Ollama's decision endpoint, chat models with the reply limited to the options (`providers/ollama-decide.ts`, `assertions/decide.ts`) |
 | `nudity-flag` | look (privacy) | 77 corpus images: 9 adult nudes, 10 nude artworks and 8 swimwear photos (CC0 or public domain), plus 50 ordinary photos | Flag a photo that shows nudity (art and swimwear are not flagged); dedicated ONNX classifiers (`providers/image-classifier.ts`), d1 and vision chat models compared on one scorer (`assertions/decide.ts`) |
+| `sensitive` | look (privacy) | 108 corpus images: synthetic ID cards, bank cards, statements, chats, prescriptions and notes, Open Images faces, children, plates, screens and underwear, nude photos and art, and ordinary scenes as negatives | Say whether an image should leave the device: which of 11 categories it shows (nudity, intimate, minor, face, id-document, financial, screen, medical, location, credential, document) and so its level (`public`, `review`, `private`); a private image called public is a leak (weighs 3:1 against a false alarm), and the pass mark is no leaks. Vision chat models, SigLIP 2 and CLIP zero-shot, and a composite of specialists with a small LLM as the fallback (`providers/ollama-sensitive.ts`, `providers/zero-shot.ts`, `providers/sensitive-composite.ts`, `assertions/sensitive.ts`) |
 | `orchestrate` | orchestrate | 15 requests, 5 tools | Right tool (half), right arguments (full); 3 need no tool |
 | `classify` | classify | 20 items, 5 labels | Exact label |
 | `ocr` | ocr, look | 8 synthetic pages and 2 printed tickets from `corpus/` | Share of visible strings read back; passes at 75% |
@@ -99,6 +100,17 @@ Only non-sensitive photos are used. The score is average precision over the copy
 is reported, not scored); recall@1 and @5 per level (with the stronger levels set aside, so `edit` recall is measured once the copies are out of the way), the share of unrelated images in the top five and a per-case
 best cut-off are kept in each result for the site's gallery and its recall table. DINOv3 is under Meta's custom
 DINOv3 licence, not Apache or MIT; its catalogue entry says so.
+
+The `sensitive` suite (plan: `docs/plans/sensitive.md`) asks for a risk per category and derives the overall level
+from the categories in one place, `assertions/sensitive-levels.ts` (the policy, the category definitions the prompt
+and the site share). A case lists only the categories its image shows. Three kinds of candidate run: vision chat
+models rating every category in one schema-constrained call; SigLIP 2 and CLIP scoring category prompts against
+generic negatives (the text towers run once per run, fixed thresholds, nothing tuned on the cases); and a
+composite that runs YuNet, an NSFW ViT, SigLIP and Florence-2 OCR with regexes first and calls qwen3.5:4b only
+when none of them is decisive (the rule is in the provider's header, and each result records which stages ran).
+The suite page shows leaks, false alarms, per-category recall and precision, and a curve of leaks against false
+alarms over the risk threshold, all computed in `scripts/export-site.ts`. Nudity, intimate and child images are
+covered on the site. LlavaGuard is not run (no privacy category, research-only licence, Python only).
 
 The `edit` suite hands an image editor a corpus image and an instruction. The editor is FLUX.2 klein 4B
 (4-bit MLX build) run by the [mflux](https://github.com/filipstrand/mflux) CLI, one process per case that exits

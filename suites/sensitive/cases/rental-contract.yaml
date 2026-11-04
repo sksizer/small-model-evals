@@ -1,0 +1,5 @@
+description: "sensitive: document, location: signed tenancy agreement"
+metadata: { id: rental-contract }
+vars:
+  image: file://../../corpus/images/rental-contract.png
+  expected: { categories: [document, location] }

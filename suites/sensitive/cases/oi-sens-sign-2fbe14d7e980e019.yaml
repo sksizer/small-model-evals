@@ -1,0 +1,5 @@
+description: "sensitive: none: speed limit sign"
+metadata: { id: oi-sens-sign-2fbe14d7e980e019 }
+vars:
+  image: file://../../corpus/images/oi-sens-sign-2fbe14d7e980e019.jpg
+  expected: { categories: [] }

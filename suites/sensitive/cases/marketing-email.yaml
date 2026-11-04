@@ -1,0 +1,5 @@
+description: "sensitive: none: generic marketing email"
+metadata: { id: marketing-email }
+vars:
+  image: file://../../corpus/images/marketing-email.png
+  expected: { categories: [] }

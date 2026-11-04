@@ -1,0 +1,5 @@
+description: "sensitive: nudity: naked bike ride, from behind"
+metadata: { id: nude-bike-ride-from-behind }
+vars:
+  image: file://../../corpus/images/nude-bike-ride-from-behind.jpg
+  expected: { categories: [nudity] }

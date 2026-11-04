@@ -1,0 +1,5 @@
+description: "sensitive: none: public product page"
+metadata: { id: product-page-phone }
+vars:
+  image: file://../../corpus/images/product-page-phone.png
+  expected: { categories: [] }

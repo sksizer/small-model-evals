@@ -1,0 +1,5 @@
+description: "sensitive: none: swimwear at a beach, hard negative"
+metadata: { id: swim-white-sand }
+vars:
+  image: file://../../corpus/images/swim-white-sand.jpg
+  expected: { categories: [] }

@@ -1,0 +1,17 @@
+/* Shared pieces for the sensitive-suite synthetic pages (documents, cards,
+   phone screens). Every name, number and address on these pages is invented;
+   cards say SPECIMEN and their numbers fail the Luhn check
+   (docs/standards/corpus.md). Rendered once by scripts/fetch-corpus.ts. */
+body.desk { background: #d9dde3; padding: 28px; }
+.card { width: 584px; height: 364px; border-radius: 18px; position: relative; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+.specimen { position: absolute; right: 18px; top: 14px; font: 800 15px/1 Arial, sans-serif; letter-spacing: .25em; color: rgba(190,30,30,.85); border: 2px solid rgba(190,30,30,.85); padding: 4px 8px; transform: rotate(-6deg); }
+.photo { background: linear-gradient(#cfd8e3, #aab6c4); border: 1px solid #7c8794; position: relative; overflow: hidden; }
+.photo::before { content: ""; position: absolute; left: 50%; top: 20%; width: 46%; height: 36%; margin-left: -23%; border-radius: 50%; background: #7d8896; }
+.photo::after { content: ""; position: absolute; left: 50%; top: 62%; width: 84%; height: 70%; margin-left: -42%; border-radius: 50% 50% 0 0; background: #7d8896; }
+.lbl { font: 600 9px/1.1 Arial, sans-serif; text-transform: uppercase; letter-spacing: .06em; color: #5b6570; }
+.val { font: 600 15px/1.25 "SF Mono", Menlo, Consolas, monospace; color: #14202b; }
+.phone { width: 390px; height: 780px; background: #fff; border: 10px solid #111; border-radius: 44px; overflow: hidden; position: relative; }
+.status { display: flex; justify-content: space-between; padding: 12px 26px 4px; font: 600 14px Arial, sans-serif; }
+.codebars { height: 64px; }
+.qr { display: grid; }
+.page { background: #fff; }

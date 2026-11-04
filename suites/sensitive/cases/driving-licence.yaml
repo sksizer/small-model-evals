@@ -1,0 +1,5 @@
+description: "sensitive: id-document: specimen identity document"
+metadata: { id: driving-licence }
+vars:
+  image: file://../../corpus/images/driving-licence.png
+  expected: { categories: [id-document] }

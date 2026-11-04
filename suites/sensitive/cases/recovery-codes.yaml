@@ -1,0 +1,5 @@
+description: "sensitive: credential: two-factor backup codes"
+metadata: { id: recovery-codes }
+vars:
+  image: file://../../corpus/images/recovery-codes.png
+  expected: { categories: [credential] }

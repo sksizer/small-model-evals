@@ -1,0 +1,5 @@
+description: "sensitive: minor: toddler walking on a sidewalk"
+metadata: { id: oi-sens-minor-ee8552a35b23ce39 }
+vars:
+  image: file://../../corpus/images/oi-sens-minor-ee8552a35b23ce39.jpg
+  expected: { categories: [minor] }

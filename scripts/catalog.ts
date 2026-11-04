@@ -29,6 +29,10 @@ export type ModelKind =
   | 'image-embedder'
   /** A fixed-size fingerprint computed by plain code, no weights. */
   | 'perceptual-hash'
+  /** An image-text encoder pair scoring an image against text prompts it was never trained on as classes (SigLIP, CLIP). */
+  | 'zero-shot-classifier'
+  /** A pipeline of several models, cheap ones first (the sensitive suite's composite). */
+  | 'composite'
 
 export type Modality = 'text' | 'image' | 'audio' | 'boxes' | 'labels' | 'probabilities' | 'embedding'
 
@@ -517,6 +521,47 @@ export const CATALOG: Record<string, CatalogEntry> = {
     paper: arxiv('2103.00020'),
     notes: 'MIT per OpenAI\'s GitHub release (confirmed); the Hugging Face repo has no licence tag. Xenova\'s export rather than onnx-community\'s, which holds only one combined text+vision model. Runs onnx/vision_model.onnx at fp32. Parameter count not confirmed.',
   }),
+  'siglip2-base-zs': {
+    url: hf('onnx-community/siglip2-base-patch16-224-ONNX'),
+    source_url: hf('google/siglip2-base-patch16-224'),
+    publisher: 'Google',
+    licence: 'Apache-2.0',
+    kind: 'zero-shot-classifier',
+    inputs: ['image', 'text'],
+    outputs: ['probabilities'],
+    parameters: 375_187_970,
+    parameters_note: 'Both towers of the original google/siglip2-base-patch16-224; the sensitive suite runs the text tower once per run (to embed the prompts) and the vision tower per image.',
+    architecture: 'SigLIP 2 ViT-B/16 with a text tower; per-prompt sigmoid scores from the checkpoint\'s logit scale (112.669) and bias (-16.772)',
+    base_model: 'google/siglip2-base-patch16-224',
+    disk_gb: 1.5,
+    paper: arxiv('2502.14786'),
+    notes: 'Same pinned revision as siglip2-base, plus onnx/text_model.onnx (1.1 GB) at fp32. The logit scale and bias were recovered from the combined model.onnx by fitting its logits against the two towers\' cosines (exact to 2e-6). A category is present at sigmoid >= 0.5; the suite page shows the threshold sweep.',
+  },
+  'clip-vit-b16-zs': {
+    url: hf('Xenova/clip-vit-base-patch16'),
+    source_url: hf('openai/clip-vit-base-patch16'),
+    publisher: 'OpenAI',
+    licence: 'MIT',
+    licence_url: 'https://github.com/openai/CLIP/blob/main/LICENSE',
+    kind: 'zero-shot-classifier',
+    inputs: ['image', 'text'],
+    outputs: ['probabilities'],
+    architecture: 'CLIP ViT-B/16, both towers; softmax over positive and negative prompts at logit scale 100',
+    base_model: 'openai/clip-vit-base-patch16',
+    disk_gb: 0.6,
+    paper: arxiv('2103.00020'),
+    notes: 'Same pinned revision as clip-vit-b16, plus onnx/text_model.onnx at fp32. A category is present when its best prompt beats the best generic negative prompt (risk >= 0.5 by construction); the suite page shows the threshold sweep.',
+  },
+  'composite-qwen3.5-4b': {
+    url: 'https://github.com/sksizer/small-model-evals/blob/main/providers/sensitive-composite.ts',
+    publisher: 'this repo',
+    licence: 'MIT (our code)',
+    kind: 'composite',
+    inputs: ['image'],
+    outputs: ['labels', 'probabilities'],
+    architecture: 'YuNet faces, Falconsai NSFW ViT, SigLIP 2 zero-shot, Florence-2 OCR with regexes, then qwen3.5:4b only when no signal is decisive',
+    notes: 'Its models are pinned in the suite config, except qwen3.5:4b, which is pinned by Ollama\'s digest in the qwen3.5:4b entry. The rules for "decisive" are in the provider\'s header; each result records which stages ran and their times. Its memory figure is the in-process specialists only; when qwen3.5:4b is called, Ollama holds that model besides.',
+  },
   'flux2-klein-4b-q4': {
     url: hf('mflux-community/flux2-klein-4b-mflux-q4'),
     source_url: hf('black-forest-labs/FLUX.2-klein-4B'),

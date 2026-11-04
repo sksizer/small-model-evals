@@ -1,0 +1,5 @@
+description: "sensitive: none: car, plate too small to read"
+metadata: { id: oi-sens-plate-3ec4dceee8a48a8f }
+vars:
+  image: file://../../corpus/images/oi-sens-plate-3ec4dceee8a48a8f.jpg
+  expected: { categories: [] }

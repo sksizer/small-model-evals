@@ -1,0 +1,5 @@
+description: "sensitive: face: close-up of a man in a cap"
+metadata: { id: oi-sens-face-6c1cd7fdc967c0d5 }
+vars:
+  image: file://../../corpus/images/oi-sens-face-6c1cd7fdc967c0d5.jpg
+  expected: { categories: [face] }

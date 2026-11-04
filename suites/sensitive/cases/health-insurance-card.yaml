@@ -1,0 +1,5 @@
+description: "sensitive: id-document, medical: insurance member card"
+metadata: { id: health-insurance-card }
+vars:
+  image: file://../../corpus/images/health-insurance-card.png
+  expected: { categories: [id-document, medical] }

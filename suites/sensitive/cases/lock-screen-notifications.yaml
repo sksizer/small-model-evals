@@ -1,0 +1,5 @@
+description: "sensitive: screen, medical, financial: lock screen with biopsy, bank and therapy notifications"
+metadata: { id: lock-screen-notifications }
+vars:
+  image: file://../../corpus/images/lock-screen-notifications.png
+  expected: { categories: [screen, medical, financial] }

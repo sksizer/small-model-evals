@@ -1,0 +1,5 @@
+description: "sensitive: location: name and home address on a parcel label"
+metadata: { id: shipping-label }
+vars:
+  image: file://../../corpus/images/shipping-label.png
+  expected: { categories: [location] }

@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# sensitive: say whether an image should leave the device. Beyond nudity, this covers images that
+# are private for other reasons (an ID card, a chat screenshot, a child's face, a prescription, a
+# house number), and asks for a risk level so an app can pick its threshold and keep a "review"
+# band in between. Plan: docs/plans/sensitive.md. Corpus rules: docs/standards/corpus.md.
+#
+# Candidates (plan, Models), every one scored by assertions/sensitive.ts:
+#   - vision LLMs with the category list, schema-constrained, one call per image
+#     (providers/ollama-sensitive.ts): qwen3.5:4b, qwen3.5:9b, lfm3-vl:2b, gemma4:e4b
+#   - zero-shot image-text, in-process ONNX (providers/zero-shot.ts): SigLIP 2 base, CLIP ViT-B/16
+#   - a composite (providers/sensitive-composite.ts): YuNet faces, Falconsai NSFW ViT, SigLIP,
+#     Florence-2 OCR plus regexes, then qwen3.5:4b only when no signal is decisive
+# LlavaGuard 1.2 0.5B is not run: no privacy category in its policy, research-only licence,
+# Python-only runtime (plan, Decisions).
+#
+# Categories (assertions/sensitive-levels.ts is the one place they and the levels are defined):
+#   nudity       explicit nudity (adults; CC0/PD photos and anatomy illustrations)
+#   intimate     underwear or lingerie, not nude; beach/pool swimwear is NOT intimate (Q2)
+#   minor        a child in an ordinary public scene (Open Images only, marked sensitive)
+#   face         a clear face is the subject (a portrait); crowds and distant figures do not count
+#   id-document  passport, driving licence, ID card (synthetic specimens)
+#   financial    bank card, statement, payslip, bill, tax notice (synthetic)
+#   screen       personal data on a screen: chat, email, notifications, contacts (synthetic, plus two phones)
+#   medical      prescription, lab result, X-ray, hospital scenes
+#   location     readable number plate, house number, a name with a home address
+#   credential   password, Wi-Fi key, one-time code, API key, boarding-pass barcode
+#   document     a private letter, contract, note or notice
+#
+# Level: derived from the categories, never stored in a case. nudity, id-document, financial and
+# credential give `private`; any other category gives `review`; none gives `public`
+# (levelOf in assertions/sensitive-levels.ts). A missed private image (called public) is a leak
+# and weighs 3:1 against a false alarm (Q4); the pass mark is no private image called public.
+#
+# Cases: one per image in cases/, `vars.expected.categories` lists every category shown.
+# Hard negatives that must stay `public`: nude art (the nudity-flag convention: art is not
+# flagged), swimwear at a beach, a blank ID template, public pages (product, menu, timetable,
+# marketing email), a car whose plate is blurred or unreadable, screens with no personal data.
+# Synthetic pages (category sensitive-doc) carry invented details, SPECIMEN on cards and Luhn-failing
+# card numbers; results can be split between real photos and rendered pages. The sensitive images
+# (nudity, intimate, minor) are covered on the results site until the viewer asks to see them.
+#
+description: sensitive — which images should not leave the device
+
+prompts:
+  - '{{ question }}' # unused: the providers read vars directly
+
+providers:
+  - { id: file://../../providers/ollama-sensitive.ts, label: qwen3.5:4b, config: { model: 'qwen3.5:4b', think: false } }
+  - { id: file://../../providers/ollama-sensitive.ts, label: qwen3.5:9b, config: { model: 'qwen3.5:9b', think: false } }
+  - { id: file://../../providers/ollama-sensitive.ts, label: lfm3-vl:2b, config: { model: 'lfm3-vl:2b', think: false } }
+  - { id: file://../../providers/ollama-sensitive.ts, label: gemma4:e4b, config: { model: 'gemma4:e4b', think: false } }
+  - id: file://../../providers/zero-shot.ts
+    label: siglip2-base-zs
+    config: { kind: siglip, model: onnx-community/siglip2-base-patch16-224-ONNX, revision: ba1f3b0843f24bc5417d38e19c37b287d719b2f4, dtype: fp32, logit_scale: 112.669, logit_bias: -16.772 }
+  - id: file://../../providers/zero-shot.ts
+    label: clip-vit-b16-zs
+    config: { kind: clip, model: Xenova/clip-vit-base-patch16, revision: 342fdf2f67aded64d138ff074745fb4a5d2bba5f, dtype: fp32 }
+  - id: file://../../providers/sensitive-composite.ts
+    label: composite-qwen3.5-4b
+    config:
+      yunet: { kind: yunet, repo: opencv/face_detection_yunet, revision: 3cc26e7f1014a5ee5d74a42acee58bafc9d0a310, file: face_detection_yunet_2023mar.onnx, sha256: 8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4 }
+      nsfw: { model: onnx-community/nsfw_image_detection-ONNX, revision: 1ceb3c7fe1e9f3f2507e6df577437f23a9149fd5, dtype: q8, flag: [nsfw], question: nudity }
+      siglip: { kind: siglip, model: onnx-community/siglip2-base-patch16-224-ONNX, revision: ba1f3b0843f24bc5417d38e19c37b287d719b2f4, dtype: fp32, logit_scale: 112.669, logit_bias: -16.772 }
+      ocr: { model: onnx-community/Florence-2-base, revision: d59e079711c57174f29265539fb4cc9f0f335916, dtype: q8, task: ocr }
+      llm: { model: 'qwen3.5:4b', think: false }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  assert:
+    - type: javascript
+      value: file://../../assertions/sensitive.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

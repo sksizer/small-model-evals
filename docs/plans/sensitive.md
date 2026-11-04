@@ -1,7 +1,8 @@
 # Plan: sensitive images
 
-Status: draft for review (2026-11-03). Nothing is built yet. The questions at the end need the
-owner's answers before work starts.
+Status: built (2026-11-04). Corpus and cases (stage 1), providers, assertion, site and first runs
+(stage 2) are in place. The owner's answers are under "Decisions"; the differences between this plan
+and what was built are under "As built". The sections below are the original plan, kept as written.
 
 ## Goal
 
@@ -105,3 +106,45 @@ leaks against false alarms for each model as its threshold moves.
   only on the private site.
 - **Q6.** Should LlavaGuard be included if it needs a Python runtime (like mflux), or only models
   that run in Ollama or ONNX?
+
+## Decisions (owner, 2026-11-04)
+
+- **Q1.** The category table stands, `minor` included.
+- **Q2.** Swimwear is public (a hard negative, not `intimate`).
+- **Q3.** `minor`: ordinary public scenes only, covered on the site.
+- **Q4.** A leak (expected private, predicted public) weighs three times a false alarm. The suite's pass
+  mark is no private image predicted public.
+- **Q5.** No private photo set.
+- **Q6.** LlavaGuard is skipped for now: its policy has no privacy category, its licence is research-only,
+  and it runs only in Python. Llama Guard 4 stays out for size.
+
+## As built
+
+- **Corpus:** 108 cases; the `intimate` positives are six, with three added at the end (adults in
+  underwear or lingerie, none nude, no Child/Boy/Girl labels).
+- **Vision LLMs** (`providers/ollama-sensitive.ts`): one schema-constrained call per image,
+  `{categories: {id: {present, risk}}}`, temperature 0, thinking off. The category definitions are
+  `DEFINITIONS` in `assertions/sensitive-levels.ts`, shared by the prompt and the site. The reply is
+  normalised to `{categories: {id: risk}, level, raw}`; a category counts at risk >= 0.5.
+- **Zero-shot** (`providers/zero-shot.ts`, labels `siglip2-base-zs` and `clip-vit-b16-zs`): the pinned
+  encoders of the similarity suite plus their text towers. Two to four positive prompts per category and six
+  generic negatives. SigLIP: per-prompt sigmoid with the checkpoint's logit scale and bias, category risk is its
+  best prompt. CLIP: softmax at scale 100 over all prompts; category risk is the best positive prompt against
+  the best negative (sigmoid of 100 times the cosine gap), so 0.5 means "beats every negative". Both use fixed
+  thresholds, nothing tuned on the cases; the sweep is on the suite page.
+- **Composite** (`providers/sensitive-composite.ts`, label `composite-qwen3.5-4b`): YuNet, Falconsai NSFW ViT,
+  SigLIP, then Florence-2 OCR plus regexes (only when a text-bearing category looks possible), then qwen3.5:4b
+  only when nothing is decisive. "Decisive" is defined in the provider's header: strong evidence for a private
+  category (the level cannot go higher), or no evidence at all with every signal quiet (public).
+- **Scoring** (`assertions/sensitive.ts`): level from `levelOf` on both sides; error is the weighted steps
+  (leak 3, false alarm 1) over the worst the case allows in that direction; the case passes when the level is
+  exact. The suite's pass mark (zero leaks), per-category precision and recall and the leak-versus-false-alarm
+  curve are computed in `scripts/export-site.ts`.
+- **Reply cut-off:** qwen3.5:4b wrote newlines after the first key until the token cap on 5 of 108 images (a
+  constrained-decoding loop). A reply cut at the cap is asked for once more with a repeat penalty of 1.2; the
+  result records `retried` and counts both calls' time.
+- **Site:** the suite page has the summary table, per-category recall and precision, the leak-versus-false-alarm
+  curve and, for the composite, the stage use; the gallery has the covered images, expected and predicted
+  categories as chips, the level against the expected one, and a risk bar per category.
+- **Not done:** LlavaGuard (Q6); a Brier score and a calibrated-threshold recommendation (the sweep is shown,
+  no threshold is chosen); the private set (Q5).

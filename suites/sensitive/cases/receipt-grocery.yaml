@@ -1,0 +1,5 @@
+description: "sensitive: none: ordinary corpus image"
+metadata: { id: receipt-grocery }
+vars:
+  image: file://../../corpus/images/receipt-grocery.png
+  expected: { categories: [] }

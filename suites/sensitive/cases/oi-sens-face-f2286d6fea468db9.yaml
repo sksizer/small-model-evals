@@ -1,0 +1,5 @@
+description: "sensitive: face: man in a straw hat"
+metadata: { id: oi-sens-face-f2286d6fea468db9 }
+vars:
+  image: file://../../corpus/images/oi-sens-face-f2286d6fea468db9.jpg
+  expected: { categories: [face] }

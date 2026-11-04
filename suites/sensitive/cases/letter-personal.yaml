@@ -1,0 +1,5 @@
+description: "sensitive: document, location: personal letter with name and address"
+metadata: { id: letter-personal }
+vars:
+  image: file://../../corpus/images/letter-personal.png
+  expected: { categories: [document, location] }

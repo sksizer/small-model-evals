@@ -4,7 +4,7 @@
 # 768 px into corpus/images/<id>.jpg, re-checks its licence and writes
 # manifest.json and ATTRIBUTIONS.md. To extend: add an entry with a new id
 # (ids are permanent; cases name them) and rerun the script. No people as
-# subjects, except in the nudity-flag and regions sections. Your own photos go
+# subjects, except in the nudity-flag, regions and sensitive sections. Your own photos go
 # in private/ (gitignored), not here. Sections in order: Commons photos,
 # synthetic OCR pages, nudity flagging, regions (Open Images), similarity
 # (scene photos and derived copies, written by scripts/pick-similarity.ts).
@@ -208,3 +208,89 @@
 - { id: copy-bright-recipe-daffys-elixir, category: similarity-copy, derived: recipe-daffys-elixir, recipe: bright }
 - { id: copy-flip-street-night-rostov, category: similarity-copy, derived: street-night-rostov, recipe: flip }
 - { id: copy-resize-street-night-rostov, category: similarity-copy, derived: street-night-rostov, recipe: resize }
+
+# Sensitive suite (suites/sensitive, docs/plans/sensitive.md). Synthetic pages: every name, number and
+# address is invented; cards say SPECIMEN and their numbers fail the Luhn check (docs/standards/corpus.md).
+# Positives first, then near-miss negatives (a blank template, public pages).
+- { id: id-national-card, category: sensitive-doc, synthetic: synthetic/id-national-card.html, size: [640, 420] }
+- { id: driving-licence, category: sensitive-doc, synthetic: synthetic/driving-licence.html, size: [640, 420] }
+- { id: passport-data-page, category: sensitive-doc, synthetic: synthetic/passport-data-page.html, size: [752, 522] }
+- { id: residence-permit-card, category: sensitive-doc, synthetic: synthetic/residence-permit-card.html, size: [640, 420] }
+- { id: student-id-card, category: sensitive-doc, synthetic: synthetic/student-id-card.html, size: [640, 420] }
+- { id: health-insurance-card, category: sensitive-doc, synthetic: synthetic/health-insurance-card.html, size: [640, 420] }
+- { id: bank-card-credit, category: sensitive-doc, synthetic: synthetic/bank-card-credit.html, size: [640, 420] }
+- { id: bank-card-debit, category: sensitive-doc, synthetic: synthetic/bank-card-debit.html, size: [640, 420] }
+- { id: bank-statement, category: sensitive-doc, synthetic: synthetic/bank-statement.html, size: [760, 620] }
+- { id: pay-slip, category: sensitive-doc, synthetic: synthetic/pay-slip.html, size: [700, 520] }
+- { id: online-banking-screen, category: sensitive-doc, synthetic: synthetic/online-banking-screen.html, size: [430, 820] }
+- { id: utility-bill, category: sensitive-doc, synthetic: synthetic/utility-bill.html, size: [760, 520] }
+- { id: tax-notice, category: sensitive-doc, synthetic: synthetic/tax-notice.html, size: [700, 480] }
+- { id: chat-screenshot, category: sensitive-doc, synthetic: synthetic/chat-screenshot.html, size: [430, 820] }
+- { id: email-inbox, category: sensitive-doc, synthetic: synthetic/email-inbox.html, size: [1000, 600] }
+- { id: lock-screen-notifications, category: sensitive-doc, synthetic: synthetic/lock-screen-notifications.html, size: [430, 820] }
+- { id: contacts-list, category: sensitive-doc, synthetic: synthetic/contacts-list.html, size: [430, 820] }
+- { id: sms-code, category: sensitive-doc, synthetic: synthetic/sms-code.html, size: [430, 820] }
+- { id: calendar-private, category: sensitive-doc, synthetic: synthetic/calendar-private.html, size: [760, 360] }
+- { id: prescription-label, category: sensitive-doc, synthetic: synthetic/prescription-label.html, size: [500, 420] }
+- { id: lab-result, category: sensitive-doc, synthetic: synthetic/lab-result.html, size: [760, 560] }
+- { id: vaccination-card, category: sensitive-doc, synthetic: synthetic/vaccination-card.html, size: [620, 380] }
+- { id: referral-letter, category: sensitive-doc, synthetic: synthetic/referral-letter.html, size: [760, 560] }
+- { id: sticky-note-monitor, category: sensitive-doc, synthetic: synthetic/sticky-note-monitor.html, size: [780, 560] }
+- { id: wifi-password-card, category: sensitive-doc, synthetic: synthetic/wifi-password-card.html, size: [420, 440] }
+- { id: boarding-pass, category: sensitive-doc, synthetic: synthetic/boarding-pass.html, size: [810, 350] }
+- { id: recovery-codes, category: sensitive-doc, synthetic: synthetic/recovery-codes.html, size: [760, 300] }
+- { id: terminal-api-key, category: sensitive-doc, synthetic: synthetic/terminal-api-key.html, size: [800, 260] }
+- { id: letter-personal, category: sensitive-doc, synthetic: synthetic/letter-personal.html, size: [760, 560] }
+- { id: rental-contract, category: sensitive-doc, synthetic: synthetic/rental-contract.html, size: [760, 620] }
+- { id: handwritten-note, category: sensitive-doc, synthetic: synthetic/handwritten-note.html, size: [620, 500] }
+- { id: id-card-blank-template, category: sensitive-near-miss, synthetic: synthetic/id-card-blank-template.html, size: [640, 420] }
+- { id: product-page-phone, category: sensitive-near-miss, synthetic: synthetic/product-page-phone.html, size: [430, 820] }
+- { id: restaurant-menu, category: sensitive-near-miss, synthetic: synthetic/restaurant-menu.html, size: [640, 440] }
+- { id: bus-timetable, category: sensitive-near-miss, synthetic: synthetic/bus-timetable.html, size: [760, 340] }
+- { id: marketing-email, category: sensitive-near-miss, synthetic: synthetic/marketing-email.html, size: [620, 500] }
+
+# Sensitive suite, Commons gaps (CC0 only): an X-ray, a second radiograph, a house number on a door.
+- { id: sens-xray-chest-normal, category: sensitive-medical, title: 'File:Normal posteroanterior (PA) chest radiograph (X-ray).jpg' }
+- { id: sens-xray-chest-flu, category: sensitive-medical, title: 'File:Chest radiograph in influensa and H influenzae, posteroanterior.jpg' }
+- { id: sens-house-number-77, category: sensitive-location, title: 'File:Chambéry - Rue Basse du Château - Porte et plaque au numéro 77.jpg' }
+
+# Sensitive suite, Open Images (CC BY 2.0). Written by `scripts/pick-openimages.ts sensitive-write`
+# after a contact-sheet review. Children (minor) and underwear (intimate) are
+# marked sensitive; children only in ordinary public scenes, nothing else sensitive in frame.
+- { id: oi-sens-minor-bdc7279c04e3dc4a, category: sensitive-minor, sensitive: true, openimages: 'bdc7279c04e3dc4a' }
+- { id: oi-sens-minor-6547a372ebf1b0fe, category: sensitive-minor, sensitive: true, openimages: '6547a372ebf1b0fe' }
+- { id: oi-sens-minor-ee8552a35b23ce39, category: sensitive-minor, sensitive: true, openimages: 'ee8552a35b23ce39' }
+- { id: oi-sens-minor-544801af545b84eb, category: sensitive-minor, sensitive: true, openimages: '544801af545b84eb' }
+- { id: oi-sens-minor-2f761297f92e32a3, category: sensitive-minor, sensitive: true, openimages: '2f761297f92e32a3' }
+- { id: oi-sens-minor-c97388bed52b6016, category: sensitive-minor, sensitive: true, openimages: 'c97388bed52b6016' }
+- { id: oi-sens-intimate-e7845f20d4b960c3, category: sensitive-intimate, sensitive: true, openimages: 'e7845f20d4b960c3' }
+- { id: oi-sens-intimate-6fce9e3e38858d53, category: sensitive-intimate, sensitive: true, openimages: '6fce9e3e38858d53' }
+- { id: oi-sens-intimate-7d687818430809d4, category: sensitive-intimate, sensitive: true, openimages: '7d687818430809d4' }
+- { id: oi-sens-intimate-f5ac485dbfa5a68d, category: sensitive-intimate, sensitive: true, openimages: 'f5ac485dbfa5a68d' }
+- { id: oi-sens-intimate-be092e3219d0be72, category: sensitive-intimate, sensitive: true, openimages: 'be092e3219d0be72' }
+- { id: oi-sens-intimate-2ef5492ef6e5ba4f, category: sensitive-intimate, sensitive: true, openimages: '2ef5492ef6e5ba4f' }
+- { id: oi-sens-face-f2286d6fea468db9, category: sensitive-face, openimages: 'f2286d6fea468db9' }
+- { id: oi-sens-face-6c1cd7fdc967c0d5, category: sensitive-face, openimages: '6c1cd7fdc967c0d5' }
+- { id: oi-sens-plate-70e7b5173fe1e289, category: sensitive-plate, openimages: '70e7b5173fe1e289' }
+- { id: oi-sens-plate-d213ece8466847a6, category: sensitive-plate, openimages: 'd213ece8466847a6' }
+- { id: oi-sens-plate-f5128e7a123b4fa8, category: sensitive-plate, openimages: 'f5128e7a123b4fa8' }
+- { id: oi-sens-plate-064a8def3049d040, category: sensitive-plate, openimages: '064a8def3049d040' }
+- { id: oi-sens-plate-df6d5130f9b9577c, category: sensitive-plate, openimages: 'df6d5130f9b9577c' }
+- { id: oi-sens-plate-dd981f5e88a4e5c0, category: sensitive-plate, openimages: 'dd981f5e88a4e5c0' }
+- { id: oi-sens-plate-b09813a8742277c7, category: sensitive-plate, openimages: 'b09813a8742277c7' }
+- { id: oi-sens-plate-3ec4dceee8a48a8f, category: sensitive-plate, openimages: '3ec4dceee8a48a8f' }
+- { id: oi-sens-screen-012dc31b561d4214, category: sensitive-screen, openimages: '012dc31b561d4214' }
+- { id: oi-sens-screen-14dc34954fe89fc2, category: sensitive-screen, openimages: '14dc34954fe89fc2' }
+- { id: oi-sens-screen-e3f2995cf9135eaa, category: sensitive-screen, openimages: 'e3f2995cf9135eaa' }
+- { id: oi-sens-screen-abc86960879d2e09, category: sensitive-screen, openimages: 'abc86960879d2e09' }
+- { id: oi-sens-screen-496f2bb90818bbb2, category: sensitive-screen, openimages: '496f2bb90818bbb2' }
+- { id: oi-sens-medical-0b1357a5033991a1, category: sensitive-medical, openimages: '0b1357a5033991a1' }
+- { id: oi-sens-medical-62845465624ddc39, category: sensitive-medical, openimages: '62845465624ddc39' }
+- { id: oi-sens-medical-124892350f674127, category: sensitive-medical, openimages: '124892350f674127' }
+- { id: oi-sens-swimwear-f7f83ef0ae3406b2, category: sensitive-swimwear, openimages: 'f7f83ef0ae3406b2' }
+- { id: oi-sens-sign-2fbe14d7e980e019, category: sensitive-sign, openimages: '2fbe14d7e980e019' }
+- { id: oi-sens-scene-da63faf7420d01fb, category: sensitive-scene, openimages: 'da63faf7420d01fb' }
+- { id: oi-sens-scene-4cc68acdd17395e2, category: sensitive-scene, openimages: '4cc68acdd17395e2' }
+- { id: oi-sens-intimate-fc19bcf0300d5c6f, category: sensitive-intimate, sensitive: true, openimages: 'fc19bcf0300d5c6f' }
+- { id: oi-sens-intimate-595678be621d1ee9, category: sensitive-intimate, sensitive: true, openimages: '595678be621d1ee9' }
+- { id: oi-sens-intimate-76e7b69883aba6cc, category: sensitive-intimate, sensitive: true, openimages: '76e7b69883aba6cc' }
