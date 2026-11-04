@@ -1,0 +1,5 @@
+description: "sensitive: medical: blood test report"
+metadata: { id: lab-result }
+vars:
+  image: file://../../corpus/images/lab-result.png
+  expected: { categories: [medical] }

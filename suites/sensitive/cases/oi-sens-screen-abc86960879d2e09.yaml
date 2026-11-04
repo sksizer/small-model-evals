@@ -1,0 +1,5 @@
+description: "sensitive: none: monitor showing an OS installer"
+metadata: { id: oi-sens-screen-abc86960879d2e09 }
+vars:
+  image: file://../../corpus/images/oi-sens-screen-abc86960879d2e09.jpg
+  expected: { categories: [] }

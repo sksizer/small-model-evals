@@ -1,0 +1,5 @@
+description: "sensitive: medical: chest X-ray"
+metadata: { id: sens-xray-chest-normal }
+vars:
+  image: file://../../corpus/images/sens-xray-chest-normal.jpg
+  expected: { categories: [medical] }

@@ -1,0 +1,5 @@
+description: "sensitive: id-document: specimen identity document"
+metadata: { id: passport-data-page }
+vars:
+  image: file://../../corpus/images/passport-data-page.png
+  expected: { categories: [id-document] }

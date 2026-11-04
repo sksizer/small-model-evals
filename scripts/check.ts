@@ -13,6 +13,10 @@
 //   missing, a corpus image the manifest does not list, or a case's query or
 //   expected id that is not in the pool.
 //
+// - a corpus image's licence is not one docs/standards/corpus.md allows (CC0,
+//   public domain, CC BY; Open Images exactly CC BY 2.0; a derived copy must
+//   match its parent). See scripts/licences.ts.
+//
 //   bun scripts/check.ts
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -21,6 +25,7 @@ import { spawnRunner } from '@osdlc/command-seam'
 import type { CorpusImage } from './fetch-corpus.ts'
 import { CATALOG } from './catalog.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
+import { licenceProblem } from './licences.ts'
 import { MODELS } from './models.ts'
 import { LEDGER_DIR, ROOT, SCOPE, SUITES_DIR, listSnapshots, loadCases, readLedger, readSnapshot, snapshotIntegrity } from './ledger.ts'
 
@@ -87,6 +92,12 @@ for (const m of manifest) {
   const path = join(corpus, m.file)
   if (!existsSync(path)) problems.push(`corpus/${m.file}: in the manifest but missing`)
   else if (createHash('sha256').update(readFileSync(path)).digest('hex') !== m.sha256) problems.push(`corpus/${m.file}: changed; add it under a new id`)
+}
+// Licences: docs/standards/corpus.md. A failure names the image id.
+const manifestById = new Map(manifest.map((m) => [m.id, m]))
+for (const m of manifest) {
+  const problem = licenceProblem(m, manifestById)
+  if (problem) problems.push(`corpus: ${problem}`)
 }
 const listed = new Set(manifest.map((m) => m.file))
 for (const suite of readdirSync(SUITES_DIR)) {

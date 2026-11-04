@@ -1,0 +1,5 @@
+description: "sensitive: credential: boarding pass with barcode and QR"
+metadata: { id: boarding-pass }
+vars:
+  image: file://../../corpus/images/boarding-pass.png
+  expected: { categories: [credential] }

@@ -1,0 +1,5 @@
+description: "sensitive: location: door with house number 77"
+metadata: { id: sens-house-number-77 }
+vars:
+  image: file://../../corpus/images/sens-house-number-77.jpg
+  expected: { categories: [location] }

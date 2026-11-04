@@ -1,0 +1,5 @@
+description: "sensitive: none: restaurant menu"
+metadata: { id: restaurant-menu }
+vars:
+  image: file://../../corpus/images/restaurant-menu.png
+  expected: { categories: [] }

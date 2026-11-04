@@ -1,0 +1,5 @@
+description: "sensitive: screen: phone showing an activity feed with names"
+metadata: { id: oi-sens-screen-012dc31b561d4214 }
+vars:
+  image: file://../../corpus/images/oi-sens-screen-012dc31b561d4214.jpg
+  expected: { categories: [screen] }

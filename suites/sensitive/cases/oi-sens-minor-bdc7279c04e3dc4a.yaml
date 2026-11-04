@@ -1,0 +1,5 @@
+description: "sensitive: minor: toddler in a puddle on a park path"
+metadata: { id: oi-sens-minor-bdc7279c04e3dc4a }
+vars:
+  image: file://../../corpus/images/oi-sens-minor-bdc7279c04e3dc4a.jpg
+  expected: { categories: [minor] }

@@ -1,0 +1,5 @@
+description: "sensitive: none: public bus timetable"
+metadata: { id: bus-timetable }
+vars:
+  image: file://../../corpus/images/bus-timetable.png
+  expected: { categories: [] }

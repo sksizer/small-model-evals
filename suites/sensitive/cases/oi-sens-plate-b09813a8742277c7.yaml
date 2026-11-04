@@ -1,0 +1,5 @@
+description: "sensitive: none: car with blurred plate"
+metadata: { id: oi-sens-plate-b09813a8742277c7 }
+vars:
+  image: file://../../corpus/images/oi-sens-plate-b09813a8742277c7.jpg
+  expected: { categories: [] }

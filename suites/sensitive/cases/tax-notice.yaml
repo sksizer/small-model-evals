@@ -1,0 +1,5 @@
+description: "sensitive: document, financial: tax assessment"
+metadata: { id: tax-notice }
+vars:
+  image: file://../../corpus/images/tax-notice.png
+  expected: { categories: [document, financial] }

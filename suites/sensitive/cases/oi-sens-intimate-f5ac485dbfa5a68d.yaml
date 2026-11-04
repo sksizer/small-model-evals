@@ -1,0 +1,5 @@
+description: "sensitive: near miss (garment, no person): lingerie on two shop mannequins"
+metadata: { id: oi-sens-intimate-f5ac485dbfa5a68d }
+vars:
+  image: file://../../corpus/images/oi-sens-intimate-f5ac485dbfa5a68d.jpg
+  expected: { categories: [] }

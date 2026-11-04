@@ -1,0 +1,5 @@
+description: "sensitive: face: person in focus"
+metadata: { id: oi-faces-450dc8db3bfee2c9 }
+vars:
+  image: file://../../corpus/images/oi-faces-450dc8db3bfee2c9.jpg
+  expected: { categories: [face] }
