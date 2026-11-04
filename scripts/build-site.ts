@@ -46,6 +46,16 @@ interface BoardFamily {
 }
 interface Board { machine: { key: string }; families: BoardFamily[] }
 
+/** The model finder export (scripts/export-site.ts), as far as merging needs it. */
+interface FinderTask { id: string; label: string; about: string; family: string }
+interface FinderRow {
+  machine: string
+  model: string
+  memory: { gb: number; basis: string } | null
+  cells: Record<string, unknown>
+}
+interface Finder { families: { id: string }[]; tasks: FinderTask[]; rows: FinderRow[] }
+
 interface Data {
   generated_at: string
   scope: string
@@ -55,6 +65,7 @@ interface Data {
   cells: { suite: string }[]
   perf: { suite: string }[]
   inproc: { suite: string }[]
+  finder: Finder
   leaderboard: Board[]
   results: { suite: string }[]
   history: { suite: string }[]
@@ -100,6 +111,24 @@ function mergeBoards(pub: Board[], priv: Board[], id: (suite: string) => string)
   })
 }
 
+/** Two finder exports with the private tasks (renamed, and marked) added; a model on both keeps one row with all its cells. */
+function mergeFinders(pub: Finder, priv: Finder, id: (suite: string) => string): Finder {
+  const rows = new Map(pub.rows.map((r) => [`${r.machine}\u0000${r.model}`, { ...r, cells: { ...r.cells } }]))
+  for (const r of priv.rows) {
+    const cells = Object.fromEntries(Object.entries(r.cells).map(([suite, c]) => [id(suite), c]))
+    const into = rows.get(`${r.machine}\u0000${r.model}`)
+    if (into) {
+      Object.assign(into.cells, cells)
+      into.memory ??= r.memory
+    } else rows.set(`${r.machine}\u0000${r.model}`, { ...r, cells })
+  }
+  return {
+    families: union((f) => f.id, pub.families, priv.families),
+    tasks: [...pub.tasks, ...priv.tasks.map((t) => ({ ...t, id: id(t.id), label: `${t.label} (private)` }))],
+    rows: [...rows.values()],
+  }
+}
+
 /** The private export with every public suite, result and image added. */
 function mergePublicInto(pub: Data, priv: Data): Data {
   const id = (suite: string) => `private-${suite}`
@@ -131,6 +160,7 @@ function mergePublicInto(pub: Data, priv: Data): Data {
     cells: [...pub.cells, ...renamed(priv.cells)],
     perf: [...pub.perf, ...renamed(priv.perf)],
     inproc: [...pub.inproc, ...renamed(priv.inproc)],
+    finder: mergeFinders(pub.finder, priv.finder, id),
     leaderboard: mergeBoards(pub.leaderboard, priv.leaderboard, id),
     results: [...pub.results, ...renamed(priv.results)],
     history: [...pub.history, ...renamed(priv.history)],

@@ -195,6 +195,29 @@ const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string)
   { id: 'regions', title: 'Regions', blurb: 'A photo in, boxes around things out.', has: (s) => s.startsWith('regions-') },
   { id: 'image', title: 'Image', blurb: 'Edit an image as told, or tell which images are alike.', has: (s) => ['edit', 'similarity'].includes(s) },
 ]
+
+/**
+ * The model finder's tasks: each quality suite in plain words, by suite id.
+ * The family above is the task's group. A suite not listed here still appears
+ * in the finder under its id, with the suite's own description.
+ */
+const TASKS: Record<string, { label: string; about: string }> = {
+  classify: { label: 'Text classification', about: 'Sort a short note into the right inbox label.' },
+  extract: { label: 'Data extraction', about: 'Turn a quick-capture note into JSON fields.' },
+  'food-lookup': { label: 'Lookup with tools', about: 'Turn a food note into database foods and grams by calling a lookup tool.' },
+  orchestrate: { label: 'Tool use / orchestration', about: 'Choose the right tool for a request in one turn.' },
+  route: { label: 'Routing decisions', about: 'Pick the handler and the model size a request needs.' },
+  workout: { label: 'Workout parsing', about: 'Turn a free-form workout log into structured sets.' },
+  ocr: { label: 'OCR (read text)', about: 'Read the text in an image.' },
+  'tag-image': { label: 'Image tagging', about: 'Tag a photo with what it shows.' },
+  'nudity-flag': { label: 'Nudity detection', about: 'Flag photos that show nudity.' },
+  'regions-objects': { label: 'Find objects (boxes)', about: 'Draw a box around each everyday thing in a photo.' },
+  'regions-find': { label: 'Find named things', about: 'Draw a box around one thing named in the request.' },
+  'regions-faces': { label: 'Find faces', about: 'Draw a box around every face.' },
+  'regions-text': { label: 'Find text lines', about: 'Draw a box around every line of text.' },
+  edit: { label: 'Image editing', about: 'Change an image as told, leaving the rest alone.' },
+  similarity: { label: 'Image similarity', about: 'Tell copies, edits and same-scene images from the rest.' },
+}
 const familyOf = (suite: string) => FAMILIES.find((f) => f.has(suite))?.id ?? 'other'
 
 /** The provider labels a suite's current setup runs. */
@@ -498,9 +521,87 @@ const frozen = (dir: string) =>
 const environments = frozen(ENV_DIR)
 const builds = frozen(MODEL_DIR)
 
+/** Licences anyone may use commercially without asking: Apache, MIT, BSD, ISC, CC0 and the like. */
+const PERMISSIVE = /^(apache|mit|bsd|isc|cc0|unlicense|zlib)\b/i
+
+/** A model's measured memory in GB: Ollama's loaded size (8K context row, else the smallest), else the largest in-process reading. */
+function memoryOf(machine: string, label: string): { gb: number; basis: 'loaded' | 'rss' | 'peak' } | null {
+  if (runtimeOf(label) === 'ollama') {
+    const rows = perf.filter((p) => p.machine === machine && p.model === label && p.loaded_gb !== null)
+    const pick = rows.find((p) => p.case === 'ctx-8k') ?? rows.sort((a, b) => a.loaded_gb! - b.loaded_gb!)[0]
+    return pick ? { gb: pick.loaded_gb!, basis: 'loaded' } : null
+  }
+  const mine = inproc.filter((p) => p.machine === machine && p.model === label && p.mem_mb !== null)
+  const peaks = mine.filter((p) => p.mem_kind === 'peak')
+  const use = peaks.length > 0 ? peaks : mine
+  // The providers report MiB.
+  return use.length > 0 ? { gb: (Math.max(...use.map((p) => p.mem_mb!)) * 2 ** 20) / 1e9, basis: peaks.length > 0 ? 'peak' : 'rss' } : null
+}
+
+/**
+ * The model finder: one row per model per machine with its result on every
+ * task it ran, its measured memory, and its time relative to the fastest model
+ * on the same suite and machine. The page filters and totals these client-side.
+ */
+const finder = (() => {
+  const tasks = quality
+    .filter((s) => cells.some((c) => c.suite === s.id))
+    .map((s) => ({ id: s.id, label: TASKS[s.id]?.label ?? s.id, about: TASKS[s.id]?.about ?? s.about, family: s.family }))
+  const fastest = new Map<string, number>()
+  for (const c of cells) {
+    if (c.time_ms === null || !(c.time_ms > 0)) continue
+    const key = [c.machine, c.suite].join('\u0000')
+    fastest.set(key, Math.min(fastest.get(key) ?? Infinity, c.time_ms))
+  }
+  const rows = [...new Set(cells.map((c) => [c.machine, c.model].join('\u0000')))].map((key) => {
+    const [machine, label] = key.split('\u0000') as [string, string]
+    const m = models.find((x) => x.label === label)
+    const cat = m?.catalog ?? null
+    const build = m ? (builds[m.digest] as { parameter_count?: number | null } | undefined) : undefined
+    return {
+      machine,
+      model: label,
+      kind: cat?.kind ?? null,
+      publisher: cat?.publisher ?? null,
+      licence: cat?.licence ?? null,
+      permissive: cat ? PERMISSIVE.test(cat.licence) : false,
+      parameters: cat?.parameters ?? build?.parameter_count ?? null,
+      parameters_note: cat?.parameters_note ?? null,
+      disk_gb: cat?.disk_gb ?? null,
+      runtime: m?.runtime ?? 'ollama',
+      released: m?.released ?? null,
+      released_approx: m?.released_approx ?? false,
+      baseline: m?.baseline ?? null,
+      retired: m?.retired ?? null,
+      memory: memoryOf(machine, label),
+      cells: Object.fromEntries(
+        cells
+          .filter((c) => c.machine === machine && c.model === label)
+          .map((c) => {
+            const best = fastest.get([machine, c.suite].join('\u0000'))
+            return [
+              c.suite,
+              {
+                rate: (100 * c.passed) / c.total,
+                passed: c.passed,
+                total: c.total,
+                mean: c.mean,
+                stale: c.stale,
+                time_ms: c.time_ms,
+                time_per: c.time_per,
+                rel: best !== undefined && c.time_ms !== null && c.time_ms > 0 ? c.time_ms / best : null,
+              },
+            ]
+          }),
+      ),
+    }
+  })
+  return { families: familyDefs.map((f) => ({ id: f.id, title: f.title })), tasks, rows }
+})()
+
 mkdirSync(DATA_OUT, { recursive: true })
 writeFileSync(
   join(DATA_OUT, 'evals.json'),
-  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, leaderboard, results, history, runs, environments, builds, corpus }),
+  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, leaderboard, results, history, runs, environments, builds, corpus }),
 )
 console.log(`${results.length} results, ${perf.length} speed rows, ${runs.length} runs → ${relative(ROOT, join(DATA_OUT, 'evals.json'))}`)
