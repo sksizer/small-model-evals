@@ -1,0 +1,8 @@
+description: "similarity: millipede-moss (2 copy, 6 scene, 1 class of 153)"
+metadata: { id: sim-millipede-moss }
+vars:
+  query: millipede-moss
+  expected:
+    copy: [copy-resize-millipede-moss, copy-crop10-millipede-moss]
+    scene: [forest-trail, tree-bracket-fungus, copy-jpeg40-forest-trail, copy-flip-forest-trail, copy-crop10-tree-bracket-fungus, copy-bright-tree-bracket-fungus]
+    class: [snow-forest-trail]

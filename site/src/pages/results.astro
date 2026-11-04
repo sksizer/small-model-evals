@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro'
 import Compare from '../components/Compare.astro'
 import Shot from '../components/Shot.astro'
-import { data, href, modelLabels, modelSlug, qualitySuites, show } from '../lib/data'
+import { data, fmtTime, href, modelLabels, modelSlug, qualitySuites, show } from '../lib/data'
 
 const results = [...data.results].sort((a, b) => a.suite.localeCompare(b.suite) || a.case.localeCompare(b.case) || a.model.localeCompare(b.model))
 const fails = results.filter((r) => !r.pass).length
@@ -46,7 +46,7 @@ const fails = results.filter((r) => !r.pass).length
           <th data-sort="text">Model</th>
           <th data-sort="text">Outcome</th>
           <th data-sort="num" class="num">Score</th>
-          <th data-sort="num" class="num">Latency</th>
+          <th data-sort="num" class="num" title="Per image when the provider reports it, else case latency">Time</th>
           <th>Why</th>
         </tr>
       </thead>
@@ -80,8 +80,8 @@ const fails = results.filter((r) => !r.pass).length
                 <td class="num" data-value={r.score}>
                   {r.score.toFixed(2)}
                 </td>
-                <td class="num" data-value={r.latency_ms}>
-                  {(r.latency_ms / 1000).toFixed(1)} s
+                <td class="num" data-value={r.time_ms} title={r.time_per === 'image' ? 'Time per image, as the provider reports it' : 'Case latency'}>
+                  {fmtTime(r.time_ms, r.time_per)}
                 </td>
                 <td class="muted">{r.error || (r.pass ? '' : r.reason)}</td>
               </tr>

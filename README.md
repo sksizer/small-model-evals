@@ -76,6 +76,7 @@ promptfoo runs every test against every provider and shows a pass/fail grid.
 | `regions-faces` | look (regions, privacy) | 15 Open Images photos, 3 with no face | Box every face; any face box on a no-face photo is wrong |
 | `regions-text` | look (regions) | 8 synthetic pages, 143 lines | Box every line of text; the boxes are measured from the page layout (`scripts/text-boxes.ts`) |
 | `edit` | edit | 10 Open Images photos and synthetic pages | Change the image as instructed (recolour, remove, add, weather, time of day, style, text); a judge answers yes/no questions about the edit, and outside the allowed region the image must stay close to the original (`providers/mflux-edit.ts`, `assertions/edit.ts`) |
+| `similarity` | look (likeness) | 29 query photos ranked against a pool of 153 candidates | Rank the pool by likeness to the query: is a candidate a `copy` (resized, recompressed, cropped, flipped, brightened), an `edit` (our edit suite's output), the same `scene`, the same `class` of thing or `other`? pHash and dHash against DINOv2, DINOv3, SigLIP 2 and CLIP image encoders; scored by average precision over copy, edit and scene, with recall@1 and @5 per level (`providers/image-embed.ts`, `assertions/similarity.ts`) |
 
 The regions suites compare small non-LLM detectors run in-process: fixed-class (D-FINE, RT-DETR),
 open-vocabulary (OWLv2, Grounding DINO), Florence-2, OpenCV's YuNet face detector and PaddleOCR's
@@ -85,6 +86,19 @@ text detector (`providers/region-detector.ts`, `providers/florence2.ts`,
 by hand, draw it on the site's `/label/` page (any corpus image) and save the YAML it gives into
 the suite's `cases/`. Nudity regions (boxes to blur) have no public data under a usable licence;
 they wait on hand-drawn cases.
+
+The `similarity` suite ranks a pool of candidate images by likeness to a query photo, with no Ollama: the
+perceptual hashes (pHash, dHash; plain code over `sharp`, the no-ML baseline) and ONNX image encoders run
+in-process (`providers/image-embed.ts`). A case lists, as candidate ids in `suites/similarity/pool.yaml`, which
+candidates are `copy`, `edit`, `scene` or `class` matches for its query; every other candidate in the pool is
+`other`. The `copy` candidates are committed corpus images made with `sharp` (`scripts/recipes.ts`; two per query,
+derived entries in `corpus/sources.yaml` that keep their parent's credit), so their bytes never move; `edit`
+candidates are the edit suite's saved outputs; `scene` candidates are photos of the same trail, car or race;
+`class` groups are written by hand in `scripts/pick-similarity.ts`, which also writes the pool and the cases.
+Only non-sensitive photos are used. The score is average precision over the copy, edit and scene items (class
+is reported, not scored); recall@1 and @5 per level (with the stronger levels set aside, so `edit` recall is measured once the copies are out of the way), the share of unrelated images in the top five and a per-case
+best cut-off are kept in each result for the site's gallery and its recall table. DINOv3 is under Meta's custom
+DINOv3 licence, not Apache or MIT; its catalogue entry says so.
 
 The `edit` suite hands an image editor a corpus image and an instruction. The editor is FLUX.2 klein 4B
 (4-bit MLX build) run by the [mflux](https://github.com/filipstrand/mflux) CLI, one process per case that exits

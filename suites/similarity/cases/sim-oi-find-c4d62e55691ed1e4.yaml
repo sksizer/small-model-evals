@@ -1,0 +1,7 @@
+description: "similarity: oi-find-c4d62e55691ed1e4 (2 copy, 1 class of 153)"
+metadata: { id: sim-oi-find-c4d62e55691ed1e4 }
+vars:
+  query: oi-find-c4d62e55691ed1e4
+  expected:
+    copy: [copy-resize-oi-find-c4d62e55691ed1e4, copy-crop10-oi-find-c4d62e55691ed1e4]
+    class: [oi-find-29de4e35add89b69]

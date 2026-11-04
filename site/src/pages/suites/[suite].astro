@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { data, describeExpected, href, imageSuites, isSensitive, modelSlug, pct, qualitySuites, show, type Suite, tone } from '../../lib/data'
+import SimilarityTable from '../../components/SimilarityTable.astro'
+import { data, describeExpected, href, imageSuites, isSimilarity, isSensitive, modelSlug, pct, qualitySuites, show, type Suite, tone } from '../../lib/data'
 
 export function getStaticPaths() {
   return qualitySuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
@@ -27,6 +28,7 @@ const rows = suite.cases.map((c) => {
     Current fingerprint <code>{suite.fingerprint}</code>. Cases are immutable once run; a changed case is a new case that
     supersedes the old one.
   </p>
+  {suite.cases.some((c) => isSimilarity(c.expected)) && <SimilarityTable results={results} />}
   <div class="controls">
     <input type="search" data-search="grid" placeholder="Search cases…" aria-label="Search cases" />
     {imageSuites.some((s) => s.id === suite.id) && <a href={href(`/gallery/${suite.id}/`)}>Image gallery →</a>}

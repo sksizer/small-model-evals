@@ -1,0 +1,139 @@
+---
+import Base from '../layouts/Base.astro'
+import { data, href } from '../lib/data'
+
+const { finder, machines } = data
+const kinds = [...new Set(finder.rows.flatMap((r) => (r.kind ? [r.kind] : [])))].sort()
+// The page ships the finder's rows to the client script, which filters and totals them; `<` is escaped so no string can close the script tag.
+const payload = JSON.stringify({ base: href(''), tasks: finder.tasks, rows: finder.rows }).replace(/</g, '\\u003c')
+const presets = [
+  { label: 'Nudity detection under 1 GB', query: 't=nudity-flag&mem=1&sort=avg&dir=desc' },
+  { label: 'Tool use + extraction, permissive licence', query: 't=orchestrate,extract&perm=1&sort=avg&dir=desc' },
+  { label: 'Image similarity, fastest', query: 't=similarity&sort=speed&dir=asc' },
+]
+---
+
+<Base
+  title="Model finder"
+  description="Pick the tasks you need, then narrow by size, memory, licence, success rate and speed. Models are listed only if they have a result on every task you pick."
+>
+  <p class="note">
+    Tick one or more tasks (a model must have a result on all of them), then set limits. The average and the speed column
+    are over the ticked tasks; with none ticked every model shows its average over what it ran. Click a column to sort.
+    The address bar holds the whole view, so you can share it. Try:
+    {presets.map((p, i) => <>{i > 0 && ' · '}<a href={href(`/finder/?${p.query}`)}>{p.label}</a></>)}.
+  </p>
+
+  <div class="panel tasks" id="finder-tasks">
+    {
+      finder.families.map((f) => {
+        const mine = finder.tasks.filter((t) => t.family === f.id)
+        return (
+          mine.length > 0 && (
+            <fieldset>
+              <legend>{f.title}</legend>
+              {mine.map((t) => (
+                <label title={t.about}>
+                  <input type="checkbox" value={t.id} data-task />
+                  {t.label}
+                </label>
+              ))}
+            </fieldset>
+          )
+        )
+      })
+    }
+  </div>
+
+  <div class="controls" id="finder-filters">
+    <input type="search" data-f="q" placeholder="Search model, publisher…" aria-label="Search models" />
+    <label>Params ≤
+      <select data-f="params">
+        <option value="">any</option>
+        <option value="5e7">50M</option><option value="1e8">100M</option><option value="5e8">500M</option>
+        <option value="1e9">1B</option><option value="2e9">2B</option><option value="4e9">4B</option>
+        <option value="8e9">8B</option><option value="1e10">10B</option>
+      </select>
+    </label>
+    <label>Memory ≤
+      <select data-f="mem">
+        <option value="">any</option>
+        <option value="0.5">0.5 GB</option><option value="1">1 GB</option><option value="2">2 GB</option>
+        <option value="4">4 GB</option><option value="8">8 GB</option><option value="12">12 GB</option>
+      </select>
+    </label>
+    <label>Success ≥
+      <select data-f="min">
+        <option value="">any</option>
+        <option value="50">50%</option><option value="70">70%</option><option value="80">80%</option>
+        <option value="90">90%</option><option value="100">100%</option>
+      </select>
+    </label>
+    <label>Slowdown ≤
+      <select data-f="speed">
+        <option value="">any</option>
+        <option value="1">×1</option><option value="2">×2</option><option value="5">×5</option>
+        <option value="10">×10</option><option value="100">×100</option>
+      </select>
+    </label>
+    <details class="kinds">
+      <summary data-kind-summary>Kind: all</summary>
+      <div class="panel pop">
+        {kinds.map((k) => <label><input type="checkbox" value={k} data-kind />{k}</label>)}
+      </div>
+    </details>
+    <label><input type="checkbox" data-f="perm" />Permissive licence only</label>
+    <label><input type="checkbox" data-f="base" checked />Baselines</label>
+    <label><input type="checkbox" data-f="ret" />Retired</label>
+    {
+      machines.length > 1 && (
+        <label>Machine
+          <select data-f="machine">
+            {machines.map((m) => <option value={m.key}>{m.chip}, {m.mem_gib} GiB</option>)}
+          </select>
+        </label>
+      )
+    }
+    <span class="count" id="finder-count"></span>
+  </div>
+
+  <div class="scroll">
+    <table id="finder-table">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script type="application/json" id="finder-data" set:html={payload} />
+
+  <p class="note">
+    <strong>Memory</strong> is measured, in GB. <em>loaded</em>: what Ollama reports loaded at 8K context. <em>rss</em>: the
+    whole process's resident memory after running, so an upper bound for the model. <em>peak</em>: the image editor's own
+    peak. The three are not like for like; a blank means nothing was measured, and such models drop out under a memory
+    limit. <strong>Slowdown</strong> is a model's time over the fastest model's on the same task and machine (×1.0 is the
+    fastest), worst over the ticked tasks. Times are per image where a provider reports it and per case otherwise, so
+    compare across kinds with care. A baseline is kept as a yardstick; a retired model is no longer run.
+  </p>
+</Base>
+
+<script>
+  import '../scripts/finder.ts'
+</script>
+
+<style>
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+  .tasks { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 12px 0; }
+  .tasks fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 14px; align-items: center; min-width: 0; }
+  .tasks legend { float: left; padding: 0; margin-right: 10px; font-size: 12px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .tasks label, .controls label { display: inline-flex; gap: 5px; align-items: center; white-space: nowrap; font-size: 14px; }
+  .kinds { position: relative; }
+  .kinds summary { cursor: pointer; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+  .kinds .pop { position: absolute; z-index: 3; top: 100%; left: 0; display: flex; flex-direction: column; gap: 2px; margin-top: 4px; max-height: 320px; overflow: auto; }
+  :global(#finder-table small) { display: block; color: var(--muted); font-size: 11px; }
+  :global(#finder-table .pin) { position: sticky; left: 0; z-index: 1; background: var(--panel); }
+  :global(#finder-table th.pin) { z-index: 2; }
+  :global(#finder-table th.task-h) { white-space: normal; min-width: 7em; }
+  :global(#finder-table .empty) { padding: 24px; text-align: center; color: var(--muted); }
+  @media (max-width: 640px) {
+    .controls input[type='search'] { min-width: 0; max-width: none; flex-basis: 100%; }
+  }
+</style>

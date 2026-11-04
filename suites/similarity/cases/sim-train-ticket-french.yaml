@@ -1,0 +1,7 @@
+description: "similarity: train-ticket-french (2 copy, 1 class of 153)"
+metadata: { id: sim-train-ticket-french }
+vars:
+  query: train-ticket-french
+  expected:
+    copy: [copy-jpeg40-train-ticket-french, copy-flip-train-ticket-french]
+    class: [train-ticket-chinese]

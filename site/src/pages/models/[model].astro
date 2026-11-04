@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { buildOf, data, fmt, fmtDisk, fmtParams, href, modelSlug, pct, qualitySuites, shortUrl, tone } from '../../lib/data'
+import { buildOf, data, fmt, fmtDisk, fmtParams, fmtTime, href, modelSlug, pct, qualitySuites, shortUrl, tone } from '../../lib/data'
 
 export function getStaticPaths() {
   return data.models.map((model) => ({ params: { model: modelSlug(model.label) }, props: { model } }))
@@ -12,10 +12,15 @@ const perf = data.perf.filter((p) => p.model === model.label)
 const failures = data.results.filter((r) => r.model === model.label && !r.pass)
 const build = buildOf(model.label)
 const cat = model.catalog
+const inproc = data.inproc.filter((p) => p.model === model.label)
+// Only the suites that list this model as a provider; the others cannot run it.
+const suites = qualitySuites.filter((s) => s.models.includes(model.label))
+const params = build?.parameter_count ?? cat?.parameters
+const src = model.source
 const history = data.history.filter((h) => h.model === model.label).sort((a, b) => b.run.localeCompare(a.run))
 ---
 
-<Base title={model.label} description={`Ollama tag ${model.tag}, build ${model.digest}.`}>
+<Base title={model.label} description={model.runtime === 'ollama' ? `Ollama tag ${model.tag}, build ${model.digest}.` : model.runtime === 'local' ? `Local code (${model.tag}), version ${src.revision}.` : `Hugging Face ${model.tag}, revision ${src.revision?.slice(0, 7)}.`}>
   {
     cat && (
       <>
@@ -112,14 +117,14 @@ const history = data.history.filter((h) => h.model === model.label).sort((a, b) 
       <div class="cards">
         <div class="card">
           <div class="k">Engine</div>
-          <div class="v">{build.engine === 'default' ? 'llama.cpp' : build.engine.toUpperCase()}</div>
+          <div class="v" style={build.engine.length > 12 ? 'font-size:15px' : undefined}>{build.engine === 'default' ? 'llama.cpp' : build.engine.length > 12 ? build.engine : build.engine.toUpperCase()}</div>
           <div class="muted">{build.format}</div>
         </div>
         <div class="card">
           <div class="k">Weights</div>
           <div class="v">{build.quantization}</div>
           <div class="muted">
-            {build.parameter_size} parameters · {build.family}
+            {params !== undefined && params !== null ? `${fmtParams(params)} parameters` : 'parameters unknown'}{build.family && ` · ${build.family}`}
           </div>
         </div>
         <div class="card">
@@ -127,20 +132,30 @@ const history = data.history.filter((h) => h.model === model.label).sort((a, b) 
           <div class="v">{build.context_length ? `${Math.round(build.context_length / 1024)}K` : '—'}</div>
           <div class="muted">{build.capabilities.join(', ')}</div>
         </div>
-        <div class="card">
-          <div class="k">Default sampling</div>
-          <div class="muted">
-            {Object.entries(build.default_parameters)
-              .map(([k, v]) => `${k} ${v}`)
-              .join(' · ') || '—'}
+        {model.runtime === 'ollama' ? (
+          <div class="card">
+            <div class="k">Default sampling</div>
+            <div class="muted">
+              {Object.entries(build.default_parameters)
+                .map(([k, v]) => `${k} ${v}`)
+                .join(' · ') || '—'}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div class="card">
+            <div class="k">{model.runtime === 'local' ? 'Code version' : 'Pinned revision'}</div>
+            <div class="v">
+              {src.revision_url ? <a href={src.revision_url} title={src.revision ?? undefined}><code>{src.revision?.slice(0, 7)}</code></a> : <code>{src.revision ?? '—'}</code>}
+            </div>
+            <div class="muted">{model.runtime === 'local' ? 'bumped when the output could change' : 'a commit on Hugging Face'}</div>
+          </div>
+        )}
       </div>
     )
   }
   <div class="cards">
     {
-      qualitySuites.map((s) => {
+      suites.map((s) => {
         const c = cells.find((x) => x.suite === s.id)
         if (!c)
           return (
@@ -155,7 +170,7 @@ const history = data.history.filter((h) => h.model === model.label).sort((a, b) 
             <div class="k">{s.id}</div>
             <div class="v">{rate}%</div>
             <div>
-              {c.passed}/{c.total} · {fmt((c.median_ms ?? 0) / 1000)} s{c.stale && ' · stale'}
+              {c.passed}/{c.total} · {fmtTime(c.time_ms, c.time_per)}{c.stale && ' · stale'}
             </div>
           </a>
         )
@@ -165,9 +180,43 @@ const history = data.history.filter((h) => h.model === model.label).sort((a, b) 
 
   <h2>Speed and memory</h2>
   {
-    perf.length === 0 ? (
+    perf.length === 0 && inproc.length === 0 ? (
       <p class="muted">No speed runs yet.</p>
-    ) : (
+    ) : null
+  }
+  {
+    inproc.length > 0 && (
+      <>
+        <div class="scroll">
+          <table data-table id="model-inproc">
+            <thead>
+              <tr>
+                <th data-sort="text">Suite</th>
+                <th data-sort="num" class="num">Per image</th>
+                <th data-sort="num" class="num">Load</th>
+                <th data-sort="num" class="num">Memory</th>
+              </tr>
+            </thead>
+            <tbody>
+              {inproc.map((p) => (
+                <tr>
+                  <td>{p.suite}</td>
+                  <td class="num" data-value={p.per_image_ms ?? -1}>{fmtTime(p.per_image_ms)}</td>
+                  <td class="num" data-value={p.load_ms ?? -1}>{fmtTime(p.load_ms)}</td>
+                  <td class="num" data-value={p.mem_mb ?? -1}>
+                    {p.mem_mb === null ? '—' : `${Math.round(p.mem_mb).toLocaleString('en-US')} MB`} <span class="muted">{p.mem_kind}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Runs in-process, not in Ollama. <strong>rss</strong> is the whole process's resident memory, so an upper bound for the model; <strong>peak</strong> is the editor's own peak.</p>
+      </>
+    )
+  }
+  {
+    perf.length > 0 && (
       <div class="scroll">
         <table data-table id="model-speed">
           <thead>

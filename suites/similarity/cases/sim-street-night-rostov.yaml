@@ -1,0 +1,7 @@
+description: "similarity: street-night-rostov (2 copy, 2 class of 153)"
+metadata: { id: sim-street-night-rostov }
+vars:
+  query: street-night-rostov
+  expected:
+    copy: [copy-flip-street-night-rostov, copy-resize-street-night-rostov]
+    class: [diner-snow-night, railway-station-dark]

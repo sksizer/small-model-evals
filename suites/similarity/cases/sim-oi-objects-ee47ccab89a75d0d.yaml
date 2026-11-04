@@ -1,0 +1,8 @@
+description: "similarity: oi-objects-ee47ccab89a75d0d (2 copy, 1 edit, 2 class of 153)"
+metadata: { id: sim-oi-objects-ee47ccab89a75d0d }
+vars:
+  query: oi-objects-ee47ccab89a75d0d
+  expected:
+    copy: [copy-resize-oi-objects-ee47ccab89a75d0d, copy-crop10-oi-objects-ee47ccab89a75d0d]
+    edit: [edit-armchair-green]
+    class: [oi-objects-2b2c4fe6d63a13e4, oi-objects-5ea13fbbd1a1474f]

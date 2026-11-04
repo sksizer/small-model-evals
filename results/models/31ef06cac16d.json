@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/dinov2-base",
+  "digest": "31ef06cac16d",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-embedding"
+  ],
+  "default_parameters": {
+    "revision": "31ef06cac16d5d301c5930d147002a058c85a5e4"
+  },
+  "template_hash": ""
+}

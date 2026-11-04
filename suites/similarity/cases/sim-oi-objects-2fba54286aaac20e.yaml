@@ -1,0 +1,7 @@
+description: "similarity: oi-objects-2fba54286aaac20e (2 copy, 1 edit of 153)"
+metadata: { id: sim-oi-objects-2fba54286aaac20e }
+vars:
+  query: oi-objects-2fba54286aaac20e
+  expected:
+    copy: [copy-bright-oi-objects-2fba54286aaac20e, copy-jpeg40-oi-objects-2fba54286aaac20e]
+    edit: [edit-plant-remove]

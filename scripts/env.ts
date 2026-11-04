@@ -150,8 +150,8 @@ export interface ModelInfo {
   template_hash: string
 }
 
-/** Writes an ONNX model's details once, keyed by its pinned revision. */
-export function freezeOnnxModel(id: string, revision: string, dtype: string): void {
+/** Writes an ONNX model's details once, keyed by its pinned revision. `capability` is what it does (the classifiers' default is `image-classification`). */
+export function freezeOnnxModel(id: string, revision: string, dtype: string, capability = 'image-classification'): void {
   const digest = revision.slice(0, 12)
   const path = join(MODEL_DIR, `${digest}.json`)
   if (existsSync(path)) return
@@ -165,8 +165,31 @@ export function freezeOnnxModel(id: string, revision: string, dtype: string): vo
     parameter_size: '',
     parameter_count: null,
     context_length: null,
-    capabilities: ['image-classification'],
+    capabilities: [capability],
     default_parameters: { revision },
+    template_hash: '',
+  }
+  mkdirSync(MODEL_DIR, { recursive: true })
+  writeFileSync(path, `${JSON.stringify(model, null, 2)}\n`)
+}
+
+/** Writes a no-weights model's details (the perceptual hashes) once, keyed by the version of its code. */
+export function freezeLocalModel(id: string, version: string, capability: string): void {
+  const digest = version.slice(0, 12)
+  const path = join(MODEL_DIR, `${digest}.json`)
+  if (existsSync(path)) return
+  const model: ModelInfo = {
+    tag: id,
+    digest,
+    engine: 'sharp (libvips), no weights',
+    format: 'none',
+    family: '',
+    quantization: '',
+    parameter_size: '',
+    parameter_count: null,
+    context_length: null,
+    capabilities: [capability],
+    default_parameters: { version },
     template_hash: '',
   }
   mkdirSync(MODEL_DIR, { recursive: true })

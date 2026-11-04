@@ -6,7 +6,8 @@
 # (ids are permanent; cases name them) and rerun the script. No people as
 # subjects, except in the nudity-flag and regions sections. Your own photos go
 # in private/ (gitignored), not here. Sections in order: Commons photos,
-# synthetic OCR pages, nudity flagging, regions (Open Images).
+# synthetic OCR pages, nudity flagging, regions (Open Images), similarity
+# (scene photos and derived copies, written by scripts/pick-similarity.ts).
 - { id: salad-ham, category: food, title: 'File:Stra-ham+salad.JPG' }
 - { id: salad-party-dish, category: food, title: 'File:Party food dish 8 salad tomatoes cheese lettuce spinach.jpg' }
 - { id: salad-rucola-plate, category: food, title: 'File:Food-plate-rucola-salad (23699968653).jpg' }
@@ -141,3 +142,69 @@
 - { id: oi-faces-58f524841563410b, category: regions-faces, openimages: '58f524841563410b' }
 - { id: oi-faces-1a5a8e2cdbdeaab0, category: regions-faces, openimages: '1a5a8e2cdbdeaab0' }
 - { id: oi-faces-fca6fb7f00addeae, category: regions-faces, openimages: 'fca6fb7f00addeae' }
+
+# Similarity suite (scripts/pick-similarity.ts). Scene photos: Open Images, two of one car and
+# two of one race, by the same photographer. Copies: each query resized, recompressed, cropped,
+# flipped or brightened (RECIPES in scripts/fetch-corpus.ts); they keep their parent's credit.
+- { id: oi-scene-spitfire-a, category: similarity-scene, openimages: 'd28d71c2690c16ed' }
+- { id: oi-scene-spitfire-b, category: similarity-scene, openimages: 'c39336fda04d5dfe' }
+- { id: oi-scene-monaco-a, category: similarity-scene, openimages: '438f461a5f6d8e7e' }
+- { id: oi-scene-monaco-b, category: similarity-scene, openimages: 'a582197dff522ef5' }
+- { id: copy-resize-oi-objects-ee47ccab89a75d0d, category: similarity-copy, derived: oi-objects-ee47ccab89a75d0d, recipe: resize }
+- { id: copy-crop10-oi-objects-ee47ccab89a75d0d, category: similarity-copy, derived: oi-objects-ee47ccab89a75d0d, recipe: crop10 }
+- { id: copy-jpeg40-oi-objects-25d107f1590c1772, category: similarity-copy, derived: oi-objects-25d107f1590c1772, recipe: jpeg40 }
+- { id: copy-flip-oi-objects-25d107f1590c1772, category: similarity-copy, derived: oi-objects-25d107f1590c1772, recipe: flip }
+- { id: copy-crop10-recipe-card, category: similarity-copy, derived: recipe-card, recipe: crop10 }
+- { id: copy-bright-recipe-card, category: similarity-copy, derived: recipe-card, recipe: bright }
+- { id: copy-flip-settings-panel, category: similarity-copy, derived: settings-panel, recipe: flip }
+- { id: copy-resize-settings-panel, category: similarity-copy, derived: settings-panel, recipe: resize }
+- { id: copy-bright-oi-objects-28bd6c6b1050e055, category: similarity-copy, derived: oi-objects-28bd6c6b1050e055, recipe: bright }
+- { id: copy-jpeg40-oi-objects-28bd6c6b1050e055, category: similarity-copy, derived: oi-objects-28bd6c6b1050e055, recipe: jpeg40 }
+- { id: copy-resize-oi-objects-948794bfee784412, category: similarity-copy, derived: oi-objects-948794bfee784412, recipe: resize }
+- { id: copy-crop10-oi-objects-948794bfee784412, category: similarity-copy, derived: oi-objects-948794bfee784412, recipe: crop10 }
+- { id: copy-jpeg40-oi-objects-0fd512f1bffb8cf3, category: similarity-copy, derived: oi-objects-0fd512f1bffb8cf3, recipe: jpeg40 }
+- { id: copy-flip-oi-objects-0fd512f1bffb8cf3, category: similarity-copy, derived: oi-objects-0fd512f1bffb8cf3, recipe: flip }
+- { id: copy-crop10-oi-objects-d8cac8b54e9fa89c, category: similarity-copy, derived: oi-objects-d8cac8b54e9fa89c, recipe: crop10 }
+- { id: copy-bright-oi-objects-d8cac8b54e9fa89c, category: similarity-copy, derived: oi-objects-d8cac8b54e9fa89c, recipe: bright }
+- { id: copy-flip-oi-objects-5b7ab3baf4c0492f, category: similarity-copy, derived: oi-objects-5b7ab3baf4c0492f, recipe: flip }
+- { id: copy-resize-oi-objects-5b7ab3baf4c0492f, category: similarity-copy, derived: oi-objects-5b7ab3baf4c0492f, recipe: resize }
+- { id: copy-bright-oi-objects-2fba54286aaac20e, category: similarity-copy, derived: oi-objects-2fba54286aaac20e, recipe: bright }
+- { id: copy-jpeg40-oi-objects-2fba54286aaac20e, category: similarity-copy, derived: oi-objects-2fba54286aaac20e, recipe: jpeg40 }
+- { id: copy-resize-millipede-moss, category: similarity-copy, derived: millipede-moss, recipe: resize }
+- { id: copy-crop10-millipede-moss, category: similarity-copy, derived: millipede-moss, recipe: crop10 }
+- { id: copy-jpeg40-forest-trail, category: similarity-copy, derived: forest-trail, recipe: jpeg40 }
+- { id: copy-flip-forest-trail, category: similarity-copy, derived: forest-trail, recipe: flip }
+- { id: copy-crop10-tree-bracket-fungus, category: similarity-copy, derived: tree-bracket-fungus, recipe: crop10 }
+- { id: copy-bright-tree-bracket-fungus, category: similarity-copy, derived: tree-bracket-fungus, recipe: bright }
+- { id: copy-flip-oi-scene-spitfire-a, category: similarity-copy, derived: oi-scene-spitfire-a, recipe: flip }
+- { id: copy-resize-oi-scene-spitfire-a, category: similarity-copy, derived: oi-scene-spitfire-a, recipe: resize }
+- { id: copy-bright-oi-scene-spitfire-b, category: similarity-copy, derived: oi-scene-spitfire-b, recipe: bright }
+- { id: copy-jpeg40-oi-scene-spitfire-b, category: similarity-copy, derived: oi-scene-spitfire-b, recipe: jpeg40 }
+- { id: copy-resize-oi-scene-monaco-a, category: similarity-copy, derived: oi-scene-monaco-a, recipe: resize }
+- { id: copy-crop10-oi-scene-monaco-a, category: similarity-copy, derived: oi-scene-monaco-a, recipe: crop10 }
+- { id: copy-jpeg40-oi-scene-monaco-b, category: similarity-copy, derived: oi-scene-monaco-b, recipe: jpeg40 }
+- { id: copy-flip-oi-scene-monaco-b, category: similarity-copy, derived: oi-scene-monaco-b, recipe: flip }
+- { id: copy-crop10-dog-border-terrier, category: similarity-copy, derived: dog-border-terrier, recipe: crop10 }
+- { id: copy-bright-dog-border-terrier, category: similarity-copy, derived: dog-border-terrier, recipe: bright }
+- { id: copy-flip-horses-flooded-pasture, category: similarity-copy, derived: horses-flooded-pasture, recipe: flip }
+- { id: copy-resize-horses-flooded-pasture, category: similarity-copy, derived: horses-flooded-pasture, recipe: resize }
+- { id: copy-bright-salad-rucola-plate, category: similarity-copy, derived: salad-rucola-plate, recipe: bright }
+- { id: copy-jpeg40-salad-rucola-plate, category: similarity-copy, derived: salad-rucola-plate, recipe: jpeg40 }
+- { id: copy-resize-bike-parking-oakland, category: similarity-copy, derived: bike-parking-oakland, recipe: resize }
+- { id: copy-crop10-bike-parking-oakland, category: similarity-copy, derived: bike-parking-oakland, recipe: crop10 }
+- { id: copy-jpeg40-desk-laptop-top-down, category: similarity-copy, derived: desk-laptop-top-down, recipe: jpeg40 }
+- { id: copy-flip-desk-laptop-top-down, category: similarity-copy, derived: desk-laptop-top-down, recipe: flip }
+- { id: copy-crop10-lake-sherburne, category: similarity-copy, derived: lake-sherburne, recipe: crop10 }
+- { id: copy-bright-lake-sherburne, category: similarity-copy, derived: lake-sherburne, recipe: bright }
+- { id: copy-flip-library-laukaa, category: similarity-copy, derived: library-laukaa, recipe: flip }
+- { id: copy-resize-library-laukaa, category: similarity-copy, derived: library-laukaa, recipe: resize }
+- { id: copy-bright-oi-find-149a74e86e8161a5, category: similarity-copy, derived: oi-find-149a74e86e8161a5, recipe: bright }
+- { id: copy-jpeg40-oi-find-149a74e86e8161a5, category: similarity-copy, derived: oi-find-149a74e86e8161a5, recipe: jpeg40 }
+- { id: copy-resize-oi-find-c4d62e55691ed1e4, category: similarity-copy, derived: oi-find-c4d62e55691ed1e4, recipe: resize }
+- { id: copy-crop10-oi-find-c4d62e55691ed1e4, category: similarity-copy, derived: oi-find-c4d62e55691ed1e4, recipe: crop10 }
+- { id: copy-jpeg40-train-ticket-french, category: similarity-copy, derived: train-ticket-french, recipe: jpeg40 }
+- { id: copy-flip-train-ticket-french, category: similarity-copy, derived: train-ticket-french, recipe: flip }
+- { id: copy-crop10-recipe-daffys-elixir, category: similarity-copy, derived: recipe-daffys-elixir, recipe: crop10 }
+- { id: copy-bright-recipe-daffys-elixir, category: similarity-copy, derived: recipe-daffys-elixir, recipe: bright }
+- { id: copy-flip-street-night-rostov, category: similarity-copy, derived: street-night-rostov, recipe: flip }
+- { id: copy-resize-street-night-rostov, category: similarity-copy, derived: street-night-rostov, recipe: resize }

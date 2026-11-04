@@ -1,0 +1,7 @@
+description: "similarity: library-laukaa (2 copy, 1 class of 153)"
+metadata: { id: sim-library-laukaa }
+vars:
+  query: library-laukaa
+  expected:
+    copy: [copy-flip-library-laukaa, copy-resize-library-laukaa]
+    class: [library-stacks-vasconcelos]

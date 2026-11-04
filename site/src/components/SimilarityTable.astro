@@ -1,0 +1,83 @@
+---
+// Recall per level per model for a similarity suite, from each result's
+// recorded detail (assertions/similarity.ts). Recall@k is measured with the
+// stronger levels set aside (copies, then edits, then scenes), so each column
+// answers its own question; it is capped at what is possible (a query with two
+// copies scores 1 at @1 when a copy ranks first) and averaged over the cases
+// that have that level. MAP is the suite score: the mean
+// average precision over the copy, edit and scene items. "Other @5" is the share of
+// the top five that is unrelated (lower is better). "Copies separable" counts the
+// cases where one similarity cut-off splits the copies from everything else with at
+// most one mistake. Speed and memory come from the provider's own numbers.
+import { LEVELS, fmt, href, modelSlug, tone, type Result } from '../lib/data'
+
+interface Props {
+  results: Result[]
+}
+const { results } = Astro.props
+const mean = (xs: number[]) => (xs.length === 0 ? null : xs.reduce((a, b) => a + b, 0) / xs.length)
+const models = [...new Set(results.map((r) => r.model))].sort()
+const rows = models
+  .map((model) => {
+    const rs = results.filter((r) => r.model === model && r.similarity?.detail)
+    const details = rs.map((r) => r.similarity!.detail!)
+    const level = (l: (typeof LEVELS)[number], k: 'r1' | 'r5') => mean(details.flatMap((d) => (d.levels[l] ? [d.levels[l]![k]] : [])))
+    const embed = rs.flatMap((r) => (r.metrics?.['embed_ms'] === undefined ? [] : [r.metrics['embed_ms']]))
+    return {
+      model,
+      cases: rs.length,
+      map: mean(rs.map((r) => r.score)),
+      levels: LEVELS.map((l) => ({ l, r1: level(l, 'r1'), r5: level(l, 'r5'), n: details.filter((d) => d.levels[l]).length })),
+      other5: mean(details.map((d) => d.other5)),
+      separable: details.filter((d) => d.copy_cut && d.copy_cut.mistakes <= 1).length,
+      embed_ms: embed.length === 0 ? null : Math.max(...embed),
+      rss_mb: Math.max(...rs.map((r) => r.metrics?.['rss_mb'] ?? 0)) || null,
+    }
+  })
+  .sort((a, b) => (b.map ?? 0) - (a.map ?? 0))
+const p = (x: number | null) => (x === null ? '—' : `${Math.round(x * 100)}%`)
+---
+
+{
+  rows.length > 0 && (
+    <div class="scroll">
+      <table class="sim-table">
+        <thead>
+          <tr>
+            <th rowspan="2">Model</th>
+            <th rowspan="2" class="num" title="Mean average precision over the copy, edit and scene items: the score">MAP</th>
+            {LEVELS.map((l) => <th colspan="2" class="num lvl">{l}</th>)}
+            <th rowspan="2" class="num" title="Share of the top five that is unrelated (lower is better)">Other @5</th>
+            <th rowspan="2" class="num" title="Cases where one cut-off separates the copies from everything else with at most one mistake">Copies separable</th>
+            <th rowspan="2" class="num" title="Time to embed one image">ms / image</th>
+            <th rowspan="2" class="num" title="Process memory after embedding">Peak MB</th>
+          </tr>
+          <tr>
+            {LEVELS.flatMap(() => [<th class="num sub">@1</th>, <th class="num sub">@5</th>])}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr>
+              <td><a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a></td>
+              <td class={`num heat ${tone((r.map ?? 0) * 100)}`}><b>{fmt(r.map, 2)}</b></td>
+              {r.levels.flatMap((x) => [
+                <td class="num" title={`${x.n} cases have a ${x.l} level`}>{p(x.r1)}</td>,
+                <td class="num">{p(x.r5)}</td>,
+              ])}
+              <td class="num">{p(r.other5)}</td>
+              <td class="num">{r.separable}/{r.cases}</td>
+              <td class="num">{r.embed_ms === null ? '—' : fmt(r.embed_ms, r.embed_ms < 10 ? 1 : 0)}</td>
+              <td class="num">{r.rss_mb === null ? '—' : Math.round(r.rss_mb)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+<style>
+  .sim-table th.lvl { text-align: center; border-left: 1px solid var(--line); }
+  .sim-table th.sub { font-weight: 400; color: var(--muted); }
+</style>

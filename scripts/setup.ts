@@ -69,7 +69,7 @@ for (const m of models) {
     console.log(`skip ${m.label}: ${skip}`)
     continue
   }
-  if (m.runtime === 'onnx') continue
+  if (m.runtime === 'onnx' || m.runtime === 'local') continue
   if (m.runtime === 'mflux') {
     const problem = mfluxProblem()
     if (problem) {
