@@ -3473,5 +3473,47 @@
     "width": 768,
     "height": 511,
     "sha256": "b646f830cb1e300a48b9dfc43b38caf9bb9864f75701b47670b36d3b1a807c75"
+  },
+  {
+    "id": "oi-sens-intimate-fc19bcf0300d5c6f",
+    "category": "sensitive-intimate",
+    "file": "images/oi-sens-intimate-fc19bcf0300d5c6f.jpg",
+    "title": "Open Images fc19bcf0300d5c6f: Le Teasha-14",
+    "page": "https://www.flickr.com/photos/graffitiphoto/4292840159",
+    "author": "Bryan Thompson",
+    "licence": "CC BY 2.0",
+    "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+    "width": 768,
+    "height": 511,
+    "sha256": "62e5548eb4ff1476369d31d58b898e08f8e84f25d5c133bf6f7d4987a86f11d1",
+    "sensitive": true
+  },
+  {
+    "id": "oi-sens-intimate-595678be621d1ee9",
+    "category": "sensitive-intimate",
+    "file": "images/oi-sens-intimate-595678be621d1ee9.jpg",
+    "title": "Open Images 595678be621d1ee9: p324 Labial Legs - Random White Bikini",
+    "page": "https://www.flickr.com/photos/126767021@N06/15142222075",
+    "author": "Royce Milam",
+    "licence": "CC BY 2.0",
+    "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+    "width": 768,
+    "height": 530,
+    "sha256": "9c22c129f22528c33f4dad910f675aad1e647735050eddee03ff8debd26adb61",
+    "sensitive": true
+  },
+  {
+    "id": "oi-sens-intimate-76e7b69883aba6cc",
+    "category": "sensitive-intimate",
+    "file": "images/oi-sens-intimate-76e7b69883aba6cc.jpg",
+    "title": "Open Images 76e7b69883aba6cc: Bikini-Figur",
+    "page": "https://www.flickr.com/photos/61508583@N02/10873786853",
+    "author": "Butz.2013",
+    "licence": "CC BY 2.0",
+    "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+    "width": 768,
+    "height": 512,
+    "sha256": "e3978c12799bda5d8e70759424e98f0fda99542862fe2afa59bfd317c83afebe",
+    "sensitive": true
   }
 ]

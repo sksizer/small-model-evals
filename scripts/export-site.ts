@@ -15,6 +15,8 @@ import { conceptLabel, parseTags, tagMatches, type Concept } from '../assertions
 import { compareWorkout, type ExpectedWorkout } from '../assertions/workout.ts'
 import { compareFood, type ExpectedFood } from '../assertions/food.ts'
 import { compareDecide } from '../assertions/decide.ts'
+import { compareSensitive } from '../assertions/sensitive.ts'
+import { CATEGORIES, DEFINITIONS, LEVELS, PRIVATE_CATEGORIES, type Category } from '../assertions/sensitive-levels.ts'
 import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
 import { compareSimilarity, type ExpectedSimilarity, type SimilarityDetail } from '../assertions/similarity.ts'
@@ -114,6 +116,8 @@ function compare(expected: unknown, absent: unknown, output: string, detail?: un
     const e = expected as ExpectedRegions
     return { regions: compareRegions(e.boxes, output, e.labels) }
   }
+  // Sensitive-image screening: the categories hit, missed and falsely raised, and the level, from the scorer.
+  if (isScreening(expected)) return { screening: compareSensitive(expected.categories, output) }
   // Decisions: one row per question, from the scorer.
   const decided = compareDecide(expected as Record<string, string | string[]>, output)
   if (decided && expected && typeof expected === 'object' && !Array.isArray(expected)) return { fields: decided }
@@ -144,6 +148,9 @@ function compare(expected: unknown, absent: unknown, output: string, detail?: un
 
 const isSimilarity = (e: unknown): e is ExpectedSimilarity =>
   !!e && typeof e === 'object' && !Array.isArray(e) && ['copy', 'edit', 'scene', 'class'].some((k) => Array.isArray((e as Record<string, unknown>)[k])) && !('changed' in e)
+
+const isScreening = (e: unknown): e is { categories: Category[] } =>
+  !!e && typeof e === 'object' && Array.isArray((e as { categories?: unknown }).categories)
 
 const isEdit = (e: unknown): e is ExpectedEdit =>
   !!e && typeof e === 'object' && Array.isArray((e as { changed?: unknown }).changed) && Array.isArray((e as { kept?: unknown }).kept)
@@ -191,7 +198,7 @@ const suites = readdirSync(SUITES_DIR).sort()
  */
 const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string) => boolean }[] = [
   { id: 'text', title: 'Text', blurb: 'Notes and logs in, a label, fields or a tool choice out.', has: (s) => ['classify', 'extract', 'food-lookup', 'orchestrate', 'route', 'workout'].includes(s) },
-  { id: 'vision', title: 'Vision understanding', blurb: 'A photo in, text or a flag out.', has: (s) => ['ocr', 'tag-image', 'nudity-flag'].includes(s) },
+  { id: 'vision', title: 'Vision understanding', blurb: 'A photo in, text or a flag out.', has: (s) => ['ocr', 'tag-image', 'nudity-flag', 'sensitive'].includes(s) },
   { id: 'regions', title: 'Regions', blurb: 'A photo in, boxes around things out.', has: (s) => s.startsWith('regions-') },
   { id: 'image', title: 'Image', blurb: 'Edit an image as told, or tell which images are alike.', has: (s) => ['edit', 'similarity'].includes(s) },
 ]
@@ -211,6 +218,7 @@ const TASKS: Record<string, { label: string; about: string }> = {
   ocr: { label: 'OCR (read text)', about: 'Read the text in an image.' },
   'tag-image': { label: 'Image tagging', about: 'Tag a photo with what it shows.' },
   'nudity-flag': { label: 'Nudity detection', about: 'Flag photos that show nudity.' },
+  sensitive: { label: 'Sensitive image screening', about: 'Say whether a photo should leave the device: nudity, documents, screens, children, locations.' },
   'regions-objects': { label: 'Find objects (boxes)', about: 'Draw a box around each everyday thing in a photo.' },
   'regions-find': { label: 'Find named things', about: 'Draw a box around one thing named in the request.' },
   'regions-faces': { label: 'Find faces', about: 'Draw a box around every face.' },
@@ -539,6 +547,97 @@ function memoryOf(machine: string, label: string): { gb: number; basis: 'loaded'
 }
 
 /**
+ * The sensitive suite's summary per model (docs/plans/sensitive.md): the owner's
+ * pass mark (no private image called public), false alarms, per-category
+ * precision and recall, and a leak-versus-false-alarm curve as the risk cut
+ * moves. Computed here from each case's reply; the site only draws it.
+ */
+const SCREEN_THRESHOLDS = Array.from({ length: 19 }, (_, i) => Math.round((i + 1) * 5) / 100)
+const screening = (() => {
+  const mine = results.filter((r) => r.suite === 'sensitive')
+  if (mine.length === 0) return null
+  const keys = [...new Set(mine.map((r) => [r.machine, r.model].join('\u0000')))]
+  const rowsOut = keys.map((key) => {
+    const [machine, label] = key.split('\u0000') as [string, string]
+    const rs = mine.filter((r) => r.machine === machine && r.model === label)
+    const graded = rs.flatMap((r) => (r.screening ? [{ r, g: r.screening }] : []))
+    const per = Object.fromEntries(
+      CATEGORIES.map((c) => {
+        const tp = graded.filter(({ g }) => g.hits.includes(c)).length
+        const fp = graded.filter(({ g }) => g.false_alarms.includes(c)).length
+        const fn = graded.filter(({ g }) => g.misses.includes(c)).length
+        return [c, { tp, fp, fn, precision: tp + fp === 0 ? null : tp / (tp + fp), recall: tp + fn === 0 ? null : tp / (tp + fn) }]
+      }),
+    )
+    // The same cases re-levelled at each risk cut: leaks (private called public), all under-calls, all over-calls.
+    const curve = SCREEN_THRESHOLDS.map((t) => {
+      const point = { t, leaks: 0, under: 0, false_alarms: 0 }
+      for (const { g } of graded) {
+        const got = compareSensitive(g.expected, JSON.stringify({ categories: g.risks }), t)!
+        if (g.expected_level === 'private' && got.predicted_level === 'public') point.leaks++
+        if (got.outcome === 'leak') point.under++
+        if (got.outcome === 'false-alarm') point.false_alarms++
+      }
+      return point
+    })
+    const cell = cells.find((c) => c.machine === machine && c.model === label && c.suite === 'sensitive')
+    const loaded = median(rs.flatMap((r) => (r.metrics?.['loaded_bytes'] !== undefined ? [r.metrics['loaded_bytes']] : [])))
+    // The composite records which stages ran for each image.
+    const stageRuns = rs.flatMap((r) => {
+      try {
+        const o = JSON.parse(r.output) as { decided_by?: string; stages?: Record<string, number> }
+        return o.decided_by ? [o as { decided_by: string; stages: Record<string, number> }] : []
+      } catch {
+        return []
+      }
+    })
+    const stages =
+      stageRuns.length === 0
+        ? null
+        : {
+            images: stageRuns.length,
+            decided_by: Object.fromEntries(['rules', 'public-signals', 'llm'].map((d) => [d, stageRuns.filter((o) => o.decided_by === d).length])),
+            ran: Object.fromEntries(
+              ['yunet', 'nsfw', 'siglip', 'ocr', 'llm'].map((n) => {
+                const ms = stageRuns.flatMap((o) => (o.stages[n] !== undefined ? [o.stages[n]!] : []))
+                return [n, { n: ms.length, median_ms: median(ms) }]
+              }),
+            ),
+          }
+    return {
+      machine,
+      model: label,
+      stale: rs.some((r) => r.stale),
+      total: rs.length,
+      errors: rs.length - graded.length,
+      exact: graded.filter(({ g }) => g.outcome === 'exact').length,
+      leaks: graded.filter(({ g }) => g.expected_level === 'private' && g.predicted_level === 'public').length,
+      private_cases: graded.filter(({ g }) => g.expected_level === 'private').length,
+      under_calls: graded.filter(({ g }) => g.outcome === 'leak').length,
+      false_alarms: graded.filter(({ g }) => g.outcome === 'false-alarm').length,
+      public_cases: graded.filter(({ g }) => g.expected_level === 'public').length,
+      /** Public cases called review or private. */
+      public_flagged: graded.filter(({ g }) => g.expected_level === 'public' && g.predicted_level !== 'public').length,
+      mean_score: rs.reduce((a, r) => a + r.score, 0) / rs.length,
+      time_ms: cell?.time_ms ?? null,
+      time_per: cell?.time_per ?? 'case',
+      memory: memoryOf(machine, label),
+      loaded_gb: loaded === null ? null : loaded / 1e9,
+      per_category: per,
+      curve,
+      stages,
+    }
+  })
+  rowsOut.sort((a, b) => a.leaks - b.leaks || b.exact - a.exact || a.false_alarms - b.false_alarms || a.model.localeCompare(b.model))
+  return {
+    categories: CATEGORIES.map((id) => ({ id, definition: DEFINITIONS[id], private: PRIVATE_CATEGORIES.includes(id) })),
+    levels: [...LEVELS],
+    thresholds: SCREEN_THRESHOLDS,
+    models: rowsOut,
+  }
+})()
+
+/**
  * The model finder: one row per model per machine with its result on every
  * task it ran, its measured memory, and its time relative to the fastest model
  * on the same suite and machine. The page filters and totals these client-side.
@@ -602,6 +701,6 @@ const finder = (() => {
 mkdirSync(DATA_OUT, { recursive: true })
 writeFileSync(
   join(DATA_OUT, 'evals.json'),
-  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, leaderboard, results, history, runs, environments, builds, corpus }),
+  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, leaderboard, results, history, runs, environments, builds, corpus }),
 )
 console.log(`${results.length} results, ${perf.length} speed rows, ${runs.length} runs → ${relative(ROOT, join(DATA_OUT, 'evals.json'))}`)

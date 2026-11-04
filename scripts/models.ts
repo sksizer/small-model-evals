@@ -19,7 +19,7 @@ export interface ModelEntry {
    * `onnx`: run in-process with transformers.js (providers/image-classifier.ts), not by Ollama.
    * `mflux`: an image editor run by the mflux CLI (providers/mflux-edit.ts), weights in
    * .cache/models/<tag>/<revision>.
-   * `local`: plain code with no weights (the perceptual hashes of providers/image-embed.ts).
+   * `local`: plain code with no weights (the perceptual hashes of providers/image-embed.ts), or a pipeline of other models (the sensitive composite, which also calls Ollama).
    */
   runtime?: 'onnx' | 'mflux' | 'local'
   /** For an ONNX or mflux model: the pinned Hugging Face commit, used as its digest. For a `local` one: the version of its code, bumped when its output could change. */
@@ -70,6 +70,11 @@ export const MODELS: ModelEntry[] = [
   { label: 'siglip2-base', tag: 'onnx-community/siglip2-base-patch16-224-ONNX', released: '2025-02', runtime: 'onnx', revision: 'ba1f3b0843f24bc5417d38e19c37b287d719b2f4', dtype: 'fp32', capability: 'image-embedding', baseline: 'SigLIP 2 base, vision tower only (~93M of 375M parameters), Apache-2.0' },
   { label: 'clip-vit-b32', tag: 'Xenova/clip-vit-base-patch32', released: '2021-01', approx: true, runtime: 'onnx', revision: '6b7c523703ae26e39be4b03774966f8571c7f523', dtype: 'fp32', capability: 'image-embedding', baseline: 'OpenAI CLIP ViT-B/32, vision tower only, MIT' },
   { label: 'clip-vit-b16', tag: 'Xenova/clip-vit-base-patch16', released: '2021-01', approx: true, runtime: 'onnx', revision: '342fdf2f67aded64d138ff074745fb4a5d2bba5f', dtype: 'fp32', capability: 'image-embedding', baseline: 'OpenAI CLIP ViT-B/16, vision tower only, MIT' },
+  // Zero-shot screening (sensitive suite): the same pinned encoders as above, now with their text towers (providers/zero-shot.ts).
+  { label: 'siglip2-base-zs', tag: 'onnx-community/siglip2-base-patch16-224-ONNX', released: '2025-02', runtime: 'onnx', revision: 'ba1f3b0843f24bc5417d38e19c37b287d719b2f4', dtype: 'fp32', capability: 'zero-shot-image-text', baseline: 'SigLIP 2 base scoring category prompts (sigmoid), both towers, Apache-2.0' },
+  { label: 'clip-vit-b16-zs', tag: 'Xenova/clip-vit-base-patch16', released: '2021-01', approx: true, runtime: 'onnx', revision: '342fdf2f67aded64d138ff074745fb4a5d2bba5f', dtype: 'fp32', capability: 'zero-shot-image-text', baseline: 'OpenAI CLIP ViT-B/16 scoring category prompts against generic negatives, both towers, MIT' },
+  // The sensitive suite's pipeline: YuNet, NSFW ViT, SigLIP, Florence-2 OCR, then qwen3.5:4b only when unsure (providers/sensitive-composite.ts).
+  { label: 'composite-qwen3.5-4b', tag: 'composite-qwen3.5-4b', released: '2026-11', runtime: 'local', revision: 'sensitive-composite-v1', capability: 'sensitive-screening' },
   // Image editors (edit suite), run by the mflux CLI, not Ollama.
   { label: 'flux2-klein-4b-q4', tag: 'mflux-community/flux2-klein-4b-mflux-q4', released: '2026-01', runtime: 'mflux', base_model: 'flux2-klein-4b', revision: '794cd159538149ad9830848508c31f0ea7088e58', dtype: 'q4', baseline: 'FLUX.2 klein 4B, 4-bit MLX build for mflux, Apache-2.0 (base black-forest-labs/FLUX.2-klein-4B)' },
   { label: 'd1-omni:600m', tag: 'd1-omni:600m', released: '2026-10', approx: true },

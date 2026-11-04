@@ -182,8 +182,63 @@ export interface Result {
   edit?: { image: string | null; judge: string | null; answers: { question: string; kind: 'changed' | 'kept'; answer: 'yes' | 'no' | null; ok: boolean }[]; preservation: { diff: number; max: number; ok: boolean } | null }
   /** For a similarity result: the model's top candidates with how they relate to the query, and the scorer's per-level numbers. */
   similarity?: { top: RankedCandidate[]; detail: SimilarityDetail | null }
+  /** For the sensitive suite: the scorer's grading of the reply. */
+  screening?: Screening | null
   /** For expected fields: what the model returned for each. */
   fields?: { field: string; want: unknown; got: unknown; ok: boolean }[] | null
+}
+
+/** The sensitive suite's categories and levels (assertions/sensitive-levels.ts). */
+export type Category = 'nudity' | 'intimate' | 'minor' | 'face' | 'id-document' | 'financial' | 'screen' | 'medical' | 'location' | 'credential' | 'document'
+export type PrivacyLevel = 'public' | 'review' | 'private'
+
+/** What assertions/sensitive.ts recorded for one result: the categories hit, missed and raised falsely, the levels, and the model's risks. */
+export interface Screening {
+  expected_level: PrivacyLevel
+  predicted_level: PrivacyLevel
+  outcome: 'exact' | 'leak' | 'false-alarm'
+  expected: Category[]
+  predicted: Category[]
+  hits: Category[]
+  misses: Category[]
+  false_alarms: Category[]
+  precision: number
+  recall: number
+  f1: number
+  risks: Partial<Record<Category, number>>
+  score: number
+}
+
+/** A sensitive-suite case's expectation: every category the image shows. */
+export const isScreening = (e: unknown): e is { categories: Category[] } =>
+  !!e && typeof e === 'object' && Array.isArray((e as { categories?: unknown }).categories)
+
+/** One model's summary on the sensitive suite (scripts/export-site.ts `screening`). */
+export interface ScreeningModel {
+  machine: string
+  model: string
+  stale: boolean
+  total: number
+  errors: number
+  exact: number
+  /** Private images called public: the owner's pass mark is zero. */
+  leaks: number
+  private_cases: number
+  /** Images called a lower level than they are. */
+  under_calls: number
+  /** Images called a higher level than they are. */
+  false_alarms: number
+  public_cases: number
+  public_flagged: number
+  mean_score: number
+  time_ms: number | null
+  time_per: TimePer
+  memory: FinderMemory | null
+  loaded_gb: number | null
+  per_category: Record<Category, { tp: number; fp: number; fn: number; precision: number | null; recall: number | null }>
+  curve: { t: number; leaks: number; under: number; false_alarms: number }[]
+  /** The composite's stage use over the images it screened. */
+  stages: { images: number; decided_by: Record<string, number>; ran: Record<string, { n: number; median_ms: number | null }> } | null
 }
 
 /** How a candidate relates to a similarity query: the case lists the first four, the rest of the pool is `other`. */
@@ -406,6 +461,7 @@ export const data = raw as unknown as {
   cells: Cell[]
   perf: Perf[]
   inproc: InProc[]
+  screening: { categories: { id: Category; definition: string; private: boolean }[]; levels: PrivacyLevel[]; thresholds: number[]; models: ScreeningModel[] } | null
   finder: { families: { id: string; title: string }[]; tasks: FinderTask[]; rows: FinderRow[] }
   leaderboard: { machine: Machine; families: LeaderFamily[] }[]
   results: Result[]

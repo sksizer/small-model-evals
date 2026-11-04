@@ -291,3 +291,6 @@
 - { id: oi-sens-sign-2fbe14d7e980e019, category: sensitive-sign, openimages: '2fbe14d7e980e019' }
 - { id: oi-sens-scene-da63faf7420d01fb, category: sensitive-scene, openimages: 'da63faf7420d01fb' }
 - { id: oi-sens-scene-4cc68acdd17395e2, category: sensitive-scene, openimages: '4cc68acdd17395e2' }
+- { id: oi-sens-intimate-fc19bcf0300d5c6f, category: sensitive-intimate, sensitive: true, openimages: 'fc19bcf0300d5c6f' }
+- { id: oi-sens-intimate-595678be621d1ee9, category: sensitive-intimate, sensitive: true, openimages: '595678be621d1ee9' }
+- { id: oi-sens-intimate-76e7b69883aba6cc, category: sensitive-intimate, sensitive: true, openimages: '76e7b69883aba6cc' }

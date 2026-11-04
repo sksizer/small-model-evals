@@ -8,7 +8,9 @@
 // editor's time and memory; or, for a similarity result, its top five
 // candidates as thumbnails with the model's score, outlined by how each
 // relates to the query (green: copy, edit or scene; amber: same class;
-// red: unrelated). Renders nothing otherwise.
+// red: unrelated); or, for a sensitive-suite result, the level it gave against
+// the expected one, chips for each category (hit, missed, false alarm) and a
+// bar for each risk the model gave. Renders nothing otherwise.
 import Boxes from './Boxes.astro'
 import Shot from './Shot.astro'
 import { show, type Result } from '../lib/data'
@@ -29,7 +31,55 @@ const edit = result.edit
 const sim = result.similarity
 const levels = sim?.detail?.levels
 const pc = (x: number) => `${Math.round(x * 100)}%`
+const screen = result.screening
+// Risks worth drawing: every expected category, and any the model put at 5% or more.
+const bars = screen ? (Object.entries(screen.risks) as [string, number][]).filter(([c, r]) => r >= 0.05 || screen.expected.includes(c as never)).sort((a, b) => b[1] - a[1]) : []
+// The composite records which stages ran for the image.
+const stages = (() => {
+  if (!screen) return null
+  try {
+    const o = JSON.parse(result.output) as { stages?: Record<string, number>; decided_by?: string }
+    return o.stages && o.decided_by ? { ms: o.stages, by: o.decided_by } : null
+  } catch {
+    return null
+  }
+})()
 ---
+
+{
+  screen && (
+    <div class="screen">
+      <p class="screen-level">
+        <span class={`pill ${screen.outcome === 'exact' ? 'pass' : 'fail'}`}>{screen.predicted_level}</span>
+        <span class="muted"> expected </span>
+        <b>{screen.expected_level}</b>
+        {screen.outcome === 'leak' && <span class="leak"> · {screen.expected_level === 'private' && screen.predicted_level === 'public' ? 'LEAK' : 'under-called'}</span>}
+        {screen.outcome === 'false-alarm' && <span class="extra-l"> · false alarm</span>}
+      </p>
+      <div class="chips">
+        {screen.hits.map((c) => <span class="chip found" title="expected and found">{c}</span>)}
+        {screen.misses.map((c) => <span class="chip missed" title="expected, not found">{c}</span>)}
+        {screen.false_alarms.map((c) => <span class="chip wrong" title="not expected, raised">✗ {c}</span>)}
+        {screen.hits.length + screen.misses.length + screen.false_alarms.length === 0 && <span class="muted">no categories, none raised</span>}
+      </div>
+      <ul class="bars">
+        {bars.map(([c, r]) => (
+          <li class={screen.expected.includes(c as never) ? 'want' : ''}>
+            <span class="bar-name">{c}</span>
+            <span class="bar"><i style={`width:${Math.round(r * 100)}%`} class={r >= 0.5 ? 'on' : ''}></i></span>
+            <span class="bar-val">{r.toFixed(2)}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="muted">
+        {m['classify_ms'] !== undefined && `${m['classify_ms'] < 10 ? m['classify_ms'].toFixed(1) : Math.round(m['classify_ms'])} ms per image`}
+        {m['rss_mb'] !== undefined && ` · ${Math.round(m['rss_mb'])} MB process memory`}
+        {m['loaded_bytes'] !== undefined && ` · ${(m['loaded_bytes'] / 1e9).toFixed(1)} GB loaded`}
+        {stages && ` · decided by ${stages.by}; stages ${Object.entries(stages.ms).map(([n, ms]) => `${n} ${ms} ms`).join(', ')}`}
+      </p>
+    </div>
+  )
+}
 
 {
   result.hits && (
@@ -160,6 +210,15 @@ const pc = (x: number) => `${Math.round(x * 100)}%`
   .judged li.ok { border-color: var(--good); }
   .judged li.bad { border-color: var(--bad); background: var(--bad-bg); }
   .judged .kind { color: var(--muted); font-size: 11px; text-transform: uppercase; margin-right: 4px; }
+  .screen-level { margin: 4px 0; font-size: 13px; }
+  .leak { color: var(--bad); font-weight: 700; }
+  .bars { list-style: none; margin: 6px 0 2px; padding: 0; font-size: 12px; }
+  .bars li { display: grid; grid-template-columns: 90px 1fr 40px; gap: 6px; align-items: center; line-height: 1.5; }
+  .bars li.want .bar-name { font-weight: 700; }
+  .bar { display: block; height: 7px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--muted); }
+  .bar i.on { background: var(--warn); }
+  .bar-val { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
   .region-sum { margin: 4px 0 6px; font-size: 13px; }
   .missed-l { color: var(--muted); }
   .extra-l { color: var(--bad, #d93025); }
