@@ -1,0 +1,8 @@
+description: "search photos: a library with shelves of books (2 relevant of 78)"
+metadata: { id: photos-library, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a library with shelves of books"
+  relevant: ["library-laukaa","library-stacks-vasconcelos"]
+  how: "judged by eye"

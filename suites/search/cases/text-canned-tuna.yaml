@@ -1,0 +1,8 @@
+description: "search text: canned tuna in water (4 relevant of 1500)"
+metadata: { id: text-canned-tuna, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "canned tuna in water"
+  relevant: ["f171986","f171988","f173709","f175158"]
+  how: "rule on the name: Fish, tuna, canned in water"

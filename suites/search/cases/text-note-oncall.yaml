@@ -1,0 +1,8 @@
+description: "search text: who is handling the on-call rota (1 relevant of 60)"
+metadata: { id: text-note-oncall, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "who is handling the on-call rota"
+  relevant: ["n06"]
+  how: "judged by reading"

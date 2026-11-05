@@ -1,0 +1,88 @@
+---
+// Model by kind for the search suite, from each result's recorded numbers (assertions/search.ts,
+// scripts/export-site.ts `searchCells`). Per kind (photos, docs, text): nDCG@10 (the score: how high the
+// relevant items rank, 1 is perfect), recall@5 (relevant items in the top five, over the most five
+// could hold) and the time to embed one item (an image, or a food or note); with the pass count (cases at
+// nDCG@10 >= 0.7). EmbeddingGemma 2 also shows its nDCG@10 at 256 dimensions. A model absent from a kind
+// cannot take that input (a text-only embedder has no photos column). Restricted licences are marked: the
+// licence filter in the model finder reads the same `permissive` flag.
+import { data, fmt, fmtTime, href, modelSlug } from '../lib/data'
+
+const KINDS = [
+  { id: 'photos', title: 'Photos by text', about: '25 queries over 78 photos' },
+  { id: 'docs', title: 'Documents by text', about: '24 queries over 44 synthetic pages, read as images' },
+  { id: 'text', title: 'Text by text', about: '15 food + 25 note queries' },
+] as const
+const machines = [...new Set(data.search.cells.map((c) => c.machine))]
+const finder = new Map(data.finder.rows.map((r) => [`${r.machine}\u0000${r.model}`, r] as const))
+const f = (x: number | null) => (x === null ? '—' : x.toFixed(2))
+const p = (x: number | null) => (x === null ? '—' : `${Math.round(x * 100)}%`)
+const tables = machines.map((machine) => {
+  const mine = data.search.cells.filter((c) => c.machine === machine)
+  const models = [...new Set(mine.map((c) => c.model))]
+  const rows = models
+    .map((model) => {
+      const cells = Object.fromEntries(mine.filter((c) => c.model === model).map((c) => [c.kind, c] as const))
+      const scored = Object.values(cells).flatMap((c) => (c.ndcg10 === null ? [] : [c.ndcg10]))
+      const mem = Math.max(...Object.values(cells).map((c) => (c.loaded_gb !== null ? c.loaded_gb : c.mem_mb !== null ? (c.mem_mb * 2 ** 20) / 1e9 : 0)))
+      return { model, cells, avg: scored.length === 0 ? 0 : scored.reduce((a, b) => a + b, 0) / scored.length, mem: mem > 0 ? mem : null, info: finder.get(`${machine}\u0000${model}`) }
+    })
+    .sort((a, b) => b.avg - a.avg)
+  return { machine, rows }
+})
+---
+
+{
+  tables.map(({ machine, rows }) => (
+    <div class="scroll">
+      {tables.length > 1 && <h3>{machine}</h3>}
+      <table class="search-table">
+        <thead>
+          <tr>
+            <th rowspan="2">Model</th>
+            {KINDS.map((k) => <th colspan="3" class="num lvl" title={k.about}>{k.title}</th>)}
+            <th rowspan="2" class="num" title="Largest memory reading while it ran: Ollama's loaded size, or the process's resident memory for an in-process model (an upper bound)">Memory</th>
+          </tr>
+          <tr>
+            {KINDS.map(() => <><th class="num" title="Mean nDCG@10: 1 means every relevant item ranks first">nDCG@10</th><th class="num" title="Relevant items in the top five, over the most five slots could hold">R@5</th><th class="num" title="Mean time to embed one item (a photo or page, or a food or note)">ms/item</th></>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr>
+              <td class="pin">
+                <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+                {r.info && !r.info.permissive && <span class="restricted" title={`Restricted licence: ${r.info.licence}. Not open for commercial use without terms.`}>{r.info.licence}</span>}
+              </td>
+              {KINDS.map((k) => {
+                const c = r.cells[k.id]
+                return c ? (
+                  <>
+                    <td class="num">
+                      <strong>{f(c.ndcg10)}</strong>
+                      <small>{c.passed}/{c.total} pass{c.stale ? ' · stale' : ''}</small>
+                      {c.ndcg10_256 !== null && <small title="nDCG@10 with the vectors cut to 256 dimensions and re-normalised (Matryoshka)">256-d {f(c.ndcg10_256)}</small>}
+                      {k.id === 'text' && Object.keys(c.by_corpus).length > 1 && <small>foods {f(c.by_corpus['foods'] ?? null)} · notes {f(c.by_corpus['notes'] ?? null)}</small>}
+                    </td>
+                    <td class="num">{p(c.r5)}</td>
+                    <td class="num">{fmtTime(c.time_ms, c.time_per)}</td>
+                  </>
+                ) : (
+                  <td colspan="3" class="num muted" title="This model does not take this input">—</td>
+                )
+              })}
+              <td class="num">{r.mem === null ? '—' : `${fmt(r.mem, 1)} GB`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ))
+}
+
+<style>
+  .search-table th.lvl { text-align: center; border-left: 1px solid var(--line); }
+  .search-table td small { display: block; color: var(--muted); font-size: 11px; line-height: 1.3; white-space: nowrap; }
+  .search-table td:nth-child(2), .search-table td:nth-child(5), .search-table td:nth-child(8) { border-left: 1px solid var(--line); }
+  .restricted { display: block; width: fit-content; margin-top: 2px; padding: 0 6px; border-radius: 999px; background: var(--warn-bg); color: var(--warn); font-size: 11px; }
+</style>

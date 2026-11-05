@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/embeddinggemma-2-ONNX",
+  "digest": "daa72c512439",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "q8",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "embedding-text-image"
+  ],
+  "default_parameters": {
+    "revision": "daa72c51243991dfcaf9f9137d2c573d8f7790c0"
+  },
+  "template_hash": ""
+}

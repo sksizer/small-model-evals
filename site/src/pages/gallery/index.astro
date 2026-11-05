@@ -9,10 +9,27 @@ const passRate = (suite: string) => {
   const rs = data.results.filter((r) => r.suite === suite)
   return rs.length === 0 ? null : rs.filter((r) => r.pass).length / rs.length
 }
+const searchSuite = data.suites.find((s) => s.id === 'search' && s.cases.length > 0)
+const searchRate = passRate('search')
 ---
 
 <Base title="Galleries" description="Every suite whose cases are images: each image beside what every model made of it — text read, tags given, a yes/no flag, or boxes drawn.">
   <div class="g-grid">
+    {
+      searchSuite && (
+        <div class="g-card">
+          <div class="g-thumbs">
+            {Object.values(data.search.items['photos'] ?? {}).slice(0, 3).map((i) => <Shot path={i.path!} alt="a photo the search suite finds by text" />)}
+          </div>
+          <h3>
+            <a href={href('/gallery/search/')}>search</a>
+          </h3>
+          <p class="muted">
+            {searchSuite.cases.length} queries (photos, pages and text) · {Math.round(100 * (searchRate ?? 0))}% of results pass
+          </p>
+        </div>
+      )
+    }
     {
       imageSuites.map((s) => {
         const rate = passRate(s.id)

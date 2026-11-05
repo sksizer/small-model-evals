@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# search: how well does an embedding model find the right thing for a typed query? Each case is one
+# query ranked against a corpus (corpora.yaml), scored by nDCG@10 (assertions/search.ts, pass at 0.7).
+# Three kinds of case, each tagged `kind`:
+#   photos  text -> photos: 25 queries over the 78 non-sensitive corpus photos. Open Images V7
+#           annotations decide what is relevant for 13 object queries ("a dog", "a bicycle"; the
+#           Commons photos Open Images does not cover were judged by eye); 12 descriptive queries
+#           ("two dogs looking out of a car window") were judged by eye.
+#   docs    text -> documents: 24 queries ("my passport", "the wifi password") over the 44 synthetic
+#           pages (cards, statements, letters, screenshots), searched AS IMAGES: no OCR, the model sees
+#           the page's pixels.
+#   text    text -> text: 15 food queries over 1500 USDA SR Legacy foods (public domain; relevance is a
+#           rule on the food's name, written in scripts/pick-search.ts) and 25 note queries over 60
+#           invented notes (CC0), several of them paraphrases.
+# Image -> image is not here: the similarity suite measures it, and the multimodal models are also
+# providers there.
+#
+# No Ollama for the image models: in-process (transformers.js, onnxruntime-node) by
+# providers/search.ts. Ollama serves the text-only embedders through /api/embed. Each provider lists the
+# `kinds` it can run (scripts/run.ts runs only those). The image-text pairs (SigLIP 2, CLIP) search
+# images only; the text-only embedders search text only; EmbeddingGemma 2, the nomic pair and Jina
+# CLIP v2 do all three. Every model uses its documented prefixes (see the provider's header).
+# EmbeddingGemma 2 also records its nDCG@10 at 256 dimensions (MRL truncation, re-normalised).
+#
+# Weights are pinned by commit. The first case of each corpus embeds the whole corpus (the provider keeps
+# the vectors for the rest of the run), so item_ms in a result is the cost per item and query_ms the
+# cost of one search over the cached vectors.
+description: search — find the right photo, page or note for a typed query
+
+prompts:
+  - '{{ query }}' # unused: the provider reads vars directly
+
+providers:
+  - { id: file://../../providers/search.ts, label: embeddinggemma2, config: { family: egemma2, kinds: [photos, docs, text], model: onnx-community/embeddinggemma-2-ONNX, revision: daa72c51243991dfcaf9f9137d2c573d8f7790c0, dtype: q8, modalities: text+image, mrl: 256 } }
+  - { id: file://../../providers/search.ts, label: embeddinggemma2-text, config: { family: egemma2, kinds: [text], model: onnx-community/embeddinggemma-2-ONNX, revision: daa72c51243991dfcaf9f9137d2c573d8f7790c0, dtype: q8, modalities: text, mrl: 256 } }
+  - { id: file://../../providers/search.ts, label: siglip2-base, config: { family: siglip, kinds: [photos, docs], model: onnx-community/siglip2-base-patch16-224-ONNX, revision: ba1f3b0843f24bc5417d38e19c37b287d719b2f4, dtype: fp32 } }
+  - { id: file://../../providers/search.ts, label: clip-vit-b16, config: { family: clip, kinds: [photos, docs], model: Xenova/clip-vit-base-patch16, revision: 342fdf2f67aded64d138ff074745fb4a5d2bba5f, dtype: fp32 } }
+  - { id: file://../../providers/search.ts, label: nomic-embed-v1.5-pair, config: { family: nomic-pair, kinds: [photos, docs, text], model: nomic-ai/nomic-embed-text-v1.5, revision: e9b6763023c676ca8431644204f50c2b100d9aab, vision_model: nomic-ai/nomic-embed-vision-v1.5, vision_revision: e3a725bce72db07ca4adb1d83da08903f3ee02f8 } }
+  - { id: file://../../providers/search.ts, label: jina-clip-v2, config: { family: jina-clip-v2, kinds: [photos, docs, text], model: jinaai/jina-clip-v2, revision: e10d47f5691d0454a0fb5d13f46f2199b74cb436, dtype: q8 } }
+  - { id: file://../../providers/search.ts, label: embeddinggemma:300m, config: { family: ollama, kinds: [text], model: 'embeddinggemma:300m', query_prefix: 'task: search result | query: ', doc_prefix: 'title: none | text: ' } }
+  - { id: file://../../providers/search.ts, label: qwen3-embedding:0.6b, config: { family: ollama, kinds: [text], model: 'qwen3-embedding:0.6b', query_prefix: "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:" } }
+  - { id: file://../../providers/search.ts, label: nomic-embed-text, config: { family: ollama, kinds: [text], model: 'nomic-embed-text:latest', query_prefix: 'search_query: ', doc_prefix: 'search_document: ' } }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  vars:
+    corpora: file://corpora.yaml
+  assert:
+    - type: javascript
+      value: file://../../assertions/search.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

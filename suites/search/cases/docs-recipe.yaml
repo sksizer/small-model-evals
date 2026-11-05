@@ -1,0 +1,8 @@
+description: "search docs: a recipe card for a loaf cake (1 relevant of 44)"
+metadata: { id: docs-recipe, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "a recipe card for a loaf cake"
+  relevant: ["recipe-card"]
+  how: "judged by eye"

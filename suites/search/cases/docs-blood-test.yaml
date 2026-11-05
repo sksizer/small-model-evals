@@ -1,0 +1,8 @@
+description: "search docs: blood test results (1 relevant of 44)"
+metadata: { id: docs-blood-test, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "blood test results"
+  relevant: ["lab-result"]
+  how: "judged by eye"

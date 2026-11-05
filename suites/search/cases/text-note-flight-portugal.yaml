@@ -1,0 +1,8 @@
+description: "search text: when does my flight to Portugal arrive (1 relevant of 60)"
+metadata: { id: text-note-flight-portugal, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "when does my flight to Portugal arrive"
+  relevant: ["n17"]
+  how: "judged by reading"

@@ -1,0 +1,8 @@
+description: "search photos: a houseplant (3 relevant of 78)"
+metadata: { id: photos-houseplant, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a houseplant"
+  relevant: ["oi-objects-2fba54286aaac20e","oi-objects-948794bfee784412","oi-objects-eccb080e57b2aac5"]
+  how: "Open Images: Houseplant"

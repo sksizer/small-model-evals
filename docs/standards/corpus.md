@@ -47,6 +47,24 @@ contain abuse material.
 - **People in ordinary photos:** fine, as published on Commons or Open Images. Faces aren't
   blurred, since several suites test finding them.
 
+## Text corpus
+
+Status: in force from 2026-11-05. It applies to every text collection a suite searches or reads (the
+search suite's notes and foods, `suites/search/corpora.yaml`), the way the rules above apply to images.
+
+- **Same licence rules.** Only CC0, public domain, or CC BY (credited). Never non-commercial,
+  no-derivatives, or share-alike: Wikipedia text (CC BY-SA) is out, whatever the topic.
+- **Our own writing is CC0.** The 60 notes of `suites/search/notes.yaml` are written for this repo and released
+  under CC0. They are invented: every person, place, number and appointment is made up, and none is
+  real personal data or taken from a real message, note or document (the "Personal data" rule above).
+- **Public-domain data is fine as is.** The USDA SR Legacy food database (`suites/food-lookup/foods.jsonl`) is
+  a US government work, public domain. Name its source wherever a subset is built from it.
+- **Relevance judgements are recorded.** A query's relevant items are judged by reading (notes), by a rule
+  written in the picking script (foods), or from annotations (Open Images for photos); the case says
+  which, so a later person can check it.
+- **No scraped corpora.** The same reason as for images: a dataset's licence and contents can't be
+  checked from a primary source.
+
 ## Changing this standard
 
 Changing a rule is the owner's decision. Record the change and its date here.

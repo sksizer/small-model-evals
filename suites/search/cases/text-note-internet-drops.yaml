@@ -1,0 +1,8 @@
+description: "search text: the internet keeps disconnecting (1 relevant of 60)"
+metadata: { id: text-note-internet-drops, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "the internet keeps disconnecting"
+  relevant: ["n55"]
+  how: "judged by reading"

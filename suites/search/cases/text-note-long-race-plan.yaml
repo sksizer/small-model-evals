@@ -1,0 +1,8 @@
+description: "search text: training plan for a long race (1 relevant of 60)"
+metadata: { id: text-note-long-race-plan, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "training plan for a long race"
+  relevant: ["n32"]
+  how: "judged by reading"

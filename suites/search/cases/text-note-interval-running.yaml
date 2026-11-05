@@ -1,0 +1,8 @@
+description: "search text: ideas for interval running (1 relevant of 60)"
+metadata: { id: text-note-interval-running, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "ideas for interval running"
+  relevant: ["n26"]
+  how: "judged by reading"

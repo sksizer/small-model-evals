@@ -20,6 +20,7 @@ import { CATEGORIES, DEFINITIONS, LEVELS, PRIVATE_CATEGORIES, type Category } fr
 import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
 import { compareSimilarity, type ExpectedSimilarity, type SimilarityDetail } from '../assertions/similarity.ts'
+import { compareSearch, type SearchDetail } from '../assertions/search.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
 import { CATALOG } from './catalog.ts'
@@ -33,7 +34,7 @@ interface CaseDef {
 }
 
 /** The vars that a person reads as the case's input, by suite. */
-const INPUT_VARS = ['note', 'log', 'request', 'item', 'image', 'input']
+const INPUT_VARS = ['note', 'log', 'request', 'item', 'image', 'input', 'query']
 
 /** A candidate in a similarity suite's pool (suites/<suite>/pool.yaml). */
 interface PoolEntry { id: string; file: string; kind: string; of?: string }
@@ -78,7 +79,17 @@ function inputOf(suite: string, vars: Record<string, unknown> = {}): { text: str
  * fields (extraction), what the model returned for each. Uses the scorers'
  * own matcher, so the view agrees with the score.
  */
-function compare(expected: unknown, absent: unknown, output: string, detail?: unknown, pool = new Map<string, PoolEntry>()) {
+function compare(expected: unknown, absent: unknown, output: string, detail?: unknown, pool = new Map<string, PoolEntry>(), corpora: Record<string, CorpusItem[]> = {}) {
+  // Search: the top candidates with whether each is relevant, shown as a thumbnail or a snippet, and the scorer's numbers.
+  if (isSearch(expected)) {
+    const items = new Map((corpora[expected.corpus] ?? []).map((i) => [i.id, i] as const))
+    return {
+      search: {
+        top: (compareSearch(expected.relevant, output) ?? []).map((t) => ({ ...t, ...(items.get(t.id)?.file ? { path: items.get(t.id)!.file } : {}), ...(items.get(t.id)?.text ? { text: items.get(t.id)!.text, title: items.get(t.id)!.title ?? null } : {}) })),
+        detail: (detail as SearchDetail | null | undefined) ?? null,
+      },
+    }
+  }
   // Similarity: the top candidates with their levels, and the per-level numbers the scorer recorded.
   if (isSimilarity(expected)) {
     const top = compareSimilarity(expected, output)
@@ -155,6 +166,18 @@ const isScreening = (e: unknown): e is { categories: Category[] } =>
 const isEdit = (e: unknown): e is ExpectedEdit =>
   !!e && typeof e === 'object' && Array.isArray((e as { changed?: unknown }).changed) && Array.isArray((e as { kept?: unknown }).kept)
 
+/** A search suite's corpora (suites/search/corpora.yaml), read from a snapshot's setup: corpus name → items. */
+interface CorpusItem { id: string; file?: string; title?: string; text?: string }
+const corporaOf = (setup: unknown): Record<string, CorpusItem[]> =>
+  ((setup as { defaultTest?: { vars?: { corpora?: unknown } } } | null)?.defaultTest?.vars?.corpora as Record<string, CorpusItem[]> | undefined) ?? {}
+
+/** What a search case expects: the relevant ids, in the named corpus (assertions/search.ts). */
+interface ExpectedSearch { relevant: string[]; corpus: string; kind: string; how: string }
+const isSearch = (e: unknown): e is ExpectedSearch =>
+  !!e && typeof e === 'object' && Array.isArray((e as { relevant?: unknown }).relevant) && typeof (e as { corpus?: unknown }).corpus === 'string'
+const searchExpected = (vars: Record<string, unknown> | undefined): ExpectedSearch | null =>
+  Array.isArray(vars?.['relevant']) ? { relevant: vars['relevant'] as string[], corpus: String(vars['corpus']), kind: String(vars['kind']), how: String(vars['how'] ?? '') } : null
+
 /** What the site shows of a case, from its definition as written. */
 function caseView(suite: string, id: string, raw: Record<string, unknown>, hash: string) {
   const c = raw as CaseDef
@@ -163,7 +186,7 @@ function caseView(suite: string, id: string, raw: Record<string, unknown>, hash:
     hash,
     description: c.description ?? '',
     input: inputOf(suite, c.vars),
-    expected: c.vars?.['expected'] ?? c.vars?.['tool'] ?? null,
+    expected: c.vars?.['expected'] ?? c.vars?.['tool'] ?? searchExpected(c.vars) ?? null,
     absent: c.vars?.['absent'] ?? null,
     instruction: typeof c.vars?.['instruction'] === 'string' ? c.vars['instruction'] : null,
     args: c.vars?.['args'] ?? null,
@@ -201,6 +224,7 @@ const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string)
   { id: 'vision', title: 'Vision understanding', blurb: 'A photo in, text or a flag out.', has: (s) => ['ocr', 'tag-image', 'nudity-flag', 'sensitive'].includes(s) },
   { id: 'regions', title: 'Regions', blurb: 'A photo in, boxes around things out.', has: (s) => s.startsWith('regions-') },
   { id: 'image', title: 'Image', blurb: 'Edit an image as told, or tell which images are alike.', has: (s) => ['edit', 'similarity'].includes(s) },
+  { id: 'search', title: 'Search', blurb: 'A typed query in, the right photo, page or note out: embedding models, ranked by nDCG@10.', has: (s) => s === 'search' },
 ]
 
 /**
@@ -225,6 +249,10 @@ const TASKS: Record<string, { label: string; about: string }> = {
   'regions-text': { label: 'Find text lines', about: 'Draw a box around every line of text.' },
   edit: { label: 'Image editing', about: 'Change an image as told, leaving the rest alone.' },
   similarity: { label: 'Image similarity', about: 'Tell copies, edits and same-scene images from the rest.' },
+  // The search suite is one suite of three kinds of case; the finder offers each kind as its own task (`search:<kind>`).
+  'search:photos': { label: 'Photo search by text', about: 'Find the photos that match a typed description, with no captions or tags.' },
+  'search:docs': { label: 'Document search by text', about: 'Find the scanned or screenshotted page a query describes, reading its pixels (no OCR step).' },
+  'search:text': { label: 'Text search', about: 'Find the food entries or notes that answer a query, including paraphrases.' },
 }
 const familyOf = (suite: string) => FAMILIES.find((f) => f.has(suite))?.id ?? 'other'
 
@@ -376,7 +404,7 @@ const results = view
         env: r.env ?? null,
         metrics: r.metrics ?? null,
         instruction: c?.instruction ?? null,
-        ...compare(c?.expected, c?.absent, r.output ?? '', r.detail, poolOf(readSnapshot(r.suite, r.suite_fp)?.setup)),
+        ...compare(c?.expected, c?.absent, r.output ?? '', r.detail, poolOf(readSnapshot(r.suite, r.suite_fp)?.setup), corporaOf(readSnapshot(r.suite, r.suite_fp)?.setup)),
       }
     }),
   )
@@ -638,6 +666,82 @@ const screening = (() => {
 })()
 
 /**
+ * What the search gallery shows for a candidate: corpus → id → the image's repo path, or a text's title and
+ * words. Every image and note; for the 1500 foods, only the ones a case calls relevant or a result ranked.
+ */
+const searchItems = (() => {
+  if (!suites.includes('search')) return {}
+  const corpora = corporaOf(currentSnapshot('search').setup)
+  const used = new Set(results.filter((r) => r.suite === 'search').flatMap((r) => (r.search?.top ?? []).map((t) => t.id)))
+  for (const c of suiteData.find((x) => x.id === 'search')?.cases ?? []) if (isSearch(c.expected)) for (const id of c.expected.relevant) used.add(id)
+  return Object.fromEntries(
+    Object.entries(corpora).map(([name, items]) => [
+      name,
+      Object.fromEntries(items.filter((i) => i.file || name !== 'foods' || used.has(i.id)).map((i) => [i.id, i.file ? { path: i.file } : { title: i.title ?? null, text: i.text ?? '' }])),
+    ]),
+  )
+})()
+
+/**
+ * The search suite's three kinds of case, scored apart: per machine, model and kind, the pass count, mean
+ * nDCG@10 and the time per item embedded (the provider's `item_ms` weighted by `items`, so the 1500 foods
+ * count for what they cost). The finder offers each kind as a task; the search tables read the numbers.
+ */
+const SEARCH_KINDS = ['photos', 'docs', 'text'] as const
+const searchKindOf = (caseId: string) => caseId.split('-')[0]!
+const mean = (xs: number[]): number | null => (xs.length === 0 ? null : xs.reduce((a, b) => a + b, 0) / xs.length)
+const searchCells = view
+  .filter((v) => v.suite === 'search')
+  .flatMap((v) =>
+    SEARCH_KINDS.flatMap((kind) => {
+      const rs = v.records.filter((r) => searchKindOf(r.case) === kind)
+      if (rs.length === 0) return []
+      const embedded = rs.filter((r) => r.metrics?.['item_ms'] !== undefined && (r.metrics['items'] ?? 0) > 0)
+      const items = embedded.reduce((a, r) => a + r.metrics!['items']!, 0)
+      const detail = (r: LedgerRecord) => r.detail as SearchDetail | undefined
+      const pick = (key: 'ndcg10' | 'r1' | 'r5' | 'r10' | 'mrr') => mean(rs.flatMap((r) => (detail(r) ? [detail(r)![key]] : [])))
+      const n256 = rs.flatMap((r) => (detail(r)?.ndcg10_256 != null ? [detail(r)!.ndcg10_256!] : []))
+      return [
+        {
+          machine: v.machine,
+          model: v.model,
+          kind,
+          run: v.run,
+          stale: v.stale,
+          passed: rs.filter((r) => r.pass).length,
+          total: rs.length,
+          mean: rs.reduce((a, r) => a + r.score, 0) / rs.length,
+          ndcg10: pick('ndcg10'),
+          r1: pick('r1'),
+          r5: pick('r5'),
+          r10: pick('r10'),
+          mrr: pick('mrr'),
+          ndcg10_256: mean(n256),
+          /** Mean nDCG@10 per corpus, for the text kind's two corpora. */
+          by_corpus: Object.fromEntries(
+            [...new Set(rs.map((r) => (ranCase(r)?.expected as { corpus?: string } | null)?.corpus ?? ''))].map((corpus) => [
+              corpus,
+              mean(rs.filter((r) => ((ranCase(r)?.expected as { corpus?: string } | null)?.corpus ?? '') === corpus).map((r) => r.score)),
+            ]),
+          ),
+          time_ms: items > 0 ? embedded.reduce((a, r) => a + r.metrics!['item_ms']! * r.metrics!['items']!, 0) / items : null,
+          time_per: (kind === 'text' ? 'item' : 'image') as 'item' | 'image',
+          query_ms: median(rs.flatMap((r) => (r.metrics?.['query_ms'] !== undefined ? [r.metrics['query_ms']] : []))),
+          load_ms: median(rs.flatMap((r) => (r.metrics?.['load_ms'] !== undefined ? [r.metrics['load_ms']] : []))),
+          mem_mb: (() => {
+            const m = rs.flatMap((r) => (r.metrics?.['rss_mb'] !== undefined ? [r.metrics['rss_mb']] : []))
+            return m.length > 0 ? Math.max(...m) : null
+          })(),
+          loaded_gb: (() => {
+            const m = rs.flatMap((r) => (r.metrics?.['loaded_bytes'] !== undefined ? [r.metrics['loaded_bytes']] : []))
+            return m.length > 0 ? Math.max(...m) / 1e9 : null
+          })(),
+        },
+      ]
+    }),
+  )
+
+/**
  * The model finder: one row per model per machine with its result on every
  * task it ran, its measured memory, and its time relative to the fastest model
  * on the same suite and machine. The page filters and totals these client-side.
@@ -645,14 +749,24 @@ const screening = (() => {
 const finder = (() => {
   const tasks = quality
     .filter((s) => cells.some((c) => c.suite === s.id))
-    .map((s) => ({ id: s.id, label: TASKS[s.id]?.label ?? s.id, about: TASKS[s.id]?.about ?? s.about, family: s.family }))
+    .flatMap((s) =>
+      // One suite, three tasks: the search suite is offered as photo, document and text search.
+      s.id === 'search'
+        ? SEARCH_KINDS.filter((k) => searchCells.some((c) => c.kind === k)).map((k) => ({ id: `search:${k}`, label: TASKS[`search:${k}`]!.label, about: TASKS[`search:${k}`]!.about, family: s.family }))
+        : [{ id: s.id, label: TASKS[s.id]?.label ?? s.id, about: TASKS[s.id]?.about ?? s.about, family: s.family }],
+    )
+  // Every cell the finder compares: a suite's, except search's (replaced by its kinds').
+  const finderCells = [
+    ...cells.filter((c) => c.suite !== 'search').map((c) => ({ ...c, task: c.suite })),
+    ...searchCells.map((c) => ({ ...c, task: `search:${c.kind}`, suite: 'search' })),
+  ]
   const fastest = new Map<string, number>()
-  for (const c of cells) {
+  for (const c of finderCells) {
     if (c.time_ms === null || !(c.time_ms > 0)) continue
-    const key = [c.machine, c.suite].join('\u0000')
+    const key = [c.machine, c.task].join('\u0000')
     fastest.set(key, Math.min(fastest.get(key) ?? Infinity, c.time_ms))
   }
-  const rows = [...new Set(cells.map((c) => [c.machine, c.model].join('\u0000')))].map((key) => {
+  const rows = [...new Set(finderCells.map((c) => [c.machine, c.model].join('\u0000')))].map((key) => {
     const [machine, label] = key.split('\u0000') as [string, string]
     const m = models.find((x) => x.label === label)
     const cat = m?.catalog ?? null
@@ -674,12 +788,12 @@ const finder = (() => {
       retired: m?.retired ?? null,
       memory: memoryOf(machine, label),
       cells: Object.fromEntries(
-        cells
+        finderCells
           .filter((c) => c.machine === machine && c.model === label)
           .map((c) => {
-            const best = fastest.get([machine, c.suite].join('\u0000'))
+            const best = fastest.get([machine, c.task].join('\u0000'))
             return [
-              c.suite,
+              c.task,
               {
                 rate: (100 * c.passed) / c.total,
                 passed: c.passed,
@@ -701,6 +815,6 @@ const finder = (() => {
 mkdirSync(DATA_OUT, { recursive: true })
 writeFileSync(
   join(DATA_OUT, 'evals.json'),
-  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, leaderboard, results, history, runs, environments, builds, corpus }),
+  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus }),
 )
 console.log(`${results.length} results, ${perf.length} speed rows, ${runs.length} runs → ${relative(ROOT, join(DATA_OUT, 'evals.json'))}`)

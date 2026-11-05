@@ -1,0 +1,8 @@
+description: "search text: pet vaccination date (1 relevant of 60)"
+metadata: { id: text-note-pet-vaccine, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "pet vaccination date"
+  relevant: ["n50"]
+  how: "judged by reading"

@@ -1,0 +1,8 @@
+description: "search photos: a mountain lake with snow-capped peaks (2 relevant of 78)"
+metadata: { id: photos-snow-lake, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a mountain lake with snow-capped peaks"
+  relevant: ["lake-sherburne","mountain-lake-dam"]
+  how: "judged by eye"

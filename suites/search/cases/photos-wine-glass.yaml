@@ -1,0 +1,8 @@
+description: "search photos: a wine glass (1 relevant of 78)"
+metadata: { id: photos-wine-glass, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a wine glass"
+  relevant: ["oi-objects-e51e3156ed41b3a8"]
+  how: "Open Images: Wine glass"

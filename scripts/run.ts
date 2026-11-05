@@ -9,6 +9,7 @@
 //
 //   bun scripts/run.ts                       all models, all suites
 //   bun scripts/run.ts --models qwen3:4b,granite4 --suites extract,classify
+//   bun scripts/run.ts --suites search --kinds docs   only the cases of one kind (a provider's `config.kinds`)
 //
 // promptfoo's raw output lands in results/runs/<timestamp>/ (not committed);
 // the records go to results/ledger/, and results/summary.md is rewritten.
@@ -36,19 +37,22 @@ import { summarize } from './summarize.ts'
 const PROMPTFOO = `promptfoo@${PROMPTFOO_VERSION}`
 
 const { values } = parseArgs({
-  options: { models: { type: 'string' }, suites: { type: 'string' } },
+  options: { models: { type: 'string' }, suites: { type: 'string' }, kinds: { type: 'string' } },
 })
 const pick = (list: string | undefined) => (list ? new Set(list.split(',')) : undefined)
 const onlyModels = pick(values.models)
 const onlySuites = pick(values.suites)
+const onlyKinds = pick(values.kinds)
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-// The model labels each suite's config lists.
-async function suiteLabels(suite: string): Promise<Set<string>> {
+// The model labels each suite's config lists, with the case kinds a provider limits itself to
+// (`config.kinds`, matched against each case's `metadata.kind`): a model that cannot take every
+// kind of case in a suite runs only its own. No `kinds` means every case.
+async function suiteLabels(suite: string): Promise<Map<string, string[] | null>> {
   const text = await Bun.file(join(SUITES_DIR, suite, 'promptfooconfig.yaml')).text()
-  const config = Bun.YAML.parse(text) as { providers: { label: string }[] }
-  return new Set(config.providers.map((p) => p.label))
+  const config = Bun.YAML.parse(text) as { providers: { label: string; config?: { kinds?: string[] } }[] }
+  return new Map(config.providers.map((p) => [p.label, p.config?.kinds ?? null] as const))
 }
 
 async function unloadAll(): Promise<void> {
@@ -89,55 +93,59 @@ for (const model of MODELS.filter((m) => !onlyModels || onlyModels.has(m.label))
   else if (model.runtime === 'mflux') freezeMfluxModel(model.tag, model.revision!, model.dtype ?? '', model.base_model ?? '')
   else await freezeModel(model.tag, digest)
   for (const suite of suites.filter((s) => labels.get(s)!.has(model.label))) {
-    // Unload before every suite, not just every model: a model kept loaded
-    // through the quality suites drifted (slower, larger) by the time perf
-    // measured it (first run, 2026-10-31).
-    await unloadAll()
-    const out = join(outDir, suite, `${model.label.replace(/[:/]/g, '_')}.json`)
-    mkdirSync(join(outDir, suite), { recursive: true })
-    console.log(`\n=== ${model.label} · ${suite}`)
-    const result = runner.run(
-      [
-        '-y', PROMPTFOO, 'eval',
-        // npx runs from the package root, not `cwd`, so the path is absolute.
-        '-c', join(SUITES_DIR, suite, 'promptfooconfig.yaml'),
-        '--filter-providers', `^${escape(model.label)}$`,
-        '--max-concurrency', '1',
-        '--no-cache',
-        '--no-progress-bar',
-        '--no-table',
-        '-o', out,
-      ],
-      {
-        cwd: join(SUITES_DIR, suite),
-        env: {
-          ...process.env,
-          PROMPTFOO_DISABLE_TELEMETRY: '1',
-          PROMPTFOO_DISABLE_UPDATE: '1',
-          // A case that runs longer fails as an error instead of stalling the
-          // run: qwen3.5:4b on workout hung for two hours on 2026-11-01.
-          PROMPTFOO_EVAL_TIMEOUT_MS: String(5 * 60_000),
+    // One promptfoo eval per kind of case the provider takes (one eval with every case when it lists none).
+    for (const kind of (labels.get(suite)!.get(model.label) ?? [null]).filter((k) => !onlyKinds || (k !== null && onlyKinds.has(k)))) {
+      // Unload before every suite, not just every model: a model kept loaded
+      // through the quality suites drifted (slower, larger) by the time perf
+      // measured it (first run, 2026-10-31).
+      await unloadAll()
+      const out = join(outDir, suite, `${model.label.replace(/[:/]/g, '_')}${kind ? `.${kind}` : ''}.json`)
+      mkdirSync(join(outDir, suite), { recursive: true })
+      console.log(`\n=== ${model.label} · ${suite}${kind ? ` · ${kind}` : ''}`)
+      const result = runner.run(
+        [
+          '-y', PROMPTFOO, 'eval',
+          // npx runs from the package root, not `cwd`, so the path is absolute.
+          '-c', join(SUITES_DIR, suite, 'promptfooconfig.yaml'),
+          '--filter-providers', `^${escape(model.label)}$`,
+          ...(kind ? ['--filter-metadata', `kind=${kind}`] : []),
+          '--max-concurrency', '1',
+          '--no-cache',
+          '--no-progress-bar',
+          '--no-table',
+          '-o', out,
+        ],
+        {
+          cwd: join(SUITES_DIR, suite),
+          env: {
+            ...process.env,
+            PROMPTFOO_DISABLE_TELEMETRY: '1',
+            PROMPTFOO_DISABLE_UPDATE: '1',
+            // A case that runs longer fails as an error instead of stalling the
+            // run: qwen3.5:4b on workout hung for two hours on 2026-11-01.
+            PROMPTFOO_EVAL_TIMEOUT_MS: String(5 * 60_000),
+          },
         },
-      },
-    )
-    // promptfoo exits 100 when a test fails, which is a result, not an error.
-    if (result.exitCode !== 0 && result.exitCode !== 100) {
-      failures.push(`${model.label} · ${suite}: exit ${result.exitCode}`)
-      continue
+      )
+      // promptfoo exits 100 when a test fails, which is a result, not an error.
+      if (result.exitCode !== 0 && result.exitCode !== 100) {
+        failures.push(`${model.label} · ${suite}${kind ? ` · ${kind}` : ''}: exit ${result.exitCode}`)
+        continue
+      }
+      append(
+        recordsFromPromptfoo(out, {
+          run,
+          at: new Date().toISOString(),
+          machine: host,
+          ollama,
+          promptfoo: PROMPTFOO_VERSION,
+          model: { label: model.label, tag: model.tag, digest },
+          suite,
+          suite_fp: fingerprints.get(suite)!,
+          env,
+        }),
+      )
     }
-    append(
-      recordsFromPromptfoo(out, {
-        run,
-        at: new Date().toISOString(),
-        machine: host,
-        ollama,
-        promptfoo: PROMPTFOO_VERSION,
-        model: { label: model.label, tag: model.tag, digest },
-        suite,
-        suite_fp: fingerprints.get(suite)!,
-        env,
-      }),
-    )
   }
 }
 await unloadAll()
