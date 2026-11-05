@@ -1,0 +1,8 @@
+description: "search text: cheddar cheese (4 relevant of 1500)"
+metadata: { id: text-cheddar, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "cheddar cheese"
+  relevant: ["f170899","f171292","f171295","f173414"]
+  how: "rule on the name: Cheese, cheddar"

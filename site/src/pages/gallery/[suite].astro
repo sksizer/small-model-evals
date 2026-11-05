@@ -7,7 +7,8 @@ import SimilarityTable from '../../components/SimilarityTable.astro'
 import { data, describeExpected, fmtTime, href, imageSuites, isEdit, isRegions, isScreening, isSimilarity, modelSlug, show, type Suite } from '../../lib/data'
 
 export function getStaticPaths() {
-  return imageSuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
+  // The search suite has its own gallery page (gallery/search.astro): its cases are queries, not images.
+  return imageSuites.filter((s) => s.id !== 'search').map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
 }
 
 // Each image beside what every model read from it: the expected strings or

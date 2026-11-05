@@ -1,0 +1,8 @@
+description: "search photos: a chair (3 relevant of 78)"
+metadata: { id: photos-chair, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a chair"
+  relevant: ["oi-objects-2b2c4fe6d63a13e4","oi-objects-5ea13fbbd1a1474f","oi-objects-ee47ccab89a75d0d"]
+  how: "Open Images: Chair"

@@ -1,0 +1,8 @@
+description: "search text: hard-boiled egg (1 relevant of 1500)"
+metadata: { id: text-hard-boiled-egg, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "hard-boiled egg"
+  relevant: ["f173424"]
+  how: "rule on the name: egg, hard-boiled"

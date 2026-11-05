@@ -1,0 +1,8 @@
+description: "search text: how do I get to Scotland by train (1 relevant of 60)"
+metadata: { id: text-note-train-scotland, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "how do I get to Scotland by train"
+  relevant: ["n19"]
+  how: "judged by reading"

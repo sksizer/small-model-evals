@@ -1,0 +1,19 @@
+{
+  "tag": "embeddinggemma:300m",
+  "digest": "85462619ee72",
+  "engine": "default",
+  "format": "gguf",
+  "family": "gemma3",
+  "quantization": "BF16",
+  "parameter_size": "307.58M",
+  "parameter_count": 307581696,
+  "context_length": 2048,
+  "capabilities": [
+    "embedding"
+  ],
+  "default_parameters": {
+    "num_batch": "2048",
+    "num_ctx": "2048"
+  },
+  "template_hash": "b507b9c2f6ca"
+}

@@ -1,0 +1,8 @@
+description: "search text: what goes in the lentil soup (1 relevant of 60)"
+metadata: { id: text-note-lentil-soup, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "what goes in the lentil soup"
+  relevant: ["n09"]
+  how: "judged by reading"

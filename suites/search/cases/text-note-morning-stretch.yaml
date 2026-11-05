@@ -1,0 +1,8 @@
+description: "search text: stretching routine for mornings (1 relevant of 60)"
+metadata: { id: text-note-morning-stretch, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "stretching routine for mornings"
+  relevant: ["n31"]
+  how: "judged by reading"

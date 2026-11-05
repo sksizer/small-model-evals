@@ -1,0 +1,8 @@
+description: "search text: swimming workout (1 relevant of 60)"
+metadata: { id: text-note-swimming, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "swimming workout"
+  relevant: ["n27"]
+  how: "judged by reading"

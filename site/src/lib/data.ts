@@ -182,6 +182,8 @@ export interface Result {
   edit?: { image: string | null; judge: string | null; answers: { question: string; kind: 'changed' | 'kept'; answer: 'yes' | 'no' | null; ok: boolean }[]; preservation: { diff: number; max: number; ok: boolean } | null }
   /** For a similarity result: the model's top candidates with how they relate to the query, and the scorer's per-level numbers. */
   similarity?: { top: RankedCandidate[]; detail: SimilarityDetail | null }
+  /** For a search result: the model's top five with whether each is relevant, and the scorer's numbers. */
+  search?: { top: SearchCandidate[]; detail: SearchDetail | null }
   /** For the sensitive suite: the scorer's grading of the reply. */
   screening?: Screening | null
   /** For expected fields: what the model returned for each. */
@@ -239,6 +241,63 @@ export interface ScreeningModel {
   curve: { t: number; leaks: number; under: number; false_alarms: number }[]
   /** The composite's stage use over the images it screened. */
   stages: { images: number; decided_by: Record<string, number>; ran: Record<string, { n: number; median_ms: number | null }> } | null
+}
+
+/** One ranked candidate of a search result: a corpus image (`path`) or text (`text`, with its `title`). */
+export interface SearchCandidate {
+  id: string
+  score: number
+  relevant: boolean
+  path?: string
+  text?: string
+  title?: string | null
+}
+
+/** What assertions/search.ts records per case. */
+export interface SearchDetail {
+  kind: string
+  ndcg10: number
+  r1: number
+  r5: number
+  r10: number
+  mrr: number
+  ndcg10_256: number | null
+  relevant: number
+}
+
+/** A search case's expectation: the relevant candidate ids in a named corpus. */
+export interface ExpectedSearch {
+  relevant: string[]
+  corpus: string
+  kind: string
+  how: string
+}
+export const isSearch = (e: unknown): e is ExpectedSearch =>
+  !!e && typeof e === 'object' && Array.isArray((e as { relevant?: unknown }).relevant) && typeof (e as { corpus?: unknown }).corpus === 'string'
+
+/** One model's search numbers for one kind of case (scripts/export-site.ts `searchCells`). */
+export interface SearchCell {
+  machine: string
+  model: string
+  kind: 'photos' | 'docs' | 'text'
+  run: string
+  stale: boolean
+  passed: number
+  total: number
+  mean: number
+  ndcg10: number | null
+  r1: number | null
+  r5: number | null
+  r10: number | null
+  mrr: number | null
+  ndcg10_256: number | null
+  by_corpus: Record<string, number | null>
+  time_ms: number | null
+  time_per: TimePer
+  query_ms: number | null
+  load_ms: number | null
+  mem_mb: number | null
+  loaded_gb: number | null
 }
 
 /** How a candidate relates to a similarity query: the case lists the first four, the rest of the pool is `other`. */
@@ -343,6 +402,7 @@ export const SAME_THING: Level[] = ['copy', 'edit', 'scene']
 
 /** A case's expectation in a few words: a regions case as its box count and labels, anything else as JSON. */
 export const describeExpected = (e: unknown): string => {
+  if (isSearch(e)) return `${e.relevant.length} relevant${e.how ? ` · ${e.how}` : ''}`
   if (isSimilarity(e)) return LEVELS.flatMap((l) => (e[l]?.length ? [`${e[l]!.length} ${l}`] : [])).join(', ')
   if (isEdit(e)) return `${e.changed.length} changed, ${e.kept.length} kept${e.region ? ', edit confined to a region' : ''}: ${[...e.changed, ...e.kept].join(' ')}`
   if (!isRegions(e)) return show(e)
@@ -462,6 +522,7 @@ export const data = raw as unknown as {
   perf: Perf[]
   inproc: InProc[]
   screening: { categories: { id: Category; definition: string; private: boolean }[]; levels: PrivacyLevel[]; thresholds: number[]; models: ScreeningModel[] } | null
+  search: { kinds: ('photos' | 'docs' | 'text')[]; cells: SearchCell[]; items: Record<string, Record<string, { path?: string; title?: string | null; text?: string }>> }
   finder: { families: { id: string; title: string }[]; tasks: FinderTask[]; rows: FinderRow[] }
   leaderboard: { machine: Machine; families: LeaderFamily[] }[]
   results: Result[]

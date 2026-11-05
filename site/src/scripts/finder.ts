@@ -158,7 +158,7 @@ function line(r: FinderRow, s: State, f: ReturnType<typeof figures>): string {
     .map((t) => {
       const c = r.cells[t]!
       const rate = Math.round(c.rate)
-      return `<td class="heat ${tone(rate)}"><a href="${base}/results/?suite=${encodeURIComponent(t)}&model=${encodeURIComponent(r.model)}">${rate}%</a><small>${c.passed}/${c.total} · ${fmtTime(c.time_ms, c.time_per)}${c.stale ? ' · stale' : ''}</small></td>`
+      return `<td class="heat ${tone(rate)}"><a href="${base}/results/?suite=${encodeURIComponent(t.split(':')[0]!)}&model=${encodeURIComponent(r.model)}">${rate}%</a><small>${c.passed}/${c.total} · ${fmtTime(c.time_ms, c.time_per)}${c.stale ? ' · stale' : ''}</small></td>`
     })
     .join('')
   const speed = f.speed === null ? '<span class="muted">—</span>' : `×${fmt(f.speed, 1)}`

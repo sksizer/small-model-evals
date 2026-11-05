@@ -1,0 +1,8 @@
+description: "search text: boiled lentils (2 relevant of 1500)"
+metadata: { id: text-cooked-lentils, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "boiled lentils"
+  relevant: ["f172421","f175254"]
+  how: "rule on the name: Lentils, ... cooked, boiled"

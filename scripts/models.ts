@@ -75,6 +75,13 @@ export const MODELS: ModelEntry[] = [
   { label: 'clip-vit-b16-zs', tag: 'Xenova/clip-vit-base-patch16', released: '2021-01', approx: true, runtime: 'onnx', revision: '342fdf2f67aded64d138ff074745fb4a5d2bba5f', dtype: 'fp32', capability: 'zero-shot-image-text', baseline: 'OpenAI CLIP ViT-B/16 scoring category prompts against generic negatives, both towers, MIT' },
   // The sensitive suite's pipeline: YuNet, NSFW ViT, SigLIP, Florence-2 OCR, then qwen3.5:4b only when unsure (providers/sensitive-composite.ts).
   { label: 'composite-qwen3.5-4b', tag: 'composite-qwen3.5-4b', released: '2026-11', runtime: 'local', revision: 'sensitive-composite-v1', capability: 'sensitive-screening' },
+  // Search (search suite): embedding models. EmbeddingGemma 2 and the rivals run in-process (providers/search.ts); the Ollama ones through /api/embed.
+  { label: 'embeddinggemma2', tag: 'onnx-community/embeddinggemma-2-ONNX', released: '2026-09', runtime: 'onnx', revision: 'daa72c51243991dfcaf9f9137d2c573d8f7790c0', dtype: 'q8', capability: 'embedding-text-image' },
+  { label: 'embeddinggemma2-text', tag: 'onnx-community/embeddinggemma-2-ONNX', released: '2026-09', runtime: 'onnx', revision: 'daa72c51243991dfcaf9f9137d2c573d8f7790c0', dtype: 'q8', capability: 'embedding-text' },
+  { label: 'nomic-embed-v1.5-pair', tag: 'nomic-ai/nomic-embed-vision-v1.5', released: '2024-06', runtime: 'onnx', revision: 'e3a725bce72db07ca4adb1d83da08903f3ee02f8', dtype: 'fp32', capability: 'embedding-text-image', baseline: 'nomic-embed-text-v1.5 + nomic-embed-vision-v1.5, one space, Apache-2.0: the open text+image rival' },
+  { label: 'jina-clip-v2', tag: 'jinaai/jina-clip-v2', released: '2024-10', runtime: 'onnx', revision: 'e10d47f5691d0454a0fb5d13f46f2199b74cb436', dtype: 'q8', capability: 'embedding-text-image', baseline: 'Jina CLIP v2, 865M: the strongest restricted-licence (CC BY-NC 4.0) text+image rival' },
+  { label: 'embeddinggemma:300m', tag: 'embeddinggemma:300m', released: '2025-07', baseline: 'EmbeddingGemma 1 (Gemma terms), the text-only yardstick for EmbeddingGemma 2' },
+  { label: 'qwen3-embedding:0.6b', tag: 'qwen3-embedding:0.6b', released: '2025-06', baseline: 'Qwen3-Embedding 0.6B (Apache-2.0), the open text-embedding yardstick' },
   // Image editors (edit suite), run by the mflux CLI, not Ollama.
   { label: 'flux2-klein-4b-q4', tag: 'mflux-community/flux2-klein-4b-mflux-q4', released: '2026-01', runtime: 'mflux', base_model: 'flux2-klein-4b', revision: '794cd159538149ad9830848508c31f0ea7088e58', dtype: 'q4', baseline: 'FLUX.2 klein 4B, 4-bit MLX build for mflux, Apache-2.0 (base black-forest-labs/FLUX.2-klein-4B)' },
   { label: 'd1-omni:600m', tag: 'd1-omni:600m', released: '2026-10', approx: true },

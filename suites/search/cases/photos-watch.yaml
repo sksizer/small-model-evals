@@ -1,0 +1,8 @@
+description: "search photos: a wrist watch (2 relevant of 78)"
+metadata: { id: photos-watch, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a wrist watch"
+  relevant: ["oi-find-149a74e86e8161a5","oi-find-66a342dcdafc7607"]
+  how: "Open Images: Watch"

@@ -1,0 +1,8 @@
+description: "search photos: a guitar (2 relevant of 78)"
+metadata: { id: photos-guitar, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a guitar"
+  relevant: ["oi-find-29de4e35add89b69","oi-find-c4d62e55691ed1e4"]
+  how: "Open Images: Guitar"

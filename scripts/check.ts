@@ -11,7 +11,10 @@
 //   names a corpus image the manifest does not list;
 // - a suite's candidate pool (suites/<suite>/pool.yaml) names a file that is
 //   missing, a corpus image the manifest does not list, or a case's query or
-//   expected id that is not in the pool.
+//   expected id that is not in the pool;
+// - a suite's search corpora (suites/<suite>/corpora.yaml) name an image file that is
+//   missing, not in the manifest or marked sensitive, or a case's relevant id is not
+//   in its corpus.
 //
 // - a corpus image's licence is not one docs/standards/corpus.md allows (CC0,
 //   public domain, CC BY; Open Images exactly CC BY 2.0; a derived copy must
@@ -126,6 +129,30 @@ for (const suite of readdirSync(SUITES_DIR)) {
     for (const id of [vars?.query, ...Object.values(vars?.expected ?? {}).flat()]) {
       if (typeof id === 'string' && !ids.has(id)) problems.push(`${suite}/${c.id}: ${id} is not in pool.yaml`)
     }
+  }
+}
+
+// Search corpora (the search suite): image files exist, are in the manifest and are never marked sensitive;
+// every case's relevant ids resolve in its corpus.
+for (const suite of readdirSync(SUITES_DIR)) {
+  const path = join(SUITES_DIR, suite, 'corpora.yaml')
+  if (!existsSync(path)) continue
+  const corpora = Bun.YAML.parse(readFileSync(path, 'utf8')) as Record<string, { id: string; file?: string }[]>
+  const sensitive = new Set(manifest.filter((m) => m.sensitive).map((m) => `corpus/${m.file}`))
+  for (const [name, items] of Object.entries(corpora)) {
+    for (const it of items) {
+      if (!it.file) continue
+      if (!existsSync(join(ROOT, it.file))) problems.push(`${suite}/corpora.yaml: ${name}/${it.id}: ${it.file} is missing`)
+      if (sensitive.has(it.file)) problems.push(`${suite}/corpora.yaml: ${name}/${it.id}: a sensitive image must not be searched`)
+      const m = /^corpus\/(images\/[^/]+)$/.exec(it.file)
+      if (m && !listed.has(m[1]!)) problems.push(`${suite}/corpora.yaml: ${name}/${it.id}: ${m[1]} is not in corpus/manifest.json`)
+    }
+  }
+  for (const c of loadCases(suite)) {
+    const vars = c.def['vars'] as { corpus?: string; relevant?: string[] } | undefined
+    const ids = new Set((corpora[vars?.corpus ?? ''] ?? []).map((i) => i.id))
+    if (ids.size === 0) problems.push(`${suite}/${c.id}: corpus ${vars?.corpus} is not in corpora.yaml`)
+    for (const id of vars?.relevant ?? []) if (!ids.has(id)) problems.push(`${suite}/${c.id}: relevant id ${id} is not in the ${vars?.corpus} corpus`)
   }
 }
 
