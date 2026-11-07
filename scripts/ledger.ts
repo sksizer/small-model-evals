@@ -431,7 +431,17 @@ export function latest(records = readLedger()): Latest[] {
   }
   return [...groups.values()].map((rs) => {
     const first = rs[0]!
-    const active = Object.keys(now(first.suite)?.cases ?? {})
+    const cur = now(first.suite)
+    // A provider that lists `config.kinds` takes only the cases of those kinds (scripts/run.ts runs one eval per
+    // kind), so cases of other kinds are not "missing" for it.
+    const provider = (cur?.setup as { providers?: { label?: string; config?: { kinds?: string[] } }[] } | undefined)?.providers?.find(
+      (p) => p.label === first.model.label,
+    )
+    const kinds = provider?.config?.kinds
+    const kindOf = (def: Record<string, unknown>) => (def['metadata'] as { kind?: string } | undefined)?.kind
+    const active = Object.entries(cur?.cases ?? {})
+      .filter(([, c]) => !kinds || kinds.includes(kindOf(c.def) ?? ''))
+      .map(([id]) => id)
     const chosen: LedgerRecord[] = []
     const missing: string[] = []
     let stale = false
