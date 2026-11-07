@@ -21,11 +21,14 @@ import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
 import { compareSimilarity, type ExpectedSimilarity, type SimilarityDetail } from '../assertions/similarity.ts'
 import { compareSearch, type SearchDetail } from '../assertions/search.ts'
-import { ENV_DIR, MODEL_DIR } from './env.ts'
+import { ENV_DIR, MODEL_DIR, type Environment } from './env.ts'
+import { readConditions, type RunConditions } from './conditions.ts'
+import { ALL_CLASSES, describe } from './machine.ts'
+import { TIGHT, fitOf, requirementOf, type FitStatus } from './fit.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
 import { CATALOG } from './catalog.ts'
 import { MODELS, ageMonths, skipReason } from './models.ts'
-import { ROOT, SCOPE, SUITES_DIR, currentSnapshot, latest, loadCases, readLedger, readSnapshot, type LedgerRecord } from './ledger.ts'
+import { RESULTS_DIR, ROOT, SCOPE, SUITES_DIR, currentSnapshot, latest, loadCases, readLedger, readSnapshot, type LedgerRecord } from './ledger.ts'
 
 interface CaseDef {
   description?: string
@@ -212,11 +215,17 @@ const CORPUS_REL = SCOPE === 'private' ? 'private/corpus' : 'corpus'
 
 const records = readLedger()
 const view = latest(records)
+
+/** The conditions each run was taken under (results/conditions/<run>.json), by run. */
+const conditionsByRun = new Map(readConditions(join(RESULTS_DIR, 'conditions')).map((rc: RunConditions) => [rc.run, rc] as const))
+/** Why an eval of one model and suite in one run was taken on a busy machine; empty when clean or not recorded. */
+const busyOf = (run: string, model: string, suite: string): string[] => [...new Set((conditionsByRun.get(run)?.evals ?? []).filter((e) => e.model === model && e.suite === suite).flatMap((e) => e.flags))]
 const suites = readdirSync(SUITES_DIR).sort()
 
 /**
  * The task families the site groups quality suites by (leaderboard sections), in
- * display order. The one place that says which suite belongs where: a suite no
+ * display order. These are for reading results; what a run selects is the suites'
+ * categories in scripts/plan.ts (SUITE_META). The one place that says which suite belongs where: a suite no
  * family claims lands in `other`.
  */
 const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string) => boolean }[] = [
@@ -339,6 +348,7 @@ const inproc = view
       load_ms: median(metrics('load_ms')),
       /** The largest reading: `rss` is the whole process's resident memory (an upper bound for the model), `peak` the editor's own peak. */
       mem_mb: mem.length > 0 ? Math.max(...mem) : null,
+      busy: busyOf(v.run, v.model, v.suite),
       mem_kind: peak.length > 0 ? ('peak' as const) : ('rss' as const),
     }
   })
@@ -366,6 +376,7 @@ const perf = view
         embeds_per_s: median(rs.map((r) => metric(r, 'embeds_per_s'))),
         loaded_gb: loaded === null ? null : loaded / 1e9,
         gpu_pct: loaded && vram !== null ? (100 * vram) / loaded : null,
+        busy: busyOf(v.run, v.model, v.suite),
       }
     })
   })
@@ -433,15 +444,51 @@ const runs = [...runMap]
     run,
     at: rs.map((r) => r.at).sort()[0]!,
     machine: rs[0]!.machine.key,
+    class: describe(rs[0]!.machine).class,
     ollama: rs[0]!.ollama,
     promptfoo: rs[0]!.promptfoo,
     envs: [...new Set(rs.map((r) => r.env).filter((e): e is string => !!e))],
     models: [...new Set(rs.map((r) => r.model.label))].sort(),
     suites: [...new Set(rs.map((r) => r.suite))].sort(),
     records: rs.length,
+    // How the machine was doing around each eval of the run; null for runs made before conditions were recorded.
+    conditions: (() => {
+      const c = conditionsByRun.get(run)
+      return c ? { evals: c.evals.length, flagged: c.evals.filter((e) => e.flags.length > 0).map((e) => ({ model: e.model, suite: e.suite, flags: e.flags })), first: c.evals[0]?.start ?? null } : null
+    })(),
   }))
 
-const machines = [...new Map(records.map((r) => [r.machine.key, r.machine])).values()]
+/** Every frozen environment and model build, keyed by hash and digest. */
+const frozen = (dir: string) =>
+  existsSync(dir)
+    ? Object.fromEntries(
+        readdirSync(dir)
+          .filter((f) => f.endsWith('.json'))
+          .map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(join(dir, f), 'utf8')) as unknown]),
+      )
+    : {}
+const environments = frozen(ENV_DIR)
+const builds = frozen(MODEL_DIR)
+
+/**
+ * Machines, newest record per key, with the class, accelerator and memory budget filled in: from
+ * the record when it has them, else derived (scripts/machine.ts), with the budget read back from the
+ * run's frozen environment when that has one (Metal's measured working set).
+ */
+const machines = [
+  ...new Map(
+    records.map((r) => {
+      const envBudget = r.env ? (environments[r.env] as Environment | undefined)?.hardware.gpu_budget_mib : undefined
+      return [r.machine.key, describe({ ...r.machine, budget_gib: r.machine.budget_gib ?? (envBudget ? envBudget / 1024 : undefined) } as typeof r.machine)] as const
+    }),
+  ).values(),
+]
+const classOf = new Map(machines.map((m) => [m.key, m.class]))
+
+/** A model's fit on every class of machine: its need against each class's nominal budget (scripts/fit.ts). */
+const fitsOf = (need: ReturnType<typeof requirementOf>, ranClasses: string[] = []): Record<string, FitStatus> =>
+  Object.fromEntries(ALL_CLASSES.map((c) => [c.class, fitOf(need, c.budget_gib, c.spill_gib, ranClasses.includes(c.class)).status]))
+
 const models = [...new Map(records.map((r) => [r.model.label, r.model])).values()]
   .sort((a, b) => a.label.localeCompare(b.label))
   .map((m) => {
@@ -465,6 +512,10 @@ const models = [...new Map(records.map((r) => [r.model.label, r.model])).values(
       baseline: entry?.baseline ?? null,
       catalog: CATALOG[m.label] ?? null,
       retired: entry ? skipReason(entry) : 'no longer in scripts/models.ts',
+      ...(() => {
+        const need = requirementOf(m.label, view)
+        return { need, fits: fitsOf(need, [...new Set(view.filter((v) => v.model === m.label).map((v) => v.class))]) }
+      })(),
     }
   })
 
@@ -545,17 +596,6 @@ for (const path of new Set([...usedBy.keys(), ...corpus.map((m) => m.path), ...o
   copyFileSync(join(ROOT, path), to)
 }
 
-/** Every frozen environment and model build, keyed by hash and digest. */
-const frozen = (dir: string) =>
-  existsSync(dir)
-    ? Object.fromEntries(
-        readdirSync(dir)
-          .filter((f) => f.endsWith('.json'))
-          .map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(join(dir, f), 'utf8')) as unknown]),
-      )
-    : {}
-const environments = frozen(ENV_DIR)
-const builds = frozen(MODEL_DIR)
 
 /** Licences anyone may use commercially without asking: Apache, MIT, BSD, ISC, CC0 and the like. */
 const PERMISSIVE = /^(apache|mit|bsd|isc|cc0|unlicense|zlib)\b/i
@@ -787,6 +827,10 @@ const finder = (() => {
       baseline: m?.baseline ?? null,
       retired: m?.retired ?? null,
       memory: memoryOf(machine, label),
+      ...(() => {
+        const need = requirementOf(label, view, classOf.get(machine))
+        return { need, fits: fitsOf(need, [classOf.get(machine)!]) }
+      })(),
       cells: Object.fromEntries(
         finderCells
           .filter((c) => c.machine === machine && c.model === label)
@@ -815,6 +859,6 @@ const finder = (() => {
 mkdirSync(DATA_OUT, { recursive: true })
 writeFileSync(
   join(DATA_OUT, 'evals.json'),
-  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus }),
+  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, classes: ALL_CLASSES, tight: TIGHT, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus }),
 )
 console.log(`${results.length} results, ${perf.length} speed rows, ${runs.length} runs → ${relative(ROOT, join(DATA_OUT, 'evals.json'))}`)

@@ -2,12 +2,15 @@
 // would run, downloads the pinned weights of the mflux image editors, and
 // says what is missing. Safe to re-run: it skips what is already there.
 //
-//   bun scripts/setup.ts                         every model the runner would run
+//   bun scripts/setup.ts                         every model the runner would run here
 //   bun scripts/setup.ts --models qwen3.5:4b     a subset
+//   bun scripts/setup.ts --category vision,search --profile nvidia-24g   what a profile or category needs
 //   bun scripts/setup.ts --dry-run               report only, change nothing
 //
-// Models older than the age limit (scripts/models.ts) are skipped, as the
-// runner skips them. ONNX models need no setup: transformers.js and
+// It takes the same selection flags as scripts/run.ts and the same memory check
+// (scripts/plan.ts): a model that will not fit this machine is not pulled
+// (`--force` pulls it anyway). Models older than the age limit
+// (scripts/models.ts) are skipped, as the runner skips them. ONNX models need no setup: transformers.js and
 // providers/onnx-detector.ts download their pinned weights on first use, into
 // the Hugging Face cache and .cache/models/.
 //
@@ -19,14 +22,14 @@ import { existsSync, mkdirSync, renameSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { parseArgs } from 'node:util'
 import { streamRunner } from '@osdlc/command-seam'
-import { MODELS, skipReason, type ModelEntry } from './models.ts'
 import { ROOT } from './ledger.ts'
+import { machine } from './machine.ts'
+import { buildPlan, printPlan, SELECTION_OPTIONS, selectionOf } from './plan.ts'
 import { mfluxProblem, mfluxWeights, MFLUX_VERSION } from './mflux.ts'
 
 const OLLAMA = process.env['OLLAMA_BASE_URL'] ?? 'http://localhost:11434'
 
-const { values } = parseArgs({ options: { models: { type: 'string' }, 'dry-run': { type: 'boolean' } } })
-const only = values.models ? new Set(values.models.split(',')) : null
+const { values } = parseArgs({ options: { ...SELECTION_OPTIONS, 'dry-run': { type: 'boolean' } } })
 const dry = values['dry-run'] ?? false
 const todo: string[] = []
 
@@ -58,13 +61,14 @@ async function download(repo: string, revision: string, dir: string): Promise<vo
   }
 }
 
-const models: ModelEntry[] = MODELS.filter((m) => !only || only.has(m.label))
+const plan = await buildPlan({ machine: machine(), selection: selectionOf(values), profile: values.profile, force: values.force })
+printPlan(plan)
+console.log()
 const have = await installed()
 if (!have) todo.push(`Ollama is not running at ${OLLAMA}: install it from https://ollama.com and start it`)
 const pull = streamRunner('ollama')
 
-for (const m of models) {
-  const skip = skipReason(m)
+for (const { model: m, skip } of plan.rows) {
   if (skip) {
     console.log(`skip ${m.label}: ${skip}`)
     continue

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro'
-import { data, fmt, fmtParams, fmtTime, href, modelSlug, pct, tone } from '../lib/data'
+import { data, fmt, fmtParams, fmtTime, href, machineLabel, modelSlug, pct, tone } from '../lib/data'
 ---
 
 <Base
@@ -9,10 +9,14 @@ import { data, fmt, fmtParams, fmtTime, href, modelSlug, pct, tone } from '../li
 >
   {
     data.leaderboard.map(({ machine, families }) => (
-      <section>
+      <section data-machine={machine.key}>
         <h2>
-          {machine.chip}, {machine.mem_gib} GiB <span class="muted">({machine.key})</span>
+          {machineLabel(machine)} <span class="muted">({machine.key})</span>
         </h2>
+        <p class="note">
+          Class <span class="pill class">{machine.class}</span> · model memory budget {fmt(machine.budget_gib, 1)} GiB. These results are
+          from this machine only; other machines are shown separately, never averaged in.
+        </p>
         <h3 class="part">Rankings by suite</h3>
         <p class="note">
           Each suite's models by pass rate, then mean score, then speed. Speed is the median case time for a language

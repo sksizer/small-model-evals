@@ -21,7 +21,7 @@
 import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
-import { spawnRunner } from '@osdlc/command-seam'
+import { describe, type Machine, type MachineInfo } from './machine.ts'
 
 export const ROOT = join(import.meta.dir, '..')
 /**
@@ -42,17 +42,10 @@ export const PROMPTFOO_VERSION = '0.125.1'
 /** Folders of shared code that scores or calls suites. Every file is hashed into each snapshot; a result depends only on the ones its suite and its model's provider use (scorerFilesOf). */
 const SCORER_DIRS = ['assertions', 'providers']
 
-export interface Machine {
-  /** Hardware model and memory, e.g. `Mac16,10-16g`. Groups results; names no person or host. */
-  key: string
-  chip: string
-  hw_model: string
-  mem_gib: number
-}
-
 export interface LedgerRecord {
   run: string
   at: string
+  /** Records made before machine classes carry only the identity; `describe` (scripts/machine.ts) derives the rest. */
   machine: Machine
   ollama: string
   promptfoo: string
@@ -77,14 +70,6 @@ export interface LedgerRecord {
   metrics?: Record<string, number>
   /** What the scorer recorded beyond a score and reason (the edit suite's judge answers), from the assertion's `metadata`. */
   detail?: unknown
-}
-
-export function machine(): Machine {
-  const run = spawnRunner('sysctl')
-  const get = (name: string) => run.run(['-n', name], { cwd: ROOT }).stdout.trim()
-  const memGib = Math.round(Number(get('hw.memsize')) / 2 ** 30)
-  const hwModel = get('hw.model')
-  return { key: `${hwModel}-${memGib}g`, chip: get('machdep.cpu.brand_string'), hw_model: hwModel, mem_gib: memGib }
 }
 
 export async function ollamaVersion(): Promise<string> {
@@ -275,7 +260,7 @@ const CALL_ERROR = 2
 export interface RunContext {
   run: string
   at: string
-  machine: Machine
+  machine: MachineInfo
   ollama: string
   promptfoo: string
   model: { label: string; tag: string; digest: string }
@@ -344,7 +329,10 @@ export function readLedger(): LedgerRecord[] {
 }
 
 export interface Latest {
+  /** The machine's key; results are grouped per key, never across machines. */
   machine: string
+  /** Its class (scripts/machine.ts), derived for records made before classes were stored. */
+  class: string
   model: string
   suite: string
   /** The newest run among `records`. */
@@ -459,6 +447,7 @@ export function latest(records = readLedger()): Latest[] {
     }
     return {
       machine: first.machine.key,
+      class: describe(first.machine).class,
       model: first.model.label,
       suite: first.suite,
       run: chosen.map((r) => r.run).sort().at(-1) ?? '',
