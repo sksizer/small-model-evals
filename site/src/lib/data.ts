@@ -493,6 +493,26 @@ export interface CorpusImage {
   used_by: { suite: string; case: string; retired: boolean }[]
 }
 
+/** One audio or video clip: corpus/av-manifest.json. */
+export interface CorpusMedia {
+  id: string
+  kind: 'sound' | 'speech' | 'video'
+  category: string
+  /** Repo path, also where the site serves it. */
+  path: string
+  title: string
+  page: string
+  author: string
+  licence: string
+  licence_url: string | null
+  duration: number
+  bytes: number
+  width?: number
+  height?: number
+  summary?: string
+  transcript?: string
+}
+
 /** The repository the site is built from, for links to source files. */
 export const REPO_URL = 'https://github.com/sksizer/small-model-evals'
 
@@ -531,6 +551,8 @@ export const data = raw as unknown as {
   environments: Record<string, Environment>
   builds: Record<string, Build>
   corpus: CorpusImage[]
+  /** Audio and video clips; absent in data exported before they existed. */
+  media?: CorpusMedia[]
 }
 
 export const qualitySuites = data.suites.filter((s) => s.kind === 'quality')

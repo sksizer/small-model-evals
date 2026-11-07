@@ -18,6 +18,7 @@ exactly what the model was asked, on what hardware and runtime. A static site
 | Node.js (for `npx`) | promptfoo, pinned to 0.125.1 |
 | Chrome or Chromium | Only to render new synthetic corpus pages |
 | [mflux](https://github.com/filipstrand/mflux) 0.24.0, via [uv](https://docs.astral.sh/uv/) | Only the `edit` suite; Apple silicon only |
+| [ffmpeg](https://ffmpeg.org) with libopus and libx264 (`brew install ffmpeg`) | Only the audio and video corpus and, later, its suite; `scripts/setup.ts` reports it when missing |
 
 ```sh
 bun install
@@ -166,6 +167,18 @@ adding it under a new id.
 A tag-image case lists `expected` concepts, each one tag or a list of synonyms, and `absent` tags
 that would be wrong for the image. A model tag matches when a synonym's words appear in it, so
 "sleeping dogs" matches `dog`.
+
+## Audio and video corpus
+
+`corpus/audio/<id>.ogg` (16 kHz mono Opus: sounds 5-30 s, speech 60-120 s) and `corpus/video/<id>.mp4` (360p H.264,
+5-15 s, no sound track) are the clips for the planned audio and video search suite (`docs/plans/av-search.md`). The
+rules are the "Audio and video" section of `docs/standards/corpus.md`: Wikimedia Commons sounds and videos, and
+LibriVox readings (public domain, checked per item on archive.org). `corpus/av-sources.yaml` lists them (id, kind,
+category, source, and the `start`/`duration` segment; speech also has a `summary` and, where the book text matched,
+an approximate `transcript`); `bun run corpus` converts them with ffmpeg, writes `corpus/av-manifest.json` (licence,
+length, size, sha256) and adds them to `ATTRIBUTIONS.md`. `bun scripts/build-av-contact.ts` writes the contact sheet
+`results/contact/av-corpus.html` for review. Freesound is allowed by the standard (CC0 only) but not fetched: its API
+needs a key.
 
 ## Food database
 

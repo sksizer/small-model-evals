@@ -65,6 +65,50 @@ search suite's notes and foods, `suites/search/corpora.yaml`), the way the rules
 - **No scraped corpora.** The same reason as for images: a dataset's licence and contents can't be
   checked from a primary source.
 
+## Audio and video
+
+Status: in force from 2026-11-06. It applies to every sound, speech and video clip under `corpus/audio/` and
+`corpus/video/`, the way the rules above apply to images. The plan is `docs/plans/av-search.md`.
+
+- **Same licence rules.** Only CC0, public domain, or CC BY (credited). Never non-commercial, no-derivatives or
+  share-alike (including GFDL), and never an unknown or unstated licence.
+- **Sources.**
+  - **Wikimedia Commons**: sounds and videos. The licence is read from the file page, as for images.
+  - **LibriVox**: spoken readings of public-domain books. LibriVox releases its recordings to the public domain,
+    but each one is checked: the archive.org item must be in the `librivoxaudio` collection and its metadata
+    must state a public-domain or CC0 `licenseurl`. An item that states nothing is refused, whatever LibriVox
+    says in general.
+  - **Freesound, CC0 filter only.** Never a CC BY, CC BY-NC or "sampling" file from it. Freesound's API needs
+    a key, so `scripts/fetch-av.ts` does not fetch from it; Freesound recordings that Commons hosts under CC0
+    come in as Commons files.
+  - **Made here**: derived copies of corpus clips (trimmed, recompressed, volume-shifted), and tones or noise
+    from code. These keep their parent's licence and credit; the made-from-code ones are CC0.
+- **Excluded.** AudioSet and anything else from YouTube, ESC-50 (CC BY-NC), xeno-canto (mostly NC), and any
+  scraped set, for the reason given under "Sources" above.
+- **Content.** No children (voices or pictures), nothing intimate, and no identifiable private person speaking
+  or shown as the focus. Speech comes only from public-domain readings (LibriVox), never from conversations,
+  calls or interviews. Videos are scenes, machines and animals; a person may pass through a public scene.
+- **Stored audio.** 16 kHz mono Opus in an Ogg file (`.ogg`), about 24 kbps for sounds and 16 kbps for speech.
+  Sounds run 5 to 30 s, speech 60 to 120 s. Opus is chosen over FLAC because the clips stay small (about 3 KB
+  per second against about 15 KB for FLAC), which keeps the committed corpus within the size the plan
+  allows; 16 kHz mono is the input EmbeddingGemma 2's audio encoder takes. Ogg Opus plays in current Chrome,
+  Firefox and Safari, and ffmpeg reads it.
+- **Stored video.** 360p H.264 in MP4 (`.mp4`), 15 frames per second, 5 to 15 s, with **no sound track**. MP4
+  with H.264 is the one format every browser and ffmpeg handle without a codec build. Any sound the video had
+  is not kept; the sound track is a separate audio clip only if it is licensed and picked as one.
+- **Conversion.** Clips are converted from the source with ffmpeg by `scripts/fetch-av.ts`, trimmed to the
+  segment the entry names (`start`, `duration`), with container metadata dropped. Each stored clip's sha256
+  goes in `corpus/av-manifest.json`; like images, clips are immutable, and a changed clip gets a new id.
+- **Credits.** `corpus/ATTRIBUTIONS.md` lists every clip, generated from the manifest. Speech clips also
+  name the book's author and "LibriVox volunteers" as the readers.
+- **Transcripts.** A speech clip carries a one-line `summary` and, where the book's text could be matched, an
+  approximate `transcript` (the text of the chapter's opening). Both are display and judging aids, not part of
+  the clip, and may be corrected without a new id.
+
 ## Changing this standard
 
 Changing a rule is the owner's decision. Record the change and its date here.
+
+- 2026-11-06: added the "Audio and video" section: LibriVox (public-domain readings) and Freesound (CC0 only) as
+  sources beside Commons, the exclusions, the content rules for speech, and the stored formats (Opus in Ogg,
+  H.264 in MP4 without sound).

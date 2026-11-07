@@ -6,13 +6,15 @@ import { REPO_URL, data, href, sourceUrl } from '../lib/data'
 // Every image in corpus/, whether or not a case uses it yet: filter by
 // category, search by id, title or author, and see which cases use each one.
 const images = data.corpus
+const media = data.media ?? []
+const mediaKinds = ['sound', 'speech', 'video'] as const
 const categories = [...new Set(images.map((m) => m.category))].sort()
 const count = (c: string) => images.filter((m) => m.category === c).length
 ---
 
 <Base
   title="Corpus"
-  description={`The ${images.length} images the vision suites draw on: Wikimedia Commons photos and scans under CC0, public domain or CC BY, and synthetic pages with invented text. Click an image for full size.`}
+  description={`The ${images.length} images the vision suites draw on (and, below them, the audio and video clips): Wikimedia Commons photos and scans under CC0, public domain or CC BY, and synthetic pages with invented text. Click an image for full size.`}
 >
   <div class="controls">
     <input type="search" id="c-q" placeholder="Search id, title or author" aria-label="Search the corpus" />
@@ -58,6 +60,34 @@ const count = (c: string) => images.filter((m) => m.category === c).length
       ))
     }
   </div>
+  {
+    media.length > 0 && (
+      <section id="media">
+        <h2>Audio and video</h2>
+        <p class="muted">
+          {media.length} clips for the audio and video search suite: sounds, public-domain speech readings, and short silent videos.
+        </p>
+        {mediaKinds.map((k) => (
+          <>
+            <h3>{k} <span class="muted">{media.filter((m) => m.kind === k).length}</span></h3>
+            <div class="grid">
+              {media.filter((m) => m.kind === k).map((m) => (
+                <figure class="item" id={m.id}>
+                  {m.kind === 'video' ? <video controls preload="none" muted playsinline src={href(`/${m.path}`)} /> : <audio controls preload="none" src={href(`/${m.path}`)} />}
+                  <figcaption>
+                    <div class="id"><code>{m.id}</code> <span class="tag">{m.category}</span></div>
+                    <div class="meta">{m.licence_url ? <a href={m.licence_url}>{m.licence}</a> : m.licence} · {m.author}</div>
+                    <div class="meta"><a href={m.page}>Source</a> · {m.duration.toFixed(1)} s · {(m.bytes / 1024).toFixed(0)} KB</div>
+                    {m.summary && <div class="meta">{m.summary}</div>}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </>
+        ))}
+      </section>
+    )
+  }
   <p class="note">
     Licences and credits: <a href={`${REPO_URL}/blob/main/corpus/ATTRIBUTIONS.md`}>ATTRIBUTIONS.md</a>. To add
     images, list them in <code>corpus/sources.yaml</code> and run <code>bun run corpus</code>.
@@ -109,6 +139,7 @@ const count = (c: string) => images.filter((m) => m.category === c).length
   label { color: var(--muted); font-size: 14px; display: flex; gap: 6px; align-items: center; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
   .item { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .item audio, .item video { display: block; width: 100%; max-height: 190px; background: var(--code-bg); }
   .item :global(img) { display: block; width: 100%; height: 190px; object-fit: contain; background: var(--code-bg); }
   figcaption { padding: 8px 10px 10px; font-size: 13px; }
   .id { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }

@@ -23,6 +23,7 @@ import { compareSimilarity, type ExpectedSimilarity, type SimilarityDetail } fro
 import { compareSearch, type SearchDetail } from '../assertions/search.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
+import type { CorpusMedia } from './fetch-av.ts'
 import { CATALOG } from './catalog.ts'
 import { MODELS, ageMonths, skipReason } from './models.ts'
 import { ROOT, SCOPE, SUITES_DIR, currentSnapshot, latest, loadCases, readLedger, readSnapshot, type LedgerRecord } from './ledger.ts'
@@ -531,6 +532,17 @@ const corpus = existsSync(manifestPath)
     }))
   : []
 
+// The audio and video corpus (corpus/av-manifest.json), listed on the corpus page with players.
+const mediaPath = join(ROOT, CORPUS_REL, 'av-manifest.json')
+const media = existsSync(mediaPath)
+  ? (JSON.parse(readFileSync(mediaPath, 'utf8')) as CorpusMedia[]).map((m) => ({ ...m, path: `${CORPUS_REL}/${m.file}` }))
+  : []
+for (const m of media) {
+  const to = join(PUBLIC_OUT, m.path)
+  mkdirSync(dirname(to), { recursive: true })
+  copyFileSync(join(ROOT, m.path), to)
+}
+
 // Copy every image a case or the corpus shows, and every edited image a
 // result shows (results/edits/, from the edit suite), into the site's public
 // folder, at its repo path.
@@ -815,6 +827,6 @@ const finder = (() => {
 mkdirSync(DATA_OUT, { recursive: true })
 writeFileSync(
   join(DATA_OUT, 'evals.json'),
-  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus }),
+  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus, media }),
 )
 console.log(`${results.length} results, ${perf.length} speed rows, ${runs.length} runs → ${relative(ROOT, join(DATA_OUT, 'evals.json'))}`)

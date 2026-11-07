@@ -15,12 +15,17 @@
 // skipped, and the runner skips them too. mflux itself is installed by hand
 // (`uv tool install mflux==0.24.0`), since it is a Python tool outside this
 // package.
+//
+// ffmpeg (with the libopus and libx264 encoders) converts and decodes the audio and
+// video corpus; it is installed by hand (`brew install ffmpeg`) and reported here when
+// missing.
 import { existsSync, mkdirSync, renameSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { parseArgs } from 'node:util'
 import { streamRunner } from '@osdlc/command-seam'
 import { MODELS, skipReason, type ModelEntry } from './models.ts'
 import { ROOT } from './ledger.ts'
+import { ffmpegProblem } from './ffmpeg.ts'
 import { mfluxProblem, mfluxWeights, MFLUX_VERSION } from './mflux.ts'
 
 const OLLAMA = process.env['OLLAMA_BASE_URL'] ?? 'http://localhost:11434'
@@ -57,6 +62,10 @@ async function download(repo: string, revision: string, dir: string): Promise<vo
     renameSync(`${to}.part`, to)
   }
 }
+
+const ffmpeg = ffmpegProblem()
+if (ffmpeg) todo.push(ffmpeg)
+else console.log('ffmpeg: present')
 
 const models: ModelEntry[] = MODELS.filter((m) => !only || only.has(m.label))
 const have = await installed()

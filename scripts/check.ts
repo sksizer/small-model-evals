@@ -16,6 +16,8 @@
 //   missing, not in the manifest or marked sensitive, or a case's relevant id is not
 //   in its corpus.
 //
+// - a corpus audio or video clip (corpus/av-manifest.json) is missing, differs from its
+//   sha256, is outside the length its kind allows, or has a licence the standard does not allow;
 // - a corpus image's licence is not one docs/standards/corpus.md allows (CC0,
 //   public domain, CC BY; Open Images exactly CC BY 2.0; a derived copy must
 //   match its parent). See scripts/licences.ts.
@@ -26,6 +28,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { spawnRunner } from '@osdlc/command-seam'
 import type { CorpusImage } from './fetch-corpus.ts'
+import { LENGTH, type CorpusMedia } from './fetch-av.ts'
 import { CATALOG } from './catalog.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import { licenceProblem } from './licences.ts'
@@ -102,6 +105,20 @@ for (const m of manifest) {
   const problem = licenceProblem(m, manifestById)
   if (problem) problems.push(`corpus: ${problem}`)
 }
+// Audio and video clips (corpus/av-manifest.json): the same immutability and licence rules.
+const avPath = join(corpus, 'av-manifest.json')
+const media = existsSync(avPath) ? (JSON.parse(readFileSync(avPath, 'utf8')) as CorpusMedia[]) : []
+const mediaById = new Map(media.map((m) => [m.id, m]))
+for (const m of media) {
+  const path = join(corpus, m.file)
+  if (!existsSync(path)) problems.push(`corpus/${m.file}: in the manifest but missing`)
+  else if (createHash('sha256').update(readFileSync(path)).digest('hex') !== m.sha256) problems.push(`corpus/${m.file}: changed; add it under a new id`)
+  const problem = licenceProblem(m, mediaById)
+  if (problem) problems.push(`corpus: ${problem}`)
+  const [min, max] = LENGTH[m.kind]
+  if (m.duration < min - 0.5 || m.duration > max + 0.5) problems.push(`corpus: ${m.id}: ${m.duration}s is outside the ${min}-${max}s a ${m.kind} clip may be`)
+  if (m.kind === 'video' ? !m.file.startsWith('video/') : !m.file.startsWith('audio/')) problems.push(`corpus: ${m.id}: a ${m.kind} clip belongs under ${m.kind === 'video' ? 'video' : 'audio'}/`)
+}
 const listed = new Set(manifest.map((m) => m.file))
 for (const suite of readdirSync(SUITES_DIR)) {
   for (const c of loadCases(suite)) {
@@ -170,4 +187,4 @@ if (problems.length > 0) {
   console.error(problems.map((p) => `- ${p}`).join('\n'))
   process.exit(1)
 }
-console.log(`ok: ${cases.size} cases, ${listSnapshots().length} snapshots, ${manifest.length} corpus images, ledger consistent`)
+console.log(`ok: ${cases.size} cases, ${listSnapshots().length} snapshots, ${manifest.length} corpus images, ${media.length} audio and video clips, ledger consistent`)
