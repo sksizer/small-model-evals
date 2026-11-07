@@ -1,0 +1,48 @@
+{
+  "run": "2026-11-07T23-22-43",
+  "evals": [
+    {
+      "model": "gemma3:4b",
+      "suite": "classify",
+      "kind": null,
+      "start": {
+        "load_1m": 4.2,
+        "load_per_core": 0.42,
+        "mem_available_gib": 8.2,
+        "mem_free_pct": 71,
+        "swap_used_gib": 12.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 365
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 5.48,
+        "load_per_core": 0.55,
+        "mem_available_gib": 5.1,
+        "mem_free_pct": 50,
+        "swap_used_gib": 12.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "XprotectService",
+            "cpu_pct": 49
+          }
+        ]
+      },
+      "flags": [
+        "12.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 365% of a core: close it if you can",
+        "12.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "XprotectService is using 49% of a core: close it if you can"
+      ]
+    }
+  ]
+}
