@@ -29,20 +29,65 @@ bun run site
 
 `scripts/setup.ts` pulls every Ollama model the runner would run (models past the age limit are
 skipped), downloads the pinned mflux weights into `.cache/models/`, and lists what is still
-missing. `--dry-run` only reports; `--models a,b` limits it. ONNX models download themselves on
+missing. `--dry-run` only reports; `--models a,b`, `--category` and `--profile` limit it. ONNX models download themselves on
 first use. On a machine that isn't Apple silicon, the mflux editors are skipped by setup and by the
 runner.
 
 ### On another machine
 
-Clone, run the setup above, then `bun run eval`. Each ledger record names its machine
-(`machine.key`, e.g. `Mac16,10-16g`), so results from a second machine add rows rather than
-replacing this one's. Commit `results/` from there and the site shows both. Expect large
-downloads: the Ollama models are a few GB each, and the edit model is 4.6 GB.
+Clone, `bun install`, then:
 
-Results so far come from one Apple M4 Mac mini with 16 GiB. Numbers from other machines are
-recorded separately (each record names its hardware), so contributions from other hardware add
-rows rather than overwrite.
+```sh
+bun scripts/run.ts --plan       # what would run here, and which models fit this machine's memory
+bun scripts/setup.ts            # pull only the models that plan keeps
+bun run eval                    # run it
+```
+
+Each ledger record names its machine: `machine.key` (e.g. `Mac16,10-16g`) groups results, so a
+second machine adds rows rather than replacing the first's, and `machine.class` says what size of
+machine it is. Commit `results/` from there and the site shows both, never pooled.
+
+**Machine class** is the accelerator plus a memory tier: `apple-16g`, `apple-32g`, `apple-64g+`,
+`nvidia-24g`, `cpu-32g`. Apple silicon is tiered by unified memory, an NVIDIA card (read with
+`nvidia-smi`) by its VRAM, anything else by RAM. The tiers and their budgets are in one table,
+`TIERS` in `scripts/machine.ts`.
+
+**Will it fit?** Every run first prints a plan: for each model, the memory it needs (the largest
+reading in the ledger across suites, else the catalogue size times a factor, else unknown) against
+this machine's budget (Metal's working set on Apple silicon, VRAM on NVIDIA). A model is
+*fits*, *tight* (over 80% of the budget), *offload* (over the budget but within usable system
+memory: it runs with layers on the CPU, slower, and its speed is not comparable), *won't fit*
+(beyond that) or *unknown*. Won't-fit models are skipped with an explanation (`--force` runs them
+anyway); tight, offload and unknown ones warn. A model with results on this machine is never
+won't-fit. It also warns when
+the machine is busy (load, free memory, swap, battery, other heavy programs), since that skews
+timings, and says what to close. `bun scripts/run.ts --plan` prints all this and runs nothing;
+`setup.ts` uses the same check.
+
+**Choosing what runs.** Each suite has categories (`text`, `vision`, `regions`, `search`,
+`image-edit`) and a cost (`light` or `heavy`), declared in `SUITE_META` in `scripts/plan.ts`.
+
+```sh
+bun scripts/run.ts --category vision,search      # by category
+bun scripts/run.ts --cost light                  # light suites only
+bun scripts/run.ts --models qwen3:4b --suites extract
+```
+
+**Machine profiles.** `machines/<name>.yaml` lists what a machine, or a class, runs (categories,
+cost, suites, models, `skip_models`). It is picked with `--profile <name>`, or matched by the
+machine's key or class (`match:`); `--profile none` ignores profiles. With no profile the default
+is everything that fits. Command-line flags replace the profile's setting of the same name. To
+add a machine, run `--plan` there, copy `machines/nvidia-24g.yaml`, set `match`, and commit it.
+
+Each run also records the conditions it was taken under (`results/conditions/<run>.json`: load,
+free memory, swap, power, thermal state, other heavy programs, before and after each eval); the
+Runs and Speed pages flag runs taken under load. The frozen environment (`results/environments/`)
+adds the OS, core counts, GPU, driver and CUDA version, and the versions of Bun, Node, Ollama,
+onnxruntime, transformers.js, mflux and ffmpeg. Design notes: [docs/plans/machines.md](docs/plans/machines.md).
+
+Expect large downloads: the Ollama models are a few GB each, and the edit model is 4.6 GB.
+
+Results so far come from one Apple M4 Mac mini with 16 GiB (`apple-16g`).
 
 ## How promptfoo works
 
@@ -216,10 +261,11 @@ promptfoo itself cycles through providers inside each test, which would swap mod
 | `results/ledger/<suite>.jsonl` | One line per scored case, appended by every run | Yes |
 | `results/suites/<suite>/<fp>.json` | Frozen suite snapshots the records link to | Yes |
 | `results/summary.md` | Latest result per machine, model and suite, built from the ledger | Yes |
+| `results/conditions/<run>.json` | How busy the machine was around each eval of a run | Yes |
 | `results/notes/<run>.md` | Observations about a run that the numbers do not carry | Yes |
 | `results/runs/<run>/` | promptfoo's raw output | No |
 
-A ledger record names what produced it: the machine (hardware model and memory), the Ollama and
+A ledger record names what produced it: the machine (hardware model, memory and class), the Ollama and
 promptfoo versions, the model tag and digest, the snapshot it ran against and the case id, with
 the model's whole reply. See `LedgerRecord` in `scripts/ledger.ts`.
 
@@ -232,7 +278,8 @@ scorer leaves them current. A new case shows as **not run** for each model until
   it can run, then `bun run eval --models <label>`.
 - **Add a case:** add `suites/<suite>/cases/<id>.yaml` with a new id, then rerun the suite.
 - **Add a suite:** a new folder under `suites/` with a `promptfooconfig.yaml` whose `tests` is
-  `file://cases/*.yaml`.
+  `file://cases/*.yaml`, and an entry in `SUITE_META` (`scripts/plan.ts`) giving its categories and
+  cost; `bun scripts/check.ts` fails without it.
 - **Import old output:** `bun scripts/import.ts results/runs/<run>` (same machine, models and
   suites; every case must carry its id).
 

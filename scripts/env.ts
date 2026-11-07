@@ -1,8 +1,11 @@
 // What a run ran on, frozen like suite snapshots so ledger records can name
 // it by hash:
 //
-// - results/environments/<hash>.json: hardware, OS, GPU budget, and the
-//   runtime (Ollama version and server settings, promptfoo, Bun, Node).
+// - results/environments/<hash>.json: hardware (class, cores, GPU, memory
+//   budget), OS, and the runtime (Ollama version and server settings,
+//   promptfoo, Bun, Node, the in-process ML libraries, mflux, ffmpeg). Only
+//   facts that hold for a whole run; what changes during one (load, free
+//   memory, power) is in results/conditions/ (scripts/conditions.ts).
 // - results/models/<digest>.json: one model build as Ollama reports it:
 //   engine (llama.cpp or MLX), format, quantization, parameters, context
 //   length, capabilities and default sampling parameters.
@@ -12,8 +15,9 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
-import { spawnRunner } from '@osdlc/command-seam'
-import { OLLAMA, PROMPTFOO_VERSION, ROOT, machine } from './ledger.ts'
+import os from 'node:os'
+import { OLLAMA, PROMPTFOO_VERSION, ROOT } from './ledger.ts'
+import { machine, nvidia, sh, type MachineInfo } from './machine.ts'
 
 export const ENV_DIR = join(ROOT, 'results', 'environments')
 export const MODEL_DIR = join(ROOT, 'results', 'models')
@@ -39,21 +43,23 @@ const OLLAMA_SETTINGS = [
 ]
 
 export interface Environment {
-  hardware: {
-    key: string
-    chip: string
-    hw_model: string
-    mem_gib: number
+  hardware: MachineInfo & {
+    /** Logical cores. */
+    cpu_logical: number
+    /** Apple silicon only (0 elsewhere). */
     cpu_performance_cores: number
     cpu_efficiency_cores: number
+    /** Apple silicon only. */
     gpu_cores: number
-    /** Metal's recommendedMaxWorkingSetSize: the GPU memory budget, in MiB. */
+    /** The memory models may fill, in MiB: Metal's recommendedMaxWorkingSetSize on Apple silicon, VRAM on NVIDIA, a share of RAM otherwise. */
     gpu_budget_mib: number
     /** iogpu.wired_limit_mb; 0 means the macOS default. */
     gpu_wired_limit_mb: number
+    /** NVIDIA driver and the CUDA version it supports; null elsewhere. */
+    gpu_driver: string | null
+    cuda: string | null
   }
   os: { name: string; version: string; build: string; kernel: string }
-  power: string
   runtime: {
     ollama: string
     /** When the Ollama server whose settings these are started. */
@@ -62,6 +68,12 @@ export interface Environment {
     promptfoo: string
     bun: string
     node: string
+    /** Versions of the in-process ML stack and external tools; null when not installed. */
+    onnxruntime_node: string | null
+    transformers_js: string | null
+    sharp: string | null
+    mflux: string | null
+    ffmpeg: string | null
   }
 }
 
@@ -85,38 +97,55 @@ function ollamaSettings(): { started: string | null; settings: Record<string, st
   return { started: /time=(\S+)/.exec(line)?.[1] ?? null, settings }
 }
 
-export async function captureEnvironment(): Promise<Environment> {
-  const run = (bin: string, args: string[]) => spawnRunner(bin).run(args, { cwd: ROOT }).stdout.trim()
-  const sysctl = (name: string) => run('sysctl', ['-n', name])
-  const gpu = JSON.parse(run('system_profiler', ['SPDisplaysDataType', '-json']) || '{}') as {
-    SPDisplaysDataType?: { sppci_cores?: string }[]
+/** A dependency's installed version from its package.json, or null. */
+function installed(pkg: string): string | null {
+  const path = join(ROOT, 'node_modules', pkg, 'package.json')
+  return existsSync(path) ? (JSON.parse(readFileSync(path, 'utf8')) as { version?: string }).version ?? null : null
+}
+
+function osInfo(): Environment['os'] {
+  const kernel = os.release()
+  if (process.platform === 'darwin') {
+    return { name: sh('sw_vers', ['-productName']), version: sh('sw_vers', ['-productVersion']), build: sh('sw_vers', ['-buildVersion']), kernel }
   }
-  const budget = Number(run('swift', [join(ROOT, 'scripts', 'metal-working-set.swift')]))
+  const release = existsSync('/etc/os-release') ? readFileSync('/etc/os-release', 'utf8') : ''
+  const field = (k: string) => new RegExp(`^${k}="?([^"\n]*)"?$`, 'm').exec(release)?.[1] ?? ''
+  return { name: field('NAME') || os.type(), version: field('VERSION_ID') || os.version(), build: '', kernel }
+}
+
+export async function captureEnvironment(): Promise<Environment> {
+  const mac = process.platform === 'darwin'
+  const sysctl = (name: string) => (mac ? sh('sysctl', ['-n', name]) : '')
+  const gpu = mac ? (JSON.parse(sh('system_profiler', ['SPDisplaysDataType', '-json']) || '{}') as { SPDisplaysDataType?: { sppci_cores?: string }[] }) : {}
+  const card = nvidia()
+  const host = machine()
   const { version } = (await (await fetch(`${OLLAMA}/api/version`)).json()) as { version: string }
   const ollama = ollamaSettings()
   return {
     hardware: {
-      ...machine(),
+      ...host,
+      cpu_logical: os.cpus().length,
       cpu_performance_cores: Number(sysctl('hw.perflevel0.physicalcpu')),
       cpu_efficiency_cores: Number(sysctl('hw.perflevel1.physicalcpu')),
       gpu_cores: Number(gpu.SPDisplaysDataType?.[0]?.sppci_cores ?? 0),
-      gpu_budget_mib: Math.round(budget / 2 ** 20),
+      gpu_budget_mib: Math.round(host.budget_gib * 1024),
       gpu_wired_limit_mb: Number(sysctl('iogpu.wired_limit_mb') || 0),
+      gpu_driver: card?.driver ?? null,
+      cuda: card?.cuda ?? null,
     },
-    os: {
-      name: run('sw_vers', ['-productName']),
-      version: run('sw_vers', ['-productVersion']),
-      build: run('sw_vers', ['-buildVersion']),
-      kernel: run('uname', ['-r']),
-    },
-    power: /'([^']+)'/.exec(run('pmset', ['-g', 'ps']))?.[1] ?? 'unknown',
+    os: osInfo(),
     runtime: {
       ollama: version,
       ollama_started: ollama.started,
       ollama_settings: ollama.settings,
       promptfoo: PROMPTFOO_VERSION,
       bun: Bun.version,
-      node: run('node', ['--version']),
+      node: sh('node', ['--version']),
+      onnxruntime_node: installed('onnxruntime-node'),
+      transformers_js: installed('@huggingface/transformers'),
+      sharp: installed('sharp'),
+      mflux: /mflux v([\d.]+)/.exec(sh('uv', ['tool', 'list']))?.[1] ?? null,
+      ffmpeg: /ffmpeg version (\S+)/.exec(sh('ffmpeg', ['-version']))?.[1] ?? null,
     },
   }
 }

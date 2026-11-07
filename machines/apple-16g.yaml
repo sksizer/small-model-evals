@@ -1,0 +1,7 @@
+# Every Mac with Apple silicon and 16 GiB (the M4 Mac mini the first results
+# come from). It runs every category; models that will not fit its ~11.8 GiB
+# Metal budget are skipped by the memory check, not listed here.
+description: Apple silicon, 16 GiB unified memory
+match:
+  classes: [apple-16g]
+categories: [text, vision, regions, search, image-edit]

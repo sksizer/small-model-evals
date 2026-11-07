@@ -7,25 +7,34 @@
 // eval per (model, suite) with --filter-providers, unloading before each,
 // so exactly one model is loaded and the speed numbers are clean.
 //
-//   bun scripts/run.ts                       all models, all suites
+//   bun scripts/run.ts                       everything this machine's profile allows and that fits
+//   bun scripts/run.ts --plan                print what would run, with each model's memory fit; run nothing
 //   bun scripts/run.ts --models qwen3:4b,granite4 --suites extract,classify
+//   bun scripts/run.ts --category vision,search --cost light
+//   bun scripts/run.ts --profile nvidia-24g  use machines/nvidia-24g.yaml (default: matched by machine key or class)
+//   bun scripts/run.ts --force               run models that will not fit this machine's memory anyway
 //   bun scripts/run.ts --suites search --kinds docs   only the cases of one kind (a provider's `config.kinds`)
+//
+// Before running it prints the plan (scripts/plan.ts) and warns when the machine is busy
+// (scripts/conditions.ts); it samples the same conditions around every eval and writes them
+// to results/conditions/<run>.json.
 //
 // promptfoo's raw output lands in results/runs/<timestamp>/ (not committed);
 // the records go to results/ledger/, and results/summary.md is rewritten.
-import { existsSync, readdirSync, mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import { streamRunner } from '@osdlc/command-seam'
+import { begin, problems, sample, writeConditions, type EvalConditions } from './conditions.ts'
+import { machine } from './machine.ts'
 import { mfluxProblem, mfluxWeights } from './mflux.ts'
-import { MODELS, skipReason } from './models.ts'
+import { buildPlan, printPlan, SELECTION_OPTIONS, selectionOf } from './plan.ts'
 import {
   OLLAMA,
   PROMPTFOO_VERSION,
   RESULTS_DIR,
   SUITES_DIR,
   append,
-  machine,
   modelDigests,
   ollamaVersion,
   freeze,
@@ -36,24 +45,10 @@ import { summarize } from './summarize.ts'
 
 const PROMPTFOO = `promptfoo@${PROMPTFOO_VERSION}`
 
-const { values } = parseArgs({
-  options: { models: { type: 'string' }, suites: { type: 'string' }, kinds: { type: 'string' } },
-})
-const pick = (list: string | undefined) => (list ? new Set(list.split(',')) : undefined)
-const onlyModels = pick(values.models)
-const onlySuites = pick(values.suites)
-const onlyKinds = pick(values.kinds)
+const { values } = parseArgs({ options: { ...SELECTION_OPTIONS, kinds: { type: 'string' }, plan: { type: 'boolean' } } })
+const onlyKinds = values.kinds ? new Set(values.kinds.split(',')) : undefined
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
-// The model labels each suite's config lists, with the case kinds a provider limits itself to
-// (`config.kinds`, matched against each case's `metadata.kind`): a model that cannot take every
-// kind of case in a suite runs only its own. No `kinds` means every case.
-async function suiteLabels(suite: string): Promise<Map<string, string[] | null>> {
-  const text = await Bun.file(join(SUITES_DIR, suite, 'promptfooconfig.yaml')).text()
-  const config = Bun.YAML.parse(text) as { providers: { label: string; config?: { kinds?: string[] } }[] }
-  return new Map(config.providers.map((p) => [p.label, p.config?.kinds ?? null] as const))
-}
 
 async function unloadAll(): Promise<void> {
   const { models } = (await (await fetch(`${OLLAMA}/api/ps`)).json()) as { models: { name: string }[] }
@@ -63,21 +58,35 @@ async function unloadAll(): Promise<void> {
   }
 }
 
+const host = machine()
+const plan = await buildPlan({
+  machine: host,
+  selection: selectionOf(values),
+  profile: values.profile,
+  force: values.force,
+  extraSkip: (m) => (m.runtime === 'mflux' ? mfluxProblem() ?? (existsSync(mfluxWeights(m)) ? null : 'weights missing: run `bun scripts/setup.ts`') : null),
+})
+printPlan(plan)
+const busy = problems(sample(), { load: true })
+if (busy.length > 0) {
+  console.log(`\n!! THIS MACHINE IS BUSY. Timings and memory readings from this run will be skewed (the run records this):\n${busy.map((b) => `   - ${b}`).join('\n')}`)
+}
+if (values.plan) process.exit(0)
+
 const run = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
 const outDir = join(RESULTS_DIR, 'runs', run)
-const suites = readdirSync(SUITES_DIR).filter((s) => !onlySuites || onlySuites.has(s))
-const labels = new Map(await Promise.all(suites.map(async (s) => [s, await suiteLabels(s)] as const)))
+const { suites } = plan.selection
+const { labels } = plan
 // Freeze each suite before running it: the snapshot is what the records link to.
 const fingerprints = new Map(suites.map((s) => [s, freeze(s)]))
-const host = machine()
 const ollama = await ollamaVersion()
 const digests = await modelDigests()
 const env = freezeEnvironment(await captureEnvironment())
 const runner = streamRunner('npx')
 const failures: string[] = []
+const evals: EvalConditions[] = []
 
-for (const model of MODELS.filter((m) => !onlyModels || onlyModels.has(m.label))) {
-  const skip = skipReason(model) ?? (model.runtime === 'mflux' ? mfluxProblem() ?? (existsSync(mfluxWeights(model)) ? null : 'weights missing: run `bun scripts/setup.ts`') : null)
+for (const { model, skip } of plan.rows) {
   if (skip) {
     console.log(`\n--- skipping ${model.label}: ${skip}`)
     continue
@@ -99,6 +108,7 @@ for (const model of MODELS.filter((m) => !onlyModels || onlyModels.has(m.label))
       // through the quality suites drifted (slower, larger) by the time perf
       // measured it (first run, 2026-10-31).
       await unloadAll()
+      const finish = begin(model.label, suite, kind, evals.length === 0)
       const out = join(outDir, suite, `${model.label.replace(/[:/]/g, '_')}${kind ? `.${kind}` : ''}.json`)
       mkdirSync(join(outDir, suite), { recursive: true })
       console.log(`\n=== ${model.label} · ${suite}${kind ? ` · ${kind}` : ''}`)
@@ -127,6 +137,10 @@ for (const model of MODELS.filter((m) => !onlyModels || onlyModels.has(m.label))
           },
         },
       )
+      const taken = finish()
+      evals.push(taken)
+      writeConditions(join(RESULTS_DIR, 'conditions'), { run, evals })
+      if (taken.flags.length > 0) console.log(`!! taken under load: ${taken.flags.join('; ')}`)
       // promptfoo exits 100 when a test fails, which is a result, not an error.
       if (result.exitCode !== 0 && result.exitCode !== 100) {
         failures.push(`${model.label} · ${suite}${kind ? ` · ${kind}` : ''}: exit ${result.exitCode}`)
