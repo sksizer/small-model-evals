@@ -13,9 +13,9 @@ Each cell: cases passed / total · mean score (partial credit) · median latency
 | Model | classify | edit | extract | food-lookup | nudity-flag | ocr | orchestrate | regions-faces | regions-find | regions-objects | regions-text | route | search | sensitive | similarity | tag-image | workout |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | clip-vit-b16 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 41/49 · 0.89 · 0.0 s · 2026-11-05 | n/a | 29/29 · 0.98 · 0.0 s · 2026-11-03 | n/a | n/a |
-| clip-vit-b16-zs | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 45/108 · 0.43 · 0.0 s · 2026-11-04 | n/a | n/a | n/a |
+| clip-vit-b16-zs | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 45/108 · 0.43 · 0.0 s · 2026-11-07 | n/a | n/a | n/a |
 | clip-vit-b32 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 28/29 · 0.97 · 0.0 s · 2026-11-03 | n/a | n/a |
-| composite-qwen3.5-4b | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 67/108 · 0.65 · 1.3 s · 2026-11-04 | n/a | n/a | n/a |
+| composite-qwen3.5-4b | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 68/108 · 0.69 · 11.2 s · 2026-11-07 | n/a | n/a | n/a |
 | d1-omni:600m | n/a | n/a | n/a | n/a | 66/77 · 0.86 · 1.2 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | 6/18 · 0.53 · 0.1 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a |
 | d1:2b | n/a | n/a | n/a | n/a | 65/77 · 0.84 · 1.0 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | 15/18 · 0.89 · 0.2 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a |
 | dfine-n | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 0/14 · 0.11 · 0.0 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
@@ -52,7 +52,7 @@ Each cell: cases passed / total · mean score (partial credit) · median latency
 | qwen3:4b | 15/20 · 0.75 · 0.4 s · 2026-11-01 | n/a | 8/15 · 0.85 · 1.6 s · 2026-11-01 | 1/12 · 0.41 · 42.1 s · 2026-11-01 | n/a | n/a | 15/15 · 1.00 · 7.8 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 6/16 · 0.76 · 6.4 s · 2026-11-01 |
 | rtdetr-r18 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 6/14 · 0.64 · 0.1 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 | siglip2-base | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 48/49 · 0.97 · 0.0 s · 2026-11-05 | n/a | 29/29 · 0.98 · 0.0 s · 2026-11-03 | n/a | n/a |
-| siglip2-base-zs | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 48/108 · 0.45 · 0.0 s · 2026-11-04 | n/a | n/a | n/a |
+| siglip2-base-zs | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 48/108 · 0.45 · 0.1 s · 2026-11-07 | n/a | n/a | n/a |
 | vit-nsfw-adamcodd-q8 | n/a | n/a | n/a | n/a | 67/77 · 0.87 · 0.1 s · 2026-11-07 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 | vit-nsfw-falconsai-q8 | n/a | n/a | n/a | n/a | 70/77 · 0.91 · 0.1 s · 2026-11-07 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 | yunet-2023mar | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 13/15 · 0.87 · 0.0 s · 2026-11-07 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |

@@ -133,9 +133,22 @@ leaks against false alarms for each model as its threshold moves.
   the best negative (sigmoid of 100 times the cosine gap), so 0.5 means "beats every negative". Both use fixed
   thresholds, nothing tuned on the cases; the sweep is on the suite page.
 - **Composite** (`providers/sensitive-composite.ts`, label `composite-qwen3.5-4b`): YuNet, Falconsai NSFW ViT,
-  SigLIP, then Florence-2 OCR plus regexes (only when a text-bearing category looks possible), then qwen3.5:4b
-  only when nothing is decisive. "Decisive" is defined in the provider's header: strong evidence for a private
-  category (the level cannot go higher), or no evidence at all with every signal quiet (public).
+  SigLIP, Florence-2 OCR plus regexes on every image, then qwen3.5:4b unless a stage is decisive. "Decisive" is
+  defined in the provider's header: strong evidence for a private category (the level cannot go higher), or
+  positive evidence for public. The first version decided public from the silence of the specialists (SigLIP
+  risks all below 0.3, no face, nsfw below 0.1) and leaked six private images (terminal-api-key, tax-notice,
+  recovery-codes, online-banking-screen, nude-bike-ride-from-behind, health-insurance-card), all with
+  `decided_by: public-signals`: SigLIP's sigmoid scores are low for nearly every image, sensitive ones included,
+  and OCR ran on only 2 of them and its regexes matched nothing. It also under-called 19 review images as public.
+  The rules now require, for `public`: no strong evidence, OCR found no text, no face, nsfw below 0.1 and
+  SigLIP's best "ordinary scene" prompt at or above 0.5 and above every category. SigLIP's ordinary score is
+  below 0.02 on every one of the 108 images, so that last condition never holds: the public short-circuit is
+  dormant, and the LLM rates every image the rules did not settle as private (79 of 108, was 37; 29 are settled
+  by rules). Result (2026-11-07 run): zero private images called public, 68 exact, 39 false alarms, one
+  under-call (oi-sens-intimate-76e7b69883aba6cc, review called public, which qwen3.5:4b alone also misses).
+  Median time per image 11.3 s (was 1.3 s) on a machine under heavy load (20 GiB of swap, a Rust build), so
+  the absolute times are inflated. Zero leaks costs calling the LLM on nearly everything; the cheap
+  stages only save the LLM call for strong private evidence.
 - **Scoring** (`assertions/sensitive.ts`): level from `levelOf` on both sides; error is the weighted steps
   (leak 3, false alarm 1) over the worst the case allows in that direction; the case passes when the level is
   exact. The suite's pass mark (zero leaks), per-category precision and recall and the leak-versus-false-alarm
@@ -146,5 +159,10 @@ leaks against false alarms for each model as its threshold moves.
 - **Site:** the suite page has the summary table, per-category recall and precision, the leak-versus-false-alarm
   curve and, for the composite, the stage use; the gallery has the covered images, expected and predicted
   categories as chips, the level against the expected one, and a risk bar per category.
-- **Not done:** LlavaGuard (Q6); a Brier score and a calibrated-threshold recommendation (the sweep is shown,
-  no threshold is chosen); the private set (Q5).
+- **Calibration:** `calibrationOf` in `scripts/export-site.ts` gives, per model with risk scores, the Brier score
+  (per category and overall), the highest risk threshold with zero leaks and its false alarms, and the
+  cost-optimal threshold (leak 3, false alarm 1, per level step) with its leaks and false alarms. The suite page
+  shows them in a table. The thresholds are picked on this suite's own cases, so they are optimistic and need
+  confirming on other data. Note the "zero-leak threshold" is the highest cut that leaks nothing: every lower cut
+  leaks nothing too, and the highest costs the fewest false alarms.
+- **Not done:** LlavaGuard (Q6); the private set (Q5); confirming the recommended thresholds on a second corpus.

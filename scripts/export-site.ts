@@ -15,8 +15,8 @@ import { conceptLabel, parseTags, tagMatches, type Concept } from '../assertions
 import { compareWorkout, type ExpectedWorkout } from '../assertions/workout.ts'
 import { compareFood, type ExpectedFood } from '../assertions/food.ts'
 import { compareDecide } from '../assertions/decide.ts'
-import { compareSensitive } from '../assertions/sensitive.ts'
-import { CATEGORIES, DEFINITIONS, LEVELS, PRIVATE_CATEGORIES, type Category } from '../assertions/sensitive-levels.ts'
+import { LEAK_WEIGHT, compareSensitive, type SensitiveGrading } from '../assertions/sensitive.ts'
+import { CATEGORIES, DEFINITIONS, LEVELS, PRIVATE_CATEGORIES, rank, type Category } from '../assertions/sensitive-levels.ts'
 import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
 import { compareSimilarity, type ExpectedSimilarity, type SimilarityDetail } from '../assertions/similarity.ts'
@@ -620,6 +620,43 @@ function memoryOf(machine: string, label: string): { gb: number; basis: 'loaded'
  * precision and recall, and a leak-versus-false-alarm curve as the risk cut
  * moves. Computed here from each case's reply; the site only draws it.
  */
+/**
+ * Calibration of one model's risk scores against the expected categories (docs/plans/sensitive.md):
+ *  - Brier score: mean squared gap between a risk and 0/1 (category expected or not), per category and over
+ *    all of them; 0 is perfect, 0.25 is what a constant 0.5 scores.
+ *  - the zero-leak threshold: the HIGHEST cut at which no private case is called public. Raising the cut calls
+ *    fewer things present, so every lower cut leaks nothing too; the highest is the one that costs the fewest
+ *    false alarms. Its false alarms are all over-called cases (the level above the expected one).
+ *  - the cost-optimal threshold: the cut with the lowest weighted cost (LEAK_WEIGHT per level step under-called,
+ *    1 per step over-called, as the suite scores), the highest such cut on a tie.
+ * Candidate cuts are every distinct risk the model gave (a case's categories change only there), plus 0.
+ * The cuts are picked on this suite's own cases, so they are optimistic: confirm them on other data.
+ */
+function calibrationOf(graded: readonly SensitiveGrading[]) {
+  const sq = (g: SensitiveGrading, c: Category) => ((g.risks[c] ?? 0) - (g.expected.includes(c) ? 1 : 0)) ** 2
+  const mean = (xs: number[]) => (xs.length === 0 ? null : xs.reduce((a, b) => a + b, 0) / xs.length)
+  const per = Object.fromEntries(CATEGORIES.map((c) => [c, mean(graded.map((g) => sq(g, c)))]))
+  const overall = mean(graded.flatMap((g) => CATEGORIES.map((c) => sq(g, c))))
+  const cuts = [...new Set([0, ...graded.flatMap((g) => CATEGORIES.map((c) => g.risks[c] ?? 0).filter((r) => r > 0))])].sort((a, b) => a - b)
+  const at = (t: number) => {
+    let leaks = 0
+    let falseAlarms = 0
+    let cost = 0
+    for (const g of graded) {
+      const got = compareSensitive(g.expected, JSON.stringify({ categories: g.risks }), t)!
+      const step = rank(got.predicted_level) - rank(g.expected_level)
+      cost += step < 0 ? LEAK_WEIGHT * -step : step
+      if (g.expected_level === 'private' && got.predicted_level === 'public') leaks++
+      if (step > 0) falseAlarms++
+    }
+    return { t, leaks, false_alarms: falseAlarms, cost }
+  }
+  const points = cuts.map(at)
+  const zeroLeak = [...points].reverse().find((p) => p.leaks === 0) ?? null
+  const costOptimal = points.reduce((best, p) => (p.cost <= best.cost ? p : best))
+  return { brier: { overall, per }, zero_leak: zeroLeak, cost_optimal: costOptimal }
+}
+
 const SCREEN_THRESHOLDS = Array.from({ length: 19 }, (_, i) => Math.round((i + 1) * 5) / 100)
 const screening = (() => {
   const mine = results.filter((r) => r.suite === 'sensitive')
@@ -648,6 +685,7 @@ const screening = (() => {
       }
       return point
     })
+    const calibration = calibrationOf(graded.map(({ g }) => g))
     const cell = cells.find((c) => c.machine === machine && c.model === label && c.suite === 'sensitive')
     const loaded = median(rs.flatMap((r) => (r.metrics?.['loaded_bytes'] !== undefined ? [r.metrics['loaded_bytes']] : [])))
     // The composite records which stages ran for each image.
@@ -693,6 +731,7 @@ const screening = (() => {
       loaded_gb: loaded === null ? null : loaded / 1e9,
       per_category: per,
       curve,
+      calibration,
       stages,
     }
   })

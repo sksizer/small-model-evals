@@ -230,6 +230,14 @@ export interface Screening {
 export const isScreening = (e: unknown): e is { categories: Category[] } =>
   !!e && typeof e === 'object' && Array.isArray((e as { categories?: unknown }).categories)
 
+/** One risk cut and what it costs on the suite. */
+export interface ScreeningCut {
+  t: number
+  leaks: number
+  false_alarms: number
+  cost: number
+}
+
 /** One model's summary on the sensitive suite (scripts/export-site.ts `screening`). */
 export interface ScreeningModel {
   machine: string
@@ -254,6 +262,14 @@ export interface ScreeningModel {
   loaded_gb: number | null
   per_category: Record<Category, { tp: number; fp: number; fn: number; precision: number | null; recall: number | null }>
   curve: { t: number; leaks: number; under: number; false_alarms: number }[]
+  /** Risk calibration (scripts/export-site.ts `calibrationOf`); cuts are picked on this suite's own cases. */
+  calibration: {
+    brier: { overall: number | null; per: Record<Category, number | null> }
+    /** The highest cut with no leaks; null when even a cut of 0 leaks (it cannot). */
+    zero_leak: ScreeningCut | null
+    /** The cut with the lowest cost, a leak weighing three times a false alarm. */
+    cost_optimal: ScreeningCut
+  }
   /** The composite's stage use over the images it screened. */
   stages: { images: number; decided_by: Record<string, number>; ran: Record<string, { n: number; median_ms: number | null }> } | null
 }
