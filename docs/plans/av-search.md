@@ -1,6 +1,6 @@
 # Plan: audio and video search
 
-Status: proposed (2026-11-06). Waiting on the owner's answers to the questions at the end.
+Status: approved (2026-11-06). The owner's answers are under "Decisions" at the end.
 
 ## Goal
 
@@ -120,3 +120,13 @@ The plan adds it to `scripts/setup.ts`'s checklist (`brew install ffmpeg`) and r
   kept out of git, with only their hashes committed?
 - **Q6. X-CLIP.** Worth a one-off Python export to ONNX (a pinned `optimum` run, like the mflux install), or drop
   it and let frame-averaged SigLIP 2 be the video rival?
+
+## Decisions (owner, 2026-11-06)
+
+- **Q1.** All five kinds: text → sounds, text → speech, text → video, and clip → clip (sound and video).
+- **Q2.** The standard adds LibriVox (public-domain recordings) and Freesound (CC0 filter only).
+- **Q3.** Speech comes from public-domain readings only; no owner recordings, no text-to-speech.
+- **Q4.** ffmpeg is required (`brew install ffmpeg`), checked by `scripts/setup.ts`.
+- **Q5.** Clips are committed to the repo, like the images.
+- **Q6.** X-CLIP is in if a one-off ONNX export works in reasonable time (hours, not days). Otherwise it's
+  dropped and frame-averaged SigLIP 2 is the video rival.
