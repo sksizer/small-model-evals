@@ -1,0 +1,5 @@
+description: "sensitive: financial, document: payslip"
+metadata: { id: pay-slip }
+vars:
+  image: file://../../corpus/images/pay-slip.png
+  expected: { categories: [financial, document] }

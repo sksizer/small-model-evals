@@ -1,15 +1,16 @@
 ---
 import Base from '../layouts/Base.astro'
-import { data, href } from '../lib/data'
+import { data, href, machineLabel } from '../lib/data'
 
-const { finder, machines } = data
+const { finder, machines, classes } = data
 const kinds = [...new Set(finder.rows.flatMap((r) => (r.kind ? [r.kind] : [])))].sort()
 // The page ships the finder's rows to the client script, which filters and totals them; `<` is escaped so no string can close the script tag.
-const payload = JSON.stringify({ base: href(''), tasks: finder.tasks, rows: finder.rows }).replace(/</g, '\\u003c')
+const payload = JSON.stringify({ base: href(''), tasks: finder.tasks, rows: finder.rows, machines: machines.map((m) => ({ key: m.key, class: m.class })) }).replace(/</g, '\\u003c')
 const presets = [
   { label: 'Nudity detection under 1 GB', query: 't=nudity-flag&mem=1&sort=avg&dir=desc' },
   { label: 'Tool use + extraction, permissive licence', query: 't=orchestrate,extract&perm=1&sort=avg&dir=desc' },
   { label: 'Image similarity, fastest', query: 't=similarity&sort=speed&dir=asc' },
+  { label: 'Photo + document search by text, permissive licence', query: 't=search:photos,search:docs&perm=1&sort=avg&dir=desc' },
 ]
 ---
 
@@ -89,11 +90,18 @@ const presets = [
       machines.length > 1 && (
         <label>Machine
           <select data-f="machine">
-            {machines.map((m) => <option value={m.key}>{m.chip}, {m.mem_gib} GiB</option>)}
+            {machines.map((m) => <option value={m.key}>{machineLabel(m)}</option>)}
           </select>
         </label>
       )
     }
+    <label title="Which class of machine each model's Fits badge is judged against">Fits on
+      <select data-f="fits">
+        <option value="">no badge</option>
+        {classes.map((c) => <option value={c.class}>{c.class} ({((c.budget_gib * 2 ** 30) / 1e9).toFixed(1)} GB)</option>)}
+      </select>
+    </label>
+    <label><input type="checkbox" data-f="nofit" />Hide won't-fit</label>
     <span class="count" id="finder-count"></span>
   </div>
 
@@ -106,10 +114,20 @@ const presets = [
   <script type="application/json" id="finder-data" set:html={payload} />
 
   <p class="note">
-    <strong>Memory</strong> is measured, in GB. <em>loaded</em>: what Ollama reports loaded at 8K context. <em>rss</em>: the
-    whole process's resident memory after running, so an upper bound for the model. <em>peak</em>: the image editor's own
-    peak. The three are not like for like; a blank means nothing was measured, and such models drop out under a memory
-    limit. <strong>Slowdown</strong> is a model's time over the fastest model's on the same task and machine (×1.0 is the
+    <strong>Fits</strong> compares a model's memory need (the largest measured across suites, else the catalogue size times a
+    factor; hover for the source) with the class under <em>Fits on</em>: <em>fits</em> is up to
+    {Math.round(data.tight * 100)}% of its accelerator budget, <em>tight</em> up to all of it, <em>offload</em> above that but within
+    usable system memory (layers run on the CPU: it works, slower, and its speed is not comparable), <em>won't fit</em>
+    beyond that. A model with results on a machine is never won't-fit there. Nothing is hidden unless you tick
+    <em>Hide won't-fit</em>. The rows are the chosen machine's results; the class can differ, to ask whether a model would
+    fit a bigger or smaller machine.
+    <strong>Memory</strong> is measured, in GB. <em>loaded</em>: what Ollama reports loaded on a fresh start at the context
+    window shown (8K, text prompts). A second line, <em>peak in &lt;suite&gt;</em>, is the largest size Ollama reported
+    inside that quality suite at its own context window: with images it ramps up request by request (about 8 GB over the
+    fresh load for the Qwen3.5 models, see docs/plans/machines.md), and the memory limit and the Fits column use that
+    larger figure. <em>rss</em>: the whole process's resident memory after running, so an upper bound for the model.
+    <em>peak</em>: the image editor's own peak. These are not like for like; a blank means nothing was measured, and such
+    models drop out under a memory limit. <strong>Slowdown</strong> is a model's time over the fastest model's on the same task and machine (×1.0 is the
     fastest), worst over the ticked tasks. Times are per image where a provider reports it and per case otherwise, so
     compare across kinds with care. A baseline is kept as a yardstick; a retired model is no longer run.
   </p>

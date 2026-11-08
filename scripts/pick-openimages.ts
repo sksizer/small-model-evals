@@ -4,6 +4,8 @@
 //
 //   bun scripts/pick-openimages.ts candidates [n]   contact sheets in .cache/openimages/
 //   bun scripts/pick-openimages.ts write <job> <ImageID>...
+//   bun scripts/pick-openimages.ts sensitive-candidates [perSheet] [sheets]   PNG contact sheets for the sensitive suite
+//   bun scripts/pick-openimages.ts sensitive-write <category> <ImageID>...    corpus entries only
 //
 // `write` appends each photo to corpus/sources.yaml (id `oi-<job>-<ImageID>`)
 // and writes suites/regions-<job>/cases/<id>.yaml from the dataset's boxes.
@@ -21,8 +23,17 @@
 // (IsGroupOf) or on a depiction (IsDepiction: a poster of a dog is not a
 // dog); every box in scope at least MIN_AREA of the image; no Boy or Girl box
 // anywhere in the photo.
+//
+// The sensitive suite (docs/plans/sensitive.md) uses `sensitive-candidates` and
+// `sensitive-write` instead: SENSITIVE below lists, per category, the Open
+// Images classes that make a photo a candidate and the labels that exclude it.
+// The contact sheets are local PNGs (.cache/openimages/sensitive-<category>-<n>.png),
+// each cell captioned with the image id and the photo's labels, to be looked at
+// before anything is written. `sensitive-write` adds `oi-sens-<category>-<ImageID>`
+// entries to corpus/sources.yaml; the cases are written by hand.
 import { createHash } from 'node:crypto'
-import { appendFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import sharp, { type OverlayOptions } from 'sharp'
+import { appendFileSync, readFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { OI_CACHE, OI_IMAGES, csvLine, oiLines } from './openimages.ts'
 import { ROOT } from './ledger.ts'
@@ -232,7 +243,125 @@ async function write(job: Job, ids: string[]) {
   }
 }
 
+// ---- sensitive suite ----
+
+const LABELS = 'https://storage.googleapis.com/openimages/v5/validation-annotations-human-imagelabels.csv'
+const CLASS_NAMES = 'https://storage.googleapis.com/openimages/v7/oidv7-class-descriptions.csv'
+const SENSITIVE_URL = (id: string) => `https://s3.amazonaws.com/open-images-dataset/validation/${id}.jpg`
+
+/** Labels that mean a child may be in the photo. */
+const CHILD = ['Boy', 'Girl', 'Child', 'Baby', 'Toddler', 'Infant']
+/** Labels that make a photo unfit for the `minor` category (and for the others when it also shows a child). */
+const INTIMATE_ADJACENT = ['Swimwear', 'Bikini', 'Brassiere', 'Underpants', 'Undergarment', 'Lingerie', 'Swim cap', 'Bed', 'Bedroom', 'Bathroom', 'Bathtub', 'Toilet', 'Shower', 'Swimming pool', 'Beach', 'Nudity', 'Bidet', 'Bathing']
+
+interface SensitiveJob {
+  /** Any of these classes (boxes, or image-level labels with confidence 1) makes the photo a candidate. */
+  any: string[]
+  /** The photo must have none of these labels. */
+  none: string[]
+  /** For box classes in `any`: the largest box must cover at least this much of the photo. */
+  minArea?: number
+  /** The photo must also have all of these labels (the dataset's Boy and Girl boxes often sit on adults). */
+  need?: string[]
+  /** At most this many boxes of the first class in `any`. */
+  maxBoxes?: number
+}
+const SENSITIVE: Record<string, SensitiveJob> = {
+  face: { any: ['Human face'], none: [...CHILD, ...INTIMATE_ADJACENT], minArea: 0.04, maxBoxes: 1 },
+  plate: { any: ['Vehicle registration plate'], none: [...CHILD, ...INTIMATE_ADJACENT], minArea: 0.002 },
+  house: { any: ['House'], none: [...CHILD, ...INTIMATE_ADJACENT], minArea: 0.15 },
+  sign: { any: ['Traffic sign', 'Street light'], none: [...CHILD, ...INTIMATE_ADJACENT], minArea: 0.03 },
+  screen: { any: ['Mobile phone', 'Laptop', 'Computer monitor'], none: [...CHILD, ...INTIMATE_ADJACENT], minArea: 0.1 },
+  medical: { any: ['Medical equipment'], none: [...CHILD, ...INTIMATE_ADJACENT], minArea: 0.05 },
+  intimate: { any: ['Brassiere', 'Lingerie', 'Underpants', 'Undergarment'], none: [...CHILD, 'Nudity'] },
+  minor: { any: ['Boy', 'Girl'], need: ['Child'], none: INTIMATE_ADJACENT, minArea: 0.03 },
+  swimwear: { any: ['Swimwear', 'Bikini'], none: [...CHILD, 'Brassiere', 'Underpants', 'Lingerie', 'Nudity'] },
+  scene: { any: ['Landscape', 'Mountain', 'Beach', 'Crowd'], none: [...CHILD, ...INTIMATE_ADJACENT.filter((x) => x !== 'Beach'), 'Human face', 'Person'] },
+}
+
+async function sensitiveCandidates(perSheet: number, sheets: number) {
+  const { byImage, images } = await load()
+  const names = new Map((await oiLines(CLASS_NAMES)).map((l) => csvLine(l) as [string, string]))
+  const labelsByImage = new Map<string, Set<string>>()
+  const [lhead, ...llines] = await oiLines(LABELS)
+  const lcol = Object.fromEntries(csvLine(lhead!).map((c, i) => [c, i]))
+  for (const l of llines) {
+    const v = csvLine(l)
+    if (v[lcol['Confidence']!] !== '1') continue
+    const id = v[lcol['ImageID']!]!
+    const set = labelsByImage.get(id) ?? new Set()
+    set.add(names.get(v[lcol['LabelName']!]!) ?? v[lcol['LabelName']!]!)
+    labelsByImage.set(id, set)
+  }
+  const thumbs = join(OI_CACHE, 'thumbs')
+  mkdirSync(thumbs, { recursive: true })
+  for (const [category, job] of Object.entries(SENSITIVE)) {
+    if (process.env['ONLY'] && process.env['ONLY'] !== category) continue
+    const picked: { id: string; labels: string[] }[] = []
+    for (const id of [...images.keys()].sort((a, b) => order(a + category).localeCompare(order(b + category)))) {
+      if (images.get(id)!.rotation !== 0) continue
+      const boxes = byImage.get(id) ?? []
+      const labels = new Set([...(labelsByImage.get(id) ?? []), ...boxes.map((b) => b.cls)])
+      if (job.none.some((x) => labels.has(x))) continue
+      if (job.need?.some((x) => !labels.has(x))) continue
+      const hits = boxes.filter((b) => job.any.includes(b.cls))
+      if (hits.length === 0 && !job.any.some((x) => labelsByImage.get(id)?.has(x))) continue
+      if (job.minArea && hits.length > 0 && (hits.some((b) => b.group || b.depiction) || Math.max(...hits.map((b) => area(b.box))) < job.minArea)) continue
+      if (job.minArea && hits.length === 0) continue
+      if (job.maxBoxes && hits.filter((b) => b.cls === job.any[0]).length > job.maxBoxes) continue
+      picked.push({ id, labels: [...labels].sort() })
+      if (picked.length >= perSheet * sheets) break
+    }
+    const cellW = 320
+    const cellH = 270
+    for (let s = 0; s < sheets; s++) {
+      const part = picked.slice(s * perSheet, (s + 1) * perSheet)
+      if (part.length === 0) continue
+      const cols = 4
+      const rows = Math.ceil(part.length / cols)
+      const composites: OverlayOptions[] = []
+      for (const [i, p] of part.entries()) {
+        const file = join(thumbs, `${p.id}.jpg`)
+        if (!existsSync(file)) {
+          const res = await fetch(SENSITIVE_URL(p.id))
+          if (!res.ok) continue
+          writeFileSync(file, await sharp(new Uint8Array(await res.arrayBuffer())).resize(cellW, cellH - 40, { fit: 'inside' }).jpeg({ quality: 80 }).toBuffer())
+        }
+        const x = (i % cols) * cellW
+        const y = Math.floor(i / cols) * cellH
+        composites.push({ input: file, left: x, top: y })
+        const caption = `${p.id.slice(0, 8)} ${p.labels.slice(0, 7).join(',')}`.replace(/[<>&]/g, '')
+        composites.push({
+          input: Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${cellW}" height="38"><text x="2" y="14" font-size="13" font-family="Helvetica" fill="#000">${caption.slice(0, 48)}</text><text x="2" y="30" font-size="11" font-family="Helvetica" fill="#444">${caption.slice(48, 100)}</text></svg>`),
+          left: x,
+          top: y + cellH - 38,
+        })
+      }
+      const out = join(OI_CACHE, `sensitive-${category}-${s + 1}.png`)
+      await sharp({ create: { width: cols * cellW, height: rows * cellH, channels: 3, background: '#fff' } }).composite(composites).png().toFile(out)
+      console.log(`${category}: sheet ${s + 1} → ${out} (${part.map((p) => p.id.slice(0, 8)).join(' ')})`)
+    }
+    writeFileSync(join(OI_CACHE, `sensitive-${category}.json`), JSON.stringify(picked, null, 1))
+  }
+}
+
+/** Adds corpus entries for chosen photos; the full id is looked up by prefix in the candidate list. */
+async function sensitiveWrite(category: string, ids: string[]) {
+  const sources = join(ROOT, 'corpus', 'sources.yaml')
+  const pool = JSON.parse(readFileSync(join(OI_CACHE, `sensitive-${category}.json`), 'utf8')) as { id: string }[]
+  for (const prefix of ids) {
+    const found = pool.filter((p) => p.id.startsWith(prefix))
+    if (found.length !== 1) throw new Error(`${prefix}: ${found.length} candidates in ${category}`)
+    const oi = found[0]!.id
+    const sensitive = category === 'minor' || category === 'intimate' ? ', sensitive: true' : ''
+    appendFileSync(sources, `- { id: oi-sens-${category}-${oi}, category: sensitive-${category}${sensitive}, openimages: '${oi}' }\n`)
+    console.log(`oi-sens-${category}-${oi}`)
+  }
+}
+
 const [cmd, ...rest] = process.argv.slice(2)
 if (cmd === 'candidates') await candidates(Number(rest[0] ?? 24))
 else if (cmd === 'write') await write(rest[0] as Job, rest.slice(1))
-else throw new Error('usage: pick-openimages.ts candidates [n] | write <objects|find|faces> <ImageID>...')
+else if (cmd === 'sensitive-candidates') await sensitiveCandidates(Number(rest[0] ?? 12), Number(rest[1] ?? 3))
+else if (cmd === 'sensitive-write') await sensitiveWrite(rest[0]!, rest.slice(1))
+else throw new Error('usage: pick-openimages.ts candidates [n] | write <objects|find|faces> <ImageID>... | sensitive-candidates [perSheet] [sheets] | sensitive-write <category> <ImageID>...')

@@ -1,0 +1,8 @@
+description: "search text: fix the leaking faucet (1 relevant of 60)"
+metadata: { id: text-note-leaking-faucet, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "fix the leaking faucet"
+  relevant: ["n34"]
+  how: "judged by reading"

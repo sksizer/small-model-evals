@@ -65,6 +65,7 @@ interface Data {
   cells: { suite: string }[]
   perf: { suite: string }[]
   inproc: { suite: string }[]
+  screening: unknown
   finder: Finder
   leaderboard: Board[]
   results: { suite: string }[]
@@ -162,6 +163,8 @@ function mergePublicInto(pub: Data, priv: Data): Data {
     inproc: [...pub.inproc, ...renamed(priv.inproc)],
     finder: mergeFinders(pub.finder, priv.finder, id),
     leaderboard: mergeBoards(pub.leaderboard, priv.leaderboard, id),
+    // The sensitive suite is public-only (no private set, Q5), so its summary is the public one.
+    screening: pub.screening,
     results: [...pub.results, ...renamed(priv.results)],
     history: [...pub.history, ...renamed(priv.history)],
     runs: [...runs.values()].sort((a, b) => b.run.localeCompare(a.run)),

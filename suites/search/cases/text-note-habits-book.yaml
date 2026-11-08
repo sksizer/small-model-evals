@@ -1,0 +1,8 @@
+description: "search text: notes on a book about building good habits (1 relevant of 60)"
+metadata: { id: text-note-habits-book, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "notes on a book about building good habits"
+  relevant: ["n41"]
+  how: "judged by reading"

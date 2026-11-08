@@ -1,0 +1,58 @@
+{
+  "run": "2026-11-07T23-50-55",
+  "evals": [
+    {
+      "model": "clip-vit-b16-zs",
+      "suite": "sensitive",
+      "kind": null,
+      "start": {
+        "load_1m": 7.86,
+        "load_per_core": 0.79,
+        "mem_available_gib": 6,
+        "mem_free_pct": 67,
+        "swap_used_gib": 11,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "fseventsd",
+            "cpu_pct": 66
+          },
+          {
+            "name": "rm",
+            "cpu_pct": 55
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 7.87,
+        "load_per_core": 0.79,
+        "mem_available_gib": 6,
+        "mem_free_pct": 68,
+        "swap_used_gib": 11,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rm",
+            "cpu_pct": 67
+          },
+          {
+            "name": "fseventsd",
+            "cpu_pct": 49
+          }
+        ]
+      },
+      "flags": [
+        "load 7.86 on the cores (0.79/core): something is working; wait for it or close it",
+        "11 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "fseventsd is using 66% of a core: close it if you can",
+        "rm is using 55% of a core: close it if you can",
+        "rm is using 67% of a core: close it if you can",
+        "fseventsd is using 49% of a core: close it if you can"
+      ]
+    }
+  ]
+}

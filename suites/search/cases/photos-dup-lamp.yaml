@@ -1,0 +1,8 @@
+description: "search photos: a lamp (3 relevant of 132)"
+metadata: { id: photos-dup-lamp, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a lamp"
+  relevant: ["oi-find-743dbcab02a9971e","oi-find-a90c22661fe961ff","oi-find-e916dd0b766b2f40"]
+  how: "Open Images: Lamp; copies of a relevant photo count"

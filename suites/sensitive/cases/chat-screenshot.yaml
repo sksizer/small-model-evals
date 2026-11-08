@@ -1,0 +1,5 @@
+description: "sensitive: screen: chat with names, phone numbers, an address, a door code"
+metadata: { id: chat-screenshot }
+vars:
+  image: file://../../corpus/images/chat-screenshot.png
+  expected: { categories: [screen] }

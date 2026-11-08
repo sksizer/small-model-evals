@@ -1,0 +1,8 @@
+description: "search text: teeth cleaning appointment (1 relevant of 60)"
+metadata: { id: text-note-teeth-appointment, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "teeth cleaning appointment"
+  relevant: ["n33"]
+  how: "judged by reading"

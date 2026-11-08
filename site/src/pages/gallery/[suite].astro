@@ -4,10 +4,11 @@ import Compare from '../../components/Compare.astro'
 import Boxes from '../../components/Boxes.astro'
 import Shot from '../../components/Shot.astro'
 import SimilarityTable from '../../components/SimilarityTable.astro'
-import { data, describeExpected, fmtTime, href, imageSuites, isEdit, isRegions, isSimilarity, modelSlug, show, type Suite } from '../../lib/data'
+import { data, describeExpected, fmtTime, href, imageSuites, isEdit, isRegions, isScreening, isSimilarity, modelSlug, show, type Suite } from '../../lib/data'
 
 export function getStaticPaths() {
-  return imageSuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
+  // The search suite has its own gallery page (gallery/search.astro): its cases are queries, not images.
+  return imageSuites.filter((s) => s.id !== 'search').map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
 }
 
 // Each image beside what every model read from it: the expected strings or
@@ -20,13 +21,18 @@ const results = data.results.filter((r) => r.suite === suite.id)
 const models = [...new Set(results.map((r) => r.model))].sort()
 const regions = suite.cases.some((c) => isRegions(c.expected))
 const edits = suite.cases.some((c) => isEdit(c.expected))
+const PRIVATE = new Set(data.screening?.categories.filter((c) => c.private).map((c) => c.id))
+const expectedLevel = (cats: string[]) => (cats.some((c) => PRIVATE.has(c as never)) ? 'private' : cats.length > 0 ? 'review' : 'public')
 const similarity = suite.cases.some((c) => isSimilarity(c.expected))
+const screening = suite.cases.some((c) => isScreening(c.expected))
 ---
 
 <Base
   title={`Gallery: ${suite.id}`}
   description={
-    similarity
+    screening
+      ? 'Each image (covered when sensitive) beside the categories it shows and what every model called it. Chips: green was found, struck-through was missed, solid red is a false alarm. The level is public, review or private; a private image called public is a leak, the worst error. Bars are the model\'s risk per category; the one at 0.5 or more counts as raised.'
+      : similarity
       ? 'Each query photo beside every model\'s five most alike candidates with the model\'s score. Green outline: a copy, an edit or the same scene (what should match). Amber: the same kind of thing. Red: unrelated. The table gives recall per level for each model.'
       : edits
       ? 'Each original (the dashed box is the only area the edit may change) beside every model\'s edited image, with the instruction. Under each edit, the judge\'s yes/no per question: green met, red not met, and how much the image outside the box differs from the original. Open a reply to read it in full.'
@@ -42,7 +48,7 @@ const similarity = suite.cases.some((c) => isSimilarity(c.expected))
       {models.map((m) => <option value={m}>{m}</option>)}
     </select>
     <label><input type="checkbox" id="g-misses" /> {similarity ? 'Only results below the pass mark' : 'Only results with misses'}</label>
-    <a href={href(`/suites/${suite.id}/`)}>Case grid →</a>
+    <a href={href(`/suites/${suite.id}/`)}>{screening ? 'Summary, curve and case grid →' : 'Case grid →'}</a>
   </div>
   {
     suite.cases
@@ -69,7 +75,14 @@ const similarity = suite.cases.some((c) => isSimilarity(c.expected))
               {c.instruction && <p class="instruction">{c.instruction}</p>}
               <p class="expect">
                 <span class="muted">Expected:</span>{' '}
-                {isEdit(c.expected) || isSimilarity(c.expected)
+                {isScreening(c.expected)
+                  ? (
+                    <>
+                      <span class={`pill lv-${expectedLevel(c.expected.categories)}`}>{expectedLevel(c.expected.categories)}</span>{' '}
+                      {c.expected.categories.length === 0 ? <span class="muted">nothing sensitive</span> : c.expected.categories.map((e) => <span class="want">{e}</span>)}
+                    </>
+                  )
+                  : isEdit(c.expected) || isSimilarity(c.expected)
                   ? describeExpected(c.expected)
                   : isRegions(c.expected)
                   ? c.expected.boxes.length === 0
@@ -87,11 +100,11 @@ const similarity = suite.cases.some((c) => isSimilarity(c.expected))
               </p>
               {rs.length === 0 && <p class="muted">No results yet.</p>}
               {rs.map((r) => (
-                <div class="read" data-model={r.model} data-miss={r.hits?.some((h) => !h.found) || r.wrong?.some((w) => w.found) || r.regions?.some((x) => !x.ok) || r.edit?.answers.some((a) => !a.ok) || r.edit?.preservation?.ok === false || (r.similarity && !r.pass) ? '1' : '0'}>
+                <div class="read" data-model={r.model} data-miss={r.screening ? (r.screening.outcome === 'exact' ? '0' : '1') : r.hits?.some((h) => !h.found) || r.wrong?.some((w) => w.found) || r.regions?.some((x) => !x.ok) || r.edit?.answers.some((a) => !a.ok) || r.edit?.preservation?.ok === false || (r.similarity && !r.pass) ? '1' : '0'}>
                   <div class="read-head">
                     <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
                     <span class={`pill ${r.pass ? 'pass' : 'fail'}`}>
-                      {r.hits ? `${r.hits.filter((h) => h.found).length}/${r.hits.length}` : r.similarity ? `AP ${r.score.toFixed(2)}` : r.pass ? 'pass' : 'fail'}
+                      {r.screening ? r.screening.outcome : r.hits ? `${r.hits.filter((h) => h.found).length}/${r.hits.length}` : r.similarity ? `AP ${r.score.toFixed(2)}` : r.pass ? 'pass' : 'fail'}
                     </span>
                     <span class="muted">{fmtTime(r.time_ms, r.time_per)}</span>
                   </div>
@@ -133,6 +146,9 @@ const similarity = suite.cases.some((c) => isSimilarity(c.expected))
   .instruction { margin: 0 0 8px; font-weight: 600; }
   .expect { margin: 0 0 8px; font-size: 13px; line-height: 2; }
   .want { display: inline-block; margin: 0 4px 0 0; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; line-height: 1.6; }
+  .pill.lv-private { background: var(--bad-bg); color: var(--bad); }
+  .pill.lv-review { background: var(--warn-bg); color: var(--warn); }
+  .pill.lv-public { background: var(--good-bg); color: var(--good); }
   .want.no { border-style: dashed; color: var(--muted); }
   .read { padding: 8px 0; border-top: 1px solid var(--line); }
   .read-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }

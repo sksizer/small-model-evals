@@ -59,22 +59,37 @@ export default class Florence2 {
     return { labels: parsed.labels, boxes: parsed.bboxes ?? parsed.quad_boxes ?? [] }
   }
 
+  /** The loaded model, and how long loading took when this call paid for it. */
+  private async model(): Promise<{ m: Loaded; loadMs?: number }> {
+    const { model, revision, dtype = 'q8' } = this.config
+    const key = `${model}@${revision}:${dtype}`
+    let loadMs: number | undefined
+    if (!loaded.has(key)) {
+      const t = performance.now()
+      const p = Promise.all([
+        Florence2ForConditionalGeneration.from_pretrained(model, { revision, dtype }),
+        AutoProcessor.from_pretrained(model, { revision }),
+      ]).then(([m, processor]) => ({ model: m as Florence2ForConditionalGeneration, processor }))
+      loaded.set(key, p)
+      await p
+      loadMs = performance.now() - t
+    }
+    return { m: await loaded.get(key)!, ...(loadMs === undefined ? {} : { loadMs }) }
+  }
+
+  /** The text of every line <OCR_WITH_REGION> reads, in reading order. Shared with providers/sensitive-composite.ts. */
+  async ocrText(dataUrl: string | undefined): Promise<{ lines: string[]; ocrMs: number; loadMs?: number }> {
+    const { m, loadMs } = await this.model()
+    const image = await imageOf(dataUrl)
+    const t = performance.now()
+    const r = await this.ask(m, image, PROMPTS.ocr)
+    return { lines: r.labels.map((l) => l.trim()).filter(Boolean), ocrMs: performance.now() - t, ...(loadMs === undefined ? {} : { loadMs }) }
+  }
+
   async callApi(_prompt: string, context: { vars: { image?: string; find?: string[] } }) {
     try {
-      const { model, revision, dtype = 'q8', task } = this.config
-      const key = `${model}@${revision}:${dtype}`
-      let loadMs: number | undefined
-      if (!loaded.has(key)) {
-        const t = performance.now()
-        const p = Promise.all([
-          Florence2ForConditionalGeneration.from_pretrained(model, { revision, dtype }),
-          AutoProcessor.from_pretrained(model, { revision }),
-        ]).then(([m, processor]) => ({ model: m as Florence2ForConditionalGeneration, processor }))
-        loaded.set(key, p)
-        await p
-        loadMs = performance.now() - t
-      }
-      const m = await loaded.get(key)!
+      const { task } = this.config
+      const { m, loadMs } = await this.model()
       const image = await imageOf(context.vars.image)
       const t = performance.now()
       const boxes: { label: string; box: number[] }[] = []

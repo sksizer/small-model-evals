@@ -1,0 +1,8 @@
+description: "search photos: a red car (12 relevant of 132)"
+metadata: { id: photos-dup-red-car, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a red car"
+  relevant: ["copy-bright-oi-scene-spitfire-b","copy-crop10-oi-scene-monaco-a","copy-flip-oi-scene-monaco-b","copy-flip-oi-scene-spitfire-a","copy-jpeg40-oi-scene-monaco-b","copy-jpeg40-oi-scene-spitfire-b","copy-resize-oi-scene-monaco-a","copy-resize-oi-scene-spitfire-a","oi-scene-monaco-a","oi-scene-monaco-b","oi-scene-spitfire-a","oi-scene-spitfire-b"]
+  how: "judged by eye; copies of a relevant photo count"

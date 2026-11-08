@@ -1,0 +1,8 @@
+description: "search text: gift ideas for my mother (1 relevant of 60)"
+metadata: { id: text-note-mother-gift, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "gift ideas for my mother"
+  relevant: ["n39"]
+  how: "judged by reading"

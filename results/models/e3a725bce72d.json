@@ -1,0 +1,18 @@
+{
+  "tag": "nomic-ai/nomic-embed-vision-v1.5",
+  "digest": "e3a725bce72d",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "embedding-text-image"
+  ],
+  "default_parameters": {
+    "revision": "e3a725bce72db07ca4adb1d83da08903f3ee02f8"
+  },
+  "template_hash": ""
+}

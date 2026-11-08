@@ -1,0 +1,8 @@
+description: "search photos: a sleeping dog (4 relevant of 78)"
+metadata: { id: photos-sleeping-dog, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a sleeping dog"
+  relevant: ["dog-autumn-sun","dog-border-terrier","dog-in-dog-bed","dog-sleeping-painting"]
+  how: "judged by eye"

@@ -1,0 +1,5 @@
+description: "sensitive: financial: bill with address and IBAN"
+metadata: { id: utility-bill }
+vars:
+  image: file://../../corpus/images/utility-bill.png
+  expected: { categories: [financial] }

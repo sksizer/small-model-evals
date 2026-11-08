@@ -1,0 +1,8 @@
+description: "search photos: a green parrot on a branch (1 relevant of 78)"
+metadata: { id: photos-parrot, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a green parrot on a branch"
+  relevant: ["parrot-illustration"]
+  how: "judged by eye"

@@ -1,0 +1,5 @@
+description: "sensitive: document, credential, location: handwritten note with phone, address and alarm code"
+metadata: { id: handwritten-note }
+vars:
+  image: file://../../corpus/images/handwritten-note.png
+  expected: { categories: [document, credential, location] }

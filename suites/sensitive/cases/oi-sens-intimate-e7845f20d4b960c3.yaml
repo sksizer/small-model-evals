@@ -1,0 +1,5 @@
+description: "sensitive: intimate: adult woman in black lace bra and briefs, studio"
+metadata: { id: oi-sens-intimate-e7845f20d4b960c3 }
+vars:
+  image: file://../../corpus/images/oi-sens-intimate-e7845f20d4b960c3.jpg
+  expected: { categories: [intimate] }

@@ -1,0 +1,5 @@
+description: "sensitive: none: ordinary corpus image"
+metadata: { id: street-night-rostov }
+vars:
+  image: file://../../corpus/images/street-night-rostov.jpg
+  expected: { categories: [] }

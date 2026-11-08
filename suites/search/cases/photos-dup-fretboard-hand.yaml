@@ -1,0 +1,8 @@
+description: "search photos: a hand pressing strings on a guitar neck (3 relevant of 132)"
+metadata: { id: photos-dup-fretboard-hand, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a hand pressing strings on a guitar neck"
+  relevant: ["copy-crop10-oi-find-c4d62e55691ed1e4","copy-resize-oi-find-c4d62e55691ed1e4","oi-find-c4d62e55691ed1e4"]
+  how: "judged by eye; copies of a relevant photo count"

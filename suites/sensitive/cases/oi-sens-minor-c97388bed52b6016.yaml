@@ -1,0 +1,5 @@
+description: "sensitive: minor: children in a ball pit at a play centre"
+metadata: { id: oi-sens-minor-c97388bed52b6016 }
+vars:
+  image: file://../../corpus/images/oi-sens-minor-c97388bed52b6016.jpg
+  expected: { categories: [minor] }

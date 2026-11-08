@@ -1,0 +1,5 @@
+description: "sensitive: none: blank ID template, no data"
+metadata: { id: id-card-blank-template }
+vars:
+  image: file://../../corpus/images/id-card-blank-template.png
+  expected: { categories: [] }

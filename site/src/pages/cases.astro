@@ -5,7 +5,7 @@
 import Base from '../layouts/Base.astro'
 import Boxes from '../components/Boxes.astro'
 import Shot from '../components/Shot.astro'
-import { data, describeExpected, href, imageSuites, isEdit, isRegions, isSimilarity, modelSlug, show, type CaseView } from '../lib/data'
+import { data, describeExpected, href, imageSuites, isEdit, isRegions, isSearch, isSimilarity, modelSlug, show, type CaseView } from '../lib/data'
 
 const gallery = new Set(imageSuites.map((s) => s.id))
 const rows = data.suites
@@ -110,7 +110,7 @@ const images = live.filter((r) => r.c.input.image).length
                       </div>
                       <div>
                         <h4>Expected</h4>
-                        {(isRegions(c.expected) || isEdit(c.expected) || isSimilarity(c.expected)) && <p>{describeExpected(c.expected)}</p>}
+                        {(isRegions(c.expected) || isEdit(c.expected) || isSimilarity(c.expected) || isSearch(c.expected)) && <p>{describeExpected(c.expected)}</p>}
                         <pre>{show(c.expected)}</pre>
                         {Array.isArray(c.absent) && c.absent.length > 0 && (
                           <>

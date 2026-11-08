@@ -1,0 +1,8 @@
+description: "search photos: a houseplant (7 relevant of 132)"
+metadata: { id: photos-dup-houseplant, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a houseplant"
+  relevant: ["copy-bright-oi-objects-2fba54286aaac20e","copy-crop10-oi-objects-948794bfee784412","copy-jpeg40-oi-objects-2fba54286aaac20e","copy-resize-oi-objects-948794bfee784412","oi-objects-2fba54286aaac20e","oi-objects-948794bfee784412","oi-objects-eccb080e57b2aac5"]
+  how: "Open Images: Houseplant; copies of a relevant photo count"

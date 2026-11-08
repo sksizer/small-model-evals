@@ -1,0 +1,8 @@
+description: "search photos: a grilled sandwich with cucumber and tomato slices (1 relevant of 132)"
+metadata: { id: photos-dup-grilled-sandwich, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a grilled sandwich with cucumber and tomato slices"
+  relevant: ["coffee-snacks-table"]
+  how: "judged by eye; copies of a relevant photo count"

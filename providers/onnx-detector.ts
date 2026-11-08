@@ -30,7 +30,7 @@ import { dirname, join } from 'node:path'
 import * as ort from 'onnxruntime-node'
 import sharp from 'sharp'
 
-interface Config {
+export interface Config {
   kind: 'yunet' | 'dbnet'
   repo: string
   revision: string
@@ -41,7 +41,7 @@ interface Config {
 }
 
 type Box = [number, number, number, number]
-interface Found {
+export interface Found {
   label: string
   score: number
   box: Box
@@ -181,6 +181,24 @@ async function dbnet(s: ort.InferenceSession, dataUrl: string, c: Config): Promi
   return found
 }
 
+/** Runs one detector on an image (a data URL); `loadMs` is set when this call paid for loading the weights. Shared with providers/sensitive-composite.ts. */
+export async function detect(c: Config, dataUrl: string | undefined): Promise<{ found: Found[]; detectMs: number; loadMs?: number }> {
+  const key = `${c.repo}@${c.revision}/${c.file}`
+  let loadMs: number | undefined
+  if (!sessions.has(key)) {
+    const t = performance.now()
+    const p = weights(c).then((path) => ort.InferenceSession.create(path))
+    sessions.set(key, p)
+    await p
+    loadMs = performance.now() - t
+  }
+  const s = await sessions.get(key)!
+  if (!dataUrl) throw new Error('vars.image is missing')
+  const t = performance.now()
+  const found = c.kind === 'yunet' ? await yunet(s, dataUrl, c) : await dbnet(s, dataUrl, c)
+  return { found, detectMs: performance.now() - t, ...(loadMs === undefined ? {} : { loadMs }) }
+}
+
 export default class OnnxDetector {
   private readonly config: Config
 
@@ -194,21 +212,7 @@ export default class OnnxDetector {
 
   async callApi(_prompt: string, context: { vars: { image?: string } }) {
     try {
-      const c = this.config
-      const key = `${c.repo}@${c.revision}/${c.file}`
-      let loadMs: number | undefined
-      if (!sessions.has(key)) {
-        const t = performance.now()
-        const p = weights(c).then((path) => ort.InferenceSession.create(path))
-        sessions.set(key, p)
-        await p
-        loadMs = performance.now() - t
-      }
-      const s = await sessions.get(key)!
-      if (!context.vars.image) throw new Error('vars.image is missing')
-      const t = performance.now()
-      const found = c.kind === 'yunet' ? await yunet(s, context.vars.image, c) : await dbnet(s, context.vars.image, c)
-      const detectMs = performance.now() - t
+      const { found, detectMs, loadMs } = await detect(this.config, context.vars.image)
       const r4 = (n: number) => Math.round(Math.min(1, Math.max(0, n)) * 10000) / 10000
       const boxes = found.map((f) => ({ label: f.label, score: Math.round(f.score * 1000) / 1000, box: f.box.map(r4) }))
       return {

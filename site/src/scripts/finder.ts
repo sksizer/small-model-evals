@@ -2,13 +2,20 @@
 // the page embeds, and keeps the whole view in the URL query so it can be shared.
 //
 // Query keys: t (task ids, comma separated), q, params, mem, min, speed, kind
-// (comma separated), perm=1, base=0, ret=1, machine, sort, dir. A key that is
-// absent means that filter is off (base is on unless base=0).
+// (comma separated), perm=1, base=0, ret=1, machine, fits, sort, dir. A key that is
+// absent means that filter is off (base is on unless base=0); `machine` falls back to the
+// machine picked on the last visit, and `fits` to the class of the chosen machine (`fits=any`
+// turns the badge off): every model shows its fit badge for that class. Nothing is hidden by
+// default; `nofit=1` hides the models that will not fit it.
 import { fmt, fmtDisk, fmtParams, fmtTime, modelSlug, tone } from '../lib/format'
-import type { FinderRow, FinderTask } from '../lib/data'
+import { FIT_WORDS, type FinderRow, type FinderTask, type FitStatus } from '../lib/data'
+import { remember, remembered } from './machine-pick'
 
-const payload = JSON.parse(document.getElementById('finder-data')!.textContent!) as { base: string; tasks: FinderTask[]; rows: FinderRow[] }
-const { base, tasks, rows } = payload
+const payload = JSON.parse(document.getElementById('finder-data')!.textContent!) as { base: string; tasks: FinderTask[]; rows: FinderRow[]; machines: { key: string; class: string }[] }
+const { base, tasks, rows, machines } = payload
+const classOfMachine = new Map(machines.map((m) => [m.key, m.class]))
+/** The class to test fit against until the viewer picks another: the chosen machine's own. */
+const defaultFits = (machine: string) => classOfMachine.get(machine) ?? ''
 const taskById = new Map(tasks.map((t) => [t.id, t]))
 
 const table = document.getElementById('finder-table') as HTMLTableElement
@@ -30,6 +37,10 @@ interface State {
   base: boolean
   ret: boolean
   machine: string
+  /** The class whose fit each model's badge shows; '' for none. */
+  fits: string
+  /** Hide models that will not fit that class. */
+  nofit: boolean
   sort: string
   dir: 'asc' | 'desc'
 }
@@ -39,6 +50,9 @@ const list = (v: string | null) => (v ? v.split(',').filter(Boolean) : [])
 
 function read(): State {
   const p = new URLSearchParams(location.search)
+  const wanted = p.get('machine') ?? remembered() ?? ''
+  const machine = classOfMachine.has(wanted) ? wanted : (machines[0]?.key ?? '')
+  const fits = p.get('fits')
   return {
     tasks: list(p.get('t')).filter((t) => taskById.has(t)),
     q: p.get('q') ?? '',
@@ -50,7 +64,9 @@ function read(): State {
     perm: p.get('perm') === '1',
     base: p.get('base') !== '0',
     ret: p.get('ret') === '1',
-    machine: p.get('machine') ?? '',
+    machine,
+    nofit: p.get('nofit') === '1',
+    fits: fits === null ? defaultFits(machine) : fits === 'any' ? '' : fits,
     sort: p.get('sort') ?? 'avg',
     dir: p.get('dir') === 'asc' ? 'asc' : 'desc',
   }
@@ -63,6 +79,8 @@ function show(s: State): void {
   const set = (k: string, v: string) => { const f = field(k); if (f) f.value = v }
   set('q', s.q); set('params', s.params); set('mem', s.mem); set('min', s.min); set('speed', s.speed)
   if (s.machine) set('machine', s.machine)
+  set('fits', s.fits)
+  toggle('nofit').checked = s.nofit
   toggle('perm').checked = s.perm
   toggle('base').checked = s.base
   toggle('ret').checked = s.ret
@@ -83,7 +101,10 @@ function collect(prev: State): State {
     perm: toggle('perm').checked,
     base: toggle('base').checked,
     ret: toggle('ret').checked,
-    machine: v('machine'),
+    machine: v('machine') || prev.machine,
+    nofit: toggle('nofit').checked,
+    // Changing machine moves the fit class with it, unless the viewer chose another class.
+    fits: v('machine') && v('machine') !== prev.machine && prev.fits === defaultFits(prev.machine) ? defaultFits(v('machine')) : v('fits'),
   }
 }
 
@@ -91,7 +112,10 @@ function write(s: State): void {
   const p = new URLSearchParams()
   if (s.tasks.length) p.set('t', s.tasks.join(','))
   if (s.q) p.set('q', s.q)
-  for (const k of ['params', 'mem', 'min', 'speed', 'machine'] as const) if (s[k]) p.set(k, s[k])
+  for (const k of ['params', 'mem', 'min', 'speed'] as const) if (s[k]) p.set(k, s[k])
+  if (machines.length > 1 && s.machine) p.set('machine', s.machine)
+  if (s.nofit) p.set('nofit', '1')
+  if (s.fits !== defaultFits(s.machine)) p.set('fits', s.fits || 'any')
   if (s.kinds.length) p.set('kind', s.kinds.join(','))
   if (s.perm) p.set('perm', '1')
   if (!s.base) p.set('base', '0')
@@ -113,12 +137,13 @@ function figures(r: FinderRow, chosen: string[]) {
 
 function keep(r: FinderRow, s: State, f: ReturnType<typeof figures>): boolean {
   if (s.machine && r.machine !== s.machine) return false
+  if (s.nofit && s.fits && r.fits[s.fits] === 'wont') return false
   if (!s.base && r.baseline) return false
   if (!s.ret && r.retired) return false
   if (s.perm && !r.permissive) return false
   if (s.kinds.length > 0 && !s.kinds.includes(r.kind ?? '')) return false
   if (s.params && !(r.parameters !== null && r.parameters <= Number(s.params))) return false
-  if (s.mem && !(r.memory !== null && r.memory.gb <= Number(s.mem))) return false
+  if (s.mem && !(r.memory !== null && memoryGb(r) <= Number(s.mem))) return false
   if (s.min && !(f.worst >= Number(s.min))) return false
   if (s.speed && s.tasks.length > 0 && !(f.speed !== null && f.speed <= Number(s.speed))) return false
   const words = s.q.toLowerCase().split(/\s+/).filter(Boolean)
@@ -133,7 +158,8 @@ function key(r: FinderRow, f: ReturnType<typeof figures>, sort: string): number 
     case 'model': return r.model.toLowerCase()
     case 'kind': return r.kind ?? null
     case 'params': return r.parameters
-    case 'mem': return r.memory?.gb ?? null
+    case 'mem': return r.memory ? memoryGb(r) : null
+    case 'fit': return r.need.gib
     case 'disk': return r.disk_gb
     case 'licence': return r.licence?.toLowerCase() ?? null
     case 'speed': return f.speed
@@ -143,26 +169,41 @@ function key(r: FinderRow, f: ReturnType<typeof figures>, sort: string): number 
 
 const BASIS = { loaded: 'loaded', rss: 'rss ≤', peak: 'peak' } as const
 
+/** The memory the Memory filter and sort use: the larger of the fresh load and the in-suite peak, since a limit has to hold in use. */
+const memoryGb = (r: FinderRow): number => Math.max(r.memory?.gb ?? 0, r.memory?.peak?.gb ?? 0)
+
+/** "8K", "4K": a context window in tokens. */
+const ctxLabel = (ctx: number | null): string => (ctx ? `${ctx / 1024}K` : '')
+
 function head(s: State): string {
   const th = (sortKey: string, label: string, cls = '', title = '') => {
     const dir = s.sort === sortKey ? ` data-dir="${s.dir}"` : ''
     return `<th data-sort="${esc(sortKey)}" class="${cls}"${dir}${title ? ` title="${esc(title)}"` : ''} tabindex="0">${label}</th>`
   }
-  return `<tr>${th('model', 'Model', 'pin')}${th('kind', 'Kind')}${th('params', 'Params', 'num', 'Total weights')}${th('mem', 'Memory', 'num', 'Measured while it ran; see the note below')}${th('disk', 'Disk', 'num', 'Download size')}${th('licence', 'Licence')}${s.tasks.map((t) => th(`t:${t}`, esc(taskById.get(t)!.label), 'num task-h', taskById.get(t)!.about)).join('')}${th('speed', 'Slowdown', 'num', 'Time over the fastest model on the same task, worst over the ticked tasks')}${th('avg', 'Average', 'num', 'Mean pass rate over the ticked tasks, or over everything the model ran')}</tr>`
+  return `<tr>${th('model', 'Model', 'pin')}${th('kind', 'Kind')}${th('params', 'Params', 'num', 'Total weights')}${th('mem', 'Memory', 'num', 'Measured while it ran; see the note below')}${th('fit', 'Fits', '', 'Whether its memory need fits the class picked under Fits on; sorted by the need')}${th('disk', 'Disk', 'num', 'Download size')}${th('licence', 'Licence')}${s.tasks.map((t) => th(`t:${t}`, esc(taskById.get(t)!.label), 'num task-h', taskById.get(t)!.about)).join('')}${th('speed', 'Slowdown', 'num', 'Time over the fastest model on the same task, worst over the ticked tasks')}${th('avg', 'Average', 'num', 'Mean pass rate over the ticked tasks, or over everything the model ran')}</tr>`
 }
 
 function line(r: FinderRow, s: State, f: ReturnType<typeof figures>): string {
   const flags = `${r.baseline ? ` <span class="pill stale" title="${esc(r.baseline)}">baseline</span>` : ''}${r.retired ? ` <span class="pill fail" title="${esc(r.retired)}">retired</span>` : ''}`
-  const mem = r.memory ? `${fmtDisk(r.memory.gb)}<small>${BASIS[r.memory.basis]}</small>` : '<span class="muted">—</span>'
+  const peak = r.memory?.peak
+  const mem = r.memory
+    ? `${fmtDisk(r.memory.gb)}<small>${BASIS[r.memory.basis]}${r.memory.basis === 'loaded' ? ` · ${ctxLabel(r.memory.ctx)} ctx, fresh` : ''}</small>${
+        peak && peak.gb > r.memory.gb * 1.05
+          ? `<span title="${esc(`The largest size Ollama reported inside the ${peak.suite} suite (${peak.requests} requests${peak.ctx ? `, ${ctxLabel(peak.ctx)} context` : ''}). It ramps up request by request when images are sent, so it is higher than a fresh load.`)}">${fmtDisk(peak.gb)}<small>peak in ${esc(peak.suite)}${peak.ctx ? ` · ${ctxLabel(peak.ctx)} ctx` : ''}</small></span>`
+          : ''
+      }`
+    : '<span class="muted">—</span>'
+  const fit = s.fits ? (r.fits[s.fits] as FitStatus) : null
+  const fits = fit ? `<span class="pill fit ${fit}" title="${esc(`${s.fits}: ${r.need.gib === null ? 'need unknown' : `needs ${fmt((r.need.gib * 2 ** 30) / 1e9, 1)} GB`} (${r.need.note})`)}">${FIT_WORDS[fit]}</span>${r.need.gib === null ? '' : `<small>${fmt((r.need.gib * 2 ** 30) / 1e9, 1)} GB</small>`}` : '<span class="muted">—</span>'
   const cells = s.tasks
     .map((t) => {
       const c = r.cells[t]!
       const rate = Math.round(c.rate)
-      return `<td class="heat ${tone(rate)}"><a href="${base}/results/?suite=${encodeURIComponent(t)}&model=${encodeURIComponent(r.model)}">${rate}%</a><small>${c.passed}/${c.total} · ${fmtTime(c.time_ms, c.time_per)}${c.stale ? ' · stale' : ''}</small></td>`
+      return `<td class="heat ${tone(rate)}"><a href="${base}/results/?suite=${encodeURIComponent(t.split(':')[0]!)}&model=${encodeURIComponent(r.model)}">${rate}%</a><small>${c.passed}/${c.total} · ${fmtTime(c.time_ms, c.time_per)}${c.stale ? ' · stale' : ''}</small></td>`
     })
     .join('')
   const speed = f.speed === null ? '<span class="muted">—</span>' : `×${fmt(f.speed, 1)}`
-  return `<tr><td class="pin"><a href="${base}/models/${modelSlug(r.model)}/">${esc(r.model)}</a>${flags}<small>${esc(r.publisher ?? '')}${r.released ? ` · ${esc(r.released)}` : ''}</small></td><td style="font-size:12px;white-space:nowrap">${esc(r.kind ?? '—')}</td><td class="num" title="${esc(r.parameters_note ?? '')}">${fmtParams(r.parameters)}</td><td class="num">${mem}</td><td class="num">${fmtDisk(r.disk_gb)}</td><td style="font-size:12px;min-width:7em">${esc(r.licence ?? '—')}</td>${cells}<td class="num">${speed}</td><td class="num"><strong>${Math.round(f.avg)}%</strong>${s.tasks.length === 0 ? `<small>${Object.keys(r.cells).length} task${Object.keys(r.cells).length === 1 ? '' : 's'}</small>` : ''}</td></tr>`
+  return `<tr><td class="pin"><a href="${base}/models/${modelSlug(r.model)}/">${esc(r.model)}</a>${flags}<small>${esc(r.publisher ?? '')}${r.released ? ` · ${esc(r.released)}` : ''}</small></td><td style="font-size:12px;white-space:nowrap">${esc(r.kind ?? '—')}</td><td class="num" title="${esc(r.parameters_note ?? '')}">${fmtParams(r.parameters)}</td><td class="num">${mem}</td><td>${fits}</td><td class="num">${fmtDisk(r.disk_gb)}</td><td style="font-size:12px;min-width:7em">${esc(r.licence ?? '—')}</td>${cells}<td class="num">${speed}</td><td class="num"><strong>${Math.round(f.avg)}%</strong>${s.tasks.length === 0 ? `<small>${Object.keys(r.cells).length} task${Object.keys(r.cells).length === 1 ? '' : 's'}</small>` : ''}</td></tr>`
 }
 
 let state = read()
@@ -181,8 +222,10 @@ function render(): void {
   })
   table.tHead!.innerHTML = head(s)
   table.tBodies[0]!.innerHTML =
-    out.length > 0 ? out.map(({ r, f }) => line(r, s, f)).join('') : `<tr><td class="empty" colspan="${8 + s.tasks.length}">No model matches. Loosen a limit or untick a task.</td></tr>`
-  count.textContent = `${out.length} of ${rows.length} models`
+    out.length > 0 ? out.map(({ r, f }) => line(r, s, f)).join('') : `<tr><td class="empty" colspan="${9 + s.tasks.length}">No model matches. Loosen a limit or untick a task.</td></tr>`
+  // Models hidden only because they will not fit the chosen class, so the filter is never silent.
+  const unfit = rows.filter((r) => s.tasks.every((t) => r.cells[t]) && keep(r, { ...s, nofit: false }, figures(r, s.tasks))).length - out.length
+  count.textContent = `${out.length} of ${rows.length} models${unfit > 0 ? ` · ${unfit} hidden: won't fit ${s.fits}` : ''}`
   document.querySelector('[data-kind-summary]')!.textContent = s.kinds.length > 0 ? `Kind: ${s.kinds.length} chosen` : 'Kind: all'
   write(s)
 }
@@ -207,6 +250,7 @@ table.tHead!.addEventListener('keydown', (e) => {
 for (const el of document.querySelectorAll<HTMLElement>('#finder-tasks, #finder-filters')) {
   const onChange = () => {
     state = collect(state)
+    if (machines.length > 1) remember(state.machine)
     render()
   }
   el.addEventListener('change', onChange)

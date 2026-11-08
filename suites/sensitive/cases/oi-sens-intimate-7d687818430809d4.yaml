@@ -1,0 +1,5 @@
+description: "sensitive: intimate: adult man in jeans and underwear waistband, jacket open"
+metadata: { id: oi-sens-intimate-7d687818430809d4 }
+vars:
+  image: file://../../corpus/images/oi-sens-intimate-7d687818430809d4.jpg
+  expected: { categories: [intimate] }

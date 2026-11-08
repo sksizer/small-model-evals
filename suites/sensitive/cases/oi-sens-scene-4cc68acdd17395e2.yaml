@@ -1,0 +1,5 @@
+description: "sensitive: none: landscape"
+metadata: { id: oi-sens-scene-4cc68acdd17395e2 }
+vars:
+  image: file://../../corpus/images/oi-sens-scene-4cc68acdd17395e2.jpg
+  expected: { categories: [] }

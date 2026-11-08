@@ -1,0 +1,894 @@
+{
+  "suite": "regions-objects",
+  "fingerprint": "08b0e76f3d66",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:fbf7ea45a9b87b74a24175d5dfde31ab6b2fb25f0d8b1f9e9413c5f07c179fc9"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "regions-objects — box everyday things",
+    "prompts": [
+      "{{ find }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "dtype": "fp32",
+          "labels": {
+            "aeroplane": "airplane",
+            "diningtable": "dining table",
+            "motorbike": "motorcycle",
+            "pottedplant": "potted plant",
+            "sofa": "couch",
+            "tvmonitor": "tv"
+          },
+          "model": "onnx-community/dfine_n_coco-ONNX",
+          "revision": "380d2839c327efaf65dd0fe0c2c10ab7fadd5473",
+          "task": "object-detection",
+          "threshold": 0.5
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "dfine-n"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "labels": {
+            "aeroplane": "airplane",
+            "diningtable": "dining table",
+            "motorbike": "motorcycle",
+            "pottedplant": "potted plant",
+            "sofa": "couch",
+            "tvmonitor": "tv"
+          },
+          "model": "onnx-community/dfine_n_coco-ONNX",
+          "revision": "380d2839c327efaf65dd0fe0c2c10ab7fadd5473",
+          "task": "object-detection",
+          "threshold": 0.3
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "dfine-n-t0.3"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "labels": {
+            "aeroplane": "airplane",
+            "diningtable": "dining table",
+            "motorbike": "motorcycle",
+            "pottedplant": "potted plant",
+            "sofa": "couch",
+            "tvmonitor": "tv"
+          },
+          "model": "onnx-community/dfine_s_coco-ONNX",
+          "revision": "a3cf03147a9b86c78475139115c8ac142577352d",
+          "task": "object-detection",
+          "threshold": 0.5
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "dfine-s"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "labels": {
+            "aeroplane": "airplane",
+            "diningtable": "dining table",
+            "motorbike": "motorcycle",
+            "pottedplant": "potted plant",
+            "sofa": "couch",
+            "tvmonitor": "tv"
+          },
+          "model": "onnx-community/rtdetr_r18vd",
+          "revision": "f2bee7444f4c29003df7e9ef07c4c1c6632eca6f",
+          "task": "object-detection",
+          "threshold": 0.5
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "rtdetr-r18"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/owlv2-base-patch16-ensemble-ONNX",
+          "revision": "180d6ef7599bd69bb48db5c72bd49ad03ddfab80",
+          "task": "zero-shot-object-detection",
+          "threshold": 0.2
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "owlv2-base-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "join_phrases": true,
+          "model": "onnx-community/grounding-dino-tiny-ONNX",
+          "revision": "ff690b0a8050566c290287545bd059350f3e9096",
+          "task": "zero-shot-object-detection",
+          "threshold": 0.3
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "grounding-dino-tiny-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/Florence-2-base",
+          "revision": "d59e079711c57174f29265539fb4cc9f0f335916",
+          "task": "od"
+        },
+        "id": "sha256:30f819e7bb93fa05e1137015480b04a7821d38918f91f3388216c9f74e1d6261",
+        "label": "florence2-base-od-q8"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:4b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:9b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "model": "gemma4:e4b",
+          "order": "yxyx",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "model": "lfm3-vl:2b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "lfm3-vl:2b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "bed813328b89",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/search.ts": "9502e3f85933",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/search.ts": "730d7829fa38",
+    "providers/sensitive-composite.ts": "78b6be0406c7",
+    "providers/similarity-search.ts": "7a69269b6c84",
+    "providers/zero-shot.ts": "5593d1a832c8"
+  },
+  "setup_hash": "dbc467093406",
+  "cases": {
+    "oi-objects-0fd512f1bffb8cf3": {
+      "hash": "cae0f3525ab3",
+      "def": {
+        "description": "objects: dog, car (Open Images 0fd512f1bffb8cf3)",
+        "metadata": {
+          "id": "oi-objects-0fd512f1bffb8cf3"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-0fd512f1bffb8cf3.jpg",
+          "find": [
+            "dog",
+            "car"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "dog"
+                ],
+                "box": [
+                  0.0859,
+                  0.1354,
+                  0.4422,
+                  0.5021
+                ]
+              },
+              {
+                "label": [
+                  "dog"
+                ],
+                "box": [
+                  0.3984,
+                  0.2417,
+                  0.7219,
+                  0.5188
+                ]
+              },
+              {
+                "label": [
+                  "car"
+                ],
+                "box": [
+                  0,
+                  0,
+                  0.9984,
+                  0.9979
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-25d107f1590c1772": {
+      "hash": "39bdbc1b91ff",
+      "def": {
+        "description": "objects: coffee cup, bowl (Open Images 25d107f1590c1772)",
+        "metadata": {
+          "id": "oi-objects-25d107f1590c1772"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-25d107f1590c1772.jpg",
+          "find": [
+            "cup",
+            "bowl"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "cup",
+                  "coffee cup",
+                  "mug"
+                ],
+                "box": [
+                  0.3297,
+                  0.1875,
+                  0.8578,
+                  0.725
+                ]
+              },
+              {
+                "label": [
+                  "bowl"
+                ],
+                "box": [
+                  0,
+                  0.0354,
+                  0.3375,
+                  0.4396
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-28bd6c6b1050e055": {
+      "hash": "3721b1eef62b",
+      "def": {
+        "description": "objects: car, cat (Open Images 28bd6c6b1050e055)",
+        "metadata": {
+          "id": "oi-objects-28bd6c6b1050e055"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-28bd6c6b1050e055.jpg",
+          "find": [
+            "car",
+            "cat"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "car"
+                ],
+                "box": [
+                  0,
+                  0,
+                  1,
+                  0.7566
+                ]
+              },
+              {
+                "label": [
+                  "cat"
+                ],
+                "box": [
+                  0.6327,
+                  0.7788,
+                  0.8083,
+                  0.9137
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-2b2c4fe6d63a13e4": {
+      "hash": "1af69e0cb9b7",
+      "def": {
+        "description": "objects: chair, chair/couch, couch (Open Images 2b2c4fe6d63a13e4)",
+        "metadata": {
+          "id": "oi-objects-2b2c4fe6d63a13e4"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-2b2c4fe6d63a13e4.jpg",
+          "find": [
+            "chair",
+            "couch"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "chair"
+                ],
+                "box": [
+                  0.0882,
+                  0.3636,
+                  0.2221,
+                  0.6364
+                ]
+              },
+              {
+                "label": [
+                  "chair"
+                ],
+                "box": [
+                  0.2162,
+                  0.3681,
+                  0.3588,
+                  0.6475
+                ]
+              },
+              {
+                "label": [
+                  "chair"
+                ],
+                "box": [
+                  0.3015,
+                  0.3282,
+                  0.3824,
+                  0.5565
+                ]
+              },
+              {
+                "label": [
+                  "chair",
+                  "couch",
+                  "sofa"
+                ],
+                "box": [
+                  0.7779,
+                  0.3725,
+                  1,
+                  0.7494
+                ]
+              },
+              {
+                "label": [
+                  "couch",
+                  "sofa"
+                ],
+                "box": [
+                  0.4971,
+                  0.3215,
+                  0.8132,
+                  0.643
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-2fba54286aaac20e": {
+      "hash": "3f895fa5ff6f",
+      "def": {
+        "description": "objects: bicycle, houseplant (Open Images 2fba54286aaac20e)",
+        "metadata": {
+          "id": "oi-objects-2fba54286aaac20e"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-2fba54286aaac20e.jpg",
+          "find": [
+            "bicycle",
+            "potted plant"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "bicycle",
+                  "bike"
+                ],
+                "box": [
+                  0.1721,
+                  0.1707,
+                  0.9059,
+                  0.9246
+                ]
+              },
+              {
+                "label": [
+                  "potted plant",
+                  "houseplant",
+                  "plant"
+                ],
+                "box": [
+                  0,
+                  0.2683,
+                  0.3132,
+                  0.9113
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-5b7ab3baf4c0492f": {
+      "hash": "78e176ad5a35",
+      "def": {
+        "description": "objects: dog, bicycle (Open Images 5b7ab3baf4c0492f)",
+        "metadata": {
+          "id": "oi-objects-5b7ab3baf4c0492f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-5b7ab3baf4c0492f.jpg",
+          "find": [
+            "dog",
+            "bicycle"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "dog"
+                ],
+                "box": [
+                  0.0724,
+                  0.2958,
+                  0.9675,
+                  0.883
+                ]
+              },
+              {
+                "label": [
+                  "dog"
+                ],
+                "box": [
+                  0.4889,
+                  0.4614,
+                  0.9409,
+                  0.8146
+                ]
+              },
+              {
+                "label": [
+                  "bicycle",
+                  "bike"
+                ],
+                "box": [
+                  0.4993,
+                  0,
+                  1,
+                  0.2605
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-5ea13fbbd1a1474f": {
+      "hash": "278cd0700046",
+      "def": {
+        "description": "objects: chair, bicycle (Open Images 5ea13fbbd1a1474f)",
+        "metadata": {
+          "id": "oi-objects-5ea13fbbd1a1474f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-5ea13fbbd1a1474f.jpg",
+          "find": [
+            "chair",
+            "bicycle"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "chair"
+                ],
+                "box": [
+                  0.1125,
+                  0.2506,
+                  0.4969,
+                  0.8103
+                ]
+              },
+              {
+                "label": [
+                  "chair"
+                ],
+                "box": [
+                  0.5453,
+                  0.2459,
+                  0.9313,
+                  0.8126
+                ]
+              },
+              {
+                "label": [
+                  "bicycle",
+                  "bike"
+                ],
+                "box": [
+                  0,
+                  0.2576,
+                  0.1063,
+                  0.5059
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-7408fef212a5d3bc": {
+      "hash": "ed531ee90131",
+      "def": {
+        "description": "objects: computer keyboard, laptop (Open Images 7408fef212a5d3bc)",
+        "metadata": {
+          "id": "oi-objects-7408fef212a5d3bc"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-7408fef212a5d3bc.jpg",
+          "find": [
+            "keyboard",
+            "laptop"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "keyboard"
+                ],
+                "box": [
+                  0,
+                  0.7042,
+                  0.8828,
+                  1
+                ]
+              },
+              {
+                "label": [
+                  "laptop"
+                ],
+                "box": [
+                  0.0484,
+                  0,
+                  0.5359,
+                  0.6854
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-948794bfee784412": {
+      "hash": "a33ce8a824f7",
+      "def": {
+        "description": "objects: dog, houseplant (Open Images 948794bfee784412)",
+        "metadata": {
+          "id": "oi-objects-948794bfee784412"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-948794bfee784412.jpg",
+          "find": [
+            "dog",
+            "potted plant"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "dog"
+                ],
+                "box": [
+                  0.2581,
+                  0.208,
+                  0.9425,
+                  1
+                ]
+              },
+              {
+                "label": [
+                  "potted plant",
+                  "houseplant",
+                  "plant"
+                ],
+                "box": [
+                  0.4351,
+                  0,
+                  1,
+                  0.3628
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-a7e5d2727af4299d": {
+      "hash": "1609c8709e4c",
+      "def": {
+        "description": "objects: computer keyboard, laptop (Open Images a7e5d2727af4299d)",
+        "metadata": {
+          "id": "oi-objects-a7e5d2727af4299d"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-a7e5d2727af4299d.jpg",
+          "find": [
+            "keyboard",
+            "laptop"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "keyboard"
+                ],
+                "box": [
+                  0.532,
+                  0.5282,
+                  0.9766,
+                  0.6639
+                ]
+              },
+              {
+                "label": [
+                  "laptop"
+                ],
+                "box": [
+                  0,
+                  0,
+                  0.8253,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-d8cac8b54e9fa89c": {
+      "hash": "d0698097fdd6",
+      "def": {
+        "description": "objects: dog, car, couch (Open Images d8cac8b54e9fa89c)",
+        "metadata": {
+          "id": "oi-objects-d8cac8b54e9fa89c"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-d8cac8b54e9fa89c.jpg",
+          "find": [
+            "dog",
+            "car",
+            "couch"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "dog"
+                ],
+                "box": [
+                  0.3625,
+                  0.3563,
+                  1,
+                  1
+                ]
+              },
+              {
+                "label": [
+                  "car"
+                ],
+                "box": [
+                  0.0016,
+                  0.8333,
+                  0.0516,
+                  0.9542
+                ]
+              },
+              {
+                "label": [
+                  "car"
+                ],
+                "box": [
+                  0.0875,
+                  0.7521,
+                  0.2547,
+                  0.8708
+                ]
+              },
+              {
+                "label": [
+                  "couch",
+                  "sofa"
+                ],
+                "box": [
+                  0.4625,
+                  0.1833,
+                  0.9984,
+                  0.9979
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-e51e3156ed41b3a8": {
+      "hash": "4d893a60076e",
+      "def": {
+        "description": "objects: bottle, wine glass (Open Images e51e3156ed41b3a8)",
+        "metadata": {
+          "id": "oi-objects-e51e3156ed41b3a8"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-e51e3156ed41b3a8.jpg",
+          "find": [
+            "bottle",
+            "wine glass"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "bottle"
+                ],
+                "box": [
+                  0,
+                  0,
+                  0.2574,
+                  1
+                ]
+              },
+              {
+                "label": [
+                  "wine glass"
+                ],
+                "box": [
+                  0.0853,
+                  0.0976,
+                  0.5162,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-eccb080e57b2aac5": {
+      "hash": "7f54fee00642",
+      "def": {
+        "description": "objects: houseplant, bench (Open Images eccb080e57b2aac5)",
+        "metadata": {
+          "id": "oi-objects-eccb080e57b2aac5"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-eccb080e57b2aac5.jpg",
+          "find": [
+            "potted plant",
+            "bench"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "potted plant",
+                  "houseplant",
+                  "plant"
+                ],
+                "box": [
+                  0.0956,
+                  0.3259,
+                  0.3397,
+                  0.6696
+                ]
+              },
+              {
+                "label": [
+                  "bench"
+                ],
+                "box": [
+                  0.2162,
+                  0.8027,
+                  0.3441,
+                  0.9978
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-objects-ee47ccab89a75d0d": {
+      "hash": "49682aed70c3",
+      "def": {
+        "description": "objects: chair, couch (Open Images ee47ccab89a75d0d)",
+        "metadata": {
+          "id": "oi-objects-ee47ccab89a75d0d"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-ee47ccab89a75d0d.jpg",
+          "find": [
+            "chair",
+            "couch"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "chair"
+                ],
+                "box": [
+                  0.0649,
+                  0.073,
+                  0.9499,
+                  0.9956
+                ]
+              },
+              {
+                "label": [
+                  "couch",
+                  "sofa"
+                ],
+                "box": [
+                  0.9572,
+                  0.2677,
+                  0.9956,
+                  0.6527
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

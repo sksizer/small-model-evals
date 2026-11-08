@@ -1,0 +1,8 @@
+description: "search photos: the front of a black car with a number plate (3 relevant of 132)"
+metadata: { id: photos-dup-car-front-plate, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "the front of a black car with a number plate"
+  relevant: ["copy-bright-oi-objects-28bd6c6b1050e055","copy-jpeg40-oi-objects-28bd6c6b1050e055","oi-objects-28bd6c6b1050e055"]
+  how: "judged by eye; copies of a relevant photo count"

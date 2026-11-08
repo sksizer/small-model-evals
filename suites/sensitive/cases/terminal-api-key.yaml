@@ -1,0 +1,5 @@
+description: "sensitive: credential, screen: API keys and database password in a terminal"
+metadata: { id: terminal-api-key }
+vars:
+  image: file://../../corpus/images/terminal-api-key.png
+  expected: { categories: [credential, screen] }

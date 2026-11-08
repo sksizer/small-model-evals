@@ -1,0 +1,5 @@
+description: "sensitive: financial, screen: banking app with balances"
+metadata: { id: online-banking-screen }
+vars:
+  image: file://../../corpus/images/online-banking-screen.png
+  expected: { categories: [financial, screen] }

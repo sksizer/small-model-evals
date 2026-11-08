@@ -1,0 +1,8 @@
+description: "search docs: bus timetable (1 relevant of 44)"
+metadata: { id: docs-bus-timetable, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "bus timetable"
+  relevant: ["bus-timetable"]
+  how: "judged by eye"

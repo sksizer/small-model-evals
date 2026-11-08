@@ -1,0 +1,8 @@
+description: "search text: attaching a garden hose to the outside tap (1 relevant of 88)"
+metadata: { id: text-note-hose-connector, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "attaching a garden hose to the outside tap"
+  relevant: ["n77"]
+  how: "judged by reading"

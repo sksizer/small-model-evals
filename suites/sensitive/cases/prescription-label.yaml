@@ -1,0 +1,5 @@
+description: "sensitive: medical: pharmacy label with patient, drug and condition"
+metadata: { id: prescription-label }
+vars:
+  image: file://../../corpus/images/prescription-label.png
+  expected: { categories: [medical] }

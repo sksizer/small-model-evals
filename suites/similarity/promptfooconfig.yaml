@@ -8,12 +8,13 @@
 # the first four and the rest of the pool is `other`.
 #
 # No Ollama: two perceptual hashes (pHash, dHash; no weights, the no-ML
-# baseline) and image encoders (DINOv2, DINOv3, SigLIP 2, CLIP) run in-process
-# by providers/image-embed.ts. Similarity is the Hamming similarity of the
+# baseline) and image encoders (DINOv2, DINOv3, SigLIP 2, CLIP, and the image side of three
+# text+image embedders that the search suite also runs: EmbeddingGemma 2, a nomic text+vision pair, Jina CLIP v2) run in-process
+# by providers/image-embed.ts (the three text+image embedders by providers/similarity-search.ts). Similarity is the Hamming similarity of the
 # hashes or the cosine of the encoders' L2-normalised vectors. Scored by
 # assertions/similarity.ts: average precision over the copy, edit and scene
-# items, with recall@1 and @5 per level (stronger levels set aside), pass at 0.7. Encoders run at fp32;
-# CLIP and SigLIP load their vision tower only. CLIP is Xenova's ONNX export
+# items, with recall@1 and @5 per level (stronger levels set aside), pass at 0.7. Encoders run at fp32
+# except EmbeddingGemma 2 and Jina CLIP v2 (q8, the builds that fit in memory); CLIP and SigLIP load their vision tower only. CLIP is Xenova's ONNX export
 # because onnx-community's CLIP repos hold one combined model with no
 # separate vision file.
 #
@@ -34,6 +35,11 @@ providers:
   - { id: file://../../providers/image-embed.ts, label: siglip2-base, config: { kind: embed, tower: siglip, model: onnx-community/siglip2-base-patch16-224-ONNX, revision: ba1f3b0843f24bc5417d38e19c37b287d719b2f4, dtype: fp32 } }
   - { id: file://../../providers/image-embed.ts, label: clip-vit-b32, config: { kind: embed, tower: clip, model: Xenova/clip-vit-base-patch32, revision: 6b7c523703ae26e39be4b03774966f8571c7f523, dtype: fp32 } }
   - { id: file://../../providers/image-embed.ts, label: clip-vit-b16, config: { kind: embed, tower: clip, model: Xenova/clip-vit-base-patch16, revision: 342fdf2f67aded64d138ff074745fb4a5d2bba5f, dtype: fp32 } }
+
+  # Text+image embedders (also providers of the search suite): their image side only, no text prefix.
+  - { id: file://../../providers/similarity-search.ts, label: embeddinggemma2, config: { family: egemma2, model: onnx-community/embeddinggemma-2-ONNX, revision: daa72c51243991dfcaf9f9137d2c573d8f7790c0, dtype: q8, modalities: text+image } }
+  - { id: file://../../providers/similarity-search.ts, label: nomic-embed-v1.5-pair, config: { family: nomic-pair, model: nomic-ai/nomic-embed-text-v1.5, revision: e9b6763023c676ca8431644204f50c2b100d9aab, vision_model: nomic-ai/nomic-embed-vision-v1.5, vision_revision: e3a725bce72db07ca4adb1d83da08903f3ee02f8 } }
+  - { id: file://../../providers/similarity-search.ts, label: jina-clip-v2, config: { family: jina-clip-v2, model: jinaai/jina-clip-v2, revision: e10d47f5691d0454a0fb5d13f46f2199b74cb436, dtype: q8 } }
 
 defaultTest:
   options: { disableVarExpansion: true }

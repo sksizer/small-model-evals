@@ -1,0 +1,8 @@
+description: "search photos: pendant lamps with letters cut into them (1 relevant of 132)"
+metadata: { id: photos-dup-pendant-lamps, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "pendant lamps with letters cut into them"
+  relevant: ["oi-find-743dbcab02a9971e"]
+  how: "judged by eye; copies of a relevant photo count"

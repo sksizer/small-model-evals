@@ -1,0 +1,8 @@
+description: "search text: unsalted butter (1 relevant of 7793)"
+metadata: { id: text-food-unsalted-butter, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "unsalted butter"
+  relevant: ["f173430"]
+  how: "rule on the name: Butter, without salt"

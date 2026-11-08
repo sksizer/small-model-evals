@@ -1,0 +1,5 @@
+description: "sensitive: none: nude art, hard negative (as nudity-flag)"
+metadata: { id: art-statue-venus }
+vars:
+  image: file://../../corpus/images/art-statue-venus.jpg
+  expected: { categories: [] }

@@ -1,0 +1,8 @@
+description: "search photos: a bicycle (12 relevant of 132)"
+metadata: { id: photos-dup-bicycle, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a bicycle"
+  relevant: ["bike-parking-oakland","copy-bright-oi-objects-2fba54286aaac20e","copy-crop10-bike-parking-oakland","copy-flip-oi-objects-5b7ab3baf4c0492f","copy-jpeg40-oi-objects-2fba54286aaac20e","copy-resize-bike-parking-oakland","copy-resize-oi-objects-5b7ab3baf4c0492f","oi-find-6022a450df278025","oi-find-8f08cb18c27fbaa7","oi-objects-2fba54286aaac20e","oi-objects-5b7ab3baf4c0492f","oi-objects-5ea13fbbd1a1474f"]
+  how: "Open Images: Bicycle; by eye: 1 Commons or unannotated photo; copies of a relevant photo count"

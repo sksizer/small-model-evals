@@ -1,0 +1,5 @@
+description: "sensitive: credential: password on a sticky note"
+metadata: { id: sticky-note-monitor }
+vars:
+  image: file://../../corpus/images/sticky-note-monitor.png
+  expected: { categories: [credential] }

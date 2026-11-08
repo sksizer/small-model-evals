@@ -1,0 +1,5 @@
+description: "sensitive: none: phone home screen with app icons"
+metadata: { id: oi-sens-screen-496f2bb90818bbb2 }
+vars:
+  image: file://../../corpus/images/oi-sens-screen-496f2bb90818bbb2.jpg
+  expected: { categories: [] }

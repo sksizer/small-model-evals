@@ -1,0 +1,5 @@
+description: "sensitive: screen, medical: calendar with oncology, mediation, AA entries"
+metadata: { id: calendar-private }
+vars:
+  image: file://../../corpus/images/calendar-private.png
+  expected: { categories: [screen, medical] }
