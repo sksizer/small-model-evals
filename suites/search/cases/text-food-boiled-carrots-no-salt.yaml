@@ -1,0 +1,8 @@
+description: "search text: boiled carrots without salt (2 relevant of 7793)"
+metadata: { id: text-food-boiled-carrots-no-salt, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "boiled carrots without salt"
+  relevant: ["f169984","f170394"]
+  how: "rule on the name: Carrots, (frozen,) cooked, boiled, drained, without salt"

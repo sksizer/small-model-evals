@@ -1,0 +1,301 @@
+{
+  "run": "2026-11-07T23-07-47",
+  "evals": [
+    {
+      "model": "florence2-base-od-q8",
+      "suite": "regions-faces",
+      "kind": null,
+      "start": {
+        "load_1m": 3.48,
+        "load_per_core": 0.35,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 66,
+        "swap_used_gib": 10.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "mediaanalysisd",
+            "cpu_pct": 81
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 71
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 4.48,
+        "load_per_core": 0.45,
+        "mem_available_gib": 6.5,
+        "mem_free_pct": 66,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "chrome-headless-shell",
+            "cpu_pct": 63
+          },
+          {
+            "name": "mmdc",
+            "cpu_pct": 46
+          }
+        ]
+      },
+      "flags": [
+        "10.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "mediaanalysisd is using 81% of a core: close it if you can",
+        "Storage is using 71% of a core: close it if you can",
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "chrome-headless-shell is using 63% of a core: close it if you can",
+        "mmdc is using 46% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "florence2-base-od-q8",
+      "suite": "regions-objects",
+      "kind": null,
+      "start": {
+        "load_1m": 4.48,
+        "load_per_core": 0.45,
+        "mem_available_gib": 6.5,
+        "mem_free_pct": 66,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "chrome-headless-shell",
+            "cpu_pct": 63
+          },
+          {
+            "name": "mmdc",
+            "cpu_pct": 46
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 4.94,
+        "load_per_core": 0.49,
+        "mem_available_gib": 6.1,
+        "mem_free_pct": 65,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "chrome-headless-shell is using 63% of a core: close it if you can",
+        "mmdc is using 46% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "florence2-base-ground-q8",
+      "suite": "regions-faces",
+      "kind": null,
+      "start": {
+        "load_1m": 4.94,
+        "load_per_core": 0.49,
+        "mem_available_gib": 6.1,
+        "mem_free_pct": 65,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 4.87,
+        "load_per_core": 0.49,
+        "mem_available_gib": 6.2,
+        "mem_free_pct": 65,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "florence2-base-ground-q8",
+      "suite": "regions-find",
+      "kind": null,
+      "start": {
+        "load_1m": 4.87,
+        "load_per_core": 0.49,
+        "mem_available_gib": 6.2,
+        "mem_free_pct": 65,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 4.9,
+        "load_per_core": 0.49,
+        "mem_available_gib": 6.2,
+        "mem_free_pct": 66,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "Storage",
+            "cpu_pct": 58
+          }
+        ]
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "Storage is using 58% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "florence2-base-ocr-q8",
+      "suite": "regions-text",
+      "kind": null,
+      "start": {
+        "load_1m": 4.9,
+        "load_per_core": 0.49,
+        "mem_available_gib": 6.2,
+        "mem_free_pct": 66,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "Storage",
+            "cpu_pct": 74
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 6.74,
+        "load_per_core": 0.67,
+        "mem_available_gib": 5.9,
+        "mem_free_pct": 62,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 168
+          }
+        ]
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "Storage is using 74% of a core: close it if you can",
+        "rustc is using 168% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "yunet-2023mar",
+      "suite": "regions-faces",
+      "kind": null,
+      "start": {
+        "load_1m": 6.74,
+        "load_per_core": 0.67,
+        "mem_available_gib": 5.9,
+        "mem_free_pct": 62,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 160
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 6.74,
+        "load_per_core": 0.67,
+        "mem_available_gib": 5.6,
+        "mem_free_pct": 63,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 200
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 73
+          }
+        ]
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 160% of a core: close it if you can",
+        "rustc is using 200% of a core: close it if you can",
+        "Storage is using 73% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "ppocr-v5-mobile-det",
+      "suite": "regions-text",
+      "kind": null,
+      "start": {
+        "load_1m": 6.74,
+        "load_per_core": 0.67,
+        "mem_available_gib": 5.6,
+        "mem_free_pct": 63,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 198
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 46
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 6.6,
+        "load_per_core": 0.66,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 63,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 226
+          }
+        ]
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 198% of a core: close it if you can",
+        "Storage is using 46% of a core: close it if you can",
+        "rustc is using 226% of a core: close it if you can"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+description: "search photos: a dog wearing sunglasses (1 relevant of 132)"
+metadata: { id: photos-dup-dog-sunglasses, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a dog wearing sunglasses"
+  relevant: ["oi-find-030c5a10124e6252"]
+  how: "judged by eye; copies of a relevant photo count"

@@ -1,0 +1,8 @@
+description: "search text: raw red capsicum (1 relevant of 7793)"
+metadata: { id: text-food-red-capsicum, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "raw red capsicum"
+  relevant: ["f170108"]
+  how: "rule on the name: Peppers, sweet, red, raw"

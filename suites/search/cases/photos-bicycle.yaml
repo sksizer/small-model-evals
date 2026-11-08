@@ -1,0 +1,8 @@
+description: "search photos: a bicycle (6 relevant of 78)"
+metadata: { id: photos-bicycle, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a bicycle"
+  relevant: ["bike-parking-oakland","oi-find-6022a450df278025","oi-find-8f08cb18c27fbaa7","oi-objects-2fba54286aaac20e","oi-objects-5b7ab3baf4c0492f","oi-objects-5ea13fbbd1a1474f"]
+  how: "Open Images: Bicycle; by eye: 1 Commons or unannotated photo"

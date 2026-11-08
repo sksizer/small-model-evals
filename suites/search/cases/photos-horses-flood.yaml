@@ -1,0 +1,8 @@
+description: "search photos: two horses grazing in a flooded field (1 relevant of 78)"
+metadata: { id: photos-horses-flood, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "two horses grazing in a flooded field"
+  relevant: ["horses-flooded-pasture"]
+  how: "judged by eye"

@@ -10,11 +10,11 @@
 // carry its metadata.id.
 import { readdirSync, readFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
+import { machine } from './machine.ts'
 import { MODELS } from './models.ts'
 import {
   PROMPTFOO_VERSION,
   append,
-  machine,
   modelDigests,
   ollamaVersion,
   freeze,

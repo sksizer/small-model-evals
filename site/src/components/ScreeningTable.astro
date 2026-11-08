@@ -29,6 +29,7 @@ const maxY = Math.max(5, ...rows.flatMap((m) => m.curve.map((p) => p.leaks)))
 const x = (v: number) => pad.l + (v / maxX) * (W - pad.l - pad.r)
 const y = (v: number) => H - pad.b - (v / maxY) * (H - pad.t - pad.b)
 const mem = (m: ScreeningModel) => (m.loaded_gb !== null ? `${m.loaded_gb.toFixed(1)} GB loaded` : m.memory ? `${m.memory.gb.toFixed(1)} GB ${m.memory.basis}` : '—')
+const cut = (t: number) => (t > 0 && t < 0.01 ? t.toFixed(3) : t.toFixed(2))
 const ms = (v: number | null) => (v === null ? '—' : v < 10 ? `${v.toFixed(1)} ms` : v < 1000 ? `${Math.round(v)} ms` : `${(v / 1000).toFixed(1)} s`)
 ---
 
@@ -170,6 +171,45 @@ const ms = (v: number | null) => (v === null ? '—' : v < 10 ? `${v.toFixed(1)}
         })}
       </ul>
 
+      <h3>Calibration and threshold</h3>
+      <p class="note">
+        <b>Brier</b>: the mean squared gap between a category's risk and whether it is really there (0 is perfect; a constant 0.5 scores
+        0.25), over every category and image. <b>Zero-leak cut</b>: the highest risk threshold at which no private image is called public,
+        with the false alarms that cut costs. <b>Cost-optimal cut</b>: the threshold with the lowest weighted cost, a leak weighing three
+        times a false alarm (an under-call by one level counts as a leak step, an over-call as a false alarm step); its leaks and false alarms
+        are shown. <b>These cuts were picked on this suite's own cases, so they are optimistic.</b> Treat them as a starting point and confirm
+        them on other data before shipping one.
+      </p>
+      <div class="scroll">
+        <table data-table id="screen-cal">
+          <thead>
+            <tr>
+              <th data-sort="text">Model</th>
+              <th data-sort="num" class="num" title="Mean squared error of the risks against the expected categories; lower is better">Brier</th>
+              <th data-sort="num" class="num" title="Highest threshold with no private image called public">Zero-leak cut</th>
+              <th data-sort="num" class="num" title="Over-called images at the zero-leak cut">False alarms there</th>
+              <th data-sort="num" class="num" title="Threshold with the lowest weighted cost (leak 3, false alarm 1)">Cost-optimal cut</th>
+              <th data-sort="num" class="num" title="Private images called public at the cost-optimal cut">Leaks there</th>
+              <th data-sort="num" class="num" title="Over-called images at the cost-optimal cut">False alarms there</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((m) => (
+              <tr>
+                <td><a href={href(`/models/${modelSlug(m.model)}/`)}>{m.model}</a></td>
+                <td class="num" data-value={m.calibration.brier.overall ?? 1} title={cats.map((c) => `${c.id} ${m.calibration.brier.per[c.id]?.toFixed(3) ?? '—'}`).join(' · ')}>{m.calibration.brier.overall?.toFixed(3) ?? '—'}</td>
+                <td class="num" data-value={m.calibration.zero_leak?.t ?? 2}>{m.calibration.zero_leak ? cut(m.calibration.zero_leak.t) : '—'}</td>
+                <td class="num" data-value={m.calibration.zero_leak?.false_alarms ?? 1e6}>{m.calibration.zero_leak?.false_alarms ?? '—'}</td>
+                <td class="num" data-value={m.calibration.cost_optimal.t}>{cut(m.calibration.cost_optimal.t)}</td>
+                <td class={`num ${m.calibration.cost_optimal.leaks === 0 ? 'ok' : 'bad'}`} data-value={m.calibration.cost_optimal.leaks}>{m.calibration.cost_optimal.leaks}</td>
+                <td class="num" data-value={m.calibration.cost_optimal.false_alarms}>{m.calibration.cost_optimal.false_alarms}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Hover a Brier score for its per-category values. The composite's risks are 0, 0.9 (a rule fired) or the LLM's, so its cuts are coarse.</p>
+
       {rows.some((m) => m.stages) && (
         <>
           <h3>Composite: stages used</h3>
@@ -180,7 +220,7 @@ const ms = (v: number | null) => (v === null ? '—' : v < 10 ? `${v.toFixed(1)}
                 <tr>
                   <th>Model</th>
                   <th class="num">Private by rules</th>
-                  <th class="num">Public by signals</th>
+                  <th class="num">Public by evidence</th>
                   <th class="num">Sent to the LLM</th>
                   <th class="num">YuNet</th>
                   <th class="num">NSFW ViT</th>

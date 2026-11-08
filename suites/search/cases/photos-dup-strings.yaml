@@ -1,0 +1,8 @@
+description: "search photos: a musical instrument with strings (4 relevant of 132)"
+metadata: { id: photos-dup-strings, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a musical instrument with strings"
+  relevant: ["copy-crop10-oi-find-c4d62e55691ed1e4","copy-resize-oi-find-c4d62e55691ed1e4","oi-find-29de4e35add89b69","oi-find-c4d62e55691ed1e4"]
+  how: "judged by eye; copies of a relevant photo count"

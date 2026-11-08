@@ -1,0 +1,8 @@
+description: "search text: boneless chicken thigh, roasted (4 relevant of 1500)"
+metadata: { id: text-chicken-thigh, kind: text, retired: "2026-11-08: ran over a 1500-food subset; superseded by text-food-chicken-thigh over all 7793 foods" }
+vars:
+  kind: text
+  corpus: foods
+  query: "boneless chicken thigh, roasted"
+  relevant: ["f172388","f173625","f174500","f174505"]
+  how: "rule on the name: chicken, thigh, meat only or meat and skin (no bone), roasted"

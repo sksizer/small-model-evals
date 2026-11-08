@@ -1,0 +1,8 @@
+description: "search text: a dish with eggs poached in tomato sauce (1 relevant of 60)"
+metadata: { id: text-note-poached-eggs, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "a dish with eggs poached in tomato sauce"
+  relevant: ["n16"]
+  how: "judged by reading"

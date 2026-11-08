@@ -1,0 +1,8 @@
+description: "search photos: a black pen on a white background (1 relevant of 132)"
+metadata: { id: photos-dup-black-pen, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a black pen on a white background"
+  relevant: ["oi-find-2dcab96f79ef52c4"]
+  how: "judged by eye; copies of a relevant photo count"

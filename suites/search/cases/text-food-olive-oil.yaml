@@ -1,0 +1,8 @@
+description: "search text: olive oil (1 relevant of 7793)"
+metadata: { id: text-food-olive-oil, kind: text, supersedes: text-olive-oil }
+vars:
+  kind: text
+  corpus: foods
+  query: "olive oil"
+  relevant: ["f171413"]
+  how: "rule on the name: Oil, olive"

@@ -1,0 +1,8 @@
+description: "search photos: a snowy forest trail (1 relevant of 78)"
+metadata: { id: photos-snow-trail, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a snowy forest trail"
+  relevant: ["snow-forest-trail"]
+  how: "judged by eye"

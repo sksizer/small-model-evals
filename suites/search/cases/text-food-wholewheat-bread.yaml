@@ -1,0 +1,8 @@
+description: "search text: whole wheat bread (4 relevant of 7793)"
+metadata: { id: text-food-wholewheat-bread, kind: text, supersedes: text-wholewheat-bread }
+vars:
+  kind: text
+  corpus: foods
+  query: "whole wheat bread"
+  relevant: ["f172688","f172689","f172690","f172691"]
+  how: "rule on the name: Bread, whole-wheat"

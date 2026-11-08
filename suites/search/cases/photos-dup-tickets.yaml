@@ -1,0 +1,8 @@
+description: "search photos: a travel ticket (4 relevant of 132)"
+metadata: { id: photos-dup-tickets, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a travel ticket"
+  relevant: ["copy-flip-train-ticket-french","copy-jpeg40-train-ticket-french","train-ticket-chinese","train-ticket-french"]
+  how: "judged by eye; copies of a relevant photo count"

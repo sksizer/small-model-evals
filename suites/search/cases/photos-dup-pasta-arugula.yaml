@@ -1,0 +1,8 @@
+description: "search photos: pasta with cherry tomatoes and arugula (3 relevant of 132)"
+metadata: { id: photos-dup-pasta-arugula, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "pasta with cherry tomatoes and arugula"
+  relevant: ["copy-bright-salad-rucola-plate","copy-jpeg40-salad-rucola-plate","salad-rucola-plate"]
+  how: "judged by eye; copies of a relevant photo count"

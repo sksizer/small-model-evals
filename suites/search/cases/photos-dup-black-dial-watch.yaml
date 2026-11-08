@@ -1,0 +1,8 @@
+description: "search photos: a wristwatch with a black dial and a steel bracelet (1 relevant of 132)"
+metadata: { id: photos-dup-black-dial-watch, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a wristwatch with a black dial and a steel bracelet"
+  relevant: ["oi-find-66a342dcdafc7607"]
+  how: "judged by eye; copies of a relevant photo count"

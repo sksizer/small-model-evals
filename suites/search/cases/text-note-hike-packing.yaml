@@ -1,0 +1,8 @@
+description: "search text: things to pack for a hike (1 relevant of 60)"
+metadata: { id: text-note-hike-packing, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "things to pack for a hike"
+  relevant: ["n18"]
+  how: "judged by reading"

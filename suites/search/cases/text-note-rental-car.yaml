@@ -1,0 +1,8 @@
+description: "search text: what do I need to collect a rental car (1 relevant of 60)"
+metadata: { id: text-note-rental-car, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "what do I need to collect a rental car"
+  relevant: ["n21"]
+  how: "judged by reading"

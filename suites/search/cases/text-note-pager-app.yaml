@@ -1,0 +1,8 @@
+description: "search text: installing the new pager app (1 relevant of 88)"
+metadata: { id: text-note-pager-app, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "installing the new pager app"
+  relevant: ["n86"]
+  how: "judged by reading"

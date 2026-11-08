@@ -1,0 +1,8 @@
+description: "search photos: a laptop (6 relevant of 78)"
+metadata: { id: photos-laptop, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a laptop"
+  relevant: ["desk-coffee-laptop-notebook","desk-laptop-notebook-pen","desk-laptop-top-down","laptop-notepad","oi-objects-7408fef212a5d3bc","oi-objects-a7e5d2727af4299d"]
+  how: "Open Images: Laptop; by eye: 4 Commons or unannotated photos"

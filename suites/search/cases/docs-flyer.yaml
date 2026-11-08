@@ -1,0 +1,8 @@
+description: "search docs: poster for a seed swap event (1 relevant of 44)"
+metadata: { id: docs-flyer, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "poster for a seed swap event"
+  relevant: ["event-flyer"]
+  how: "judged by eye"

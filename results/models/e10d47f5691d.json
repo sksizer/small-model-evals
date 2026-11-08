@@ -1,0 +1,18 @@
+{
+  "tag": "jinaai/jina-clip-v2",
+  "digest": "e10d47f5691d",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "q8",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "embedding-text-image"
+  ],
+  "default_parameters": {
+    "revision": "e10d47f5691d0454a0fb5d13f46f2199b74cb436"
+  },
+  "template_hash": ""
+}

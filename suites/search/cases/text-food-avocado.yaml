@@ -1,0 +1,8 @@
+description: "search text: avocado (3 relevant of 7793)"
+metadata: { id: text-food-avocado, kind: text, supersedes: text-avocado }
+vars:
+  kind: text
+  corpus: foods
+  query: "avocado"
+  relevant: ["f171705","f171706","f171707"]
+  how: "rule on the name: Avocados, raw"

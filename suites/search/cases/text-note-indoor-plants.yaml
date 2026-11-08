@@ -1,0 +1,8 @@
+description: "search text: how to look after my indoor plants (1 relevant of 60)"
+metadata: { id: text-note-indoor-plants, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "how to look after my indoor plants"
+  relevant: ["n53"]
+  how: "judged by reading"

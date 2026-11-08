@@ -1,0 +1,8 @@
+description: "search text: leg exercises with a barbell (1 relevant of 60)"
+metadata: { id: text-note-barbell-legs, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "leg exercises with a barbell"
+  relevant: ["n25"]
+  how: "judged by reading"
