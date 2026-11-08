@@ -1,0 +1,5 @@
+description: "sensitive: none: ordinary corpus image"
+metadata: { id: salad-ham }
+vars:
+  image: file://../../corpus/images/salad-ham.jpg
+  expected: { categories: [] }

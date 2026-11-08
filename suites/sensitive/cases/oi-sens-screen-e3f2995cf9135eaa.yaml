@@ -1,0 +1,5 @@
+description: "sensitive: none: phone settings screens, no personal data"
+metadata: { id: oi-sens-screen-e3f2995cf9135eaa }
+vars:
+  image: file://../../corpus/images/oi-sens-screen-e3f2995cf9135eaa.jpg
+  expected: { categories: [] }

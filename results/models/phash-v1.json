@@ -1,0 +1,18 @@
+{
+  "tag": "phash",
+  "digest": "phash-v1",
+  "engine": "sharp (libvips), no weights",
+  "format": "none",
+  "family": "",
+  "quantization": "",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-hash"
+  ],
+  "default_parameters": {
+    "version": "phash-v1"
+  },
+  "template_hash": ""
+}

@@ -1,0 +1,7 @@
+description: "similarity: recipe-daffys-elixir (2 copy, 2 class of 153)"
+metadata: { id: sim-recipe-daffys-elixir }
+vars:
+  query: recipe-daffys-elixir
+  expected:
+    copy: [copy-crop10-recipe-daffys-elixir, copy-bright-recipe-daffys-elixir]
+    class: [letter-handwritten-short, recipe-rheumatism]

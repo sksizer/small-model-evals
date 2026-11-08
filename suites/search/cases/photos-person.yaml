@@ -1,0 +1,8 @@
+description: "search photos: a person (6 relevant of 78)"
+metadata: { id: photos-person, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a person"
+  relevant: ["oi-find-6022a450df278025","oi-find-864e6f2e549e9542","oi-find-8f08cb18c27fbaa7","oi-find-c4d62e55691ed1e4","oi-objects-7408fef212a5d3bc","oi-scene-monaco-a"]
+  how: "Open Images: Person + Man"

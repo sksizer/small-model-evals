@@ -1,0 +1,8 @@
+description: "search photos: an old white laptop showing a terminal window (1 relevant of 132)"
+metadata: { id: photos-dup-old-laptop-terminal, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "an old white laptop showing a terminal window"
+  relevant: ["oi-objects-a7e5d2727af4299d"]
+  how: "judged by eye; copies of a relevant photo count"

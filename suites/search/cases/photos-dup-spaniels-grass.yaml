@@ -1,0 +1,8 @@
+description: "search photos: two black and white dogs lying on the grass (3 relevant of 132)"
+metadata: { id: photos-dup-spaniels-grass, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "two black and white dogs lying on the grass"
+  relevant: ["copy-flip-oi-objects-5b7ab3baf4c0492f","copy-resize-oi-objects-5b7ab3baf4c0492f","oi-objects-5b7ab3baf4c0492f"]
+  how: "judged by eye; copies of a relevant photo count"

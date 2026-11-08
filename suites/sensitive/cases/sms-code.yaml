@@ -1,0 +1,5 @@
+description: "sensitive: screen, credential: one-time passcode and temporary password"
+metadata: { id: sms-code }
+vars:
+  image: file://../../corpus/images/sms-code.png
+  expected: { categories: [screen, credential] }

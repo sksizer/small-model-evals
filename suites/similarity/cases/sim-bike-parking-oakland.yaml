@@ -1,0 +1,7 @@
+description: "similarity: bike-parking-oakland (2 copy, 1 class of 153)"
+metadata: { id: sim-bike-parking-oakland }
+vars:
+  query: bike-parking-oakland
+  expected:
+    copy: [copy-resize-bike-parking-oakland, copy-crop10-bike-parking-oakland]
+    class: [bike-parking-three-styles]

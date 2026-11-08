@@ -1,0 +1,8 @@
+description: "search photos: an old handwritten recipe manuscript (2 relevant of 78)"
+metadata: { id: photos-old-recipe, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "an old handwritten recipe manuscript"
+  relevant: ["recipe-daffys-elixir","recipe-rheumatism"]
+  how: "judged by eye"

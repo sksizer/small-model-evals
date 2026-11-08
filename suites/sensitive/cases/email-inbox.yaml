@@ -1,0 +1,5 @@
+description: "sensitive: screen, medical: email with test results and an insurance number"
+metadata: { id: email-inbox }
+vars:
+  image: file://../../corpus/images/email-inbox.png
+  expected: { categories: [screen, medical] }

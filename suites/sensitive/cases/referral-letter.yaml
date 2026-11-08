@@ -1,0 +1,5 @@
+description: "sensitive: document, medical: doctor referral letter"
+metadata: { id: referral-letter }
+vars:
+  image: file://../../corpus/images/referral-letter.png
+  expected: { categories: [document, medical] }

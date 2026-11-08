@@ -1,0 +1,1933 @@
+{
+  "suite": "sensitive",
+  "fingerprint": "f03c77197af7",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:38952075f9f534b41ac325c90271afc6c7ace9e3f636ccb182492f4eeb14145a"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "sensitive — which images should not leave the device",
+    "prompts": [
+      "{{ question }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "model": "qwen3.5:4b",
+          "think": false
+        },
+        "id": "sha256:534e77705b69cfc43d44a8bf3d1f82ca32b2fe06ea5c9c333c934413c3423bf3",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:9b",
+          "think": false
+        },
+        "id": "sha256:534e77705b69cfc43d44a8bf3d1f82ca32b2fe06ea5c9c333c934413c3423bf3",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "model": "lfm3-vl:2b",
+          "think": false
+        },
+        "id": "sha256:534e77705b69cfc43d44a8bf3d1f82ca32b2fe06ea5c9c333c934413c3423bf3",
+        "label": "lfm3-vl:2b"
+      },
+      {
+        "config": {
+          "model": "gemma4:e4b",
+          "think": false
+        },
+        "id": "sha256:534e77705b69cfc43d44a8bf3d1f82ca32b2fe06ea5c9c333c934413c3423bf3",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "kind": "siglip",
+          "logit_bias": -16.772,
+          "logit_scale": 112.669,
+          "model": "onnx-community/siglip2-base-patch16-224-ONNX",
+          "revision": "ba1f3b0843f24bc5417d38e19c37b287d719b2f4"
+        },
+        "id": "sha256:5593d1a832c8268430580ead542ba2cdfefe61201f9b0289fd987b74dc204a64",
+        "label": "siglip2-base-zs"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "kind": "clip",
+          "model": "Xenova/clip-vit-base-patch16",
+          "revision": "342fdf2f67aded64d138ff074745fb4a5d2bba5f"
+        },
+        "id": "sha256:5593d1a832c8268430580ead542ba2cdfefe61201f9b0289fd987b74dc204a64",
+        "label": "clip-vit-b16-zs"
+      },
+      {
+        "config": {
+          "llm": {
+            "model": "qwen3.5:4b",
+            "think": false
+          },
+          "nsfw": {
+            "dtype": "q8",
+            "flag": [
+              "nsfw"
+            ],
+            "model": "onnx-community/nsfw_image_detection-ONNX",
+            "question": "nudity",
+            "revision": "1ceb3c7fe1e9f3f2507e6df577437f23a9149fd5"
+          },
+          "ocr": {
+            "dtype": "q8",
+            "model": "onnx-community/Florence-2-base",
+            "revision": "d59e079711c57174f29265539fb4cc9f0f335916",
+            "task": "ocr"
+          },
+          "siglip": {
+            "dtype": "fp32",
+            "kind": "siglip",
+            "logit_bias": -16.772,
+            "logit_scale": 112.669,
+            "model": "onnx-community/siglip2-base-patch16-224-ONNX",
+            "revision": "ba1f3b0843f24bc5417d38e19c37b287d719b2f4"
+          },
+          "yunet": {
+            "file": "face_detection_yunet_2023mar.onnx",
+            "kind": "yunet",
+            "repo": "opencv/face_detection_yunet",
+            "revision": "3cc26e7f1014a5ee5d74a42acee58bafc9d0a310",
+            "sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4"
+          }
+        },
+        "id": "sha256:78b6be0406c76d8a5db689e1c2d858b974b8b4fd5e1cf4542d93744c5eb0b8f2",
+        "label": "composite-qwen3.5-4b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "bed813328b89",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/sensitive-composite.ts": "78b6be0406c7",
+    "providers/zero-shot.ts": "5593d1a832c8"
+  },
+  "setup_hash": "7ae2c9b6b6d9",
+  "cases": {
+    "art-painting-modigliani": {
+      "hash": "98feccd48a3e",
+      "def": {
+        "description": "sensitive: none: nude art, hard negative (as nudity-flag)",
+        "metadata": {
+          "id": "art-painting-modigliani"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-modigliani.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "art-painting-reclining": {
+      "hash": "7ec5171bdbd1",
+      "def": {
+        "description": "sensitive: none: nude art, hard negative (as nudity-flag)",
+        "metadata": {
+          "id": "art-painting-reclining"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-reclining.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "art-painting-renoir": {
+      "hash": "be334651f021",
+      "def": {
+        "description": "sensitive: none: nude art, hard negative (as nudity-flag)",
+        "metadata": {
+          "id": "art-painting-renoir"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-renoir.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "art-statue-kouros": {
+      "hash": "0e4cb2aa272a",
+      "def": {
+        "description": "sensitive: none: nude art, hard negative (as nudity-flag)",
+        "metadata": {
+          "id": "art-statue-kouros"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-statue-kouros.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "art-statue-venus": {
+      "hash": "f1562064bce2",
+      "def": {
+        "description": "sensitive: none: nude art, hard negative (as nudity-flag)",
+        "metadata": {
+          "id": "art-statue-venus"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-statue-venus.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "bank-card-credit": {
+      "hash": "f37d8c3a763d",
+      "def": {
+        "description": "sensitive: financial: specimen credit card",
+        "metadata": {
+          "id": "bank-card-credit"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/bank-card-credit.png",
+          "expected": {
+            "categories": [
+              "financial"
+            ]
+          }
+        }
+      }
+    },
+    "bank-card-debit": {
+      "hash": "99f880f16514",
+      "def": {
+        "description": "sensitive: financial: specimen debit card",
+        "metadata": {
+          "id": "bank-card-debit"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/bank-card-debit.png",
+          "expected": {
+            "categories": [
+              "financial"
+            ]
+          }
+        }
+      }
+    },
+    "bank-statement": {
+      "hash": "3b49b79d4a1b",
+      "def": {
+        "description": "sensitive: financial: statement with account and IBAN",
+        "metadata": {
+          "id": "bank-statement"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/bank-statement.png",
+          "expected": {
+            "categories": [
+              "financial"
+            ]
+          }
+        }
+      }
+    },
+    "boarding-pass": {
+      "hash": "a9502e770d0c",
+      "def": {
+        "description": "sensitive: credential: boarding pass with barcode and QR",
+        "metadata": {
+          "id": "boarding-pass"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/boarding-pass.png",
+          "expected": {
+            "categories": [
+              "credential"
+            ]
+          }
+        }
+      }
+    },
+    "bus-timetable": {
+      "hash": "669ff8762763",
+      "def": {
+        "description": "sensitive: none: public bus timetable",
+        "metadata": {
+          "id": "bus-timetable"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/bus-timetable.png",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "calendar-private": {
+      "hash": "8144f6b5ba71",
+      "def": {
+        "description": "sensitive: screen, medical: calendar with oncology, mediation, AA entries",
+        "metadata": {
+          "id": "calendar-private"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/calendar-private.png",
+          "expected": {
+            "categories": [
+              "screen",
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "chat-screenshot": {
+      "hash": "9eb957a24934",
+      "def": {
+        "description": "sensitive: screen: chat with names, phone numbers, an address, a door code",
+        "metadata": {
+          "id": "chat-screenshot"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/chat-screenshot.png",
+          "expected": {
+            "categories": [
+              "screen"
+            ]
+          }
+        }
+      }
+    },
+    "contacts-list": {
+      "hash": "e6496ebbfed7",
+      "def": {
+        "description": "sensitive: screen: contact list with phones and addresses",
+        "metadata": {
+          "id": "contacts-list"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/contacts-list.png",
+          "expected": {
+            "categories": [
+              "screen"
+            ]
+          }
+        }
+      }
+    },
+    "desk-laptop-top-down": {
+      "hash": "1ae92a41f64e",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "desk-laptop-top-down"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/desk-laptop-top-down.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "dog-border-terrier": {
+      "hash": "52b06fb9bed8",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "dog-border-terrier"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-border-terrier.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "driving-licence": {
+      "hash": "c61ab66d92ef",
+      "def": {
+        "description": "sensitive: id-document: specimen identity document",
+        "metadata": {
+          "id": "driving-licence"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/driving-licence.png",
+          "expected": {
+            "categories": [
+              "id-document"
+            ]
+          }
+        }
+      }
+    },
+    "email-inbox": {
+      "hash": "6302d1debb2b",
+      "def": {
+        "description": "sensitive: screen, medical: email with test results and an insurance number",
+        "metadata": {
+          "id": "email-inbox"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/email-inbox.png",
+          "expected": {
+            "categories": [
+              "screen",
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "handwritten-note": {
+      "hash": "24261847332c",
+      "def": {
+        "description": "sensitive: document, credential, location: handwritten note with phone, address and alarm code",
+        "metadata": {
+          "id": "handwritten-note"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/handwritten-note.png",
+          "expected": {
+            "categories": [
+              "document",
+              "credential",
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "health-insurance-card": {
+      "hash": "ea041acfac16",
+      "def": {
+        "description": "sensitive: id-document, medical: insurance member card",
+        "metadata": {
+          "id": "health-insurance-card"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/health-insurance-card.png",
+          "expected": {
+            "categories": [
+              "id-document",
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "id-card-blank-template": {
+      "hash": "c5fd5bcba77b",
+      "def": {
+        "description": "sensitive: none: blank ID template, no data",
+        "metadata": {
+          "id": "id-card-blank-template"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/id-card-blank-template.png",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "id-national-card": {
+      "hash": "7beb459110dd",
+      "def": {
+        "description": "sensitive: id-document: specimen identity document",
+        "metadata": {
+          "id": "id-national-card"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/id-national-card.png",
+          "expected": {
+            "categories": [
+              "id-document"
+            ]
+          }
+        }
+      }
+    },
+    "invoice-simple": {
+      "hash": "61cab46ea06c",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "invoice-simple"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/invoice-simple.png",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "lab-result": {
+      "hash": "c9780f4e5824",
+      "def": {
+        "description": "sensitive: medical: blood test report",
+        "metadata": {
+          "id": "lab-result"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lab-result.png",
+          "expected": {
+            "categories": [
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "lake-salagou": {
+      "hash": "bdad13f5e0f5",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "lake-salagou"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lake-salagou.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "letter-personal": {
+      "hash": "e546cead6621",
+      "def": {
+        "description": "sensitive: document, location: personal letter with name and address",
+        "metadata": {
+          "id": "letter-personal"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/letter-personal.png",
+          "expected": {
+            "categories": [
+              "document",
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "lock-screen-notifications": {
+      "hash": "9b4ba22a87e7",
+      "def": {
+        "description": "sensitive: screen, medical, financial: lock screen with biopsy, bank and therapy notifications",
+        "metadata": {
+          "id": "lock-screen-notifications"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lock-screen-notifications.png",
+          "expected": {
+            "categories": [
+              "screen",
+              "medical",
+              "financial"
+            ]
+          }
+        }
+      }
+    },
+    "marketing-email": {
+      "hash": "bccf203dc299",
+      "def": {
+        "description": "sensitive: none: generic marketing email",
+        "metadata": {
+          "id": "marketing-email"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/marketing-email.png",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "nude-anatomy-back-pair": {
+      "hash": "e369de8fcfb4",
+      "def": {
+        "description": "sensitive: nudity: anatomy illustration, rear view",
+        "metadata": {
+          "id": "nude-anatomy-back-pair"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-anatomy-back-pair.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "nude-anatomy-front-labelled": {
+      "hash": "74e285b73124",
+      "def": {
+        "description": "sensitive: nudity: labelled anatomy illustration",
+        "metadata": {
+          "id": "nude-anatomy-front-labelled"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-anatomy-front-labelled.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "nude-anatomy-front-male": {
+      "hash": "2463dc7bf61e",
+      "def": {
+        "description": "sensitive: nudity: anatomy illustration, male",
+        "metadata": {
+          "id": "nude-anatomy-front-male"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-anatomy-front-male.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "nude-anatomy-front-pair": {
+      "hash": "0d093d6682bc",
+      "def": {
+        "description": "sensitive: nudity: anatomy illustration, front view",
+        "metadata": {
+          "id": "nude-anatomy-front-pair"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-anatomy-front-pair.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "nude-bike-ride-arms-crossed": {
+      "hash": "af4d1ed208c4",
+      "def": {
+        "description": "sensitive: nudity: naked bike ride",
+        "metadata": {
+          "id": "nude-bike-ride-arms-crossed"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-arms-crossed.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "nude-bike-ride-crowd": {
+      "hash": "a9c475a2d010",
+      "def": {
+        "description": "sensitive: nudity: naked bike ride crowd",
+        "metadata": {
+          "id": "nude-bike-ride-crowd"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-crowd.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "nude-bike-ride-cycling": {
+      "hash": "8761beabea0c",
+      "def": {
+        "description": "sensitive: nudity: naked bike ride",
+        "metadata": {
+          "id": "nude-bike-ride-cycling"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-cycling.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "nude-bike-ride-from-behind": {
+      "hash": "d989cf9fd6da",
+      "def": {
+        "description": "sensitive: nudity: naked bike ride, from behind",
+        "metadata": {
+          "id": "nude-bike-ride-from-behind"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-from-behind.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "nude-bike-ride-standing": {
+      "hash": "c99db61128d1",
+      "def": {
+        "description": "sensitive: nudity: naked bike ride",
+        "metadata": {
+          "id": "nude-bike-ride-standing"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-standing.jpg",
+          "expected": {
+            "categories": [
+              "nudity"
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-363fbcd9d3492c8f": {
+      "hash": "419fa0b93961",
+      "def": {
+        "description": "sensitive: face: person in focus",
+        "metadata": {
+          "id": "oi-faces-363fbcd9d3492c8f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-363fbcd9d3492c8f.jpg",
+          "expected": {
+            "categories": [
+              "face"
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-3f85aab38e4fee07": {
+      "hash": "9da07e3e59ae",
+      "def": {
+        "description": "sensitive: face: person in focus",
+        "metadata": {
+          "id": "oi-faces-3f85aab38e4fee07"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-3f85aab38e4fee07.jpg",
+          "expected": {
+            "categories": [
+              "face"
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-450dc8db3bfee2c9": {
+      "hash": "516d293a082a",
+      "def": {
+        "description": "sensitive: face: person in focus",
+        "metadata": {
+          "id": "oi-faces-450dc8db3bfee2c9"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-450dc8db3bfee2c9.jpg",
+          "expected": {
+            "categories": [
+              "face"
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-58f524841563410b": {
+      "hash": "fe334e72d04c",
+      "def": {
+        "description": "sensitive: face: person in focus",
+        "metadata": {
+          "id": "oi-faces-58f524841563410b"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-58f524841563410b.jpg",
+          "expected": {
+            "categories": [
+              "face"
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-d9a2eaa90a597834": {
+      "hash": "dd853c2e6d4b",
+      "def": {
+        "description": "sensitive: face: person in focus",
+        "metadata": {
+          "id": "oi-faces-d9a2eaa90a597834"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-d9a2eaa90a597834.jpg",
+          "expected": {
+            "categories": [
+              "face"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-face-6c1cd7fdc967c0d5": {
+      "hash": "e7195b6f53db",
+      "def": {
+        "description": "sensitive: face: close-up of a man in a cap",
+        "metadata": {
+          "id": "oi-sens-face-6c1cd7fdc967c0d5"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-face-6c1cd7fdc967c0d5.jpg",
+          "expected": {
+            "categories": [
+              "face"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-face-f2286d6fea468db9": {
+      "hash": "698eb9d2aa68",
+      "def": {
+        "description": "sensitive: face: man in a straw hat",
+        "metadata": {
+          "id": "oi-sens-face-f2286d6fea468db9"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-face-f2286d6fea468db9.jpg",
+          "expected": {
+            "categories": [
+              "face"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-2ef5492ef6e5ba4f": {
+      "hash": "5c9dfe6405ef",
+      "def": {
+        "description": "sensitive: near miss (garment, no person): blue boxer briefs, product photo, no person",
+        "metadata": {
+          "id": "oi-sens-intimate-2ef5492ef6e5ba4f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-2ef5492ef6e5ba4f.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-595678be621d1ee9": {
+      "hash": "98c09573cb46",
+      "def": {
+        "description": "sensitive: intimate: adult torso in white lingerie briefs, product shot, no face",
+        "metadata": {
+          "id": "oi-sens-intimate-595678be621d1ee9"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-595678be621d1ee9.jpg",
+          "expected": {
+            "categories": [
+              "intimate"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-6fce9e3e38858d53": {
+      "hash": "06e572b55179",
+      "def": {
+        "description": "sensitive: intimate: shirtless adult man in branded underwear, studio",
+        "metadata": {
+          "id": "oi-sens-intimate-6fce9e3e38858d53"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-6fce9e3e38858d53.jpg",
+          "expected": {
+            "categories": [
+              "intimate"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-76e7b69883aba6cc": {
+      "hash": "b3b51180d333",
+      "def": {
+        "description": "sensitive: intimate: shirtless adult man in black underwear waistband, studio",
+        "metadata": {
+          "id": "oi-sens-intimate-76e7b69883aba6cc"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-76e7b69883aba6cc.jpg",
+          "expected": {
+            "categories": [
+              "intimate"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-7d687818430809d4": {
+      "hash": "97a6972fc2f9",
+      "def": {
+        "description": "sensitive: intimate: adult man in jeans and underwear waistband, jacket open",
+        "metadata": {
+          "id": "oi-sens-intimate-7d687818430809d4"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-7d687818430809d4.jpg",
+          "expected": {
+            "categories": [
+              "intimate"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-be092e3219d0be72": {
+      "hash": "051c78613b8a",
+      "def": {
+        "description": "sensitive: near miss (garment, no person): purple briefs on a table, no person",
+        "metadata": {
+          "id": "oi-sens-intimate-be092e3219d0be72"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-be092e3219d0be72.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-e7845f20d4b960c3": {
+      "hash": "afe54a41bc53",
+      "def": {
+        "description": "sensitive: intimate: adult woman in black lace bra and briefs, studio",
+        "metadata": {
+          "id": "oi-sens-intimate-e7845f20d4b960c3"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-e7845f20d4b960c3.jpg",
+          "expected": {
+            "categories": [
+              "intimate"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-f5ac485dbfa5a68d": {
+      "hash": "8b3db7c582f5",
+      "def": {
+        "description": "sensitive: near miss (garment, no person): lingerie on two shop mannequins",
+        "metadata": {
+          "id": "oi-sens-intimate-f5ac485dbfa5a68d"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-f5ac485dbfa5a68d.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-intimate-fc19bcf0300d5c6f": {
+      "hash": "0fbe3f90d94f",
+      "def": {
+        "description": "sensitive: intimate: adult woman in black lingerie and boots, lying on a bar counter",
+        "metadata": {
+          "id": "oi-sens-intimate-fc19bcf0300d5c6f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-intimate-fc19bcf0300d5c6f.jpg",
+          "expected": {
+            "categories": [
+              "intimate"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-medical-0b1357a5033991a1": {
+      "hash": "7ec001052e36",
+      "def": {
+        "description": "sensitive: medical: hospital room or equipment",
+        "metadata": {
+          "id": "oi-sens-medical-0b1357a5033991a1"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-medical-0b1357a5033991a1.jpg",
+          "expected": {
+            "categories": [
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-medical-124892350f674127": {
+      "hash": "819319f3bcf5",
+      "def": {
+        "description": "sensitive: medical: hospital room or equipment",
+        "metadata": {
+          "id": "oi-sens-medical-124892350f674127"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-medical-124892350f674127.jpg",
+          "expected": {
+            "categories": [
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-medical-62845465624ddc39": {
+      "hash": "763e43614dc2",
+      "def": {
+        "description": "sensitive: medical: hospital room or equipment",
+        "metadata": {
+          "id": "oi-sens-medical-62845465624ddc39"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-medical-62845465624ddc39.jpg",
+          "expected": {
+            "categories": [
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-minor-2f761297f92e32a3": {
+      "hash": "8ef7bb257ed7",
+      "def": {
+        "description": "sensitive: minor: girl dancing in a play centre",
+        "metadata": {
+          "id": "oi-sens-minor-2f761297f92e32a3"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-minor-2f761297f92e32a3.jpg",
+          "expected": {
+            "categories": [
+              "minor"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-minor-544801af545b84eb": {
+      "hash": "750c0c471908",
+      "def": {
+        "description": "sensitive: minor: girl in a kimono at a shrine",
+        "metadata": {
+          "id": "oi-sens-minor-544801af545b84eb"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-minor-544801af545b84eb.jpg",
+          "expected": {
+            "categories": [
+              "minor"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-minor-6547a372ebf1b0fe": {
+      "hash": "b100eb988b0b",
+      "def": {
+        "description": "sensitive: minor: child in a flooded park path, clothed",
+        "metadata": {
+          "id": "oi-sens-minor-6547a372ebf1b0fe"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-minor-6547a372ebf1b0fe.jpg",
+          "expected": {
+            "categories": [
+              "minor"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-minor-bdc7279c04e3dc4a": {
+      "hash": "0c94f423b5fa",
+      "def": {
+        "description": "sensitive: minor: toddler in a puddle on a park path",
+        "metadata": {
+          "id": "oi-sens-minor-bdc7279c04e3dc4a"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-minor-bdc7279c04e3dc4a.jpg",
+          "expected": {
+            "categories": [
+              "minor"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-minor-c97388bed52b6016": {
+      "hash": "cd0adce0963e",
+      "def": {
+        "description": "sensitive: minor: children in a ball pit at a play centre",
+        "metadata": {
+          "id": "oi-sens-minor-c97388bed52b6016"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-minor-c97388bed52b6016.jpg",
+          "expected": {
+            "categories": [
+              "minor"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-minor-ee8552a35b23ce39": {
+      "hash": "b784eb38359b",
+      "def": {
+        "description": "sensitive: minor: toddler walking on a sidewalk",
+        "metadata": {
+          "id": "oi-sens-minor-ee8552a35b23ce39"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-minor-ee8552a35b23ce39.jpg",
+          "expected": {
+            "categories": [
+              "minor"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-plate-064a8def3049d040": {
+      "hash": "069234ee3fd1",
+      "def": {
+        "description": "sensitive: location: readable number plate",
+        "metadata": {
+          "id": "oi-sens-plate-064a8def3049d040"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-plate-064a8def3049d040.jpg",
+          "expected": {
+            "categories": [
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-plate-3ec4dceee8a48a8f": {
+      "hash": "1d9f40e51b5f",
+      "def": {
+        "description": "sensitive: none: car, plate too small to read",
+        "metadata": {
+          "id": "oi-sens-plate-3ec4dceee8a48a8f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-plate-3ec4dceee8a48a8f.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-plate-70e7b5173fe1e289": {
+      "hash": "c4cdb23c92ae",
+      "def": {
+        "description": "sensitive: location: readable number plate",
+        "metadata": {
+          "id": "oi-sens-plate-70e7b5173fe1e289"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-plate-70e7b5173fe1e289.jpg",
+          "expected": {
+            "categories": [
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-plate-b09813a8742277c7": {
+      "hash": "79a2c9d82770",
+      "def": {
+        "description": "sensitive: none: car with blurred plate",
+        "metadata": {
+          "id": "oi-sens-plate-b09813a8742277c7"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-plate-b09813a8742277c7.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-plate-d213ece8466847a6": {
+      "hash": "2b710259d4b0",
+      "def": {
+        "description": "sensitive: location: readable number plate",
+        "metadata": {
+          "id": "oi-sens-plate-d213ece8466847a6"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-plate-d213ece8466847a6.jpg",
+          "expected": {
+            "categories": [
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-plate-dd981f5e88a4e5c0": {
+      "hash": "26a217b56e69",
+      "def": {
+        "description": "sensitive: location: readable number plate",
+        "metadata": {
+          "id": "oi-sens-plate-dd981f5e88a4e5c0"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-plate-dd981f5e88a4e5c0.jpg",
+          "expected": {
+            "categories": [
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-plate-df6d5130f9b9577c": {
+      "hash": "c30d28a82d2d",
+      "def": {
+        "description": "sensitive: location: readable number plate",
+        "metadata": {
+          "id": "oi-sens-plate-df6d5130f9b9577c"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-plate-df6d5130f9b9577c.jpg",
+          "expected": {
+            "categories": [
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-plate-f5128e7a123b4fa8": {
+      "hash": "5f0c5f6b2bb7",
+      "def": {
+        "description": "sensitive: location: readable number plate",
+        "metadata": {
+          "id": "oi-sens-plate-f5128e7a123b4fa8"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-plate-f5128e7a123b4fa8.jpg",
+          "expected": {
+            "categories": [
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-scene-4cc68acdd17395e2": {
+      "hash": "44c52d6f7f16",
+      "def": {
+        "description": "sensitive: none: landscape",
+        "metadata": {
+          "id": "oi-sens-scene-4cc68acdd17395e2"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-scene-4cc68acdd17395e2.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-scene-da63faf7420d01fb": {
+      "hash": "c3fdcdb5aebf",
+      "def": {
+        "description": "sensitive: none: landscape",
+        "metadata": {
+          "id": "oi-sens-scene-da63faf7420d01fb"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-scene-da63faf7420d01fb.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-screen-012dc31b561d4214": {
+      "hash": "dc4916da8d5c",
+      "def": {
+        "description": "sensitive: screen: phone showing an activity feed with names",
+        "metadata": {
+          "id": "oi-sens-screen-012dc31b561d4214"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-screen-012dc31b561d4214.jpg",
+          "expected": {
+            "categories": [
+              "screen"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-screen-14dc34954fe89fc2": {
+      "hash": "71607ac77ae9",
+      "def": {
+        "description": "sensitive: screen: phone showing a text message",
+        "metadata": {
+          "id": "oi-sens-screen-14dc34954fe89fc2"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-screen-14dc34954fe89fc2.jpg",
+          "expected": {
+            "categories": [
+              "screen"
+            ]
+          }
+        }
+      }
+    },
+    "oi-sens-screen-496f2bb90818bbb2": {
+      "hash": "124923db0401",
+      "def": {
+        "description": "sensitive: none: phone home screen with app icons",
+        "metadata": {
+          "id": "oi-sens-screen-496f2bb90818bbb2"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-screen-496f2bb90818bbb2.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-screen-abc86960879d2e09": {
+      "hash": "6a7b2f291e4d",
+      "def": {
+        "description": "sensitive: none: monitor showing an OS installer",
+        "metadata": {
+          "id": "oi-sens-screen-abc86960879d2e09"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-screen-abc86960879d2e09.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-screen-e3f2995cf9135eaa": {
+      "hash": "6ba42642ec43",
+      "def": {
+        "description": "sensitive: none: phone settings screens, no personal data",
+        "metadata": {
+          "id": "oi-sens-screen-e3f2995cf9135eaa"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-screen-e3f2995cf9135eaa.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-sign-2fbe14d7e980e019": {
+      "hash": "5ee984fc4714",
+      "def": {
+        "description": "sensitive: none: speed limit sign",
+        "metadata": {
+          "id": "oi-sens-sign-2fbe14d7e980e019"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-sign-2fbe14d7e980e019.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "oi-sens-swimwear-f7f83ef0ae3406b2": {
+      "hash": "d7fbc2510828",
+      "def": {
+        "description": "sensitive: none: swimwear on a paddleboard, hard negative",
+        "metadata": {
+          "id": "oi-sens-swimwear-f7f83ef0ae3406b2"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-sens-swimwear-f7f83ef0ae3406b2.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "online-banking-screen": {
+      "hash": "bcbf974d40c6",
+      "def": {
+        "description": "sensitive: financial, screen: banking app with balances",
+        "metadata": {
+          "id": "online-banking-screen"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/online-banking-screen.png",
+          "expected": {
+            "categories": [
+              "financial",
+              "screen"
+            ]
+          }
+        }
+      }
+    },
+    "passport-data-page": {
+      "hash": "d9efed555797",
+      "def": {
+        "description": "sensitive: id-document: specimen identity document",
+        "metadata": {
+          "id": "passport-data-page"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/passport-data-page.png",
+          "expected": {
+            "categories": [
+              "id-document"
+            ]
+          }
+        }
+      }
+    },
+    "pay-slip": {
+      "hash": "7eba688508f1",
+      "def": {
+        "description": "sensitive: financial, document: payslip",
+        "metadata": {
+          "id": "pay-slip"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/pay-slip.png",
+          "expected": {
+            "categories": [
+              "financial",
+              "document"
+            ]
+          }
+        }
+      }
+    },
+    "prescription-label": {
+      "hash": "96d7066ba34a",
+      "def": {
+        "description": "sensitive: medical: pharmacy label with patient, drug and condition",
+        "metadata": {
+          "id": "prescription-label"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/prescription-label.png",
+          "expected": {
+            "categories": [
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "product-page-phone": {
+      "hash": "2ccb8c3a7400",
+      "def": {
+        "description": "sensitive: none: public product page",
+        "metadata": {
+          "id": "product-page-phone"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/product-page-phone.png",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "receipt-grocery": {
+      "hash": "d149641f1f79",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "receipt-grocery"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/receipt-grocery.png",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "recovery-codes": {
+      "hash": "886d455e7c10",
+      "def": {
+        "description": "sensitive: credential: two-factor backup codes",
+        "metadata": {
+          "id": "recovery-codes"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recovery-codes.png",
+          "expected": {
+            "categories": [
+              "credential"
+            ]
+          }
+        }
+      }
+    },
+    "referral-letter": {
+      "hash": "9d278d012f18",
+      "def": {
+        "description": "sensitive: document, medical: doctor referral letter",
+        "metadata": {
+          "id": "referral-letter"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/referral-letter.png",
+          "expected": {
+            "categories": [
+              "document",
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "rental-contract": {
+      "hash": "e59241490b63",
+      "def": {
+        "description": "sensitive: document, location: signed tenancy agreement",
+        "metadata": {
+          "id": "rental-contract"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/rental-contract.png",
+          "expected": {
+            "categories": [
+              "document",
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "residence-permit-card": {
+      "hash": "db3fd226f796",
+      "def": {
+        "description": "sensitive: id-document: specimen identity document",
+        "metadata": {
+          "id": "residence-permit-card"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/residence-permit-card.png",
+          "expected": {
+            "categories": [
+              "id-document"
+            ]
+          }
+        }
+      }
+    },
+    "restaurant-menu": {
+      "hash": "d69113205f5f",
+      "def": {
+        "description": "sensitive: none: restaurant menu",
+        "metadata": {
+          "id": "restaurant-menu"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/restaurant-menu.png",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "salad-ham": {
+      "hash": "300ffa9af3b4",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "salad-ham"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/salad-ham.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "sens-house-number-77": {
+      "hash": "89aa3ec2e1c9",
+      "def": {
+        "description": "sensitive: location: door with house number 77",
+        "metadata": {
+          "id": "sens-house-number-77"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sens-house-number-77.jpg",
+          "expected": {
+            "categories": [
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "sens-xray-chest-flu": {
+      "hash": "6c615e9e6974",
+      "def": {
+        "description": "sensitive: medical: chest X-ray, pneumonia",
+        "metadata": {
+          "id": "sens-xray-chest-flu"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sens-xray-chest-flu.jpg",
+          "expected": {
+            "categories": [
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "sens-xray-chest-normal": {
+      "hash": "2cac3510d0ae",
+      "def": {
+        "description": "sensitive: medical: chest X-ray",
+        "metadata": {
+          "id": "sens-xray-chest-normal"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sens-xray-chest-normal.jpg",
+          "expected": {
+            "categories": [
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "shipping-label": {
+      "hash": "a032d7e8bbe1",
+      "def": {
+        "description": "sensitive: location: name and home address on a parcel label",
+        "metadata": {
+          "id": "shipping-label"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/shipping-label.png",
+          "expected": {
+            "categories": [
+              "location"
+            ]
+          }
+        }
+      }
+    },
+    "sidewalk-cafe": {
+      "hash": "4df084df7b7d",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "sidewalk-cafe"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sidewalk-cafe.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "sms-code": {
+      "hash": "0dad65c3ba26",
+      "def": {
+        "description": "sensitive: screen, credential: one-time passcode and temporary password",
+        "metadata": {
+          "id": "sms-code"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sms-code.png",
+          "expected": {
+            "categories": [
+              "screen",
+              "credential"
+            ]
+          }
+        }
+      }
+    },
+    "sticky-note-monitor": {
+      "hash": "811aa114f222",
+      "def": {
+        "description": "sensitive: credential: password on a sticky note",
+        "metadata": {
+          "id": "sticky-note-monitor"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sticky-note-monitor.png",
+          "expected": {
+            "categories": [
+              "credential"
+            ]
+          }
+        }
+      }
+    },
+    "street-night-rostov": {
+      "hash": "80af2d898145",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "street-night-rostov"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/street-night-rostov.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "student-id-card": {
+      "hash": "0db231db2365",
+      "def": {
+        "description": "sensitive: id-document: specimen identity document",
+        "metadata": {
+          "id": "student-id-card"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/student-id-card.png",
+          "expected": {
+            "categories": [
+              "id-document"
+            ]
+          }
+        }
+      }
+    },
+    "swim-shallows": {
+      "hash": "a7d43f826562",
+      "def": {
+        "description": "sensitive: none: swimwear at a beach, hard negative",
+        "metadata": {
+          "id": "swim-shallows"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-shallows.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "swim-wading": {
+      "hash": "dc30733ccbe6",
+      "def": {
+        "description": "sensitive: none: swimwear at a beach, hard negative",
+        "metadata": {
+          "id": "swim-wading"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-wading.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "swim-white-sand": {
+      "hash": "63e1d05d0c4a",
+      "def": {
+        "description": "sensitive: none: swimwear at a beach, hard negative",
+        "metadata": {
+          "id": "swim-white-sand"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-white-sand.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "tax-notice": {
+      "hash": "baa2855bcd49",
+      "def": {
+        "description": "sensitive: document, financial: tax assessment",
+        "metadata": {
+          "id": "tax-notice"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/tax-notice.png",
+          "expected": {
+            "categories": [
+              "document",
+              "financial"
+            ]
+          }
+        }
+      }
+    },
+    "terminal-api-key": {
+      "hash": "792b787a0647",
+      "def": {
+        "description": "sensitive: credential, screen: API keys and database password in a terminal",
+        "metadata": {
+          "id": "terminal-api-key"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/terminal-api-key.png",
+          "expected": {
+            "categories": [
+              "credential",
+              "screen"
+            ]
+          }
+        }
+      }
+    },
+    "train-ticket-french": {
+      "hash": "dcac8768d237",
+      "def": {
+        "description": "sensitive: none: ordinary corpus image",
+        "metadata": {
+          "id": "train-ticket-french"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/train-ticket-french.jpg",
+          "expected": {
+            "categories": []
+          }
+        }
+      }
+    },
+    "utility-bill": {
+      "hash": "3a49dadd82f9",
+      "def": {
+        "description": "sensitive: financial: bill with address and IBAN",
+        "metadata": {
+          "id": "utility-bill"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/utility-bill.png",
+          "expected": {
+            "categories": [
+              "financial"
+            ]
+          }
+        }
+      }
+    },
+    "vaccination-card": {
+      "hash": "942f1a8b7f3f",
+      "def": {
+        "description": "sensitive: medical: immunisation record",
+        "metadata": {
+          "id": "vaccination-card"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/vaccination-card.png",
+          "expected": {
+            "categories": [
+              "medical"
+            ]
+          }
+        }
+      }
+    },
+    "wifi-password-card": {
+      "hash": "b1a8e5fffc93",
+      "def": {
+        "description": "sensitive: credential: Wi-Fi password and QR",
+        "metadata": {
+          "id": "wifi-password-card"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/wifi-password-card.png",
+          "expected": {
+            "categories": [
+              "credential"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

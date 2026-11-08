@@ -1,0 +1,8 @@
+description: "search photos: a sunset over the sea with boats (1 relevant of 78)"
+metadata: { id: photos-sunset-boats, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a sunset over the sea with boats"
+  relevant: ["sunset-boats"]
+  how: "judged by eye"

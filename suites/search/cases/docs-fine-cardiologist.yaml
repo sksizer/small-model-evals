@@ -1,0 +1,8 @@
+description: "search docs: a clinic letter referring a patient to a cardiologist (1 relevant of 44)"
+metadata: { id: docs-fine-cardiologist, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "a clinic letter referring a patient to a cardiologist"
+  relevant: ["referral-letter"]
+  how: "judged from the page source"

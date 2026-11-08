@@ -1,0 +1,8 @@
+description: "search photos: a red racing car on a track (2 relevant of 78)"
+metadata: { id: photos-race-car, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a red racing car on a track"
+  relevant: ["oi-scene-monaco-a","oi-scene-monaco-b"]
+  how: "judged by eye"

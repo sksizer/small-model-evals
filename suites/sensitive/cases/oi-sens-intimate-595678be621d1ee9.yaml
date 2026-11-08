@@ -1,0 +1,5 @@
+description: "sensitive: intimate: adult torso in white lingerie briefs, product shot, no face"
+metadata: { id: oi-sens-intimate-595678be621d1ee9 }
+vars:
+  image: file://../../corpus/images/oi-sens-intimate-595678be621d1ee9.jpg
+  expected: { categories: [intimate] }

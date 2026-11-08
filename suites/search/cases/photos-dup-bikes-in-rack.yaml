@@ -1,0 +1,8 @@
+description: "search photos: many bicycles in a rack (3 relevant of 132)"
+metadata: { id: photos-dup-bikes-in-rack, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "many bicycles in a rack"
+  relevant: ["bike-parking-oakland","copy-crop10-bike-parking-oakland","copy-resize-bike-parking-oakland"]
+  how: "judged by eye; copies of a relevant photo count"

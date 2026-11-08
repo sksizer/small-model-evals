@@ -1,0 +1,8 @@
+description: "search photos: a glowing filament light bulb (1 relevant of 132)"
+metadata: { id: photos-dup-filament-bulb, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a glowing filament light bulb"
+  relevant: ["oi-find-a90c22661fe961ff"]
+  how: "judged by eye; copies of a relevant photo count"

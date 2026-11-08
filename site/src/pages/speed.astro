@@ -1,15 +1,21 @@
 ---
 import Base from '../layouts/Base.astro'
-import { data, fmt, href, modelLabels, modelSlug } from '../lib/data'
+import { data, fmt, fmtTime, href, modelLabels, modelSlug } from '../lib/data'
 
 const rows = [...data.perf].sort((a, b) => a.model.localeCompare(b.model) || a.case.localeCompare(b.case))
+const inproc = [...data.inproc].sort((a, b) => a.model.localeCompare(b.model) || a.suite.localeCompare(b.suite))
+const inprocSuites = [...new Set(inproc.map((r) => r.suite))]
+const inprocModels = [...new Set(inproc.map((r) => r.model))]
+const machineName = (key: string) => data.machines.find((m) => m.key === key)?.chip ?? key
+const classOf = (key: string) => data.machines.find((m) => m.key === key)?.class ?? ''
 const cases = [...new Set(rows.map((r) => r.case))]
 ---
 
 <Base
   title="Speed & memory"
-  description="Each model freshly loaded, three runs per case. Load time and prompt speed come from the cold run; output speed is the median."
+  description="Each model freshly loaded, three runs per case. Load time and prompt speed come from the cold run; output speed is the median. Shown for the machine picked above; machines are never pooled."
 >
+  <h2>Ollama models</h2>
   <div class="controls">
     <select data-facet="speed" name="case" aria-label="Case">
       <option value="">All cases</option>
@@ -33,13 +39,14 @@ const cases = [...new Set(rows.map((r) => r.case))]
           <th data-sort="num" class="num">Loaded GB</th>
           <th data-sort="num" class="num">GPU</th>
           <th data-sort="num" class="num">Cold load s</th>
+          <th data-sort="text">Machine</th>
           <th data-sort="text">Run</th>
         </tr>
       </thead>
       <tbody>
         {
           rows.map((r) => (
-            <tr data-case={r.case} data-model={r.model}>
+            <tr data-case={r.case} data-model={r.model} data-machine={r.machine}>
               <td>
                 <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
               </td>
@@ -54,9 +61,11 @@ const cases = [...new Set(rows.map((r) => r.case))]
               <td class="num" data-value={r.loaded_gb ?? -1}>{fmt(r.loaded_gb, 2)}</td>
               <td class="num" data-value={r.gpu_pct ?? -1}>{r.gpu_pct === null ? '—' : `${Math.round(r.gpu_pct)}%`}</td>
               <td class="num" data-value={r.load_s ?? -1}>{fmt(r.load_s)}</td>
+              <td class="muted">{machineName(r.machine)} <span class="pill class">{classOf(r.machine)}</span></td>
               <td class="muted">
                 {r.run.slice(0, 10)}
                 {r.stale && <span class="pill stale">stale</span>}
+                {r.busy.length > 0 && <span class="pill busy" title={r.busy.join('; ')}>taken under load</span>}
               </td>
             </tr>
           ))
@@ -67,5 +76,66 @@ const cases = [...new Set(rows.map((r) => r.case))]
   <p class="note">
     Ollama 0.40.11 ignores the context size for the qwen3.5 models, so their 8K and 32K rows repeat the 4K load
     ("cached"). The gemma4:e4b loaded size is implausibly small and likely leaves out its per-layer embeddings.
+  </p>
+  <h2>In-process and local models</h2>
+  <p class="lede">
+    Detectors, classifiers, embedders, perceptual hashes and the image editor run in this process, not in Ollama. Time is
+    the median per image; load is the one-off model load; memory is the largest reading in the latest run.
+  </p>
+  <div class="controls">
+    <select data-facet="inproc" name="suite" aria-label="Suite">
+      <option value="">All suites</option>
+      {inprocSuites.map((c) => <option value={c}>{c}</option>)}
+    </select>
+    <select data-facet="inproc" name="model" aria-label="Model">
+      <option value="">All models</option>
+      {inprocModels.map((m) => <option value={m}>{m}</option>)}
+    </select>
+    <span class="count" data-count="inproc"></span>
+  </div>
+  <div class="scroll">
+    <table data-table id="inproc">
+      <thead>
+        <tr>
+          <th data-sort="text">Model</th>
+          <th data-sort="text">Suite</th>
+          <th data-sort="num" class="num">Per image</th>
+          <th data-sort="num" class="num">Load</th>
+          <th data-sort="num" class="num">Memory</th>
+          <th data-sort="text">Machine</th>
+          <th data-sort="text">Run</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          inproc.map((r) => (
+            <tr data-suite={r.suite} data-model={r.model} data-machine={r.machine}>
+              <td>
+                <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+              </td>
+              <td>
+                <code>{r.suite}</code>
+              </td>
+              <td class="num" data-value={r.per_image_ms ?? -1}>{fmtTime(r.per_image_ms)}</td>
+              <td class="num" data-value={r.load_ms ?? -1}>{fmtTime(r.load_ms)}</td>
+              <td class="num" data-value={r.mem_mb ?? -1}>
+                {r.mem_mb === null ? '—' : `${Math.round(r.mem_mb).toLocaleString('en-US')} MB`} <span class="muted">{r.mem_kind}</span>
+              </td>
+              <td class="muted">{machineName(r.machine)} <span class="pill class">{classOf(r.machine)}</span></td>
+              <td class="muted">
+                {r.run.slice(0, 10)}
+                {r.stale && <span class="pill stale">stale</span>}
+                {r.busy.length > 0 && <span class="pill busy" title={r.busy.join('; ')}>taken under load</span>}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="note">
+    <strong>rss</strong> is the whole process's resident memory, so it includes the runtime and every image held, and is an
+    upper bound for the model alone. <strong>peak</strong> (the image editor) is that program's own peak. A dash means the
+    run did not report it (the hashes have no weights to load).
   </p>
 </Base>

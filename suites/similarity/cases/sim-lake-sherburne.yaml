@@ -1,0 +1,7 @@
+description: "similarity: lake-sherburne (2 copy, 2 class of 153)"
+metadata: { id: sim-lake-sherburne }
+vars:
+  query: lake-sherburne
+  expected:
+    copy: [copy-crop10-lake-sherburne, copy-bright-lake-sherburne]
+    class: [lake-salagou, mountain-lake-dam]

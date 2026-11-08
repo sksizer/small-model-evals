@@ -1,0 +1,18 @@
+{
+  "tag": "onnx-community/siglip2-base-patch16-224-ONNX",
+  "digest": "ba1f3b0843f2",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "fp32",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "image-embedding"
+  ],
+  "default_parameters": {
+    "revision": "ba1f3b0843f24bc5417d38e19c37b287d719b2f4"
+  },
+  "template_hash": ""
+}

@@ -1,0 +1,1764 @@
+{
+  "suite": "similarity",
+  "fingerprint": "94c1b3b58073",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:891a886359b6400bcee82fe2ec196228c0d0ff543cf472ea9450f8675929184a"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      },
+      "vars": {
+        "pool": [
+          {
+            "file": "corpus/images/salad-ham.jpg",
+            "id": "salad-ham",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/salad-party-dish.jpg",
+            "id": "salad-party-dish",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/salad-rucola-plate.jpg",
+            "id": "salad-rucola-plate",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/pancakes-breakfast-table.jpg",
+            "id": "pancakes-breakfast-table",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/pancakes-stack.jpg",
+            "id": "pancakes-stack",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/dog-sleeping-painting.jpg",
+            "id": "dog-sleeping-painting",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/dog-border-terrier.jpg",
+            "id": "dog-border-terrier",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/dog-in-dog-bed.jpg",
+            "id": "dog-in-dog-bed",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/dog-autumn-sun.jpg",
+            "id": "dog-autumn-sun",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/parrot-illustration.jpg",
+            "id": "parrot-illustration",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/horses-flooded-pasture.jpg",
+            "id": "horses-flooded-pasture",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/horses-pasture-house.jpg",
+            "id": "horses-pasture-house",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/bike-parking-oakland.jpg",
+            "id": "bike-parking-oakland",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/bike-parking-three-styles.jpg",
+            "id": "bike-parking-three-styles",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/sidewalk-cafe.jpg",
+            "id": "sidewalk-cafe",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/coffee-montreal.jpg",
+            "id": "coffee-montreal",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/coffee-snacks-table.jpg",
+            "id": "coffee-snacks-table",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/coffee-shop-counter.jpg",
+            "id": "coffee-shop-counter",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/laptop-notepad.jpg",
+            "id": "laptop-notepad",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/desk-coffee-laptop-notebook.jpg",
+            "id": "desk-coffee-laptop-notebook",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/desk-laptop-notebook-pen.jpg",
+            "id": "desk-laptop-notebook-pen",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/desk-laptop-top-down.jpg",
+            "id": "desk-laptop-top-down",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/diner-snow-night.jpg",
+            "id": "diner-snow-night",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/kitchen-historic-bw.jpg",
+            "id": "kitchen-historic-bw",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/library-stacks-vasconcelos.jpg",
+            "id": "library-stacks-vasconcelos",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/library-laukaa.jpg",
+            "id": "library-laukaa",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/railway-station-dark.jpg",
+            "id": "railway-station-dark",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/street-night-rostov.jpg",
+            "id": "street-night-rostov",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/lake-salagou.jpg",
+            "id": "lake-salagou",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/lake-sherburne.jpg",
+            "id": "lake-sherburne",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/mountain-lake-dam.jpg",
+            "id": "mountain-lake-dam",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/sunset-boats.jpg",
+            "id": "sunset-boats",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/sunset-beach-colonia.jpg",
+            "id": "sunset-beach-colonia",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/millipede-moss.jpg",
+            "id": "millipede-moss",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/forest-trail.jpg",
+            "id": "forest-trail",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/tree-bracket-fungus.jpg",
+            "id": "tree-bracket-fungus",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/snow-forest-trail.jpg",
+            "id": "snow-forest-trail",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/letter-handwritten-short.jpg",
+            "id": "letter-handwritten-short",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/recipe-daffys-elixir.jpg",
+            "id": "recipe-daffys-elixir",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/recipe-rheumatism.jpg",
+            "id": "recipe-rheumatism",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/train-ticket-french.jpg",
+            "id": "train-ticket-french",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/train-ticket-chinese.jpg",
+            "id": "train-ticket-chinese",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/receipt-grocery.png",
+            "id": "receipt-grocery",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/invoice-simple.png",
+            "id": "invoice-simple",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/settings-panel.png",
+            "id": "settings-panel",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/jobs-table.png",
+            "id": "jobs-table",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/event-flyer.png",
+            "id": "event-flyer",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/shipping-label.png",
+            "id": "shipping-label",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/error-dialog.png",
+            "id": "error-dialog",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/recipe-card.png",
+            "id": "recipe-card",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-948794bfee784412.jpg",
+            "id": "oi-objects-948794bfee784412",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-0fd512f1bffb8cf3.jpg",
+            "id": "oi-objects-0fd512f1bffb8cf3",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-25d107f1590c1772.jpg",
+            "id": "oi-objects-25d107f1590c1772",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-a7e5d2727af4299d.jpg",
+            "id": "oi-objects-a7e5d2727af4299d",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-28bd6c6b1050e055.jpg",
+            "id": "oi-objects-28bd6c6b1050e055",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-e51e3156ed41b3a8.jpg",
+            "id": "oi-objects-e51e3156ed41b3a8",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-d8cac8b54e9fa89c.jpg",
+            "id": "oi-objects-d8cac8b54e9fa89c",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-5b7ab3baf4c0492f.jpg",
+            "id": "oi-objects-5b7ab3baf4c0492f",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-eccb080e57b2aac5.jpg",
+            "id": "oi-objects-eccb080e57b2aac5",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-7408fef212a5d3bc.jpg",
+            "id": "oi-objects-7408fef212a5d3bc",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-2b2c4fe6d63a13e4.jpg",
+            "id": "oi-objects-2b2c4fe6d63a13e4",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-ee47ccab89a75d0d.jpg",
+            "id": "oi-objects-ee47ccab89a75d0d",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-2fba54286aaac20e.jpg",
+            "id": "oi-objects-2fba54286aaac20e",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-objects-5ea13fbbd1a1474f.jpg",
+            "id": "oi-objects-5ea13fbbd1a1474f",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-e916dd0b766b2f40.jpg",
+            "id": "oi-find-e916dd0b766b2f40",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-743dbcab02a9971e.jpg",
+            "id": "oi-find-743dbcab02a9971e",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-2dcab96f79ef52c4.jpg",
+            "id": "oi-find-2dcab96f79ef52c4",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-07caab7b663b7e86.jpg",
+            "id": "oi-find-07caab7b663b7e86",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-0f730eda466be34c.jpg",
+            "id": "oi-find-0f730eda466be34c",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-a1b604b5548bfc1f.jpg",
+            "id": "oi-find-a1b604b5548bfc1f",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-6022a450df278025.jpg",
+            "id": "oi-find-6022a450df278025",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-8f08cb18c27fbaa7.jpg",
+            "id": "oi-find-8f08cb18c27fbaa7",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-864e6f2e549e9542.jpg",
+            "id": "oi-find-864e6f2e549e9542",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-030c5a10124e6252.jpg",
+            "id": "oi-find-030c5a10124e6252",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-489076e07c213206.jpg",
+            "id": "oi-find-489076e07c213206",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-66a342dcdafc7607.jpg",
+            "id": "oi-find-66a342dcdafc7607",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-149a74e86e8161a5.jpg",
+            "id": "oi-find-149a74e86e8161a5",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-29de4e35add89b69.jpg",
+            "id": "oi-find-29de4e35add89b69",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-c4d62e55691ed1e4.jpg",
+            "id": "oi-find-c4d62e55691ed1e4",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-01d3fdb0f6383edb.jpg",
+            "id": "oi-find-01d3fdb0f6383edb",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-fad0f797e6985f7f.jpg",
+            "id": "oi-find-fad0f797e6985f7f",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-find-a90c22661fe961ff.jpg",
+            "id": "oi-find-a90c22661fe961ff",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-scene-spitfire-a.jpg",
+            "id": "oi-scene-spitfire-a",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-scene-spitfire-b.jpg",
+            "id": "oi-scene-spitfire-b",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-scene-monaco-a.jpg",
+            "id": "oi-scene-monaco-a",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/oi-scene-monaco-b.jpg",
+            "id": "oi-scene-monaco-b",
+            "kind": "original"
+          },
+          {
+            "file": "corpus/images/copy-resize-oi-objects-ee47ccab89a75d0d.jpg",
+            "id": "copy-resize-oi-objects-ee47ccab89a75d0d",
+            "kind": "copy",
+            "of": "oi-objects-ee47ccab89a75d0d"
+          },
+          {
+            "file": "corpus/images/copy-crop10-oi-objects-ee47ccab89a75d0d.jpg",
+            "id": "copy-crop10-oi-objects-ee47ccab89a75d0d",
+            "kind": "copy",
+            "of": "oi-objects-ee47ccab89a75d0d"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-oi-objects-25d107f1590c1772.jpg",
+            "id": "copy-jpeg40-oi-objects-25d107f1590c1772",
+            "kind": "copy",
+            "of": "oi-objects-25d107f1590c1772"
+          },
+          {
+            "file": "corpus/images/copy-flip-oi-objects-25d107f1590c1772.jpg",
+            "id": "copy-flip-oi-objects-25d107f1590c1772",
+            "kind": "copy",
+            "of": "oi-objects-25d107f1590c1772"
+          },
+          {
+            "file": "corpus/images/copy-crop10-recipe-card.jpg",
+            "id": "copy-crop10-recipe-card",
+            "kind": "copy",
+            "of": "recipe-card"
+          },
+          {
+            "file": "corpus/images/copy-bright-recipe-card.jpg",
+            "id": "copy-bright-recipe-card",
+            "kind": "copy",
+            "of": "recipe-card"
+          },
+          {
+            "file": "corpus/images/copy-flip-settings-panel.jpg",
+            "id": "copy-flip-settings-panel",
+            "kind": "copy",
+            "of": "settings-panel"
+          },
+          {
+            "file": "corpus/images/copy-resize-settings-panel.jpg",
+            "id": "copy-resize-settings-panel",
+            "kind": "copy",
+            "of": "settings-panel"
+          },
+          {
+            "file": "corpus/images/copy-bright-oi-objects-28bd6c6b1050e055.jpg",
+            "id": "copy-bright-oi-objects-28bd6c6b1050e055",
+            "kind": "copy",
+            "of": "oi-objects-28bd6c6b1050e055"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-oi-objects-28bd6c6b1050e055.jpg",
+            "id": "copy-jpeg40-oi-objects-28bd6c6b1050e055",
+            "kind": "copy",
+            "of": "oi-objects-28bd6c6b1050e055"
+          },
+          {
+            "file": "corpus/images/copy-resize-oi-objects-948794bfee784412.jpg",
+            "id": "copy-resize-oi-objects-948794bfee784412",
+            "kind": "copy",
+            "of": "oi-objects-948794bfee784412"
+          },
+          {
+            "file": "corpus/images/copy-crop10-oi-objects-948794bfee784412.jpg",
+            "id": "copy-crop10-oi-objects-948794bfee784412",
+            "kind": "copy",
+            "of": "oi-objects-948794bfee784412"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-oi-objects-0fd512f1bffb8cf3.jpg",
+            "id": "copy-jpeg40-oi-objects-0fd512f1bffb8cf3",
+            "kind": "copy",
+            "of": "oi-objects-0fd512f1bffb8cf3"
+          },
+          {
+            "file": "corpus/images/copy-flip-oi-objects-0fd512f1bffb8cf3.jpg",
+            "id": "copy-flip-oi-objects-0fd512f1bffb8cf3",
+            "kind": "copy",
+            "of": "oi-objects-0fd512f1bffb8cf3"
+          },
+          {
+            "file": "corpus/images/copy-crop10-oi-objects-d8cac8b54e9fa89c.jpg",
+            "id": "copy-crop10-oi-objects-d8cac8b54e9fa89c",
+            "kind": "copy",
+            "of": "oi-objects-d8cac8b54e9fa89c"
+          },
+          {
+            "file": "corpus/images/copy-bright-oi-objects-d8cac8b54e9fa89c.jpg",
+            "id": "copy-bright-oi-objects-d8cac8b54e9fa89c",
+            "kind": "copy",
+            "of": "oi-objects-d8cac8b54e9fa89c"
+          },
+          {
+            "file": "corpus/images/copy-flip-oi-objects-5b7ab3baf4c0492f.jpg",
+            "id": "copy-flip-oi-objects-5b7ab3baf4c0492f",
+            "kind": "copy",
+            "of": "oi-objects-5b7ab3baf4c0492f"
+          },
+          {
+            "file": "corpus/images/copy-resize-oi-objects-5b7ab3baf4c0492f.jpg",
+            "id": "copy-resize-oi-objects-5b7ab3baf4c0492f",
+            "kind": "copy",
+            "of": "oi-objects-5b7ab3baf4c0492f"
+          },
+          {
+            "file": "corpus/images/copy-bright-oi-objects-2fba54286aaac20e.jpg",
+            "id": "copy-bright-oi-objects-2fba54286aaac20e",
+            "kind": "copy",
+            "of": "oi-objects-2fba54286aaac20e"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-oi-objects-2fba54286aaac20e.jpg",
+            "id": "copy-jpeg40-oi-objects-2fba54286aaac20e",
+            "kind": "copy",
+            "of": "oi-objects-2fba54286aaac20e"
+          },
+          {
+            "file": "corpus/images/copy-resize-millipede-moss.jpg",
+            "id": "copy-resize-millipede-moss",
+            "kind": "copy",
+            "of": "millipede-moss"
+          },
+          {
+            "file": "corpus/images/copy-crop10-millipede-moss.jpg",
+            "id": "copy-crop10-millipede-moss",
+            "kind": "copy",
+            "of": "millipede-moss"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-forest-trail.jpg",
+            "id": "copy-jpeg40-forest-trail",
+            "kind": "copy",
+            "of": "forest-trail"
+          },
+          {
+            "file": "corpus/images/copy-flip-forest-trail.jpg",
+            "id": "copy-flip-forest-trail",
+            "kind": "copy",
+            "of": "forest-trail"
+          },
+          {
+            "file": "corpus/images/copy-crop10-tree-bracket-fungus.jpg",
+            "id": "copy-crop10-tree-bracket-fungus",
+            "kind": "copy",
+            "of": "tree-bracket-fungus"
+          },
+          {
+            "file": "corpus/images/copy-bright-tree-bracket-fungus.jpg",
+            "id": "copy-bright-tree-bracket-fungus",
+            "kind": "copy",
+            "of": "tree-bracket-fungus"
+          },
+          {
+            "file": "corpus/images/copy-flip-oi-scene-spitfire-a.jpg",
+            "id": "copy-flip-oi-scene-spitfire-a",
+            "kind": "copy",
+            "of": "oi-scene-spitfire-a"
+          },
+          {
+            "file": "corpus/images/copy-resize-oi-scene-spitfire-a.jpg",
+            "id": "copy-resize-oi-scene-spitfire-a",
+            "kind": "copy",
+            "of": "oi-scene-spitfire-a"
+          },
+          {
+            "file": "corpus/images/copy-bright-oi-scene-spitfire-b.jpg",
+            "id": "copy-bright-oi-scene-spitfire-b",
+            "kind": "copy",
+            "of": "oi-scene-spitfire-b"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-oi-scene-spitfire-b.jpg",
+            "id": "copy-jpeg40-oi-scene-spitfire-b",
+            "kind": "copy",
+            "of": "oi-scene-spitfire-b"
+          },
+          {
+            "file": "corpus/images/copy-resize-oi-scene-monaco-a.jpg",
+            "id": "copy-resize-oi-scene-monaco-a",
+            "kind": "copy",
+            "of": "oi-scene-monaco-a"
+          },
+          {
+            "file": "corpus/images/copy-crop10-oi-scene-monaco-a.jpg",
+            "id": "copy-crop10-oi-scene-monaco-a",
+            "kind": "copy",
+            "of": "oi-scene-monaco-a"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-oi-scene-monaco-b.jpg",
+            "id": "copy-jpeg40-oi-scene-monaco-b",
+            "kind": "copy",
+            "of": "oi-scene-monaco-b"
+          },
+          {
+            "file": "corpus/images/copy-flip-oi-scene-monaco-b.jpg",
+            "id": "copy-flip-oi-scene-monaco-b",
+            "kind": "copy",
+            "of": "oi-scene-monaco-b"
+          },
+          {
+            "file": "corpus/images/copy-crop10-dog-border-terrier.jpg",
+            "id": "copy-crop10-dog-border-terrier",
+            "kind": "copy",
+            "of": "dog-border-terrier"
+          },
+          {
+            "file": "corpus/images/copy-bright-dog-border-terrier.jpg",
+            "id": "copy-bright-dog-border-terrier",
+            "kind": "copy",
+            "of": "dog-border-terrier"
+          },
+          {
+            "file": "corpus/images/copy-flip-horses-flooded-pasture.jpg",
+            "id": "copy-flip-horses-flooded-pasture",
+            "kind": "copy",
+            "of": "horses-flooded-pasture"
+          },
+          {
+            "file": "corpus/images/copy-resize-horses-flooded-pasture.jpg",
+            "id": "copy-resize-horses-flooded-pasture",
+            "kind": "copy",
+            "of": "horses-flooded-pasture"
+          },
+          {
+            "file": "corpus/images/copy-bright-salad-rucola-plate.jpg",
+            "id": "copy-bright-salad-rucola-plate",
+            "kind": "copy",
+            "of": "salad-rucola-plate"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-salad-rucola-plate.jpg",
+            "id": "copy-jpeg40-salad-rucola-plate",
+            "kind": "copy",
+            "of": "salad-rucola-plate"
+          },
+          {
+            "file": "corpus/images/copy-resize-bike-parking-oakland.jpg",
+            "id": "copy-resize-bike-parking-oakland",
+            "kind": "copy",
+            "of": "bike-parking-oakland"
+          },
+          {
+            "file": "corpus/images/copy-crop10-bike-parking-oakland.jpg",
+            "id": "copy-crop10-bike-parking-oakland",
+            "kind": "copy",
+            "of": "bike-parking-oakland"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-desk-laptop-top-down.jpg",
+            "id": "copy-jpeg40-desk-laptop-top-down",
+            "kind": "copy",
+            "of": "desk-laptop-top-down"
+          },
+          {
+            "file": "corpus/images/copy-flip-desk-laptop-top-down.jpg",
+            "id": "copy-flip-desk-laptop-top-down",
+            "kind": "copy",
+            "of": "desk-laptop-top-down"
+          },
+          {
+            "file": "corpus/images/copy-crop10-lake-sherburne.jpg",
+            "id": "copy-crop10-lake-sherburne",
+            "kind": "copy",
+            "of": "lake-sherburne"
+          },
+          {
+            "file": "corpus/images/copy-bright-lake-sherburne.jpg",
+            "id": "copy-bright-lake-sherburne",
+            "kind": "copy",
+            "of": "lake-sherburne"
+          },
+          {
+            "file": "corpus/images/copy-flip-library-laukaa.jpg",
+            "id": "copy-flip-library-laukaa",
+            "kind": "copy",
+            "of": "library-laukaa"
+          },
+          {
+            "file": "corpus/images/copy-resize-library-laukaa.jpg",
+            "id": "copy-resize-library-laukaa",
+            "kind": "copy",
+            "of": "library-laukaa"
+          },
+          {
+            "file": "corpus/images/copy-bright-oi-find-149a74e86e8161a5.jpg",
+            "id": "copy-bright-oi-find-149a74e86e8161a5",
+            "kind": "copy",
+            "of": "oi-find-149a74e86e8161a5"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-oi-find-149a74e86e8161a5.jpg",
+            "id": "copy-jpeg40-oi-find-149a74e86e8161a5",
+            "kind": "copy",
+            "of": "oi-find-149a74e86e8161a5"
+          },
+          {
+            "file": "corpus/images/copy-resize-oi-find-c4d62e55691ed1e4.jpg",
+            "id": "copy-resize-oi-find-c4d62e55691ed1e4",
+            "kind": "copy",
+            "of": "oi-find-c4d62e55691ed1e4"
+          },
+          {
+            "file": "corpus/images/copy-crop10-oi-find-c4d62e55691ed1e4.jpg",
+            "id": "copy-crop10-oi-find-c4d62e55691ed1e4",
+            "kind": "copy",
+            "of": "oi-find-c4d62e55691ed1e4"
+          },
+          {
+            "file": "corpus/images/copy-jpeg40-train-ticket-french.jpg",
+            "id": "copy-jpeg40-train-ticket-french",
+            "kind": "copy",
+            "of": "train-ticket-french"
+          },
+          {
+            "file": "corpus/images/copy-flip-train-ticket-french.jpg",
+            "id": "copy-flip-train-ticket-french",
+            "kind": "copy",
+            "of": "train-ticket-french"
+          },
+          {
+            "file": "corpus/images/copy-crop10-recipe-daffys-elixir.jpg",
+            "id": "copy-crop10-recipe-daffys-elixir",
+            "kind": "copy",
+            "of": "recipe-daffys-elixir"
+          },
+          {
+            "file": "corpus/images/copy-bright-recipe-daffys-elixir.jpg",
+            "id": "copy-bright-recipe-daffys-elixir",
+            "kind": "copy",
+            "of": "recipe-daffys-elixir"
+          },
+          {
+            "file": "corpus/images/copy-flip-street-night-rostov.jpg",
+            "id": "copy-flip-street-night-rostov",
+            "kind": "copy",
+            "of": "street-night-rostov"
+          },
+          {
+            "file": "corpus/images/copy-resize-street-night-rostov.jpg",
+            "id": "copy-resize-street-night-rostov",
+            "kind": "copy",
+            "of": "street-night-rostov"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-armchair-green-7a905b97.jpg",
+            "id": "edit-armchair-green",
+            "kind": "edit",
+            "of": "oi-objects-ee47ccab89a75d0d"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-bowl-remove-20fa682e.jpg",
+            "id": "edit-bowl-remove",
+            "kind": "edit",
+            "of": "oi-objects-25d107f1590c1772"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-recipe-title-e9df156a.jpg",
+            "id": "edit-recipe-title",
+            "kind": "edit",
+            "of": "recipe-card"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-sync-interval-b8769f79.jpg",
+            "id": "edit-sync-interval",
+            "kind": "edit",
+            "of": "settings-panel"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-audi-night-837b7b6d.jpg",
+            "id": "edit-audi-night",
+            "kind": "edit",
+            "of": "oi-objects-28bd6c6b1050e055"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-dog-ball-c589592d.jpg",
+            "id": "edit-dog-ball",
+            "kind": "edit",
+            "of": "oi-objects-948794bfee784412"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-car-red-3f1af9e9.jpg",
+            "id": "edit-car-red",
+            "kind": "edit",
+            "of": "oi-objects-0fd512f1bffb8cf3"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-basset-sketch-f96df565.jpg",
+            "id": "edit-basset-sketch",
+            "kind": "edit",
+            "of": "oi-objects-d8cac8b54e9fa89c"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-dogs-snow-441a1d96.jpg",
+            "id": "edit-dogs-snow",
+            "kind": "edit",
+            "of": "oi-objects-5b7ab3baf4c0492f"
+          },
+          {
+            "file": "results/edits/edit/flux2-klein-4b-q4/edit-plant-remove-ae9282a3.jpg",
+            "id": "edit-plant-remove",
+            "kind": "edit",
+            "of": "oi-objects-2fba54286aaac20e"
+          }
+        ]
+      }
+    },
+    "description": "similarity — copy, edit, scene, class or other",
+    "prompts": [
+      "{{ query }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "kind": "phash"
+        },
+        "id": "sha256:ce03cc5a444c845412bea1824f99a63d4d411104146d6b6922aded7166fed186",
+        "label": "phash"
+      },
+      {
+        "config": {
+          "kind": "dhash"
+        },
+        "id": "sha256:ce03cc5a444c845412bea1824f99a63d4d411104146d6b6922aded7166fed186",
+        "label": "dhash"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "kind": "embed",
+          "model": "onnx-community/dinov2-small",
+          "revision": "8b1f705a3a7f6f062f6bdd21986c1583d3ef105d",
+          "tower": "dino"
+        },
+        "id": "sha256:ce03cc5a444c845412bea1824f99a63d4d411104146d6b6922aded7166fed186",
+        "label": "dinov2-small"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "kind": "embed",
+          "model": "onnx-community/dinov2-base",
+          "revision": "31ef06cac16d5d301c5930d147002a058c85a5e4",
+          "tower": "dino"
+        },
+        "id": "sha256:ce03cc5a444c845412bea1824f99a63d4d411104146d6b6922aded7166fed186",
+        "label": "dinov2-base"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "kind": "embed",
+          "model": "onnx-community/dinov3-vits16-pretrain-lvd1689m-ONNX",
+          "revision": "48988dfe73065df8d6f5ccc0edc7c8bcf307de41",
+          "tower": "dino"
+        },
+        "id": "sha256:ce03cc5a444c845412bea1824f99a63d4d411104146d6b6922aded7166fed186",
+        "label": "dinov3-vits16"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "kind": "embed",
+          "model": "onnx-community/siglip2-base-patch16-224-ONNX",
+          "revision": "ba1f3b0843f24bc5417d38e19c37b287d719b2f4",
+          "tower": "siglip"
+        },
+        "id": "sha256:ce03cc5a444c845412bea1824f99a63d4d411104146d6b6922aded7166fed186",
+        "label": "siglip2-base"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "kind": "embed",
+          "model": "Xenova/clip-vit-base-patch32",
+          "revision": "6b7c523703ae26e39be4b03774966f8571c7f523",
+          "tower": "clip"
+        },
+        "id": "sha256:ce03cc5a444c845412bea1824f99a63d4d411104146d6b6922aded7166fed186",
+        "label": "clip-vit-b32"
+      },
+      {
+        "config": {
+          "dtype": "fp32",
+          "kind": "embed",
+          "model": "Xenova/clip-vit-base-patch16",
+          "revision": "342fdf2f67aded64d138ff074745fb4a5d2bba5f",
+          "tower": "clip"
+        },
+        "id": "sha256:ce03cc5a444c845412bea1824f99a63d4d411104146d6b6922aded7166fed186",
+        "label": "clip-vit-b16"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "bed813328b89",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "8fb99030998e",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "1482885f4b93",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/onnx-detector.ts": "46ecb00e5d11",
+    "providers/region-detector.ts": "20b52284e631"
+  },
+  "setup_hash": "e2bb8ca536e7",
+  "cases": {
+    "sim-bike-parking-oakland": {
+      "hash": "cb6ddd48a0c3",
+      "def": {
+        "description": "similarity: bike-parking-oakland (2 copy, 1 class of 153)",
+        "metadata": {
+          "id": "sim-bike-parking-oakland"
+        },
+        "vars": {
+          "query": "bike-parking-oakland",
+          "expected": {
+            "copy": [
+              "copy-resize-bike-parking-oakland",
+              "copy-crop10-bike-parking-oakland"
+            ],
+            "class": [
+              "bike-parking-three-styles"
+            ]
+          }
+        }
+      }
+    },
+    "sim-desk-laptop-top-down": {
+      "hash": "5a29517d6ed9",
+      "def": {
+        "description": "similarity: desk-laptop-top-down (2 copy, 5 class of 153)",
+        "metadata": {
+          "id": "sim-desk-laptop-top-down"
+        },
+        "vars": {
+          "query": "desk-laptop-top-down",
+          "expected": {
+            "copy": [
+              "copy-jpeg40-desk-laptop-top-down",
+              "copy-flip-desk-laptop-top-down"
+            ],
+            "class": [
+              "laptop-notepad",
+              "desk-coffee-laptop-notebook",
+              "desk-laptop-notebook-pen",
+              "oi-objects-a7e5d2727af4299d",
+              "oi-objects-7408fef212a5d3bc"
+            ]
+          }
+        }
+      }
+    },
+    "sim-dog-border-terrier": {
+      "hash": "9d4a149c355b",
+      "def": {
+        "description": "similarity: dog-border-terrier (2 copy, 20 class of 153)",
+        "metadata": {
+          "id": "sim-dog-border-terrier"
+        },
+        "vars": {
+          "query": "dog-border-terrier",
+          "expected": {
+            "copy": [
+              "copy-crop10-dog-border-terrier",
+              "copy-bright-dog-border-terrier"
+            ],
+            "class": [
+              "dog-sleeping-painting",
+              "dog-in-dog-bed",
+              "dog-autumn-sun",
+              "oi-objects-948794bfee784412",
+              "oi-objects-0fd512f1bffb8cf3",
+              "oi-objects-d8cac8b54e9fa89c",
+              "oi-objects-5b7ab3baf4c0492f",
+              "oi-find-030c5a10124e6252",
+              "copy-resize-oi-objects-948794bfee784412",
+              "copy-crop10-oi-objects-948794bfee784412",
+              "copy-jpeg40-oi-objects-0fd512f1bffb8cf3",
+              "copy-flip-oi-objects-0fd512f1bffb8cf3",
+              "copy-crop10-oi-objects-d8cac8b54e9fa89c",
+              "copy-bright-oi-objects-d8cac8b54e9fa89c",
+              "copy-flip-oi-objects-5b7ab3baf4c0492f",
+              "copy-resize-oi-objects-5b7ab3baf4c0492f",
+              "edit-dog-ball",
+              "edit-car-red",
+              "edit-basset-sketch",
+              "edit-dogs-snow"
+            ]
+          }
+        }
+      }
+    },
+    "sim-forest-trail": {
+      "hash": "ad8350ea8057",
+      "def": {
+        "description": "similarity: forest-trail (2 copy, 6 scene, 1 class of 153)",
+        "metadata": {
+          "id": "sim-forest-trail"
+        },
+        "vars": {
+          "query": "forest-trail",
+          "expected": {
+            "copy": [
+              "copy-jpeg40-forest-trail",
+              "copy-flip-forest-trail"
+            ],
+            "scene": [
+              "millipede-moss",
+              "tree-bracket-fungus",
+              "copy-resize-millipede-moss",
+              "copy-crop10-millipede-moss",
+              "copy-crop10-tree-bracket-fungus",
+              "copy-bright-tree-bracket-fungus"
+            ],
+            "class": [
+              "snow-forest-trail"
+            ]
+          }
+        }
+      }
+    },
+    "sim-horses-flooded-pasture": {
+      "hash": "62a80149954a",
+      "def": {
+        "description": "similarity: horses-flooded-pasture (2 copy, 1 class of 153)",
+        "metadata": {
+          "id": "sim-horses-flooded-pasture"
+        },
+        "vars": {
+          "query": "horses-flooded-pasture",
+          "expected": {
+            "copy": [
+              "copy-flip-horses-flooded-pasture",
+              "copy-resize-horses-flooded-pasture"
+            ],
+            "class": [
+              "horses-pasture-house"
+            ]
+          }
+        }
+      }
+    },
+    "sim-lake-sherburne": {
+      "hash": "25775a9c44fe",
+      "def": {
+        "description": "similarity: lake-sherburne (2 copy, 2 class of 153)",
+        "metadata": {
+          "id": "sim-lake-sherburne"
+        },
+        "vars": {
+          "query": "lake-sherburne",
+          "expected": {
+            "copy": [
+              "copy-crop10-lake-sherburne",
+              "copy-bright-lake-sherburne"
+            ],
+            "class": [
+              "lake-salagou",
+              "mountain-lake-dam"
+            ]
+          }
+        }
+      }
+    },
+    "sim-library-laukaa": {
+      "hash": "ae3a6493c330",
+      "def": {
+        "description": "similarity: library-laukaa (2 copy, 1 class of 153)",
+        "metadata": {
+          "id": "sim-library-laukaa"
+        },
+        "vars": {
+          "query": "library-laukaa",
+          "expected": {
+            "copy": [
+              "copy-flip-library-laukaa",
+              "copy-resize-library-laukaa"
+            ],
+            "class": [
+              "library-stacks-vasconcelos"
+            ]
+          }
+        }
+      }
+    },
+    "sim-millipede-moss": {
+      "hash": "49c60200da2b",
+      "def": {
+        "description": "similarity: millipede-moss (2 copy, 6 scene, 1 class of 153)",
+        "metadata": {
+          "id": "sim-millipede-moss"
+        },
+        "vars": {
+          "query": "millipede-moss",
+          "expected": {
+            "copy": [
+              "copy-resize-millipede-moss",
+              "copy-crop10-millipede-moss"
+            ],
+            "scene": [
+              "forest-trail",
+              "tree-bracket-fungus",
+              "copy-jpeg40-forest-trail",
+              "copy-flip-forest-trail",
+              "copy-crop10-tree-bracket-fungus",
+              "copy-bright-tree-bracket-fungus"
+            ],
+            "class": [
+              "snow-forest-trail"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-find-149a74e86e8161a5": {
+      "hash": "1ecb3b86de40",
+      "def": {
+        "description": "similarity: oi-find-149a74e86e8161a5 (2 copy, 1 class of 153)",
+        "metadata": {
+          "id": "sim-oi-find-149a74e86e8161a5"
+        },
+        "vars": {
+          "query": "oi-find-149a74e86e8161a5",
+          "expected": {
+            "copy": [
+              "copy-bright-oi-find-149a74e86e8161a5",
+              "copy-jpeg40-oi-find-149a74e86e8161a5"
+            ],
+            "class": [
+              "oi-find-66a342dcdafc7607"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-find-c4d62e55691ed1e4": {
+      "hash": "74844d340e92",
+      "def": {
+        "description": "similarity: oi-find-c4d62e55691ed1e4 (2 copy, 1 class of 153)",
+        "metadata": {
+          "id": "sim-oi-find-c4d62e55691ed1e4"
+        },
+        "vars": {
+          "query": "oi-find-c4d62e55691ed1e4",
+          "expected": {
+            "copy": [
+              "copy-resize-oi-find-c4d62e55691ed1e4",
+              "copy-crop10-oi-find-c4d62e55691ed1e4"
+            ],
+            "class": [
+              "oi-find-29de4e35add89b69"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-objects-0fd512f1bffb8cf3": {
+      "hash": "0bdd47173064",
+      "def": {
+        "description": "similarity: oi-objects-0fd512f1bffb8cf3 (2 copy, 1 edit, 19 class of 153)",
+        "metadata": {
+          "id": "sim-oi-objects-0fd512f1bffb8cf3"
+        },
+        "vars": {
+          "query": "oi-objects-0fd512f1bffb8cf3",
+          "expected": {
+            "copy": [
+              "copy-jpeg40-oi-objects-0fd512f1bffb8cf3",
+              "copy-flip-oi-objects-0fd512f1bffb8cf3"
+            ],
+            "edit": [
+              "edit-car-red"
+            ],
+            "class": [
+              "dog-sleeping-painting",
+              "dog-border-terrier",
+              "dog-in-dog-bed",
+              "dog-autumn-sun",
+              "oi-objects-948794bfee784412",
+              "oi-objects-d8cac8b54e9fa89c",
+              "oi-objects-5b7ab3baf4c0492f",
+              "oi-find-030c5a10124e6252",
+              "copy-resize-oi-objects-948794bfee784412",
+              "copy-crop10-oi-objects-948794bfee784412",
+              "copy-crop10-oi-objects-d8cac8b54e9fa89c",
+              "copy-bright-oi-objects-d8cac8b54e9fa89c",
+              "copy-flip-oi-objects-5b7ab3baf4c0492f",
+              "copy-resize-oi-objects-5b7ab3baf4c0492f",
+              "copy-crop10-dog-border-terrier",
+              "copy-bright-dog-border-terrier",
+              "edit-dog-ball",
+              "edit-basset-sketch",
+              "edit-dogs-snow"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-objects-25d107f1590c1772": {
+      "hash": "e5badb7a3a58",
+      "def": {
+        "description": "similarity: oi-objects-25d107f1590c1772 (2 copy, 1 edit, 3 class of 153)",
+        "metadata": {
+          "id": "sim-oi-objects-25d107f1590c1772"
+        },
+        "vars": {
+          "query": "oi-objects-25d107f1590c1772",
+          "expected": {
+            "copy": [
+              "copy-jpeg40-oi-objects-25d107f1590c1772",
+              "copy-flip-oi-objects-25d107f1590c1772"
+            ],
+            "edit": [
+              "edit-bowl-remove"
+            ],
+            "class": [
+              "coffee-montreal",
+              "coffee-snacks-table",
+              "coffee-shop-counter"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-objects-28bd6c6b1050e055": {
+      "hash": "21fd4c540665",
+      "def": {
+        "description": "similarity: oi-objects-28bd6c6b1050e055 (2 copy, 1 edit, 6 class of 153)",
+        "metadata": {
+          "id": "sim-oi-objects-28bd6c6b1050e055"
+        },
+        "vars": {
+          "query": "oi-objects-28bd6c6b1050e055",
+          "expected": {
+            "copy": [
+              "copy-bright-oi-objects-28bd6c6b1050e055",
+              "copy-jpeg40-oi-objects-28bd6c6b1050e055"
+            ],
+            "edit": [
+              "edit-audi-night"
+            ],
+            "class": [
+              "oi-scene-spitfire-a",
+              "oi-scene-spitfire-b",
+              "copy-flip-oi-scene-spitfire-a",
+              "copy-resize-oi-scene-spitfire-a",
+              "copy-bright-oi-scene-spitfire-b",
+              "copy-jpeg40-oi-scene-spitfire-b"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-objects-2fba54286aaac20e": {
+      "hash": "1039b8a94420",
+      "def": {
+        "description": "similarity: oi-objects-2fba54286aaac20e (2 copy, 1 edit of 153)",
+        "metadata": {
+          "id": "sim-oi-objects-2fba54286aaac20e"
+        },
+        "vars": {
+          "query": "oi-objects-2fba54286aaac20e",
+          "expected": {
+            "copy": [
+              "copy-bright-oi-objects-2fba54286aaac20e",
+              "copy-jpeg40-oi-objects-2fba54286aaac20e"
+            ],
+            "edit": [
+              "edit-plant-remove"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-objects-5b7ab3baf4c0492f": {
+      "hash": "e60443b90c31",
+      "def": {
+        "description": "similarity: oi-objects-5b7ab3baf4c0492f (2 copy, 1 edit, 19 class of 153)",
+        "metadata": {
+          "id": "sim-oi-objects-5b7ab3baf4c0492f"
+        },
+        "vars": {
+          "query": "oi-objects-5b7ab3baf4c0492f",
+          "expected": {
+            "copy": [
+              "copy-flip-oi-objects-5b7ab3baf4c0492f",
+              "copy-resize-oi-objects-5b7ab3baf4c0492f"
+            ],
+            "edit": [
+              "edit-dogs-snow"
+            ],
+            "class": [
+              "dog-sleeping-painting",
+              "dog-border-terrier",
+              "dog-in-dog-bed",
+              "dog-autumn-sun",
+              "oi-objects-948794bfee784412",
+              "oi-objects-0fd512f1bffb8cf3",
+              "oi-objects-d8cac8b54e9fa89c",
+              "oi-find-030c5a10124e6252",
+              "copy-resize-oi-objects-948794bfee784412",
+              "copy-crop10-oi-objects-948794bfee784412",
+              "copy-jpeg40-oi-objects-0fd512f1bffb8cf3",
+              "copy-flip-oi-objects-0fd512f1bffb8cf3",
+              "copy-crop10-oi-objects-d8cac8b54e9fa89c",
+              "copy-bright-oi-objects-d8cac8b54e9fa89c",
+              "copy-crop10-dog-border-terrier",
+              "copy-bright-dog-border-terrier",
+              "edit-dog-ball",
+              "edit-car-red",
+              "edit-basset-sketch"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-objects-948794bfee784412": {
+      "hash": "c942f944a54c",
+      "def": {
+        "description": "similarity: oi-objects-948794bfee784412 (2 copy, 1 edit, 19 class of 153)",
+        "metadata": {
+          "id": "sim-oi-objects-948794bfee784412"
+        },
+        "vars": {
+          "query": "oi-objects-948794bfee784412",
+          "expected": {
+            "copy": [
+              "copy-resize-oi-objects-948794bfee784412",
+              "copy-crop10-oi-objects-948794bfee784412"
+            ],
+            "edit": [
+              "edit-dog-ball"
+            ],
+            "class": [
+              "dog-sleeping-painting",
+              "dog-border-terrier",
+              "dog-in-dog-bed",
+              "dog-autumn-sun",
+              "oi-objects-0fd512f1bffb8cf3",
+              "oi-objects-d8cac8b54e9fa89c",
+              "oi-objects-5b7ab3baf4c0492f",
+              "oi-find-030c5a10124e6252",
+              "copy-jpeg40-oi-objects-0fd512f1bffb8cf3",
+              "copy-flip-oi-objects-0fd512f1bffb8cf3",
+              "copy-crop10-oi-objects-d8cac8b54e9fa89c",
+              "copy-bright-oi-objects-d8cac8b54e9fa89c",
+              "copy-flip-oi-objects-5b7ab3baf4c0492f",
+              "copy-resize-oi-objects-5b7ab3baf4c0492f",
+              "copy-crop10-dog-border-terrier",
+              "copy-bright-dog-border-terrier",
+              "edit-car-red",
+              "edit-basset-sketch",
+              "edit-dogs-snow"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-objects-d8cac8b54e9fa89c": {
+      "hash": "bd71b15e0c7d",
+      "def": {
+        "description": "similarity: oi-objects-d8cac8b54e9fa89c (2 copy, 1 edit, 19 class of 153)",
+        "metadata": {
+          "id": "sim-oi-objects-d8cac8b54e9fa89c"
+        },
+        "vars": {
+          "query": "oi-objects-d8cac8b54e9fa89c",
+          "expected": {
+            "copy": [
+              "copy-crop10-oi-objects-d8cac8b54e9fa89c",
+              "copy-bright-oi-objects-d8cac8b54e9fa89c"
+            ],
+            "edit": [
+              "edit-basset-sketch"
+            ],
+            "class": [
+              "dog-sleeping-painting",
+              "dog-border-terrier",
+              "dog-in-dog-bed",
+              "dog-autumn-sun",
+              "oi-objects-948794bfee784412",
+              "oi-objects-0fd512f1bffb8cf3",
+              "oi-objects-5b7ab3baf4c0492f",
+              "oi-find-030c5a10124e6252",
+              "copy-resize-oi-objects-948794bfee784412",
+              "copy-crop10-oi-objects-948794bfee784412",
+              "copy-jpeg40-oi-objects-0fd512f1bffb8cf3",
+              "copy-flip-oi-objects-0fd512f1bffb8cf3",
+              "copy-flip-oi-objects-5b7ab3baf4c0492f",
+              "copy-resize-oi-objects-5b7ab3baf4c0492f",
+              "copy-crop10-dog-border-terrier",
+              "copy-bright-dog-border-terrier",
+              "edit-dog-ball",
+              "edit-car-red",
+              "edit-dogs-snow"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-objects-ee47ccab89a75d0d": {
+      "hash": "cdc79545bd90",
+      "def": {
+        "description": "similarity: oi-objects-ee47ccab89a75d0d (2 copy, 1 edit, 2 class of 153)",
+        "metadata": {
+          "id": "sim-oi-objects-ee47ccab89a75d0d"
+        },
+        "vars": {
+          "query": "oi-objects-ee47ccab89a75d0d",
+          "expected": {
+            "copy": [
+              "copy-resize-oi-objects-ee47ccab89a75d0d",
+              "copy-crop10-oi-objects-ee47ccab89a75d0d"
+            ],
+            "edit": [
+              "edit-armchair-green"
+            ],
+            "class": [
+              "oi-objects-2b2c4fe6d63a13e4",
+              "oi-objects-5ea13fbbd1a1474f"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-scene-monaco-a": {
+      "hash": "55a59b1f6d18",
+      "def": {
+        "description": "similarity: oi-scene-monaco-a (2 copy, 3 scene of 153)",
+        "metadata": {
+          "id": "sim-oi-scene-monaco-a"
+        },
+        "vars": {
+          "query": "oi-scene-monaco-a",
+          "expected": {
+            "copy": [
+              "copy-resize-oi-scene-monaco-a",
+              "copy-crop10-oi-scene-monaco-a"
+            ],
+            "scene": [
+              "oi-scene-monaco-b",
+              "copy-jpeg40-oi-scene-monaco-b",
+              "copy-flip-oi-scene-monaco-b"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-scene-monaco-b": {
+      "hash": "d3d97f603f82",
+      "def": {
+        "description": "similarity: oi-scene-monaco-b (2 copy, 3 scene of 153)",
+        "metadata": {
+          "id": "sim-oi-scene-monaco-b"
+        },
+        "vars": {
+          "query": "oi-scene-monaco-b",
+          "expected": {
+            "copy": [
+              "copy-jpeg40-oi-scene-monaco-b",
+              "copy-flip-oi-scene-monaco-b"
+            ],
+            "scene": [
+              "oi-scene-monaco-a",
+              "copy-resize-oi-scene-monaco-a",
+              "copy-crop10-oi-scene-monaco-a"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-scene-spitfire-a": {
+      "hash": "c81b4cb5694d",
+      "def": {
+        "description": "similarity: oi-scene-spitfire-a (2 copy, 3 scene, 4 class of 153)",
+        "metadata": {
+          "id": "sim-oi-scene-spitfire-a"
+        },
+        "vars": {
+          "query": "oi-scene-spitfire-a",
+          "expected": {
+            "copy": [
+              "copy-flip-oi-scene-spitfire-a",
+              "copy-resize-oi-scene-spitfire-a"
+            ],
+            "scene": [
+              "oi-scene-spitfire-b",
+              "copy-bright-oi-scene-spitfire-b",
+              "copy-jpeg40-oi-scene-spitfire-b"
+            ],
+            "class": [
+              "oi-objects-28bd6c6b1050e055",
+              "copy-bright-oi-objects-28bd6c6b1050e055",
+              "copy-jpeg40-oi-objects-28bd6c6b1050e055",
+              "edit-audi-night"
+            ]
+          }
+        }
+      }
+    },
+    "sim-oi-scene-spitfire-b": {
+      "hash": "ab8ad3348c31",
+      "def": {
+        "description": "similarity: oi-scene-spitfire-b (2 copy, 3 scene, 4 class of 153)",
+        "metadata": {
+          "id": "sim-oi-scene-spitfire-b"
+        },
+        "vars": {
+          "query": "oi-scene-spitfire-b",
+          "expected": {
+            "copy": [
+              "copy-bright-oi-scene-spitfire-b",
+              "copy-jpeg40-oi-scene-spitfire-b"
+            ],
+            "scene": [
+              "oi-scene-spitfire-a",
+              "copy-flip-oi-scene-spitfire-a",
+              "copy-resize-oi-scene-spitfire-a"
+            ],
+            "class": [
+              "oi-objects-28bd6c6b1050e055",
+              "copy-bright-oi-objects-28bd6c6b1050e055",
+              "copy-jpeg40-oi-objects-28bd6c6b1050e055",
+              "edit-audi-night"
+            ]
+          }
+        }
+      }
+    },
+    "sim-recipe-card": {
+      "hash": "45856d314f36",
+      "def": {
+        "description": "similarity: recipe-card (2 copy, 1 edit, 4 class of 153)",
+        "metadata": {
+          "id": "sim-recipe-card"
+        },
+        "vars": {
+          "query": "recipe-card",
+          "expected": {
+            "copy": [
+              "copy-crop10-recipe-card",
+              "copy-bright-recipe-card"
+            ],
+            "edit": [
+              "edit-recipe-title"
+            ],
+            "class": [
+              "receipt-grocery",
+              "invoice-simple",
+              "event-flyer",
+              "shipping-label"
+            ]
+          }
+        }
+      }
+    },
+    "sim-recipe-daffys-elixir": {
+      "hash": "c53c43bc6776",
+      "def": {
+        "description": "similarity: recipe-daffys-elixir (2 copy, 2 class of 153)",
+        "metadata": {
+          "id": "sim-recipe-daffys-elixir"
+        },
+        "vars": {
+          "query": "recipe-daffys-elixir",
+          "expected": {
+            "copy": [
+              "copy-crop10-recipe-daffys-elixir",
+              "copy-bright-recipe-daffys-elixir"
+            ],
+            "class": [
+              "letter-handwritten-short",
+              "recipe-rheumatism"
+            ]
+          }
+        }
+      }
+    },
+    "sim-salad-rucola-plate": {
+      "hash": "5c358c37d154",
+      "def": {
+        "description": "similarity: salad-rucola-plate (2 copy, 2 class of 153)",
+        "metadata": {
+          "id": "sim-salad-rucola-plate"
+        },
+        "vars": {
+          "query": "salad-rucola-plate",
+          "expected": {
+            "copy": [
+              "copy-bright-salad-rucola-plate",
+              "copy-jpeg40-salad-rucola-plate"
+            ],
+            "class": [
+              "salad-ham",
+              "salad-party-dish"
+            ]
+          }
+        }
+      }
+    },
+    "sim-settings-panel": {
+      "hash": "0c2b6916e405",
+      "def": {
+        "description": "similarity: settings-panel (2 copy, 1 edit, 2 class of 153)",
+        "metadata": {
+          "id": "sim-settings-panel"
+        },
+        "vars": {
+          "query": "settings-panel",
+          "expected": {
+            "copy": [
+              "copy-flip-settings-panel",
+              "copy-resize-settings-panel"
+            ],
+            "edit": [
+              "edit-sync-interval"
+            ],
+            "class": [
+              "jobs-table",
+              "error-dialog"
+            ]
+          }
+        }
+      }
+    },
+    "sim-street-night-rostov": {
+      "hash": "5bfa03868904",
+      "def": {
+        "description": "similarity: street-night-rostov (2 copy, 2 class of 153)",
+        "metadata": {
+          "id": "sim-street-night-rostov"
+        },
+        "vars": {
+          "query": "street-night-rostov",
+          "expected": {
+            "copy": [
+              "copy-flip-street-night-rostov",
+              "copy-resize-street-night-rostov"
+            ],
+            "class": [
+              "diner-snow-night",
+              "railway-station-dark"
+            ]
+          }
+        }
+      }
+    },
+    "sim-train-ticket-french": {
+      "hash": "13c373f82332",
+      "def": {
+        "description": "similarity: train-ticket-french (2 copy, 1 class of 153)",
+        "metadata": {
+          "id": "sim-train-ticket-french"
+        },
+        "vars": {
+          "query": "train-ticket-french",
+          "expected": {
+            "copy": [
+              "copy-jpeg40-train-ticket-french",
+              "copy-flip-train-ticket-french"
+            ],
+            "class": [
+              "train-ticket-chinese"
+            ]
+          }
+        }
+      }
+    },
+    "sim-tree-bracket-fungus": {
+      "hash": "b3ecb8667984",
+      "def": {
+        "description": "similarity: tree-bracket-fungus (2 copy, 6 scene, 1 class of 153)",
+        "metadata": {
+          "id": "sim-tree-bracket-fungus"
+        },
+        "vars": {
+          "query": "tree-bracket-fungus",
+          "expected": {
+            "copy": [
+              "copy-crop10-tree-bracket-fungus",
+              "copy-bright-tree-bracket-fungus"
+            ],
+            "scene": [
+              "millipede-moss",
+              "forest-trail",
+              "copy-resize-millipede-moss",
+              "copy-crop10-millipede-moss",
+              "copy-jpeg40-forest-trail",
+              "copy-flip-forest-trail"
+            ],
+            "class": [
+              "snow-forest-trail"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

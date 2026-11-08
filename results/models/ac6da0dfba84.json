@@ -1,0 +1,18 @@
+{
+  "tag": "qwen3-embedding:0.6b",
+  "digest": "ac6da0dfba84",
+  "engine": "default",
+  "format": "gguf",
+  "family": "qwen3",
+  "quantization": "Q8_0",
+  "parameter_size": "595.78M",
+  "parameter_count": 595776512,
+  "context_length": 32768,
+  "capabilities": [
+    "tools",
+    "thinking",
+    "embedding"
+  ],
+  "default_parameters": {},
+  "template_hash": "87a2728cb8dc"
+}

@@ -1,0 +1,5 @@
+description: "sensitive: none: nude art, hard negative (as nudity-flag)"
+metadata: { id: art-painting-reclining }
+vars:
+  image: file://../../corpus/images/art-painting-reclining.jpg
+  expected: { categories: [] }

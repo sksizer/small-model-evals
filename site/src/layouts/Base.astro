@@ -1,5 +1,5 @@
 ---
-import { data, href } from '../lib/data'
+import { data, href, machineLabel } from '../lib/data'
 
 interface Props {
   title: string
@@ -9,6 +9,7 @@ const { title, description } = Astro.props
 const path = Astro.url.pathname
 const nav = [
   { href: '/', label: 'Leaderboard' },
+  { href: '/finder/', label: 'Model finder' },
   { href: '/results/', label: 'All results' },
   { href: '/models/', label: 'Models' },
   { href: '/gallery/', label: 'Galleries' },
@@ -37,6 +38,19 @@ const active = (h: string) => (h === '/' ? path === href('/') || path === '/' : 
       </nav>
       <span class="generated">Data from {data.runs.length} runs · exported {data.generated_at.slice(0, 16).replace('T', ' ')} UTC</span>
     </header>
+    {
+      data.machines.length > 1 && (
+        <div class="machine-bar" id="machine-bar" hidden>
+          <label>
+            Machine
+            <select id="machine-pick" aria-label="Machine whose results to show">
+              {data.machines.map((m) => <option value={m.key}>{machineLabel(m)}</option>)}
+            </select>
+          </label>
+          <span class="muted">Results are never pooled across machines.</span>
+        </div>
+      )
+    }
     <main>
       <h1>{title}</h1>
       {description && <p class="lede">{description}</p>}
@@ -45,6 +59,7 @@ const active = (h: string) => (h === '/' ? path === href('/') || path === '/' : 
     <script>
       import '../scripts/table.ts'
       import '../scripts/reveal.ts'
+      import '../scripts/machine-pick.ts'
     </script>
   </body>
 </html>
@@ -188,6 +203,17 @@ const active = (h: string) => (h === '/' ? path === href('/') || path === '/' : 
   .pill.pass { background: var(--good-bg); color: var(--good); }
   .pill.fail { background: var(--bad-bg); color: var(--bad); }
   .pill.stale { background: var(--warn-bg); color: var(--warn); }
+  .pill.busy { background: var(--bad-bg); color: var(--bad); }
+  .pill.fit.fits { background: var(--good-bg); color: var(--good); }
+  .pill.fit.tight { background: var(--warn-bg); color: var(--warn); }
+  .pill.fit.offload { background: var(--warn-bg); color: var(--warn); border: 1px dashed var(--warn); }
+  .pill.fit.wont { background: var(--bad-bg); color: var(--bad); }
+  .pill.fit.unknown { background: var(--code-bg); color: var(--muted); }
+  .pill.class { background: var(--code-bg); color: var(--muted); font-weight: 500; }
+  .fits { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .machine-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--line); background: var(--panel); font-size: 14px; }
+  .machine-bar[hidden] { display: none; }
+  .machine-off { display: none !important; }
   .heat { font-weight: 600; text-align: center; }
   .heat.good { background: var(--good-bg); color: var(--good); }
   .heat.ok { background: var(--ok-bg); color: var(--good); }

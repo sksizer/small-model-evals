@@ -1,0 +1,5 @@
+description: "sensitive: none: swimwear on a paddleboard, hard negative"
+metadata: { id: oi-sens-swimwear-f7f83ef0ae3406b2 }
+vars:
+  image: file://../../corpus/images/oi-sens-swimwear-f7f83ef0ae3406b2.jpg
+  expected: { categories: [] }

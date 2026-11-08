@@ -1,0 +1,5 @@
+description: "sensitive: near miss (garment, no person): purple briefs on a table, no person"
+metadata: { id: oi-sens-intimate-be092e3219d0be72 }
+vars:
+  image: file://../../corpus/images/oi-sens-intimate-be092e3219d0be72.jpg
+  expected: { categories: [] }

@@ -1,0 +1,5 @@
+description: "sensitive: medical: chest X-ray, pneumonia"
+metadata: { id: sens-xray-chest-flu }
+vars:
+  image: file://../../corpus/images/sens-xray-chest-flu.jpg
+  expected: { categories: [medical] }

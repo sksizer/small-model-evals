@@ -1,0 +1,5 @@
+description: "sensitive: intimate: shirtless adult man in branded underwear, studio"
+metadata: { id: oi-sens-intimate-6fce9e3e38858d53 }
+vars:
+  image: file://../../corpus/images/oi-sens-intimate-6fce9e3e38858d53.jpg
+  expected: { categories: [intimate] }

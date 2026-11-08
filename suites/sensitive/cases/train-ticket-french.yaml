@@ -1,0 +1,5 @@
+description: "sensitive: none: ordinary corpus image"
+metadata: { id: train-ticket-french }
+vars:
+  image: file://../../corpus/images/train-ticket-french.jpg
+  expected: { categories: [] }

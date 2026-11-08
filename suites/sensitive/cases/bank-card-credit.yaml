@@ -1,0 +1,5 @@
+description: "sensitive: financial: specimen credit card"
+metadata: { id: bank-card-credit }
+vars:
+  image: file://../../corpus/images/bank-card-credit.png
+  expected: { categories: [financial] }

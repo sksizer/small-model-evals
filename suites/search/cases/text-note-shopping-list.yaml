@@ -1,0 +1,8 @@
+description: "search text: shopping list (1 relevant of 60)"
+metadata: { id: text-note-shopping-list, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "shopping list"
+  relevant: ["n35"]
+  how: "judged by reading"

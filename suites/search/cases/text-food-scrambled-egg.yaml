@@ -1,0 +1,8 @@
+description: "search text: scrambled eggs (1 relevant of 7793)"
+metadata: { id: text-food-scrambled-egg, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "scrambled eggs"
+  relevant: ["f172187"]
+  how: "rule on the name: Egg, whole, cooked, scrambled"

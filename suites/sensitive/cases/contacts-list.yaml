@@ -1,0 +1,5 @@
+description: "sensitive: screen: contact list with phones and addresses"
+metadata: { id: contacts-list }
+vars:
+  image: file://../../corpus/images/contacts-list.png
+  expected: { categories: [screen] }

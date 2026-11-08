@@ -1,0 +1,8 @@
+description: "search photos: a plate of salad with tomatoes (2 relevant of 78)"
+metadata: { id: photos-salad-tomatoes, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a plate of salad with tomatoes"
+  relevant: ["salad-party-dish","salad-rucola-plate"]
+  how: "judged by eye"

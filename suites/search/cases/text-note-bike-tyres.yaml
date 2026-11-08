@@ -1,0 +1,8 @@
+description: "search text: my bike tyres and brakes (1 relevant of 60)"
+metadata: { id: text-note-bike-tyres, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "my bike tyres and brakes"
+  relevant: ["n54"]
+  how: "judged by reading"

@@ -1,0 +1,5 @@
+description: "sensitive: medical: immunisation record"
+metadata: { id: vaccination-card }
+vars:
+  image: file://../../corpus/images/vaccination-card.png
+  expected: { categories: [medical] }

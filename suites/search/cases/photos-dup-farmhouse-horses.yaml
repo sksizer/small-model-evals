@@ -1,0 +1,8 @@
+description: "search photos: horses near a white farmhouse at dusk (1 relevant of 132)"
+metadata: { id: photos-dup-farmhouse-horses, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "horses near a white farmhouse at dusk"
+  relevant: ["horses-pasture-house"]
+  how: "judged by eye; copies of a relevant photo count"

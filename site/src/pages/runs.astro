@@ -1,9 +1,11 @@
 ---
 import Base from '../layouts/Base.astro'
-import { data } from '../lib/data'
+import { data, fmt } from '../lib/data'
+const machineName = (key: string) => data.machines.find((m) => m.key === key)
+
 ---
 
-<Base title="Runs" description="Every run in the ledger, newest first. A run can cover any subset of models and suites.">
+<Base title="Runs" description="Every run in the ledger, newest first. A run can cover any subset of models and suites. A run is flagged when the machine was busy around any of its evals (load, memory, swap, power, other heavy programs): its timings and memory readings are suspect.">
   <div class="scroll">
     <table data-table id="runs">
       <thead>
@@ -15,6 +17,7 @@ import { data } from '../lib/data'
           <th>Models</th>
           <th>Suites</th>
           <th data-sort="num" class="num">Records</th>
+          <th style="min-width:12em">Conditions</th>
           <th>Environment</th>
         </tr>
       </thead>
@@ -25,12 +28,38 @@ import { data } from '../lib/data'
               <td>
                 <code>{r.run}</code>
               </td>
-              <td>{r.machine}</td>
+              <td>
+                {r.machine} <span class="pill class">{r.class}</span>
+                {machineName(r.machine)?.gpu && <div class="muted">{machineName(r.machine)?.gpu}</div>}
+              </td>
               <td>{r.ollama}</td>
               <td>{r.promptfoo}</td>
               <td>{r.models.join(', ')}</td>
               <td>{r.suites.join(', ')}</td>
               <td class="num" data-value={r.records}>{r.records}</td>
+              <td>
+                {r.conditions === null ? (
+                  <span class="muted">not recorded</span>
+                ) : r.conditions.flagged.length === 0 ? (
+                  <span class="muted">{r.conditions.evals} evals, all on a quiet machine</span>
+                ) : (
+                  <details>
+                    <summary>
+                      <span class="pill busy">taken under load</span> {r.conditions.flagged.length} of {r.conditions.evals} evals
+                    </summary>
+                    <ul>
+                      {r.conditions.flagged.map((f) => (
+                        <li><code>{f.model} · {f.suite}</code>: {f.flags.join('; ')}</li>
+                      ))}
+                    </ul>
+                    {r.conditions.first && (
+                      <p class="muted">
+                        At the start: load {fmt(r.conditions.first.load_1m, 2)}, {fmt(r.conditions.first.mem_available_gib, 1)} GiB available, {fmt(r.conditions.first.swap_used_gib, 1)} GiB swap, {r.conditions.first.power === 'ac' ? 'on AC' : r.conditions.first.power}.
+                      </p>
+                    )}
+                  </details>
+                )}
+              </td>
               <td>
                 {r.envs.length === 0 ? (
                   <span class="muted">not recorded (before environment capture)</span>
@@ -40,7 +69,7 @@ import { data } from '../lib/data'
                     return e ? (
                       <details>
                         <summary>
-                          {e.os.name} {e.os.version} · {e.hardware['gpu_cores']}-core GPU · {e.hardware['gpu_budget_mib']} MiB budget
+                          {e.os.name} {e.os.version} · {e.hardware['gpu'] ?? (e.hardware['gpu_cores'] ? `${e.hardware['gpu_cores']}-core GPU` : 'no GPU')} · {e.hardware['gpu_budget_mib']} MiB budget
                         </summary>
                         <pre>{JSON.stringify(e, null, 2)}</pre>
                       </details>

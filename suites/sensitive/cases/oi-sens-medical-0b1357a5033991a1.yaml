@@ -1,0 +1,5 @@
+description: "sensitive: medical: hospital room or equipment"
+metadata: { id: oi-sens-medical-0b1357a5033991a1 }
+vars:
+  image: file://../../corpus/images/oi-sens-medical-0b1357a5033991a1.jpg
+  expected: { categories: [medical] }

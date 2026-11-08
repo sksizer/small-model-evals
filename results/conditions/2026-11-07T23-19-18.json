@@ -1,0 +1,44 @@
+{
+  "run": "2026-11-07T23-19-18",
+  "evals": [
+    {
+      "model": "qwen3.5:9b",
+      "suite": "regions-text",
+      "kind": null,
+      "start": {
+        "load_1m": 11.28,
+        "load_per_core": 1.13,
+        "mem_available_gib": 8.1,
+        "mem_free_pct": 74,
+        "swap_used_gib": 11.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 4.22,
+        "load_per_core": 0.42,
+        "mem_available_gib": 1.6,
+        "mem_free_pct": 18,
+        "swap_used_gib": 13.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 178
+          }
+        ]
+      },
+      "flags": [
+        "load 11.28 on the cores (1.13/core): something is working; wait for it or close it",
+        "11.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "little free memory (1.6 GiB available, 18% free): close browsers, editors and VMs",
+        "13.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 178% of a core: close it if you can"
+      ]
+    }
+  ]
+}

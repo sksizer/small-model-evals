@@ -1,0 +1,8 @@
+description: "search photos: two dogs looking out of a car window (1 relevant of 78)"
+metadata: { id: photos-dachshunds-car-window, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "two dogs looking out of a car window"
+  relevant: ["oi-objects-0fd512f1bffb8cf3"]
+  how: "judged by eye"

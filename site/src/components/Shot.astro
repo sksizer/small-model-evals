@@ -1,5 +1,5 @@
 ---
-// An image that opens full size in a new tab. A sensitive one (nudity; see
+// An image that opens full size in a new tab. A sensitive one (nudity, intimate or a child; see
 // `sensitive` in corpus/sources.yaml) is covered by a "Let me view" button:
 // it shows only when the viewer clicks, one image at a time, and nothing
 // remembers the choice.
@@ -34,8 +34,8 @@ const src = href(`/${path}`)
         <img class={imgClass} data-src={src} alt={alt} width={width} height={height} />
       </a>
       <slot />
-      <button type="button" class="reveal" aria-label={`Let me view ${alt} (contains nudity)`}>
-        <span class="reveal-note">Contains nudity</span>
+      <button type="button" class="reveal" aria-label={`Let me view ${alt} (sensitive image)`}>
+        <span class="reveal-note">Sensitive image</span>
         <span class="reveal-cta">Let me view</span>
       </button>
     </span>

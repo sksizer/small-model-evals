@@ -1,0 +1,8 @@
+description: "search photos: a scene at night (5 relevant of 132)"
+metadata: { id: photos-dup-night-scene, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a scene at night"
+  relevant: ["copy-flip-street-night-rostov","copy-resize-street-night-rostov","diner-snow-night","railway-station-dark","street-night-rostov"]
+  how: "judged by eye; copies of a relevant photo count"

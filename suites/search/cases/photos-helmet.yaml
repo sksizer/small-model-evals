@@ -1,0 +1,8 @@
+description: "search photos: a bicycle helmet (2 relevant of 78)"
+metadata: { id: photos-helmet, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a bicycle helmet"
+  relevant: ["oi-find-6022a450df278025","oi-find-8f08cb18c27fbaa7"]
+  how: "Open Images: Bicycle helmet"

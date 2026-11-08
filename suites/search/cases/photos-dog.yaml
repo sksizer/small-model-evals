@@ -1,0 +1,8 @@
+description: "search photos: a dog (9 relevant of 78)"
+metadata: { id: photos-dog, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "a dog"
+  relevant: ["dog-autumn-sun","dog-border-terrier","dog-in-dog-bed","dog-sleeping-painting","oi-find-030c5a10124e6252","oi-objects-0fd512f1bffb8cf3","oi-objects-5b7ab3baf4c0492f","oi-objects-948794bfee784412","oi-objects-d8cac8b54e9fa89c"]
+  how: "Open Images: Dog; by eye: 4 Commons or unannotated photos"

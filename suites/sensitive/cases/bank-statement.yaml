@@ -1,0 +1,5 @@
+description: "sensitive: financial: statement with account and IBAN"
+metadata: { id: bank-statement }
+vars:
+  image: file://../../corpus/images/bank-statement.png
+  expected: { categories: [financial] }

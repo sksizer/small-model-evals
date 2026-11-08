@@ -1,0 +1,5 @@
+description: "sensitive: location: readable number plate"
+metadata: { id: oi-sens-plate-f5128e7a123b4fa8 }
+vars:
+  image: file://../../corpus/images/oi-sens-plate-f5128e7a123b4fa8.jpg
+  expected: { categories: [location] }

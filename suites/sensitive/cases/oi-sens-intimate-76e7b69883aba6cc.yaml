@@ -1,0 +1,5 @@
+description: "sensitive: intimate: shirtless adult man in black underwear waistband, studio"
+metadata: { id: oi-sens-intimate-76e7b69883aba6cc }
+vars:
+  image: file://../../corpus/images/oi-sens-intimate-76e7b69883aba6cc.jpg
+  expected: { categories: [intimate] }

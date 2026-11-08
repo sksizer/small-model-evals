@@ -1,0 +1,18 @@
+{
+  "tag": "composite-qwen3.5-4b",
+  "digest": "sensitive-co",
+  "engine": "sharp (libvips), no weights",
+  "format": "none",
+  "family": "",
+  "quantization": "",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "sensitive-screening"
+  ],
+  "default_parameters": {
+    "version": "sensitive-composite-v1"
+  },
+  "template_hash": ""
+}

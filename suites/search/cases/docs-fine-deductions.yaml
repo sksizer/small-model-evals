@@ -1,0 +1,8 @@
+description: "search docs: pension and National Insurance deductions (1 relevant of 44)"
+metadata: { id: docs-fine-deductions, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "pension and National Insurance deductions"
+  relevant: ["pay-slip"]
+  how: "judged from the page source"

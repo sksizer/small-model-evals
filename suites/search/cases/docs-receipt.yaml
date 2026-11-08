@@ -1,0 +1,8 @@
+description: "search docs: receipt from the grocery store (1 relevant of 44)"
+metadata: { id: docs-receipt, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "receipt from the grocery store"
+  relevant: ["receipt-grocery"]
+  how: "judged by eye"

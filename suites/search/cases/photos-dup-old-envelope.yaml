@@ -1,0 +1,8 @@
+description: "search photos: an old envelope with a postmark (1 relevant of 132)"
+metadata: { id: photos-dup-old-envelope, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "an old envelope with a postmark"
+  relevant: ["oi-find-0f730eda466be34c"]
+  how: "judged by eye; copies of a relevant photo count"

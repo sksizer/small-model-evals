@@ -35,6 +35,27 @@ function step(bin: string, argv: string[], cwd: string, env: Record<string, stri
 const PUBLIC_DATA = join(ROOT, 'site', 'src', 'data', 'evals.json')
 const PRIVATE_DATA = join(ROOT, 'private', 'site', 'data', 'evals.json')
 
+/** The leaderboard export (scripts/export-site.ts), as far as merging needs it. */
+interface BoardRow { model: string; cells: Record<string, { passed: number; total: number }>; avg: number; covered: number }
+interface BoardFamily {
+  id: string
+  suites: { id: string }[]
+  ranking: { suite: string }[]
+  rows: BoardRow[]
+  has_speed: boolean
+}
+interface Board { machine: { key: string }; families: BoardFamily[] }
+
+/** The model finder export (scripts/export-site.ts), as far as merging needs it. */
+interface FinderTask { id: string; label: string; about: string; family: string }
+interface FinderRow {
+  machine: string
+  model: string
+  memory: { gb: number; basis: string } | null
+  cells: Record<string, unknown>
+}
+interface Finder { families: { id: string }[]; tasks: FinderTask[]; rows: FinderRow[] }
+
 interface Data {
   generated_at: string
   scope: string
@@ -43,6 +64,10 @@ interface Data {
   suites: { id: string }[]
   cells: { suite: string }[]
   perf: { suite: string }[]
+  inproc: { suite: string }[]
+  screening: unknown
+  finder: Finder
+  leaderboard: Board[]
   results: { suite: string }[]
   history: { suite: string }[]
   runs: { run: string; suites: string[]; models: string[]; envs: string[]; records: number }[]
@@ -52,6 +77,58 @@ interface Data {
 }
 
 const union = <T>(key: (x: T) => string, ...lists: T[][]) => [...new Map(lists.flat().map((x) => [key(x), x])).values()]
+
+/** Two leaderboards with the private suites (renamed) added to the public families, and each row's average recomputed. */
+function mergeBoards(pub: Board[], priv: Board[], id: (suite: string) => string): Board[] {
+  const rename = <T extends object>(xs: T[], key: keyof T & string) => xs.map((x) => ({ ...x, [key]: id(x[key] as string) }))
+  return union((b) => b.machine.key, pub, priv).map((b) => {
+    const a = pub.find((x) => x.machine.key === b.machine.key)?.families ?? []
+    const p = priv.find((x) => x.machine.key === b.machine.key)?.families ?? []
+    const ids = [...new Set([...a, ...p].map((f) => f.id))]
+    const families = ids.map((fid) => {
+      const fa = a.find((f) => f.id === fid)
+      const fp = p.find((f) => f.id === fid)
+      const rows = new Map((fa?.rows ?? []).map((r) => [r.model, { ...r, cells: { ...r.cells } }]))
+      for (const r of fp?.rows ?? []) {
+        const cells = Object.fromEntries(Object.entries(r.cells).map(([suite, c]) => [id(suite), c]))
+        const into = rows.get(r.model)
+        if (into) Object.assign(into.cells, cells)
+        else rows.set(r.model, { ...r, cells })
+      }
+      const merged = [...rows.values()].map((r) => {
+        const cs = Object.values(r.cells)
+        return { ...r, covered: cs.length, avg: cs.reduce((sum, c) => sum + (100 * c.passed) / c.total, 0) / cs.length }
+      })
+      merged.sort((x, y) => y.avg - x.avg || x.model.localeCompare(y.model))
+      return {
+        ...(fa ?? fp!),
+        suites: [...(fa?.suites ?? []), ...rename(fp?.suites ?? [], 'id')],
+        ranking: [...(fa?.ranking ?? []), ...rename(fp?.ranking ?? [], 'suite')],
+        rows: merged,
+        has_speed: (fa?.has_speed ?? false) || (fp?.has_speed ?? false),
+      }
+    })
+    return { machine: b.machine, families }
+  })
+}
+
+/** Two finder exports with the private tasks (renamed, and marked) added; a model on both keeps one row with all its cells. */
+function mergeFinders(pub: Finder, priv: Finder, id: (suite: string) => string): Finder {
+  const rows = new Map(pub.rows.map((r) => [`${r.machine}\u0000${r.model}`, { ...r, cells: { ...r.cells } }]))
+  for (const r of priv.rows) {
+    const cells = Object.fromEntries(Object.entries(r.cells).map(([suite, c]) => [id(suite), c]))
+    const into = rows.get(`${r.machine}\u0000${r.model}`)
+    if (into) {
+      Object.assign(into.cells, cells)
+      into.memory ??= r.memory
+    } else rows.set(`${r.machine}\u0000${r.model}`, { ...r, cells })
+  }
+  return {
+    families: union((f) => f.id, pub.families, priv.families),
+    tasks: [...pub.tasks, ...priv.tasks.map((t) => ({ ...t, id: id(t.id), label: `${t.label} (private)` }))],
+    rows: [...rows.values()],
+  }
+}
 
 /** The private export with every public suite, result and image added. */
 function mergePublicInto(pub: Data, priv: Data): Data {
@@ -83,6 +160,11 @@ function mergePublicInto(pub: Data, priv: Data): Data {
     suites: [...pub.suites, ...priv.suites.map((s) => ({ ...s, id: id(s.id) }))],
     cells: [...pub.cells, ...renamed(priv.cells)],
     perf: [...pub.perf, ...renamed(priv.perf)],
+    inproc: [...pub.inproc, ...renamed(priv.inproc)],
+    finder: mergeFinders(pub.finder, priv.finder, id),
+    leaderboard: mergeBoards(pub.leaderboard, priv.leaderboard, id),
+    // The sensitive suite is public-only (no private set, Q5), so its summary is the public one.
+    screening: pub.screening,
     results: [...pub.results, ...renamed(priv.results)],
     history: [...pub.history, ...renamed(priv.history)],
     runs: [...runs.values()].sort((a, b) => b.run.localeCompare(a.run)),

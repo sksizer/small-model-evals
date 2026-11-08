@@ -1,0 +1,5 @@
+description: "sensitive: nudity: anatomy illustration, male"
+metadata: { id: nude-anatomy-front-male }
+vars:
+  image: file://../../corpus/images/nude-anatomy-front-male.jpg
+  expected: { categories: [nudity] }

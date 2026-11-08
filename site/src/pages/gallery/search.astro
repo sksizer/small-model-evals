@@ -1,0 +1,119 @@
+---
+// The search suite's gallery: each query with what a person would want (the relevant items), then every
+// model's five best candidates in rank order, outlined green when relevant and red when not, with the
+// model's score for each. Photos and pages show as thumbnails, foods and notes as snippets. The table on
+// top gives each model's nDCG@10, recall@5 and cost per kind.
+import Base from '../../layouts/Base.astro'
+import Shot from '../../components/Shot.astro'
+import SearchTable from '../../components/SearchTable.astro'
+import { data, href, isSearch, modelSlug, type SearchCandidate } from '../../lib/data'
+
+const suite = data.suites.find((s) => s.id === 'search') ?? { cases: [] }
+const results = data.results.filter((r) => r.suite === 'search')
+const models = [...new Set(results.map((r) => r.model))].sort()
+const cases = suite.cases.filter((c) => isSearch(c.expected))
+const item = (corpus: string, id: string) => data.search.items[corpus]?.[id]
+const KIND_LABEL: Record<string, string> = { photos: 'photos', docs: 'documents', text: 'text' }
+---
+
+<Base
+  title="Gallery: search"
+  description="Each query beside the items that answer it, then every model's five best candidates with the model's score. Green outline: relevant. Red: not. The table gives nDCG@10 (1 is perfect), recall@5 and the time per item for each kind of search."
+>
+  <SearchTable />
+  <div class="controls">
+    <select id="g-kind" aria-label="Kind">
+      <option value="">All kinds</option>
+      <option value="photos">Photos by text</option>
+      <option value="docs">Documents by text</option>
+      <option value="text">Text by text</option>
+    </select>
+    <select id="g-model" aria-label="Model">
+      <option value="">All models</option>
+      {models.map((m) => <option value={m}>{m}</option>)}
+    </select>
+    <label><input type="checkbox" id="g-misses" /> Only results below the pass mark</label>
+    <a href={href('/suites/search/')}>Case grid →</a>
+  </div>
+  {
+    cases.map((c) => {
+      const e = c.expected as { relevant: string[]; corpus: string; kind: string; how: string }
+      const rs = results.filter((r) => r.case === c.id)
+      const show = (id: string, corpus: string, score?: number, relevant?: boolean) => {
+        const it = item(corpus, id)
+        return (
+          <li class={relevant === undefined ? 'want-item' : relevant ? 'hit' : 'miss'} title={id}>
+            {it?.path ? <Shot path={it.path} alt={id} class="cand-img" /> : <p class="snip"><b>{it?.title ?? ''}</b> {it?.text ?? id}</p>}
+            {score !== undefined && <span class="cand-score">{score.toFixed(3)}</span>}
+          </li>
+        )
+      }
+      return (
+        <section class="search-case" id={c.id} data-kind={e.kind}>
+          <h3>
+            <span class="kind">{KIND_LABEL[e.kind] ?? e.kind}</span> “{c.input.text}”
+            <small class="muted">{c.id} · {e.relevant.length} relevant{e.how ? ` · ${e.how}` : ''}</small>
+          </h3>
+          <div class="relevant">
+            <span class="muted">Relevant:</span>
+            <ul class="cands">{e.relevant.slice(0, 8).map((id) => show(id, e.corpus))}</ul>
+            {e.relevant.length > 8 && <span class="muted">+{e.relevant.length - 8} more</span>}
+          </div>
+          {rs.length === 0 && <p class="muted">No results yet.</p>}
+          {
+            rs
+              .sort((a, b) => b.score - a.score || a.model.localeCompare(b.model))
+              .map((r) => (
+                <div class="read" data-model={r.model} data-miss={r.pass ? '0' : '1'}>
+                  <div class="read-head">
+                    <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
+                    <span class={`pill ${r.pass ? 'pass' : 'fail'}`}>nDCG@10 {r.score.toFixed(2)}</span>
+                    {r.search?.detail && <span class="muted">R@1 {Math.round(r.search.detail.r1 * 100)}% · R@5 {Math.round(r.search.detail.r5 * 100)}% · MRR {r.search.detail.mrr.toFixed(2)}{r.search.detail.ndcg10_256 !== null && ` · 256-d ${r.search.detail.ndcg10_256.toFixed(2)}`}</span>}
+                  </div>
+                  <ol class="cands">{(r.search?.top ?? []).map((t: SearchCandidate) => show(t.id, e.corpus, t.score, t.relevant))}</ol>
+                </div>
+              ))
+          }
+        </section>
+      )
+    })
+  }
+  <script>
+    const kind = document.getElementById('g-kind') as HTMLSelectElement
+    const model = document.getElementById('g-model') as HTMLSelectElement
+    const misses = document.getElementById('g-misses') as HTMLInputElement
+    const apply = () => {
+      for (const el of document.querySelectorAll<HTMLElement>('.read')) {
+        el.hidden = (!!model.value && el.dataset['model'] !== model.value) || (misses.checked && el.dataset['miss'] !== '1')
+      }
+      for (const sec of document.querySelectorAll<HTMLElement>('.search-case')) {
+        sec.hidden = (!!kind.value && sec.dataset['kind'] !== kind.value) || ![...sec.querySelectorAll<HTMLElement>('.read')].some((r) => !r.hidden)
+      }
+    }
+    kind.addEventListener('change', apply)
+    model.addEventListener('change', apply)
+    misses.addEventListener('change', apply)
+  </script>
+</Base>
+
+<style>
+  .search-case { padding: 14px 16px; margin: 14px 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  .search-case h3 { margin: 0 0 8px; font-size: 16px; }
+  .search-case h3 small { display: block; font-weight: 400; font-size: 12px; margin-top: 2px; }
+  .kind { display: inline-block; padding: 0 8px; margin-right: 6px; border-radius: 999px; background: var(--code-bg); color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; vertical-align: 1px; }
+  .relevant { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .read { padding: 6px 0; border-top: 1px solid var(--line); }
+  .read-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; font-size: 13px; margin-bottom: 4px; }
+  .cands { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; }
+  .relevant .cands { display: flex; flex-wrap: wrap; }
+  .relevant .cands li { width: 110px; }
+  .cands li { border: 2px solid var(--line); border-radius: 6px; padding: 2px; font-size: 11px; line-height: 1.3; min-width: 0; position: relative; }
+  .cands li.hit { border-color: var(--good); background: var(--good-bg); }
+  .cands li.miss { border-color: var(--bad); background: var(--bad-bg); }
+  .cands li.want-item { border-color: var(--good); }
+  .cand-score { display: block; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .snip { margin: 0; padding: 2px 4px; font-size: 11px; line-height: 1.35; max-height: 7.5em; overflow: hidden; }
+  :global(.cands .cand-img) { display: block; width: 100%; height: 84px; object-fit: cover; border-radius: 3px; }
+  :global(.cands .shot-frame) { min-height: 0; }
+  @media (max-width: 720px) { .cands { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

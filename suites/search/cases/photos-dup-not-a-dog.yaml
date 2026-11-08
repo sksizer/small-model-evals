@@ -1,0 +1,8 @@
+description: "search photos: an animal that is not a dog (8 relevant of 132)"
+metadata: { id: photos-dup-not-a-dog, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "an animal that is not a dog"
+  relevant: ["copy-crop10-millipede-moss","copy-flip-horses-flooded-pasture","copy-resize-horses-flooded-pasture","copy-resize-millipede-moss","horses-flooded-pasture","horses-pasture-house","millipede-moss","parrot-illustration"]
+  how: "judged by eye; copies of a relevant photo count"

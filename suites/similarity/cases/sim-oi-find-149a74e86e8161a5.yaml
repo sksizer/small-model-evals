@@ -1,0 +1,7 @@
+description: "similarity: oi-find-149a74e86e8161a5 (2 copy, 1 class of 153)"
+metadata: { id: sim-oi-find-149a74e86e8161a5 }
+vars:
+  query: oi-find-149a74e86e8161a5
+  expected:
+    copy: [copy-bright-oi-find-149a74e86e8161a5, copy-jpeg40-oi-find-149a74e86e8161a5]
+    class: [oi-find-66a342dcdafc7607]

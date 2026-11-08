@@ -1,6 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { data, describeExpected, href, imageSuites, isSensitive, modelSlug, pct, qualitySuites, show, type Suite, tone } from '../../lib/data'
+import SimilarityTable from '../../components/SimilarityTable.astro'
+import ScreeningTable from '../../components/ScreeningTable.astro'
+import SearchTable from '../../components/SearchTable.astro'
+import { data, describeExpected, href, imageSuites, isScreening, isSimilarity, isSensitive, modelSlug, pct, qualitySuites, show, type Suite, tone } from '../../lib/data'
 
 export function getStaticPaths() {
   return qualitySuites.map((suite) => ({ params: { suite: suite.id }, props: { suite } }))
@@ -27,9 +30,12 @@ const rows = suite.cases.map((c) => {
     Current fingerprint <code>{suite.fingerprint}</code>. Cases are immutable once run; a changed case is a new case that
     supersedes the old one.
   </p>
+  {suite.cases.some((c) => isSimilarity(c.expected)) && <SimilarityTable results={results} />}
+  {suite.cases.some((c) => isScreening(c.expected)) && <ScreeningTable />}
+  {suite.id === 'search' && <SearchTable />}
   <div class="controls">
     <input type="search" data-search="grid" placeholder="Search cases…" aria-label="Search cases" />
-    {imageSuites.some((s) => s.id === suite.id) && <a href={href(`/gallery/${suite.id}/`)}>Image gallery →</a>}
+    {(suite.id === 'search' || imageSuites.some((s) => s.id === suite.id)) && <a href={href(`/gallery/${suite.id}/`)}>{suite.id === 'search' ? 'Search gallery' : 'Image gallery'} →</a>}
     <span class="count" data-count="grid"></span>
   </div>
   <div class="scroll">
@@ -61,7 +67,7 @@ const rows = suite.cases.map((c) => {
               <td class="input-col">
                 {c.input.image ? (
                   isSensitive(c.input.image) ? (
-                    <a href={href(`/gallery/${suite.id}/#${c.id}`)} title="Contains nudity; covered until you ask to view it">image (covered)</a>
+                    <a href={href(`/gallery/${suite.id}/#${c.id}`)} title="A sensitive image; covered until you ask to view it">image (covered)</a>
                   ) : (
                     <a href={href(`/${c.input.image}`)}>image</a>
                   )

@@ -1,0 +1,8 @@
+description: "search text: feedback on the interview candidate (1 relevant of 60)"
+metadata: { id: text-note-candidate-feedback, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "feedback on the interview candidate"
+  relevant: ["n05"]
+  how: "judged by reading"

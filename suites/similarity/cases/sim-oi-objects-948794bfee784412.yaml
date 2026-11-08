@@ -1,0 +1,8 @@
+description: "similarity: oi-objects-948794bfee784412 (2 copy, 1 edit, 19 class of 153)"
+metadata: { id: sim-oi-objects-948794bfee784412 }
+vars:
+  query: oi-objects-948794bfee784412
+  expected:
+    copy: [copy-resize-oi-objects-948794bfee784412, copy-crop10-oi-objects-948794bfee784412]
+    edit: [edit-dog-ball]
+    class: [dog-sleeping-painting, dog-border-terrier, dog-in-dog-bed, dog-autumn-sun, oi-objects-0fd512f1bffb8cf3, oi-objects-d8cac8b54e9fa89c, oi-objects-5b7ab3baf4c0492f, oi-find-030c5a10124e6252, copy-jpeg40-oi-objects-0fd512f1bffb8cf3, copy-flip-oi-objects-0fd512f1bffb8cf3, copy-crop10-oi-objects-d8cac8b54e9fa89c, copy-bright-oi-objects-d8cac8b54e9fa89c, copy-flip-oi-objects-5b7ab3baf4c0492f, copy-resize-oi-objects-5b7ab3baf4c0492f, copy-crop10-dog-border-terrier, copy-bright-dog-border-terrier, edit-car-red, edit-basset-sketch, edit-dogs-snow]

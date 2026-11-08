@@ -1,0 +1,272 @@
+---
+// The sensitive suite's per-model summary (scripts/export-site.ts `screening`,
+// computed from each case's reply by assertions/sensitive.ts):
+//
+// - Leaks: private images called public. The owner's pass mark is zero, so a
+//   model with any leak fails the suite however many levels it got right.
+// - Under-calls: any image called a lower level than it is (a private one called
+//   review counts here, not as a leak). False alarms: an image called a higher
+//   level; "public flagged" is the public ones among them.
+// - Recall and precision per category, over every case.
+// - The curve: the same replies re-cut at each risk threshold (0.05 to 0.95).
+//   Each point is leaks against false alarms; the dot is the model's own cut
+//   (0.5). Down and left is better. The vision models give a risk per
+//   category; the zero-shot ones a score, thresholded the same way.
+// - For a composite, how many images each stage decided and what each stage cost.
+import { data, href, modelSlug, tone, type ScreeningModel } from '../lib/data'
+
+const s = data.screening
+const rows = s?.models ?? []
+const cats = s?.categories ?? []
+const palette = ['#2a6fdb', '#d9822b', '#2f9e6f', '#a64ca6', '#c9453a', '#7a7a30', '#3f9ab0']
+const colour = (i: number) => palette[i % palette.length]!
+const pct = (x: number | null) => (x === null ? '—' : `${Math.round(x * 100)}%`)
+const W = 560
+const H = 320
+const pad = { l: 44, r: 16, t: 14, b: 40 }
+const maxX = Math.max(5, ...rows.flatMap((m) => m.curve.map((p) => p.false_alarms)))
+const maxY = Math.max(5, ...rows.flatMap((m) => m.curve.map((p) => p.leaks)))
+const x = (v: number) => pad.l + (v / maxX) * (W - pad.l - pad.r)
+const y = (v: number) => H - pad.b - (v / maxY) * (H - pad.t - pad.b)
+const mem = (m: ScreeningModel) => (m.loaded_gb !== null ? `${m.loaded_gb.toFixed(1)} GB loaded` : m.memory ? `${m.memory.gb.toFixed(1)} GB ${m.memory.basis}` : '—')
+const cut = (t: number) => (t > 0 && t < 0.01 ? t.toFixed(3) : t.toFixed(2))
+const ms = (v: number | null) => (v === null ? '—' : v < 10 ? `${v.toFixed(1)} ms` : v < 1000 ? `${Math.round(v)} ms` : `${(v / 1000).toFixed(1)} s`)
+---
+
+{
+  s && rows.length > 0 && (
+    <section class="screening">
+      <h2>Screening summary</h2>
+      <p class="note">
+        Pass mark: <b>no private image called public</b> (a leak). A leak weighs three times a false alarm in a case's score. Under-calls
+        count any image given a lower level than it has; false alarms any given a higher one.
+      </p>
+      <div class="scroll">
+        <table data-table id="screen-sum">
+          <thead>
+            <tr>
+              <th data-sort="text">Model</th>
+              <th data-sort="num" class="num" title="Cases where the level was exactly right">Exact</th>
+              <th data-sort="num" class="num" title="Private images called public. Zero passes the suite.">Leaks</th>
+              <th data-sort="num" class="num" title="Images called a lower level than they are (leaks included)">Under-calls</th>
+              <th data-sort="num" class="num" title="Images called a higher level than they are">False alarms</th>
+              <th data-sort="num" class="num" title="Public images called review or private">Public flagged</th>
+              <th data-sort="num" class="num">Time / image</th>
+              <th class="num">Memory</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((m) => (
+              <tr>
+                <td><a href={href(`/models/${modelSlug(m.model)}/`)}>{m.model}</a>{m.errors > 0 && <span class="muted"> · {m.errors} errors</span>}</td>
+                <td class={`num heat ${tone((100 * m.exact) / m.total)}`} data-value={m.exact}>{m.exact}/{m.total}</td>
+                <td class={`num ${m.leaks === 0 ? 'ok' : 'bad'}`} data-value={m.leaks}><b>{m.leaks}</b>/{m.private_cases}</td>
+                <td class="num" data-value={m.under_calls}>{m.under_calls}</td>
+                <td class="num" data-value={m.false_alarms}>{m.false_alarms}</td>
+                <td class="num" data-value={m.public_flagged}>{m.public_flagged}/{m.public_cases}</td>
+                <td class="num" data-value={m.time_ms ?? 1e12}>{ms(m.time_ms)}{m.time_per === 'case' && <span class="muted"> / case</span>}</td>
+                <td class="num">{mem(m)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Recall by category</h3>
+      <p class="note">Of the images that show the category, the share the model raised it for. Hover for precision and counts.</p>
+      <div class="scroll">
+        <table class="cat-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              {cats.map((c) => <th class="num" title={c.definition}>{c.id}{c.private && <sup>P</sup>}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((m) => (
+              <tr>
+                <td>{m.model}</td>
+                {cats.map((c) => {
+                  const k = m.per_category[c.id]
+                  return (
+                    <td class={`num heat ${k.recall === null ? '' : tone(100 * k.recall)}`} title={`precision ${pct(k.precision)} · ${k.tp} found, ${k.fn} missed, ${k.fp} false alarms`}>
+                      {pct(k.recall)}
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="note"><sup>P</sup> a private category: raising it makes the image private.</p>
+
+      <h3>Precision by category</h3>
+      <p class="note">Of the images the model raised the category for, the share that show it.</p>
+      <div class="scroll">
+        <table class="cat-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              {cats.map((c) => <th class="num" title={c.definition}>{c.id}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((m) => (
+              <tr>
+                <td>{m.model}</td>
+                {cats.map((c) => {
+                  const k = m.per_category[c.id]
+                  return <td class={`num heat ${k.precision === null ? '' : tone(100 * k.precision)}`} title={`${k.tp} found, ${k.fp} false alarms`}>{pct(k.precision)}</td>
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Leaks against false alarms</h3>
+      <p class="note">
+        Each model's replies re-cut at risk thresholds from 0.05 to 0.95. A point is how many private images the cut called public (up)
+        against how many images it over-called (right); the filled dot is the cut the suite scores (0.5). A curve that reaches the
+        bottom edge at few false alarms has a threshold that never leaks.
+      </p>
+      <svg viewBox={`0 0 ${W} ${H}`} class="curve" role="img" aria-label="Leaks against false alarms as the risk threshold moves, per model">
+        {Array.from({ length: maxY + 1 }, (_, v) => v).filter((v) => maxY <= 10 || v % Math.ceil(maxY / 10) === 0).map((v) => (
+          <g>
+            <line x1={pad.l} x2={W - pad.r} y1={y(v)} y2={y(v)} class="grid" />
+            <text x={pad.l - 6} y={y(v) + 4} text-anchor="end" class="tick">{v}</text>
+          </g>
+        ))}
+        {Array.from({ length: maxX + 1 }, (_, v) => v).filter((v) => v % Math.ceil(maxX / 10) === 0).map((v) => (
+          <g>
+            <line x1={x(v)} x2={x(v)} y1={pad.t} y2={H - pad.b} class="grid" />
+            <text x={x(v)} y={H - pad.b + 14} text-anchor="middle" class="tick">{v}</text>
+          </g>
+        ))}
+        <text x={(pad.l + W - pad.r) / 2} y={H - 6} text-anchor="middle" class="axis">false alarms (images over-called)</text>
+        <text x="12" y={(pad.t + H - pad.b) / 2} text-anchor="middle" transform={`rotate(-90 12 ${(pad.t + H - pad.b) / 2})`} class="axis">leaks (private called public)</text>
+        {rows.map((m, i) => (
+          <g>
+            <polyline points={m.curve.map((p) => `${x(p.false_alarms)},${y(p.leaks)}`).join(' ')} fill="none" stroke={colour(i)} stroke-width="1.6" opacity="0.85" />
+            {m.curve.map((p) => (
+              <circle cx={x(p.false_alarms)} cy={y(p.leaks)} r={p.t === 0.5 ? 5 : 2} fill={p.t === 0.5 ? colour(i) : 'none'} stroke={colour(i)} stroke-width="1.2">
+                <title>{`${m.model} at ${p.t.toFixed(2)}: ${p.leaks} leaks, ${p.false_alarms} false alarms`}</title>
+              </circle>
+            ))}
+          </g>
+        ))}
+      </svg>
+      <ul class="legend">
+        {rows.map((m, i) => {
+          const zero = m.curve.filter((p) => p.leaks === 0)
+          const top = zero.length === 0 ? null : zero.reduce((a, b) => (b.t > a.t ? b : a))
+          const note = top === null ? 'leaks at every threshold' : zero.length === m.curve.length ? `no leaks at any threshold, ${top.false_alarms} false alarms` : `no leaks up to threshold ${top.t.toFixed(2)}, ${top.false_alarms} false alarms there`
+          return (
+            <li>
+              <i style={`background:${colour(i)}`}></i> {m.model}
+              <span class="muted"> · {note}</span>
+            </li>
+          )
+        })}
+      </ul>
+
+      <h3>Calibration and threshold</h3>
+      <p class="note">
+        <b>Brier</b>: the mean squared gap between a category's risk and whether it is really there (0 is perfect; a constant 0.5 scores
+        0.25), over every category and image. <b>Zero-leak cut</b>: the highest risk threshold at which no private image is called public,
+        with the false alarms that cut costs. <b>Cost-optimal cut</b>: the threshold with the lowest weighted cost, a leak weighing three
+        times a false alarm (an under-call by one level counts as a leak step, an over-call as a false alarm step); its leaks and false alarms
+        are shown. <b>These cuts were picked on this suite's own cases, so they are optimistic.</b> Treat them as a starting point and confirm
+        them on other data before shipping one.
+      </p>
+      <div class="scroll">
+        <table data-table id="screen-cal">
+          <thead>
+            <tr>
+              <th data-sort="text">Model</th>
+              <th data-sort="num" class="num" title="Mean squared error of the risks against the expected categories; lower is better">Brier</th>
+              <th data-sort="num" class="num" title="Highest threshold with no private image called public">Zero-leak cut</th>
+              <th data-sort="num" class="num" title="Over-called images at the zero-leak cut">False alarms there</th>
+              <th data-sort="num" class="num" title="Threshold with the lowest weighted cost (leak 3, false alarm 1)">Cost-optimal cut</th>
+              <th data-sort="num" class="num" title="Private images called public at the cost-optimal cut">Leaks there</th>
+              <th data-sort="num" class="num" title="Over-called images at the cost-optimal cut">False alarms there</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((m) => (
+              <tr>
+                <td><a href={href(`/models/${modelSlug(m.model)}/`)}>{m.model}</a></td>
+                <td class="num" data-value={m.calibration.brier.overall ?? 1} title={cats.map((c) => `${c.id} ${m.calibration.brier.per[c.id]?.toFixed(3) ?? '—'}`).join(' · ')}>{m.calibration.brier.overall?.toFixed(3) ?? '—'}</td>
+                <td class="num" data-value={m.calibration.zero_leak?.t ?? 2}>{m.calibration.zero_leak ? cut(m.calibration.zero_leak.t) : '—'}</td>
+                <td class="num" data-value={m.calibration.zero_leak?.false_alarms ?? 1e6}>{m.calibration.zero_leak?.false_alarms ?? '—'}</td>
+                <td class="num" data-value={m.calibration.cost_optimal.t}>{cut(m.calibration.cost_optimal.t)}</td>
+                <td class={`num ${m.calibration.cost_optimal.leaks === 0 ? 'ok' : 'bad'}`} data-value={m.calibration.cost_optimal.leaks}>{m.calibration.cost_optimal.leaks}</td>
+                <td class="num" data-value={m.calibration.cost_optimal.false_alarms}>{m.calibration.cost_optimal.false_alarms}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Hover a Brier score for its per-category values. The composite's risks are 0, 0.9 (a rule fired) or the LLM's, so its cuts are coarse.</p>
+
+      {rows.some((m) => m.stages) && (
+        <>
+          <h3>Composite: stages used</h3>
+          <p class="note">How each image was settled, and what each stage cost (median over the images it ran on).</p>
+          <div class="scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th class="num">Private by rules</th>
+                  <th class="num">Public by evidence</th>
+                  <th class="num">Sent to the LLM</th>
+                  <th class="num">YuNet</th>
+                  <th class="num">NSFW ViT</th>
+                  <th class="num">SigLIP</th>
+                  <th class="num">OCR</th>
+                  <th class="num">LLM</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.filter((m) => m.stages).map((m) => (
+                  <tr>
+                    <td>{m.model}</td>
+                    <td class="num">{m.stages!.decided_by['rules']}</td>
+                    <td class="num">{m.stages!.decided_by['public-signals']}</td>
+                    <td class="num">{m.stages!.decided_by['llm']}</td>
+                    {['yunet', 'nsfw', 'siglip', 'ocr', 'llm'].map((n) => (
+                      <td class="num">{m.stages!.ran[n]!.n} × {ms(m.stages!.ran[n]!.median_ms)}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      <details>
+        <summary>Category definitions</summary>
+        <ul>
+          {cats.map((c) => <li><code>{c.id}</code>{c.private ? ' (private)' : ''}: {c.definition}</li>)}
+        </ul>
+      </details>
+    </section>
+  )
+}
+
+<style>
+  .screening h2 { margin: 16px 0 4px; }
+  .screening h3 { margin: 20px 0 4px; font-size: 15px; }
+  .ok { color: var(--good); }
+  .bad { color: var(--bad); font-weight: 600; }
+  .cat-table th, .cat-table td { white-space: nowrap; }
+  .curve { width: 100%; max-width: 640px; height: auto; display: block; }
+  .curve .grid { stroke: var(--line); stroke-width: 1; }
+  .curve .tick { font-size: 10px; fill: var(--muted); }
+  .curve .axis { font-size: 11px; fill: var(--muted); }
+  .legend { list-style: none; margin: 8px 0; padding: 0; font-size: 13px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+</style>

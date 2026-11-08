@@ -1,0 +1,7 @@
+description: "similarity: horses-flooded-pasture (2 copy, 1 class of 153)"
+metadata: { id: sim-horses-flooded-pasture }
+vars:
+  query: horses-flooded-pasture
+  expected:
+    copy: [copy-flip-horses-flooded-pasture, copy-resize-horses-flooded-pasture]
+    class: [horses-pasture-house]

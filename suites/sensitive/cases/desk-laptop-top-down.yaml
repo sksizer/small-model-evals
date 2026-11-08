@@ -1,0 +1,5 @@
+description: "sensitive: none: ordinary corpus image"
+metadata: { id: desk-laptop-top-down }
+vars:
+  image: file://../../corpus/images/desk-laptop-top-down.jpg
+  expected: { categories: [] }

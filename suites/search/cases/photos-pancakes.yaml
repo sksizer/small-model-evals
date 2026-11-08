@@ -1,0 +1,8 @@
+description: "search photos: pancakes for breakfast (2 relevant of 78)"
+metadata: { id: photos-pancakes, kind: photos }
+vars:
+  kind: photos
+  corpus: photos
+  query: "pancakes for breakfast"
+  relevant: ["pancakes-breakfast-table","pancakes-stack"]
+  how: "judged by eye"

@@ -1,0 +1,177 @@
+{
+  "run": "2026-11-08T02-33-47",
+  "evals": [
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 6.07,
+        "load_per_core": 0.61,
+        "mem_available_gib": 2.4,
+        "mem_free_pct": 30,
+        "swap_used_gib": 8.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "WindowServer",
+            "cpu_pct": 47
+          },
+          {
+            "name": "Orca Helper (Renderer)",
+            "cpu_pct": 40
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 15.82,
+        "load_per_core": 1.58,
+        "mem_available_gib": 3.4,
+        "mem_free_pct": 37,
+        "swap_used_gib": 8.2,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "load 6.07 on the cores (0.61/core): something is working; wait for it or close it",
+        "little free memory (2.4 GiB available, 30% free): close browsers, editors and VMs",
+        "8.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "WindowServer is using 47% of a core: close it if you can",
+        "Orca Helper (Renderer) is using 40% of a core: close it if you can",
+        "8.2 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "docs",
+      "start": {
+        "load_1m": 15.82,
+        "load_per_core": 1.58,
+        "mem_available_gib": 3.3,
+        "mem_free_pct": 37,
+        "swap_used_gib": 8.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 15.46,
+        "load_per_core": 1.55,
+        "mem_available_gib": 4,
+        "mem_free_pct": 41,
+        "swap_used_gib": 8.2,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 262
+          },
+          {
+            "name": "npm view remark-embed-obsidian time.modified version",
+            "cpu_pct": 48
+          }
+        ]
+      },
+      "flags": [
+        "8.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "8.2 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 262% of a core: close it if you can",
+        "npm view remark-embed-obsidian time.modified version is using 48% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 15.46,
+        "load_per_core": 1.55,
+        "mem_available_gib": 3.9,
+        "mem_free_pct": 41,
+        "swap_used_gib": 8.2,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 221
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 16.4,
+        "load_per_core": 1.64,
+        "mem_available_gib": 5,
+        "mem_free_pct": 55,
+        "swap_used_gib": 9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 226
+          }
+        ]
+      },
+      "flags": [
+        "8.2 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 221% of a core: close it if you can",
+        "9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 226% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "embeddinggemma2-text",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 16.4,
+        "load_per_core": 1.64,
+        "mem_available_gib": 5,
+        "mem_free_pct": 55,
+        "swap_used_gib": 9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 182
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 10.62,
+        "load_per_core": 1.06,
+        "mem_available_gib": 4.7,
+        "mem_free_pct": 51,
+        "swap_used_gib": 8.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 292
+          }
+        ]
+      },
+      "flags": [
+        "9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 182% of a core: close it if you can",
+        "8.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 292% of a core: close it if you can"
+      ]
+    }
+  ]
+}
