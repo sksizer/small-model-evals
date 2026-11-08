@@ -33,7 +33,12 @@ export type Category = (typeof CATEGORIES)[number]
 export const COSTS = ['light', 'heavy'] as const
 export type Cost = (typeof COSTS)[number]
 
-export const SUITE_META: Record<string, { categories: Category[]; cost: Cost }> = {
+/**
+ * `case_timeout_min`: how long one case may run before promptfoo fails it (default 5, scripts/run.ts). Suites whose
+ * first case embeds a whole corpus (search, similarity) need longer: EmbeddingGemma 2 takes about 2 s an image on
+ * CPU, and a 132-image corpus under load ran past 5 minutes on 2026-11-08.
+ */
+export const SUITE_META: Record<string, { categories: Category[]; cost: Cost; case_timeout_min?: number }> = {
   classify: { categories: ['text'], cost: 'light' },
   extract: { categories: ['text'], cost: 'light' },
   'food-lookup': { categories: ['text'], cost: 'light' },
@@ -44,19 +49,19 @@ export const SUITE_META: Record<string, { categories: Category[]; cost: Cost }> 
   ocr: { categories: ['vision'], cost: 'light' },
   'tag-image': { categories: ['vision'], cost: 'light' },
   'nudity-flag': { categories: ['vision'], cost: 'light' },
-  similarity: { categories: ['vision'], cost: 'light' },
+  similarity: { categories: ['vision'], cost: 'light', case_timeout_min: 20 },
   sensitive: { categories: ['vision'], cost: 'heavy' },
   'regions-faces': { categories: ['regions'], cost: 'light' },
   'regions-find': { categories: ['regions'], cost: 'light' },
   'regions-objects': { categories: ['regions'], cost: 'light' },
   'regions-text': { categories: ['regions'], cost: 'light' },
-  search: { categories: ['search'], cost: 'heavy' },
+  search: { categories: ['search'], cost: 'heavy', case_timeout_min: 20 },
   'perf-embed': { categories: ['search'], cost: 'heavy' },
   edit: { categories: ['image-edit'], cost: 'heavy' },
 }
 
 /** A suite outside the registry (a private one) counts as light and in no category, so it runs by default and by name. */
-export const metaOf = (suite: string): { categories: Category[]; cost: Cost } => SUITE_META[suite] ?? { categories: [], cost: 'light' }
+export const metaOf = (suite: string): { categories: Category[]; cost: Cost; case_timeout_min?: number } => SUITE_META[suite] ?? { categories: [], cost: 'light' }
 
 // ---- profiles ------------------------------------------------------------------
 

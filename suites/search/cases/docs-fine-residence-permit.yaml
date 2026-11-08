@@ -1,0 +1,8 @@
+description: "search docs: a residence permit for a foreign worker (1 relevant of 44)"
+metadata: { id: docs-fine-residence-permit, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "a residence permit for a foreign worker"
+  relevant: ["residence-permit-card"]
+  how: "judged from the page source"

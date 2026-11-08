@@ -1,0 +1,8 @@
+description: "search text: cooked brown rice (3 relevant of 7793)"
+metadata: { id: text-food-brown-rice, kind: text, supersedes: text-brown-rice }
+vars:
+  kind: text
+  corpus: foods
+  query: "cooked brown rice"
+  relevant: ["f168875","f169704","f173263"]
+  how: "rule on the name: Rice, brown, ... cooked"

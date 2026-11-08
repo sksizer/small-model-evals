@@ -1,0 +1,8 @@
+description: "search text: tomato sauce with no salt added (1 relevant of 7793)"
+metadata: { id: text-food-no-salt-tomato-sauce, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "tomato sauce with no salt added"
+  relevant: ["f169074"]
+  how: "rule on the name: Tomato sauce, canned, no salt added"

@@ -1,0 +1,583 @@
+{
+  "suite": "edit",
+  "fingerprint": "995f61974190",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "config": {
+            "judge": "qwen3.5:4b"
+          },
+          "type": "javascript",
+          "value": "sha256:2be475c881c24487b55997f9f43495cd126258c199a0979ab276a1ddcd378d8c"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "edit — change an image as instructed",
+    "prompts": [
+      "{{ instruction }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "base_model": "flux2-klein-4b",
+          "label": "flux2-klein-4b-q4",
+          "repo": "mflux-community/flux2-klein-4b-mflux-q4",
+          "revision": "794cd159538149ad9830848508c31f0ea7088e58",
+          "seed": 42
+        },
+        "id": "sha256:c77ee6c2fa1f0c698476fda747ecdadf670218fd3e0d2a97af0f1046a5cc03ae",
+        "label": "flux2-klein-4b-q4"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "2be475c881c2",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/search.ts": "9502e3f85933",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/search.ts": "730d7829fa38",
+    "providers/sensitive-composite.ts": "3a2ff71491cb",
+    "providers/similarity-search.ts": "7a69269b6c84",
+    "providers/zero-shot.ts": "eed5f8711d4f"
+  },
+  "setup_hash": "a3e8a2c9cf03",
+  "cases": {
+    "edit-armchair-green": {
+      "hash": "a89929166da5",
+      "def": {
+        "description": "recolour: armchair dark green (Open Images ee47ccab89a75d0d)",
+        "metadata": {
+          "id": "edit-armchair-green"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-ee47ccab89a75d0d.jpg",
+          "instruction": "Make the armchair dark green. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is the armchair green?"
+            ],
+            "kept": [
+              "Is there a pillow on the armchair?",
+              "Is this a photograph?"
+            ],
+            "region": [
+              0.0649,
+              0.073,
+              0.9499,
+              0.9956
+            ]
+          }
+        }
+      }
+    },
+    "edit-armchair-remove-right": {
+      "hash": "80f4d29ab1d0",
+      "def": {
+        "description": "remove: the right-hand armchair of two (Open Images 5ea13fbbd1a1474f)",
+        "metadata": {
+          "id": "edit-armchair-remove-right"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-5ea13fbbd1a1474f.jpg",
+          "instruction": "Remove the armchair on the right. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is there only one armchair?"
+            ],
+            "kept": [
+              "Is there a grey armchair on the left?",
+              "Is this a photograph?"
+            ],
+            "region": [
+              0.5,
+              0.2,
+              0.96,
+              0.84
+            ]
+          }
+        }
+      }
+    },
+    "edit-audi-night": {
+      "hash": "19310687e2e6",
+      "def": {
+        "description": "time of day: dusk to night (Open Images 28bd6c6b1050e055)",
+        "metadata": {
+          "id": "edit-audi-night"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-28bd6c6b1050e055.jpg",
+          "instruction": "Change the time of day to night. Keep the car the same.",
+          "expected": {
+            "changed": [
+              "Is it night time?"
+            ],
+            "kept": [
+              "Is there a black car?",
+              "Is this a photograph?"
+            ]
+          }
+        }
+      }
+    },
+    "edit-basset-sketch": {
+      "hash": "322258ca6dd2",
+      "def": {
+        "description": "style: pencil sketch (Open Images d8cac8b54e9fa89c)",
+        "metadata": {
+          "id": "edit-basset-sketch"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-d8cac8b54e9fa89c.jpg",
+          "instruction": "Turn the picture into a pencil sketch. Keep the same scene.",
+          "expected": {
+            "changed": [
+              "Is this a pencil sketch rather than a photograph?"
+            ],
+            "kept": [
+              "Is there a dog?",
+              "Is there a window?"
+            ]
+          }
+        }
+      }
+    },
+    "edit-boats-blue-sky": {
+      "hash": "3f0bff7002dc",
+      "def": {
+        "description": "background swap: sunset sky to blue midday sky (Commons sunset-boats)",
+        "metadata": {
+          "id": "edit-boats-blue-sky"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sunset-boats.jpg",
+          "instruction": "Replace the sunset sky with a clear blue midday sky. Keep the boats and the sea the same.",
+          "expected": {
+            "changed": [
+              "Is the sky blue?"
+            ],
+            "kept": [
+              "Are there boats on the water?",
+              "Is this a photograph?"
+            ]
+          }
+        }
+      }
+    },
+    "edit-bowl-remove": {
+      "hash": "bfd72dab20ea",
+      "def": {
+        "description": "remove: the bowl behind the cup (Open Images 25d107f1590c1772)",
+        "metadata": {
+          "id": "edit-bowl-remove"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-25d107f1590c1772.jpg",
+          "instruction": "Remove the bowl at the top left. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is the cup of coffee the only dish in the picture?"
+            ],
+            "kept": [
+              "Is there a cup of coffee?",
+              "Is this a photograph?"
+            ],
+            "region": [
+              0,
+              0.0354,
+              0.3375,
+              0.4396
+            ]
+          }
+        }
+      }
+    },
+    "edit-car-red": {
+      "hash": "7fe90490ce2d",
+      "def": {
+        "description": "recolour: car red (Open Images 0fd512f1bffb8cf3)",
+        "metadata": {
+          "id": "edit-car-red"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-0fd512f1bffb8cf3.jpg",
+          "instruction": "Make the car bright red. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is the car red?"
+            ],
+            "kept": [
+              "Are there two dogs?",
+              "Is this a photograph?"
+            ]
+          }
+        }
+      }
+    },
+    "edit-dog-ball": {
+      "hash": "c5797e748cc6",
+      "def": {
+        "description": "add: a red ball in front of the dog (Open Images 948794bfee784412)",
+        "metadata": {
+          "id": "edit-dog-ball"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-948794bfee784412.jpg",
+          "instruction": "Add a red ball on the ground in front of the dog. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is there a red ball on the ground?"
+            ],
+            "kept": [
+              "Is there a brown dog standing on the ground?",
+              "Is this a photograph?"
+            ],
+            "region": [
+              0,
+              0.6,
+              1,
+              1
+            ]
+          }
+        }
+      }
+    },
+    "edit-dog-bow-tie": {
+      "hash": "52e0ce7c66ee",
+      "def": {
+        "description": "add: a red bow tie on the dog (Open Images 030c5a10124e6252)",
+        "metadata": {
+          "id": "edit-dog-bow-tie"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-030c5a10124e6252.jpg",
+          "instruction": "Add a red bow tie around the dog's neck. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is the dog wearing a red bow tie?"
+            ],
+            "kept": [
+              "Is the dog wearing sunglasses?",
+              "Is this a photograph?"
+            ]
+          }
+        }
+      }
+    },
+    "edit-dogs-snow": {
+      "hash": "1212edb1751b",
+      "def": {
+        "description": "weather: snow instead of dry grass (Open Images 5b7ab3baf4c0492f)",
+        "metadata": {
+          "id": "edit-dogs-snow"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-5b7ab3baf4c0492f.jpg",
+          "instruction": "Change the scene to a snowy winter day, with snow on the ground. Keep the dogs the same.",
+          "expected": {
+            "changed": [
+              "Is there snow on the ground?"
+            ],
+            "kept": [
+              "Are there two dogs?",
+              "Is this a photograph?"
+            ]
+          }
+        }
+      }
+    },
+    "edit-error-dialog-size": {
+      "hash": "3f65ee93124a",
+      "def": {
+        "description": "text, small region: change a number in an error message (synthetic page)",
+        "metadata": {
+          "id": "edit-error-dialog-size"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/error-dialog.png",
+          "instruction": "Change \"only 640 MB is free\" to \"only 840 MB is free\". Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Does the message say \"840 MB\"?"
+            ],
+            "kept": [
+              "Is the error code E-4031?",
+              "Is there a button labelled \"Try again\"?"
+            ],
+            "region": [
+              0.08,
+              0.4,
+              0.85,
+              0.48
+            ]
+          }
+        }
+      }
+    },
+    "edit-flyer-date": {
+      "hash": "83e20a670197",
+      "def": {
+        "description": "text: change the date on a flyer (synthetic page)",
+        "metadata": {
+          "id": "edit-flyer-date"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/event-flyer.png",
+          "instruction": "Change the date line from \"Saturday, May 9\" to \"Sunday, May 10\". Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Does the date line read \"Sunday, May 10\"?"
+            ],
+            "kept": [
+              "Is the large title \"Spring Seed Swap\"?",
+              "Is there a line that says \"Bring seeds, take seeds\"?"
+            ],
+            "region": [
+              0.2,
+              0.3,
+              0.8,
+              0.4
+            ]
+          }
+        }
+      }
+    },
+    "edit-lake-watercolour": {
+      "hash": "eed72c746da8",
+      "def": {
+        "description": "style: watercolour painting (Commons lake-sherburne)",
+        "metadata": {
+          "id": "edit-lake-watercolour"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lake-sherburne.jpg",
+          "instruction": "Turn the picture into a watercolour painting. Keep the same scene.",
+          "expected": {
+            "changed": [
+              "Is this a watercolour painting rather than a photograph?"
+            ],
+            "kept": [
+              "Are there snow-capped mountains?",
+              "Is there a lake reflecting the mountains?"
+            ]
+          }
+        }
+      }
+    },
+    "edit-noop-lake": {
+      "hash": "8ee7c99491f4",
+      "def": {
+        "description": "control: change nothing (Commons lake-salagou); the whole image is outside the region, so this measures the editor's drift alone",
+        "metadata": {
+          "id": "edit-noop-lake"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lake-salagou.jpg",
+          "instruction": "Do not change anything. Return the image exactly as it is.",
+          "expected": {
+            "changed": [],
+            "kept": [
+              "Are there clouds in the sky?",
+              "Is this a photograph?"
+            ],
+            "region": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "edit-pen-red": {
+      "hash": "65d6dc2a9b9a",
+      "def": {
+        "description": "recolour, small region: black pen to red (Open Images 2dcab96f79ef52c4)",
+        "metadata": {
+          "id": "edit-pen-red"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-2dcab96f79ef52c4.jpg",
+          "instruction": "Make the pen red. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is the pen red?"
+            ],
+            "kept": [
+              "Is the background white?",
+              "Is this a photograph?"
+            ],
+            "region": [
+              0.05,
+              0.4,
+              0.95,
+              0.6
+            ]
+          }
+        }
+      }
+    },
+    "edit-plant-remove": {
+      "hash": "ac8881a23913",
+      "def": {
+        "description": "remove: the potted plant beside the bicycle (Open Images 2fba54286aaac20e)",
+        "metadata": {
+          "id": "edit-plant-remove"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-2fba54286aaac20e.jpg",
+          "instruction": "Remove the potted plant on the left. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is the bicycle the only object standing in front of the wall?"
+            ],
+            "kept": [
+              "Is there a black bicycle?",
+              "Is there a wall behind the bicycle?"
+            ],
+            "region": [
+              0,
+              0.2683,
+              0.3132,
+              0.9113
+            ]
+          }
+        }
+      }
+    },
+    "edit-recipe-title": {
+      "hash": "2261db4524a7",
+      "def": {
+        "description": "text: rename the recipe (synthetic page)",
+        "metadata": {
+          "id": "edit-recipe-title"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recipe-card.png",
+          "instruction": "Change the title from \"Lemon Ginger Loaf\" to \"Lemon Ginger Cake\". Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Does the title read \"Lemon Ginger Cake\"?"
+            ],
+            "kept": [
+              "Is there an INGREDIENTS heading?",
+              "Does the list include \"3 eggs\"?"
+            ],
+            "region": [
+              0.08,
+              0.09,
+              0.7,
+              0.19
+            ]
+          }
+        }
+      }
+    },
+    "edit-sofa-dark-red": {
+      "hash": "85263cbd2cdc",
+      "def": {
+        "description": "recolour: teal sofa dark red (Open Images e916dd0b766b2f40)",
+        "metadata": {
+          "id": "edit-sofa-dark-red"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-e916dd0b766b2f40.jpg",
+          "instruction": "Make the sofa dark red. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is the sofa red?"
+            ],
+            "kept": [
+              "Is there a floor lamp?",
+              "Is this a photograph?"
+            ]
+          }
+        }
+      }
+    },
+    "edit-sync-interval": {
+      "hash": "bf67dd4c368a",
+      "def": {
+        "description": "text: change a setting value (synthetic page)",
+        "metadata": {
+          "id": "edit-sync-interval"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/settings-panel.png",
+          "instruction": "Change the Sync every value from 15 min to 30 min. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Does the Sync every field show \"30 min\"?"
+            ],
+            "kept": [
+              "Is the title \"Sync settings\"?",
+              "Is there a blue Save changes button?"
+            ],
+            "region": [
+              0.77,
+              0.32,
+              0.94,
+              0.41
+            ]
+          }
+        }
+      }
+    },
+    "edit-watch-dial-blue": {
+      "hash": "140ccc4e0776",
+      "def": {
+        "description": "recolour, small region: watch dial black to blue (Open Images 66a342dcdafc7607)",
+        "metadata": {
+          "id": "edit-watch-dial-blue"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-66a342dcdafc7607.jpg",
+          "instruction": "Change the watch dial from black to blue. Keep everything else the same.",
+          "expected": {
+            "changed": [
+              "Is the watch dial blue?"
+            ],
+            "kept": [
+              "Is there a steel bracelet?",
+              "Is this a photograph?"
+            ],
+            "region": [
+              0.1,
+              0.2,
+              0.75,
+              1
+            ]
+          }
+        }
+      }
+    }
+  }
+}

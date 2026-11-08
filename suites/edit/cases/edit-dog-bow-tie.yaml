@@ -1,0 +1,8 @@
+description: "add: a red bow tie on the dog (Open Images 030c5a10124e6252)"
+metadata: { id: edit-dog-bow-tie }
+vars:
+  image: file://../../corpus/images/oi-find-030c5a10124e6252.jpg
+  instruction: "Add a red bow tie around the dog's neck. Keep everything else the same."
+  expected:
+    changed: ["Is the dog wearing a red bow tie?"]
+    kept: ["Is the dog wearing sunglasses?", "Is this a photograph?"]

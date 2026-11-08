@@ -1,0 +1,8 @@
+description: "search photos: fungus growing on a tree trunk (3 relevant of 132)"
+metadata: { id: photos-dup-trunk-fungus, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "fungus growing on a tree trunk"
+  relevant: ["copy-bright-tree-bracket-fungus","copy-crop10-tree-bracket-fungus","tree-bracket-fungus"]
+  how: "judged by eye; copies of a relevant photo count"

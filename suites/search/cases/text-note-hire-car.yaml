@@ -1,0 +1,8 @@
+description: "search text: what to bring to pick up a hire car (1 relevant of 88)"
+metadata: { id: text-note-hire-car, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "what to bring to pick up a hire car"
+  relevant: ["n21"]
+  how: "judged by reading"

@@ -98,7 +98,7 @@ const presets = [
     <label title="Which class of machine each model's Fits badge is judged against">Fits on
       <select data-f="fits">
         <option value="">no badge</option>
-        {classes.map((c) => <option value={c.class}>{c.class} ({c.budget_gib.toFixed(1)} GiB)</option>)}
+        {classes.map((c) => <option value={c.class}>{c.class} ({((c.budget_gib * 2 ** 30) / 1e9).toFixed(1)} GB)</option>)}
       </select>
     </label>
     <label><input type="checkbox" data-f="nofit" />Hide won't-fit</label>
@@ -121,10 +121,13 @@ const presets = [
     beyond that. A model with results on a machine is never won't-fit there. Nothing is hidden unless you tick
     <em>Hide won't-fit</em>. The rows are the chosen machine's results; the class can differ, to ask whether a model would
     fit a bigger or smaller machine.
-    <strong>Memory</strong> is measured, in GB. <em>loaded</em>: what Ollama reports loaded at 8K context. <em>rss</em>: the
-    whole process's resident memory after running, so an upper bound for the model. <em>peak</em>: the image editor's own
-    peak. The three are not like for like; a blank means nothing was measured, and such models drop out under a memory
-    limit. <strong>Slowdown</strong> is a model's time over the fastest model's on the same task and machine (×1.0 is the
+    <strong>Memory</strong> is measured, in GB. <em>loaded</em>: what Ollama reports loaded on a fresh start at the context
+    window shown (8K, text prompts). A second line, <em>peak in &lt;suite&gt;</em>, is the largest size Ollama reported
+    inside that quality suite at its own context window: with images it ramps up request by request (about 8 GB over the
+    fresh load for the Qwen3.5 models, see docs/plans/machines.md), and the memory limit and the Fits column use that
+    larger figure. <em>rss</em>: the whole process's resident memory after running, so an upper bound for the model.
+    <em>peak</em>: the image editor's own peak. These are not like for like; a blank means nothing was measured, and such
+    models drop out under a memory limit. <strong>Slowdown</strong> is a model's time over the fastest model's on the same task and machine (×1.0 is the
     fastest), worst over the ticked tasks. Times are per image where a provider reports it and per case otherwise, so
     compare across kinds with care. A baseline is kept as a yardstick; a retired model is no longer run.
   </p>

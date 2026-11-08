@@ -1,0 +1,8 @@
+description: "search text: decaffeinated coffee (6 relevant of 7793)"
+metadata: { id: text-food-decaf-coffee, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "decaffeinated coffee"
+  relevant: ["f171889","f171894","f174125","f174127","f174133","f174154"]
+  how: "rule on the name: Beverages, coffee, ... decaffeinated"

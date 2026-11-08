@@ -1,8 +1,0 @@
-description: "search text: boneless chicken thigh, roasted (4 relevant of 1500)"
-metadata: { id: text-chicken-thigh, kind: text }
-vars:
-  kind: text
-  corpus: foods
-  query: "boneless chicken thigh, roasted"
-  relevant: ["f172388","f173625","f174500","f174505"]
-  how: "rule on the name: chicken, thigh, meat only or meat and skin (no bone), roasted"

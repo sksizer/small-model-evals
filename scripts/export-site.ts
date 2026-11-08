@@ -24,7 +24,8 @@ import { compareSearch, type SearchDetail } from '../assertions/search.ts'
 import { ENV_DIR, MODEL_DIR, type Environment } from './env.ts'
 import { readConditions, type RunConditions } from './conditions.ts'
 import { ALL_CLASSES, describe } from './machine.ts'
-import { TIGHT, fitOf, requirementOf, type FitStatus } from './fit.ts'
+import { isHardSearchCase } from './search-sets.ts'
+import { TIGHT, fitOf, requirementOf, suiteNeed, type FitStatus } from './fit.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
 import { CATALOG } from './catalog.ts'
 import { MODELS, ageMonths, skipReason } from './models.ts'
@@ -375,6 +376,8 @@ const perf = view
         decode_tps: median(rs.map((r) => metric(r, 'decode_tps'))),
         embeds_per_s: median(rs.map((r) => metric(r, 'embeds_per_s'))),
         loaded_gb: loaded === null ? null : loaded / 1e9,
+        /** The context window this row was measured at, in tokens. */
+        ctx: median(rs.map((r) => metric(r, 'num_ctx'))),
         gpu_pct: loaded && vram !== null ? (100 * vram) / loaded : null,
         busy: busyOf(v.run, v.model, v.suite),
       }
@@ -600,18 +603,33 @@ for (const path of new Set([...usedBy.keys(), ...corpus.map((m) => m.path), ...o
 /** Licences anyone may use commercially without asking: Apache, MIT, BSD, ISC, CC0 and the like. */
 const PERMISSIVE = /^(apache|mit|bsd|isc|cc0|unlicense|zlib)\b/i
 
-/** A model's measured memory in GB: Ollama's loaded size (8K context row, else the smallest), else the largest in-process reading. */
-function memoryOf(machine: string, label: string): { gb: number; basis: 'loaded' | 'rss' | 'peak' } | null {
+/**
+ * A model's measured memory in GB. For Ollama: `gb` is the loaded size at 8K context on a fresh load (the perf
+ * suite's row, else the smallest), and `peak` the largest size seen inside a quality suite, with that suite's
+ * context window and request count: with images Ollama's reported size ramps up request by request
+ * (docs/plans/machines.md), so the two differ by up to ~8 GiB. In-process models: the largest rss or peak reading.
+ */
+function memoryOf(
+  machine: string,
+  label: string,
+): { gb: number; basis: 'loaded' | 'rss' | 'peak'; ctx: number | null; peak: { gb: number; suite: string; ctx: number | null; requests: number } | null } | null {
   if (runtimeOf(label) === 'ollama') {
     const rows = perf.filter((p) => p.machine === machine && p.model === label && p.loaded_gb !== null)
     const pick = rows.find((p) => p.case === 'ctx-8k') ?? rows.sort((a, b) => a.loaded_gb! - b.loaded_gb!)[0]
-    return pick ? { gb: pick.loaded_gb!, basis: 'loaded' } : null
+    const inSuite = view
+      .filter((v) => v.machine === machine && v.model === label && !v.suite.startsWith('perf'))
+      .flatMap((v) => {
+        const n = suiteNeed(v)
+        return n ? [{ gb: (n.gib * 2 ** 30) / 1e9, suite: v.suite, ctx: n.ctx, requests: n.requests }] : []
+      })
+    const peak = inSuite.length > 0 ? inSuite.reduce((a, b) => (b.gb > a.gb ? b : a)) : null
+    return pick ? { gb: pick.loaded_gb!, basis: 'loaded', ctx: pick.ctx, peak } : null
   }
   const mine = inproc.filter((p) => p.machine === machine && p.model === label && p.mem_mb !== null)
   const peaks = mine.filter((p) => p.mem_kind === 'peak')
   const use = peaks.length > 0 ? peaks : mine
   // The providers report MiB.
-  return use.length > 0 ? { gb: (Math.max(...use.map((p) => p.mem_mb!)) * 2 ** 20) / 1e9, basis: peaks.length > 0 ? 'peak' : 'rss' } : null
+  return use.length > 0 ? { gb: (Math.max(...use.map((p) => p.mem_mb!)) * 2 ** 20) / 1e9, basis: peaks.length > 0 ? 'peak' : 'rss', ctx: null, peak: null } : null
 }
 
 /**
@@ -796,7 +814,12 @@ const searchCells = view
           r10: pick('r10'),
           mrr: pick('mrr'),
           ndcg10_256: mean(n256),
-          /** Mean nDCG@10 per corpus, for the text kind's two corpora. */
+          /** Mean nDCG@10 over the original cases (2026-11-05) and over the hard set added 2026-11-08 (scripts/search-sets.ts); null when there are none. */
+          original: mean(rs.filter((r) => !isHardSearchCase(r.case)).map((r) => r.score)),
+          hard: mean(rs.filter((r) => isHardSearchCase(r.case)).map((r) => r.score)),
+          hard_passed: rs.filter((r) => isHardSearchCase(r.case) && r.pass).length,
+          hard_total: rs.filter((r) => isHardSearchCase(r.case)).length,
+          /** Mean nDCG@10 per corpus. */
           by_corpus: Object.fromEntries(
             [...new Set(rs.map((r) => (ranCase(r)?.expected as { corpus?: string } | null)?.corpus ?? ''))].map((corpus) => [
               corpus,

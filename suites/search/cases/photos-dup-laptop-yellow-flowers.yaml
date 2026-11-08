@@ -1,0 +1,8 @@
+description: "search photos: a white laptop with yellow flowers and a takeaway cup (1 relevant of 132)"
+metadata: { id: photos-dup-laptop-yellow-flowers, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a white laptop with yellow flowers and a takeaway cup"
+  relevant: ["desk-coffee-laptop-notebook"]
+  how: "judged by eye; copies of a relevant photo count"

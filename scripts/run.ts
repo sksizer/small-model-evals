@@ -28,7 +28,7 @@ import { streamRunner } from '@osdlc/command-seam'
 import { begin, problems, sample, writeConditions, type EvalConditions } from './conditions.ts'
 import { machine } from './machine.ts'
 import { mfluxProblem, mfluxWeights } from './mflux.ts'
-import { buildPlan, printPlan, SELECTION_OPTIONS, selectionOf } from './plan.ts'
+import { buildPlan, metaOf, printPlan, SELECTION_OPTIONS, selectionOf } from './plan.ts'
 import {
   OLLAMA,
   PROMPTFOO_VERSION,
@@ -132,8 +132,9 @@ for (const { model, skip } of plan.rows) {
             PROMPTFOO_DISABLE_TELEMETRY: '1',
             PROMPTFOO_DISABLE_UPDATE: '1',
             // A case that runs longer fails as an error instead of stalling the
-            // run: qwen3.5:4b on workout hung for two hours on 2026-11-01.
-            PROMPTFOO_EVAL_TIMEOUT_MS: String(5 * 60_000),
+            // run: qwen3.5:4b on workout hung for two hours on 2026-11-01. Five
+            // minutes unless the suite sets case_timeout_min (scripts/plan.ts).
+            PROMPTFOO_EVAL_TIMEOUT_MS: String((metaOf(suite).case_timeout_min ?? 5) * 60_000),
           },
         },
       )

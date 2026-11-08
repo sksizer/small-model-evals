@@ -143,7 +143,7 @@ function keep(r: FinderRow, s: State, f: ReturnType<typeof figures>): boolean {
   if (s.perm && !r.permissive) return false
   if (s.kinds.length > 0 && !s.kinds.includes(r.kind ?? '')) return false
   if (s.params && !(r.parameters !== null && r.parameters <= Number(s.params))) return false
-  if (s.mem && !(r.memory !== null && r.memory.gb <= Number(s.mem))) return false
+  if (s.mem && !(r.memory !== null && memoryGb(r) <= Number(s.mem))) return false
   if (s.min && !(f.worst >= Number(s.min))) return false
   if (s.speed && s.tasks.length > 0 && !(f.speed !== null && f.speed <= Number(s.speed))) return false
   const words = s.q.toLowerCase().split(/\s+/).filter(Boolean)
@@ -158,7 +158,7 @@ function key(r: FinderRow, f: ReturnType<typeof figures>, sort: string): number 
     case 'model': return r.model.toLowerCase()
     case 'kind': return r.kind ?? null
     case 'params': return r.parameters
-    case 'mem': return r.memory?.gb ?? null
+    case 'mem': return r.memory ? memoryGb(r) : null
     case 'fit': return r.need.gib
     case 'disk': return r.disk_gb
     case 'licence': return r.licence?.toLowerCase() ?? null
@@ -168,6 +168,12 @@ function key(r: FinderRow, f: ReturnType<typeof figures>, sort: string): number 
 }
 
 const BASIS = { loaded: 'loaded', rss: 'rss ≤', peak: 'peak' } as const
+
+/** The memory the Memory filter and sort use: the larger of the fresh load and the in-suite peak, since a limit has to hold in use. */
+const memoryGb = (r: FinderRow): number => Math.max(r.memory?.gb ?? 0, r.memory?.peak?.gb ?? 0)
+
+/** "8K", "4K": a context window in tokens. */
+const ctxLabel = (ctx: number | null): string => (ctx ? `${ctx / 1024}K` : '')
 
 function head(s: State): string {
   const th = (sortKey: string, label: string, cls = '', title = '') => {
@@ -179,9 +185,16 @@ function head(s: State): string {
 
 function line(r: FinderRow, s: State, f: ReturnType<typeof figures>): string {
   const flags = `${r.baseline ? ` <span class="pill stale" title="${esc(r.baseline)}">baseline</span>` : ''}${r.retired ? ` <span class="pill fail" title="${esc(r.retired)}">retired</span>` : ''}`
-  const mem = r.memory ? `${fmtDisk(r.memory.gb)}<small>${BASIS[r.memory.basis]}</small>` : '<span class="muted">—</span>'
+  const peak = r.memory?.peak
+  const mem = r.memory
+    ? `${fmtDisk(r.memory.gb)}<small>${BASIS[r.memory.basis]}${r.memory.basis === 'loaded' ? ` · ${ctxLabel(r.memory.ctx)} ctx, fresh` : ''}</small>${
+        peak && peak.gb > r.memory.gb * 1.05
+          ? `<span title="${esc(`The largest size Ollama reported inside the ${peak.suite} suite (${peak.requests} requests${peak.ctx ? `, ${ctxLabel(peak.ctx)} context` : ''}). It ramps up request by request when images are sent, so it is higher than a fresh load.`)}">${fmtDisk(peak.gb)}<small>peak in ${esc(peak.suite)}${peak.ctx ? ` · ${ctxLabel(peak.ctx)} ctx` : ''}</small></span>`
+          : ''
+      }`
+    : '<span class="muted">—</span>'
   const fit = s.fits ? (r.fits[s.fits] as FitStatus) : null
-  const fits = fit ? `<span class="pill fit ${fit}" title="${esc(`${s.fits}: ${r.need.gib === null ? 'need unknown' : `needs ${fmt(r.need.gib, 1)} GiB`} (${r.need.note})`)}">${FIT_WORDS[fit]}</span>${r.need.gib === null ? '' : `<small>${fmt(r.need.gib, 1)} GiB</small>`}` : '<span class="muted">—</span>'
+  const fits = fit ? `<span class="pill fit ${fit}" title="${esc(`${s.fits}: ${r.need.gib === null ? 'need unknown' : `needs ${fmt((r.need.gib * 2 ** 30) / 1e9, 1)} GB`} (${r.need.note})`)}">${FIT_WORDS[fit]}</span>${r.need.gib === null ? '' : `<small>${fmt((r.need.gib * 2 ** 30) / 1e9, 1)} GB</small>`}` : '<span class="muted">—</span>'
   const cells = s.tasks
     .map((t) => {
       const c = r.cells[t]!

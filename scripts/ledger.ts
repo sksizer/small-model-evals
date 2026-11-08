@@ -133,6 +133,15 @@ export interface CaseFile {
   hash: string
 }
 
+/**
+ * A case without its retirement note: moving a case to cases/retired/ sets `metadata.retired`, which says why it
+ * stopped running and must not change what the case is (the hash every snapshot that used it recorded).
+ */
+function withoutRetirement(def: Record<string, unknown>): Record<string, unknown> {
+  const { retired: _retired, ...metadata } = (def['metadata'] ?? {}) as Record<string, unknown>
+  return { ...def, metadata }
+}
+
 /** Every case of a suite: the active ones in cases/, then the retired ones. */
 export function loadCases(suite: string): CaseFile[] {
   const dir = join(SUITES_DIR, suite)
@@ -147,7 +156,7 @@ export function loadCases(suite: string): CaseFile[] {
         const def = readYaml(file) as Record<string, unknown>
         const id = (def['metadata'] as { id?: string } | undefined)?.id
         if (id !== basename(f, '.yaml')) throw new Error(`${file}: metadata.id must equal the file name (got ${id})`)
-        return { id, suite, path: file, retired, def, hash: short(sha(JSON.stringify(canonical(inlineRefs(def, dir))))) }
+        return { id, suite, path: file, retired, def, hash: short(sha(JSON.stringify(canonical(inlineRefs(withoutRetirement(def), dir))))) }
       })
   }
   return [...read('cases', false), ...read(join('cases', 'retired'), true)]

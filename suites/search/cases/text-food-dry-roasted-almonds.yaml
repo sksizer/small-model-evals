@@ -1,0 +1,8 @@
+description: "search text: dry roasted almonds, unsalted (1 relevant of 7793)"
+metadata: { id: text-food-dry-roasted-almonds, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "dry roasted almonds, unsalted"
+  relevant: ["f170158"]
+  how: "rule on the name: Nuts, almonds, dry roasted, without salt added"

@@ -1,0 +1,8 @@
+description: "search text: unsweetened applesauce (2 relevant of 7793)"
+metadata: { id: text-food-unsweetened-applesauce, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "unsweetened applesauce"
+  relevant: ["f167772","f171695"]
+  how: "rule on the name: Applesauce, canned, unsweetened"

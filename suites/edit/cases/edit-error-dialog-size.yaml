@@ -1,0 +1,9 @@
+description: "text, small region: change a number in an error message (synthetic page)"
+metadata: { id: edit-error-dialog-size }
+vars:
+  image: file://../../corpus/images/error-dialog.png
+  instruction: "Change \"only 640 MB is free\" to \"only 840 MB is free\". Keep everything else the same."
+  expected:
+    changed: ["Does the message say \"840 MB\"?"]
+    kept: ["Is the error code E-4031?", "Is there a button labelled \"Try again\"?"]
+    region: [0.08, 0.4, 0.85, 0.48]

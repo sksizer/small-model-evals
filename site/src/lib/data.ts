@@ -100,10 +100,16 @@ export interface FinderCell {
   rel: number | null
 }
 
-/** Memory measured while the model ran: `loaded` is Ollama's loaded size at 8K context, `rss` the process's resident memory (an upper bound), `peak` an editor's own peak. */
+/**
+ * Memory measured while the model ran: `loaded` is Ollama's loaded size on a fresh start at `ctx` tokens of context, `rss` the
+ * process's resident memory (an upper bound), `peak` an editor's own peak. `peak` (the field) is, for an Ollama model, the largest
+ * size seen inside a quality suite, at that suite's context window (it ramps up with images).
+ */
 export interface FinderMemory {
   gb: number
   basis: 'loaded' | 'rss' | 'peak'
+  ctx: number | null
+  peak: { gb: number; suite: string; ctx: number | null; requests: number } | null
 }
 
 /** What a model needs to run, in GiB, and where the number came from (scripts/fit.ts). */
@@ -322,6 +328,11 @@ export interface SearchCell {
   r10: number | null
   mrr: number | null
   ndcg10_256: number | null
+  /** Mean nDCG@10 over the original cases and over the harder set added 2026-11-08 (scripts/search-sets.ts); null when there are none. */
+  original: number | null
+  hard: number | null
+  hard_passed: number
+  hard_total: number
   by_corpus: Record<string, number | null>
   time_ms: number | null
   time_per: TimePer

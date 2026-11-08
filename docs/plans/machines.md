@@ -41,9 +41,10 @@ Old records carry no class. `describe()` derives it at read time from `chip`, `h
 A model's need, in GiB, from the first source that has one:
 
 1. **Measured**, from the ledger: Ollama's `loaded_bytes` plus any in-process memory (`rss_mb`, or the
-   image editor's `peak_mb`), taken as the maximum across the suites the model ran (in-suite Ollama memory
-   is higher than the perf suite's; in perf only the 8K-context case counts). Readings from the same class
-   of machine win over others.
+   image editor's `peak_mb`), taken as the maximum across the suites the model ran. In the perf suite only
+   the 8K-context case counts, a median of its repeats: a fresh load on text. In every other suite it is the
+   **peak** over the suite's requests, taken at that suite's own context window, which the note names
+   ("measured, sensitive loaded peak at 4K context"). Readings from the same class of machine win over others.
 2. **Catalogue**: `disk_gb` times a factor for what a loaded model adds (Ollama 1.25, ONNX and mflux 1.5,
    no-weights models 1).
 3. **Unknown.**
@@ -67,8 +68,52 @@ When some of the selected suites have a reading for a model, only those count; o
 anywhere.
 
 The measured need is an upper bound of a kind: `rss_mb` is the whole process, and Ollama's loaded size
-includes any CPU-offloaded layers. qwen3.5:9b needs 13.8 GiB against apple-16g's 11.8 GiB budget, so it is
-*offload*: it ran, with layers on the CPU.
+includes any CPU-offloaded layers. qwen3.5:9b needs 15.2 GiB against apple-16g's 11.8 GiB budget, so it is
+*offload*: it ran, but see the next section for what that number is.
+
+### Why in-suite Ollama memory is higher than the perf suite's (2026-11-08)
+
+The finder used to show qwen3.5:9b at 7.9 GB (the perf suite, 8K context, a fresh load, text) while the fit
+need said 13.8 GiB (the sensitive suite, median). Both are right; they measure different things:
+
+| Reading | Where | Context | What it is |
+| --- | --- | --- | --- |
+| 7.3 GiB | perf, `ctx-8k` | 8192 | A fresh load answering text prompts: weights plus a cache for 8K |
+| 7.2 GiB | sensitive, the first request | 4096 | The same fresh load, one image |
+| 15.2 GiB | sensitive, request 70 on | 4096 | The plateau after about 70 image requests |
+
+The context is not the cause: the sensitive suite's context is *smaller* (4096, the provider's default) than
+perf's 8K, and perf's 32K case (7.3 GiB) is no higher than its 4K case, so on text the context barely moves
+the reading. The cause is the number of image requests Ollama has served on one load. Ollama's reported size
+(`/api/ps` `size`) climbs by about 0.12 GiB per request for qwen3.5:4b and about 0.15 GiB for 9b, from 3.8 to
+11.8 GiB (4b) and from 7.2 to 15.2 GiB (9b), then stops: the same +8.0 GiB for both models, so it is not the
+weights and not a KV cache (which would scale with the model). lfm3-vl:2b climbs 1.6 to 3.2 GiB and gemma4:e4b
+not at all. Two independent runs of each model (2026-11-04) climb in step, to within 0.01 GiB at the same
+request number, so it follows the request count, not the content of the images. Text requests (perf: nine
+requests, up to 32K tokens) do not climb. The most likely cause is memory the vision path keeps per request in
+the llama.cpp runner (its image embedding and graph buffers) until a plateau; the ledger cannot tell whether
+the runner would give it back under pressure. What it does show:
+
+- Speed does not degrade at the plateau (qwen3.5:9b: about 10 s per image early and late), so layers are not
+  being pushed to the CPU; the extra is held memory, not a spill.
+- A real app that keeps the model loaded and sends it hundreds of photos would see the plateau; one that loads,
+  rates a few images and unloads sees about the fresh-load figure plus 0.15 GiB per image.
+
+What changed so the numbers say what they measure:
+
+- `suiteNeed` (`scripts/fit.ts`) takes the **peak** of an in-suite reading, not its median (the median of a
+  ramp only says where the middle request fell), and names the context window in the note.
+- The finder's Memory column shows the fresh load with its context ("7.9 loaded · 8K ctx, fresh"), and, when
+  the in-suite peak is at least 5% higher, a second line "15.7 peak in sensitive · 4K ctx" (hover: request
+  count). Its memory limit and sort use the larger of the two; the Fits column uses the peak.
+- The context window of an in-suite reading comes from the suite's config, else the provider's default
+  (`PROVIDER_DEFAULT_CTX` in `fit.ts`), not from the record: adding `num_ctx` to `providers/ollama-sensitive.ts`'s
+  metadata would have made every sensitive result stale. The perf suite records `num_ctx` per reading, and
+  records made from now on can too.
+- qwen3.5:4b's need moved from 10.4 GiB (the median) to 11.8 GiB (the peak): *tight* on the class's nominal 12 GiB
+  budget (the site), right at this machine's own 11.84 GiB (where `run.ts` can call it *offload* by a hair). By
+  the speed evidence above, read a high need here as "its memory climbs to the budget with images", not "layers
+  run on the CPU".
 
 ## Categories and profiles
 

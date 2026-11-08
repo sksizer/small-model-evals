@@ -1,0 +1,8 @@
+description: "search text: plain white flour (5 relevant of 7793)"
+metadata: { id: text-food-plain-flour, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "plain white flour"
+  relevant: ["f168894","f168895","f168936","f169754","f169761"]
+  how: "rule on the name: Wheat flour, white, all-purpose"

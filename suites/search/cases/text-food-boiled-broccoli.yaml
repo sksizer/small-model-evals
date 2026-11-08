@@ -1,0 +1,8 @@
+description: "search text: boiled broccoli, drained (6 relevant of 7793)"
+metadata: { id: text-food-boiled-broccoli, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "boiled broccoli, drained"
+  relevant: ["f168510","f168511","f168512","f169967","f169969","f170380"]
+  how: "rule on the name: Broccoli, (frozen, chopped or spears,) cooked, boiled, drained"

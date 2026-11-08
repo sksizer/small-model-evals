@@ -1,0 +1,9 @@
+description: "recolour, small region: black pen to red (Open Images 2dcab96f79ef52c4)"
+metadata: { id: edit-pen-red }
+vars:
+  image: file://../../corpus/images/oi-find-2dcab96f79ef52c4.jpg
+  instruction: "Make the pen red. Keep everything else the same."
+  expected:
+    changed: ["Is the pen red?"]
+    kept: ["Is the background white?", "Is this a photograph?"]
+    region: [0.05, 0.4, 0.95, 0.6]
