@@ -1,0 +1,8 @@
+description: "search text: raw spinach (1 relevant of 7793)"
+metadata: { id: text-food-raw-spinach, kind: text, supersedes: text-raw-spinach }
+vars:
+  kind: text
+  corpus: foods
+  query: "raw spinach"
+  relevant: ["f168462"]
+  how: "rule on the name: name starts \"Spinach, raw\""

@@ -33,6 +33,7 @@ export interface InProc {
   mem_mb: number | null
   /** `rss` is the whole process's resident memory (an upper bound); `peak` the editor's own peak. */
   mem_kind: 'rss' | 'peak'
+  busy: string[]
 }
 
 export interface Ranked {
@@ -99,15 +100,33 @@ export interface FinderCell {
   rel: number | null
 }
 
-/** Memory measured while the model ran: `loaded` is Ollama's loaded size at 8K context, `rss` the process's resident memory (an upper bound), `peak` an editor's own peak. */
+/**
+ * Memory measured while the model ran: `loaded` is Ollama's loaded size on a fresh start at `ctx` tokens of context, `rss` the
+ * process's resident memory (an upper bound), `peak` an editor's own peak. `peak` (the field) is, for an Ollama model, the largest
+ * size seen inside a quality suite, at that suite's context window (it ramps up with images).
+ */
 export interface FinderMemory {
   gb: number
   basis: 'loaded' | 'rss' | 'peak'
+  ctx: number | null
+  peak: { gb: number; suite: string; ctx: number | null; requests: number } | null
 }
+
+/** What a model needs to run, in GiB, and where the number came from (scripts/fit.ts). */
+export interface Need {
+  gib: number | null
+  basis: 'measured' | 'catalogue' | 'unknown'
+  note: string
+}
+
+export type FitStatus = 'fits' | 'tight' | 'offload' | 'wont' | 'unknown'
 
 /** One model on one machine, with its result on every task it ran. */
 export interface FinderRow {
   machine: string
+  /** Its memory need, and whether that fits each class of machine (scripts/machine.ts TIERS). */
+  need: Need
+  fits: Record<string, FitStatus>
   model: string
   kind: string | null
   publisher: string | null
@@ -140,6 +159,8 @@ export interface Perf {
   embeds_per_s: number | null
   loaded_gb: number | null
   gpu_pct: number | null
+  /** Why this run was taken on a busy machine (results/conditions/); empty when clean or not recorded. */
+  busy: string[]
 }
 
 export interface Result {
@@ -215,6 +236,14 @@ export interface Screening {
 export const isScreening = (e: unknown): e is { categories: Category[] } =>
   !!e && typeof e === 'object' && Array.isArray((e as { categories?: unknown }).categories)
 
+/** One risk cut and what it costs on the suite. */
+export interface ScreeningCut {
+  t: number
+  leaks: number
+  false_alarms: number
+  cost: number
+}
+
 /** One model's summary on the sensitive suite (scripts/export-site.ts `screening`). */
 export interface ScreeningModel {
   machine: string
@@ -239,6 +268,14 @@ export interface ScreeningModel {
   loaded_gb: number | null
   per_category: Record<Category, { tp: number; fp: number; fn: number; precision: number | null; recall: number | null }>
   curve: { t: number; leaks: number; under: number; false_alarms: number }[]
+  /** Risk calibration (scripts/export-site.ts `calibrationOf`); cuts are picked on this suite's own cases. */
+  calibration: {
+    brier: { overall: number | null; per: Record<Category, number | null> }
+    /** The highest cut with no leaks; null when even a cut of 0 leaks (it cannot). */
+    zero_leak: ScreeningCut | null
+    /** The cut with the lowest cost, a leak weighing three times a false alarm. */
+    cost_optimal: ScreeningCut
+  }
   /** The composite's stage use over the images it screened. */
   stages: { images: number; decided_by: Record<string, number>; ran: Record<string, { n: number; median_ms: number | null }> } | null
 }
@@ -291,6 +328,11 @@ export interface SearchCell {
   r10: number | null
   mrr: number | null
   ndcg10_256: number | null
+  /** Mean nDCG@10 over the original cases and over the harder set added 2026-11-08 (scripts/search-sets.ts); null when there are none. */
+  original: number | null
+  hard: number | null
+  hard_passed: number
+  hard_total: number
   by_corpus: Record<string, number | null>
   time_ms: number | null
   time_per: TimePer
@@ -355,10 +397,22 @@ export interface Catalog {
 }
 
 export interface Environment {
-  hardware: Record<string, string | number>
+  hardware: Record<string, string | number | null>
   os: { name: string; version: string; build: string; kernel: string }
-  power: string
-  runtime: { ollama: string; ollama_started: string | null; ollama_settings: Record<string, string>; promptfoo: string; bun: string; node: string }
+  runtime: Record<string, string | null | Record<string, string>>
+}
+
+/** The machine's state at one moment of a run (scripts/conditions.ts). */
+export interface Conditions {
+  load_1m: number
+  load_per_core: number
+  mem_available_gib: number
+  mem_free_pct: number | null
+  swap_used_gib: number
+  power: 'ac' | 'battery' | 'unknown'
+  low_power_mode: boolean | null
+  thermal_limit_pct: number | null
+  busy: { name: string; cpu_pct: number }[]
 }
 
 /** A box as fractions of the image size: [x0, y0, x1, y1], top left origin. */
@@ -451,6 +505,9 @@ export interface Run {
   models: string[]
   suites: string[]
   records: number
+  class: string
+  /** How the machine was doing around the run's evals; null for runs made before this was recorded. */
+  conditions: { evals: number; flagged: { model: string; suite: string; flags: string[] }[]; first: Conditions | null } | null
 }
 
 export interface History {
@@ -468,6 +525,15 @@ export interface Machine {
   chip: string
   hw_model: string
   mem_gib: number
+  accel: 'apple' | 'nvidia' | 'cpu'
+  gpu: string | null
+  vram_gib: number | null
+  /** The memory models may fill, GiB. */
+  budget_gib: number
+  /** Most a model may need and still run by CPU offload. */
+  spill_gib: number
+  /** Accelerator and memory tier, e.g. `apple-16g` (scripts/machine.ts). */
+  class: string
 }
 
 /** One corpus image: corpus/manifest.json plus the cases that use it. */
@@ -504,6 +570,10 @@ export const data = raw as unknown as {
   /** `private` for the local-only build of the private suites (scripts/build-site.ts). */
   scope?: 'public' | 'private'
   machines: Machine[]
+  /** Every class of machine with its nominal memory budget, GiB. */
+  classes: { class: string; accel: string; budget_gib: number; spill_gib: number }[]
+  /** A need above this share of a budget is `tight` (scripts/fit.ts). */
+  tight: number
   models: {
     label: string
     tag: string
@@ -516,6 +586,8 @@ export const data = raw as unknown as {
     retired: string | null
     runtime: 'ollama' | 'onnx' | 'mflux' | 'local'
     source: { label: string; id: string; url: string | null; revision: string | null; revision_url: string | null }
+    need: Need
+    fits: Record<string, FitStatus>
   }[]
   suites: Suite[]
   cells: Cell[]
@@ -558,3 +630,10 @@ export const buildOf = (label: string) => {
   const digest = data.models.find((m) => m.label === label)?.digest
   return digest ? data.builds[digest] : undefined
 }
+
+/** How a machine reads in a picker or heading: its chip (and card), memory and class. */
+export const machineLabel = (m: Machine) => `${m.chip}${m.gpu ? ` + ${m.gpu}` : ''}, ${m.mem_gib} GiB · ${m.class}`
+export const machineByKey = (key: string) => data.machines.find((m) => m.key === key)
+
+/** Shown beside a fit status. */
+export const FIT_WORDS: Record<FitStatus, string> = { fits: 'fits', tight: 'tight', offload: 'offload', wont: "won't fit", unknown: 'unknown' }

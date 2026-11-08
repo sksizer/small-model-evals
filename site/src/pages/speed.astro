@@ -7,12 +7,13 @@ const inproc = [...data.inproc].sort((a, b) => a.model.localeCompare(b.model) ||
 const inprocSuites = [...new Set(inproc.map((r) => r.suite))]
 const inprocModels = [...new Set(inproc.map((r) => r.model))]
 const machineName = (key: string) => data.machines.find((m) => m.key === key)?.chip ?? key
+const classOf = (key: string) => data.machines.find((m) => m.key === key)?.class ?? ''
 const cases = [...new Set(rows.map((r) => r.case))]
 ---
 
 <Base
   title="Speed & memory"
-  description="Each model freshly loaded, three runs per case. Load time and prompt speed come from the cold run; output speed is the median."
+  description="Each model freshly loaded, three runs per case. Load time and prompt speed come from the cold run; output speed is the median. Shown for the machine picked above; machines are never pooled."
 >
   <h2>Ollama models</h2>
   <div class="controls">
@@ -38,13 +39,14 @@ const cases = [...new Set(rows.map((r) => r.case))]
           <th data-sort="num" class="num">Loaded GB</th>
           <th data-sort="num" class="num">GPU</th>
           <th data-sort="num" class="num">Cold load s</th>
+          <th data-sort="text">Machine</th>
           <th data-sort="text">Run</th>
         </tr>
       </thead>
       <tbody>
         {
           rows.map((r) => (
-            <tr data-case={r.case} data-model={r.model}>
+            <tr data-case={r.case} data-model={r.model} data-machine={r.machine}>
               <td>
                 <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
               </td>
@@ -59,9 +61,11 @@ const cases = [...new Set(rows.map((r) => r.case))]
               <td class="num" data-value={r.loaded_gb ?? -1}>{fmt(r.loaded_gb, 2)}</td>
               <td class="num" data-value={r.gpu_pct ?? -1}>{r.gpu_pct === null ? '—' : `${Math.round(r.gpu_pct)}%`}</td>
               <td class="num" data-value={r.load_s ?? -1}>{fmt(r.load_s)}</td>
+              <td class="muted">{machineName(r.machine)} <span class="pill class">{classOf(r.machine)}</span></td>
               <td class="muted">
                 {r.run.slice(0, 10)}
                 {r.stale && <span class="pill stale">stale</span>}
+                {r.busy.length > 0 && <span class="pill busy" title={r.busy.join('; ')}>taken under load</span>}
               </td>
             </tr>
           ))
@@ -105,7 +109,7 @@ const cases = [...new Set(rows.map((r) => r.case))]
       <tbody>
         {
           inproc.map((r) => (
-            <tr data-suite={r.suite} data-model={r.model}>
+            <tr data-suite={r.suite} data-model={r.model} data-machine={r.machine}>
               <td>
                 <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
               </td>
@@ -117,10 +121,11 @@ const cases = [...new Set(rows.map((r) => r.case))]
               <td class="num" data-value={r.mem_mb ?? -1}>
                 {r.mem_mb === null ? '—' : `${Math.round(r.mem_mb).toLocaleString('en-US')} MB`} <span class="muted">{r.mem_kind}</span>
               </td>
-              <td class="muted">{machineName(r.machine)}</td>
+              <td class="muted">{machineName(r.machine)} <span class="pill class">{classOf(r.machine)}</span></td>
               <td class="muted">
                 {r.run.slice(0, 10)}
                 {r.stale && <span class="pill stale">stale</span>}
+                {r.busy.length > 0 && <span class="pill busy" title={r.busy.join('; ')}>taken under load</span>}
               </td>
             </tr>
           ))

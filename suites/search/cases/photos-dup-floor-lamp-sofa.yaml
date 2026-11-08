@@ -1,0 +1,8 @@
+description: "search photos: a floor lamp next to a teal sofa (1 relevant of 132)"
+metadata: { id: photos-dup-floor-lamp-sofa, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a floor lamp next to a teal sofa"
+  relevant: ["oi-find-e916dd0b766b2f40"]
+  how: "judged by eye; copies of a relevant photo count"

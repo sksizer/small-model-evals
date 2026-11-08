@@ -1,0 +1,8 @@
+description: "search text: low sodium soy sauce (2 relevant of 7793)"
+metadata: { id: text-food-low-sodium-soy, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "low sodium soy sauce"
+  relevant: ["f172473","f172474"]
+  how: "rule on the name: Soy sauce, low or reduced sodium"

@@ -1,0 +1,959 @@
+{
+  "run": "2026-11-08T00-02-23",
+  "evals": [
+    {
+      "model": "nomic-embed-text",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 20.62,
+        "load_per_core": 2.06,
+        "mem_available_gib": 4.8,
+        "mem_free_pct": 60,
+        "swap_used_gib": 9.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 276
+          },
+          {
+            "name": "scenarios-bc58a613cb136820",
+            "cpu_pct": 71
+          },
+          {
+            "name": "claude.exe",
+            "cpu_pct": 46
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 13.75,
+        "load_per_core": 1.38,
+        "mem_available_gib": 4,
+        "mem_free_pct": 46,
+        "swap_used_gib": 9.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 493
+          },
+          {
+            "name": "chrome-headless-shell",
+            "cpu_pct": 73
+          },
+          {
+            "name": "mmdc",
+            "cpu_pct": 46
+          }
+        ]
+      },
+      "flags": [
+        "load 20.62 on the cores (2.06/core): something is working; wait for it or close it",
+        "9.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 276% of a core: close it if you can",
+        "scenarios-bc58a613cb136820 is using 71% of a core: close it if you can",
+        "claude.exe is using 46% of a core: close it if you can",
+        "9.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 493% of a core: close it if you can",
+        "chrome-headless-shell is using 73% of a core: close it if you can",
+        "mmdc is using 46% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "siglip2-base",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 13.75,
+        "load_per_core": 1.38,
+        "mem_available_gib": 3.9,
+        "mem_free_pct": 49,
+        "swap_used_gib": 9.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 457
+          },
+          {
+            "name": "chrome-headless-shell",
+            "cpu_pct": 84
+          },
+          {
+            "name": "mmdc",
+            "cpu_pct": 60
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 26.1,
+        "load_per_core": 2.61,
+        "mem_available_gib": 5.5,
+        "mem_free_pct": 51,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 285
+          }
+        ]
+      },
+      "flags": [
+        "9.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 457% of a core: close it if you can",
+        "chrome-headless-shell is using 84% of a core: close it if you can",
+        "mmdc is using 60% of a core: close it if you can",
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 285% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "siglip2-base",
+      "suite": "search",
+      "kind": "docs",
+      "start": {
+        "load_1m": 26.1,
+        "load_per_core": 2.61,
+        "mem_available_gib": 5.3,
+        "mem_free_pct": 51,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 286
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 22.87,
+        "load_per_core": 2.29,
+        "mem_available_gib": 5.3,
+        "mem_free_pct": 52,
+        "swap_used_gib": 10.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 566
+          }
+        ]
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 286% of a core: close it if you can",
+        "10.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 566% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "clip-vit-b16",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 22.87,
+        "load_per_core": 2.29,
+        "mem_available_gib": 5.3,
+        "mem_free_pct": 52,
+        "swap_used_gib": 10.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 687
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 27.08,
+        "load_per_core": 2.71,
+        "mem_available_gib": 6.3,
+        "mem_free_pct": 67,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 198
+          },
+          {
+            "name": "XprotectService",
+            "cpu_pct": 81
+          }
+        ]
+      },
+      "flags": [
+        "10.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 687% of a core: close it if you can",
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 198% of a core: close it if you can",
+        "XprotectService is using 81% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "clip-vit-b16",
+      "suite": "search",
+      "kind": "docs",
+      "start": {
+        "load_1m": 27.08,
+        "load_per_core": 2.71,
+        "mem_available_gib": 6.2,
+        "mem_free_pct": 67,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 198
+          },
+          {
+            "name": "XprotectService",
+            "cpu_pct": 81
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 23.53,
+        "load_per_core": 2.35,
+        "mem_available_gib": 5.8,
+        "mem_free_pct": 63,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "ld",
+            "cpu_pct": 215
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 94
+          }
+        ]
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 198% of a core: close it if you can",
+        "XprotectService is using 81% of a core: close it if you can",
+        "ld is using 215% of a core: close it if you can",
+        "rustc is using 94% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 23.53,
+        "load_per_core": 2.35,
+        "mem_available_gib": 5.7,
+        "mem_free_pct": 63,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "ld",
+            "cpu_pct": 224
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 93
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 20.34,
+        "load_per_core": 2.03,
+        "mem_available_gib": 3.6,
+        "mem_free_pct": 40,
+        "swap_used_gib": 7.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 192
+          }
+        ]
+      },
+      "flags": [
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "ld is using 224% of a core: close it if you can",
+        "rustc is using 93% of a core: close it if you can",
+        "7.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 192% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "docs",
+      "start": {
+        "load_1m": 20.34,
+        "load_per_core": 2.03,
+        "mem_available_gib": 3.5,
+        "mem_free_pct": 40,
+        "swap_used_gib": 7.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 179
+          },
+          {
+            "name": "mmdc",
+            "cpu_pct": 49
+          },
+          {
+            "name": "chrome-headless-shell",
+            "cpu_pct": 47
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 20.49,
+        "load_per_core": 2.05,
+        "mem_available_gib": 4,
+        "mem_free_pct": 42,
+        "swap_used_gib": 8.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 189
+          },
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 187
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 57
+          }
+        ]
+      },
+      "flags": [
+        "7.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 179% of a core: close it if you can",
+        "mmdc is using 49% of a core: close it if you can",
+        "chrome-headless-shell is using 47% of a core: close it if you can",
+        "8.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 189% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 187% of a core: close it if you can",
+        "Storage is using 57% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 20.49,
+        "load_per_core": 2.05,
+        "mem_available_gib": 3.9,
+        "mem_free_pct": 42,
+        "swap_used_gib": 8.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 194
+          },
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 192
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 68
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 15.54,
+        "load_per_core": 1.55,
+        "mem_available_gib": 3.7,
+        "mem_free_pct": 39,
+        "swap_used_gib": 7.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 265
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 217
+          }
+        ]
+      },
+      "flags": [
+        "8.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 194% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 192% of a core: close it if you can",
+        "Storage is using 68% of a core: close it if you can",
+        "7.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 265% of a core: close it if you can",
+        "rustc is using 217% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "embeddinggemma2-text",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 15.54,
+        "load_per_core": 1.55,
+        "mem_available_gib": 3.7,
+        "mem_free_pct": 40,
+        "swap_used_gib": 7.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 288
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 237
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 42.26,
+        "load_per_core": 4.23,
+        "mem_available_gib": 3.6,
+        "mem_free_pct": 39,
+        "swap_used_gib": 8.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 229
+          },
+          {
+            "name": "determined_backup-bd1288eb3a5ae649",
+            "cpu_pct": 199
+          }
+        ]
+      },
+      "flags": [
+        "7.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 288% of a core: close it if you can",
+        "rustc is using 237% of a core: close it if you can",
+        "8.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 229% of a core: close it if you can",
+        "determined_backup-bd1288eb3a5ae649 is using 199% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "nomic-embed-v1.5-pair",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 42.26,
+        "load_per_core": 4.23,
+        "mem_available_gib": 3.5,
+        "mem_free_pct": 39,
+        "swap_used_gib": 8.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 247
+          },
+          {
+            "name": "determined_backup-bd1288eb3a5ae649",
+            "cpu_pct": 231
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 30.53,
+        "load_per_core": 3.05,
+        "mem_available_gib": 4.8,
+        "mem_free_pct": 49,
+        "swap_used_gib": 8.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 332
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 186
+          },
+          {
+            "name": "mediaanalysisd",
+            "cpu_pct": 55
+          }
+        ]
+      },
+      "flags": [
+        "8.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 247% of a core: close it if you can",
+        "determined_backup-bd1288eb3a5ae649 is using 231% of a core: close it if you can",
+        "8.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 332% of a core: close it if you can",
+        "rustc is using 186% of a core: close it if you can",
+        "mediaanalysisd is using 55% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "nomic-embed-v1.5-pair",
+      "suite": "search",
+      "kind": "docs",
+      "start": {
+        "load_1m": 30.53,
+        "load_per_core": 3.05,
+        "mem_available_gib": 4.7,
+        "mem_free_pct": 49,
+        "swap_used_gib": 8.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 346
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 189
+          },
+          {
+            "name": "mediaanalysisd",
+            "cpu_pct": 55
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 27.63,
+        "load_per_core": 2.76,
+        "mem_available_gib": 4.6,
+        "mem_free_pct": 48,
+        "swap_used_gib": 8.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 238
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 186
+          },
+          {
+            "name": "siriactionsd",
+            "cpu_pct": 64
+          }
+        ]
+      },
+      "flags": [
+        "8.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 346% of a core: close it if you can",
+        "rustc is using 189% of a core: close it if you can",
+        "mediaanalysisd is using 55% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 238% of a core: close it if you can",
+        "rustc is using 186% of a core: close it if you can",
+        "siriactionsd is using 64% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "nomic-embed-v1.5-pair",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 27.63,
+        "load_per_core": 2.76,
+        "mem_available_gib": 4.6,
+        "mem_free_pct": 48,
+        "swap_used_gib": 8.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 246
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 191
+          },
+          {
+            "name": "siriactionsd",
+            "cpu_pct": 72
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 22.89,
+        "load_per_core": 2.29,
+        "mem_available_gib": 6.3,
+        "mem_free_pct": 70,
+        "swap_used_gib": 9.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 247
+          },
+          {
+            "name": "BackgroundShortcutRunner",
+            "cpu_pct": 67
+          },
+          {
+            "name": "mediaanalysisd",
+            "cpu_pct": 42
+          }
+        ]
+      },
+      "flags": [
+        "8.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 246% of a core: close it if you can",
+        "rustc is using 191% of a core: close it if you can",
+        "siriactionsd is using 72% of a core: close it if you can",
+        "9.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 247% of a core: close it if you can",
+        "BackgroundShortcutRunner is using 67% of a core: close it if you can",
+        "mediaanalysisd is using 42% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "jina-clip-v2",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 22.89,
+        "load_per_core": 2.29,
+        "mem_available_gib": 6.2,
+        "mem_free_pct": 70,
+        "swap_used_gib": 9.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 267
+          },
+          {
+            "name": "BackgroundShortcutRunner",
+            "cpu_pct": 73
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 12.12,
+        "load_per_core": 1.21,
+        "mem_available_gib": 6.3,
+        "mem_free_pct": 66,
+        "swap_used_gib": 9.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 285
+          },
+          {
+            "name": "mediaanalysisd",
+            "cpu_pct": 98
+          }
+        ]
+      },
+      "flags": [
+        "9.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 267% of a core: close it if you can",
+        "BackgroundShortcutRunner is using 73% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 285% of a core: close it if you can",
+        "mediaanalysisd is using 98% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "jina-clip-v2",
+      "suite": "search",
+      "kind": "docs",
+      "start": {
+        "load_1m": 12.12,
+        "load_per_core": 1.21,
+        "mem_available_gib": 6.2,
+        "mem_free_pct": 66,
+        "swap_used_gib": 9.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 285
+          },
+          {
+            "name": "mediaanalysisd",
+            "cpu_pct": 98
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 10.8,
+        "load_per_core": 1.08,
+        "mem_available_gib": 5.6,
+        "mem_free_pct": 52,
+        "swap_used_gib": 9.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 287
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 98
+          }
+        ]
+      },
+      "flags": [
+        "9.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 285% of a core: close it if you can",
+        "mediaanalysisd is using 98% of a core: close it if you can",
+        "9.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 287% of a core: close it if you can",
+        "rustc is using 98% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "jina-clip-v2",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 10.8,
+        "load_per_core": 1.08,
+        "mem_available_gib": 5.6,
+        "mem_free_pct": 52,
+        "swap_used_gib": 9.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 285
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 97
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 24.17,
+        "load_per_core": 2.42,
+        "mem_available_gib": 4.7,
+        "mem_free_pct": 45,
+        "swap_used_gib": 8.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 310
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 168
+          },
+          {
+            "name": "mediaanalysisd",
+            "cpu_pct": 62
+          }
+        ]
+      },
+      "flags": [
+        "9.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 285% of a core: close it if you can",
+        "rustc is using 97% of a core: close it if you can",
+        "8.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 310% of a core: close it if you can",
+        "rustc is using 168% of a core: close it if you can",
+        "mediaanalysisd is using 62% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "embeddinggemma:300m",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 24.17,
+        "load_per_core": 2.42,
+        "mem_available_gib": 4.6,
+        "mem_free_pct": 45,
+        "swap_used_gib": 8.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 310
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 168
+          },
+          {
+            "name": "mediaanalysisd",
+            "cpu_pct": 62
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 21.24,
+        "load_per_core": 2.12,
+        "mem_available_gib": 3.2,
+        "mem_free_pct": 40,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "ld",
+            "cpu_pct": 270
+          },
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 260
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 161
+          }
+        ]
+      },
+      "flags": [
+        "8.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 310% of a core: close it if you can",
+        "rustc is using 168% of a core: close it if you can",
+        "mediaanalysisd is using 62% of a core: close it if you can",
+        "8.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "ld is using 270% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 260% of a core: close it if you can",
+        "rustc is using 161% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "qwen3-embedding:0.6b",
+      "suite": "search",
+      "kind": "text",
+      "start": {
+        "load_1m": 21.24,
+        "load_per_core": 2.12,
+        "mem_available_gib": 3.3,
+        "mem_free_pct": 42,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 251
+          },
+          {
+            "name": "ld",
+            "cpu_pct": 250
+          },
+          {
+            "name": "rustc",
+            "cpu_pct": 176
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 13.19,
+        "load_per_core": 1.32,
+        "mem_available_gib": 2.2,
+        "mem_free_pct": 25,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "determined_backup-bd1288eb3a5ae649",
+            "cpu_pct": 104
+          },
+          {
+            "name": "chrome-headless-shell",
+            "cpu_pct": 50
+          },
+          {
+            "name": "mmdc",
+            "cpu_pct": 41
+          }
+        ]
+      },
+      "flags": [
+        "8.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 251% of a core: close it if you can",
+        "ld is using 250% of a core: close it if you can",
+        "rustc is using 176% of a core: close it if you can",
+        "little free memory (2.2 GiB available, 25% free): close browsers, editors and VMs",
+        "determined_backup-bd1288eb3a5ae649 is using 104% of a core: close it if you can",
+        "chrome-headless-shell is using 50% of a core: close it if you can",
+        "mmdc is using 41% of a core: close it if you can"
+      ]
+    }
+  ]
+}

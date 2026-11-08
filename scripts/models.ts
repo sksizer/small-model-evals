@@ -38,7 +38,7 @@ export const MODELS: ModelEntry[] = [
   { label: 'nomic-embed-text', tag: 'nomic-embed-text:latest', released: '2024-02', approx: true, baseline: 'a common default embedder; switching means re-indexing' },
   { label: 'granite4', tag: 'granite4:latest', released: '2025-10', approx: true, baseline: 'the previous Granite generation, yardstick for granite4.2' },
   { label: 'qwen3:4b', tag: 'qwen3:4b', released: '2025-04', approx: true, baseline: 'a common local default; yardstick for qwen3.5' },
-  { label: 'gemma3:4b', tag: 'gemma3:4b', released: '2025-03', approx: true },
+  { label: 'gemma3:4b', tag: 'gemma3:4b', released: '2025-03', approx: true, baseline: 'the previous Gemma generation, yardstick for gemma4' },
   { label: 'qwen3.5:4b', tag: 'qwen3.5:4b', released: '2026-02', approx: true },
   { label: 'qwen3.5:9b', tag: 'qwen3.5:9b', released: '2026-02', approx: true },
   { label: 'gemma4:e4b', tag: 'gemma4:e4b', released: '2026-04', approx: true },

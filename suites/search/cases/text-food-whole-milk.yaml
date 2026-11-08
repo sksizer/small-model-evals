@@ -1,0 +1,8 @@
+description: "search text: whole milk (2 relevant of 7793)"
+metadata: { id: text-food-whole-milk, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "whole milk"
+  relevant: ["f171265","f172217"]
+  how: "rule on the name: Milk, whole, 3.25% milkfat"

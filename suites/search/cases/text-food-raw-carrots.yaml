@@ -1,0 +1,8 @@
+description: "search text: raw carrots (2 relevant of 7793)"
+metadata: { id: text-food-raw-carrots, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "raw carrots"
+  relevant: ["f168568","f170393"]
+  how: "rule on the name: Carrots, raw (or baby, raw)"

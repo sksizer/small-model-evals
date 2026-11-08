@@ -1,0 +1,8 @@
+description: "search text: spring onions (1 relevant of 7793)"
+metadata: { id: text-food-spring-onions, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "spring onions"
+  relevant: ["f170005"]
+  how: "rule on the name: Onions, spring or scallions"

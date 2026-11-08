@@ -1,0 +1,8 @@
+description: "search text: raw whole egg (1 relevant of 7793)"
+metadata: { id: text-food-raw-egg, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "raw whole egg"
+  relevant: ["f171287"]
+  how: "rule on the name: Egg, whole, raw, fresh"

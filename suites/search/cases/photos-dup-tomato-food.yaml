@@ -1,0 +1,8 @@
+description: "search photos: food with tomatoes (5 relevant of 132)"
+metadata: { id: photos-dup-tomato-food, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "food with tomatoes"
+  relevant: ["coffee-snacks-table","copy-bright-salad-rucola-plate","copy-jpeg40-salad-rucola-plate","salad-party-dish","salad-rucola-plate"]
+  how: "judged by eye; copies of a relevant photo count"

@@ -1,0 +1,8 @@
+description: "search text: where is the birthday dinner for mum (1 relevant of 88)"
+metadata: { id: text-note-mum-dinner, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "where is the birthday dinner for mum"
+  relevant: ["n80"]
+  how: "judged by reading"

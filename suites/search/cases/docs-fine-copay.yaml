@@ -1,0 +1,8 @@
+description: "search docs: a health plan member card with copay amounts (1 relevant of 44)"
+metadata: { id: docs-fine-copay, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "a health plan member card with copay amounts"
+  relevant: ["health-insurance-card"]
+  how: "judged from the page source"

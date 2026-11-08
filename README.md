@@ -29,20 +29,65 @@ bun run site
 
 `scripts/setup.ts` pulls every Ollama model the runner would run (models past the age limit are
 skipped), downloads the pinned mflux weights into `.cache/models/`, and lists what is still
-missing. `--dry-run` only reports; `--models a,b` limits it. ONNX models download themselves on
+missing. `--dry-run` only reports; `--models a,b`, `--category` and `--profile` limit it. ONNX models download themselves on
 first use. On a machine that isn't Apple silicon, the mflux editors are skipped by setup and by the
 runner.
 
 ### On another machine
 
-Clone, run the setup above, then `bun run eval`. Each ledger record names its machine
-(`machine.key`, e.g. `Mac16,10-16g`), so results from a second machine add rows rather than
-replacing this one's. Commit `results/` from there and the site shows both. Expect large
-downloads: the Ollama models are a few GB each, and the edit model is 4.6 GB.
+Clone, `bun install`, then:
 
-Results so far come from one Apple M4 Mac mini with 16 GiB. Numbers from other machines are
-recorded separately (each record names its hardware), so contributions from other hardware add
-rows rather than overwrite.
+```sh
+bun scripts/run.ts --plan       # what would run here, and which models fit this machine's memory
+bun scripts/setup.ts            # pull only the models that plan keeps
+bun run eval                    # run it
+```
+
+Each ledger record names its machine: `machine.key` (e.g. `Mac16,10-16g`) groups results, so a
+second machine adds rows rather than replacing the first's, and `machine.class` says what size of
+machine it is. Commit `results/` from there and the site shows both, never pooled.
+
+**Machine class** is the accelerator plus a memory tier: `apple-16g`, `apple-32g`, `apple-64g+`,
+`nvidia-24g`, `cpu-32g`. Apple silicon is tiered by unified memory, an NVIDIA card (read with
+`nvidia-smi`) by its VRAM, anything else by RAM. The tiers and their budgets are in one table,
+`TIERS` in `scripts/machine.ts`.
+
+**Will it fit?** Every run first prints a plan: for each model, the memory it needs (the largest
+reading in the ledger across suites, at its peak and its own context window inside a quality suite, else the catalogue size times a factor, else unknown) against
+this machine's budget (Metal's working set on Apple silicon, VRAM on NVIDIA). A model is
+*fits*, *tight* (over 80% of the budget), *offload* (over the budget but within usable system
+memory: it runs with layers on the CPU, slower, and its speed is not comparable), *won't fit*
+(beyond that) or *unknown*. Won't-fit models are skipped with an explanation (`--force` runs them
+anyway); tight, offload and unknown ones warn. A model with results on this machine is never
+won't-fit. It also warns when
+the machine is busy (load, free memory, swap, battery, other heavy programs), since that skews
+timings, and says what to close. `bun scripts/run.ts --plan` prints all this and runs nothing;
+`setup.ts` uses the same check.
+
+**Choosing what runs.** Each suite has categories (`text`, `vision`, `regions`, `search`,
+`image-edit`) and a cost (`light` or `heavy`), declared in `SUITE_META` in `scripts/plan.ts`.
+
+```sh
+bun scripts/run.ts --category vision,search      # by category
+bun scripts/run.ts --cost light                  # light suites only
+bun scripts/run.ts --models qwen3:4b --suites extract
+```
+
+**Machine profiles.** `machines/<name>.yaml` lists what a machine, or a class, runs (categories,
+cost, suites, models, `skip_models`). It is picked with `--profile <name>`, or matched by the
+machine's key or class (`match:`); `--profile none` ignores profiles. With no profile the default
+is everything that fits. Command-line flags replace the profile's setting of the same name. To
+add a machine, run `--plan` there, copy `machines/nvidia-24g.yaml`, set `match`, and commit it.
+
+Each run also records the conditions it was taken under (`results/conditions/<run>.json`: load,
+free memory, swap, power, thermal state, other heavy programs, before and after each eval); the
+Runs and Speed pages flag runs taken under load. The frozen environment (`results/environments/`)
+adds the OS, core counts, GPU, driver and CUDA version, and the versions of Bun, Node, Ollama,
+onnxruntime, transformers.js, mflux and ffmpeg. Design notes: [docs/plans/machines.md](docs/plans/machines.md).
+
+Expect large downloads: the Ollama models are a few GB each, and the edit model is 4.6 GB.
+
+Results so far come from one Apple M4 Mac mini with 16 GiB (`apple-16g`).
 
 ## How promptfoo works
 
@@ -76,9 +121,9 @@ promptfoo runs every test against every provider and shows a pass/fail grid.
 | `regions-find` | look (regions) | 18 Open Images photos | Box one named thing a fixed-class detector does not know (whiteboard, sunglasses, envelope) |
 | `regions-faces` | look (regions, privacy) | 15 Open Images photos, 3 with no face | Box every face; any face box on a no-face photo is wrong |
 | `regions-text` | look (regions) | 8 synthetic pages, 143 lines | Box every line of text; the boxes are measured from the page layout (`scripts/text-boxes.ts`) |
-| `edit` | edit | 10 Open Images photos and synthetic pages | Change the image as instructed (recolour, remove, add, weather, time of day, style, text); a judge answers yes/no questions about the edit, and outside the allowed region the image must stay close to the original (`providers/mflux-edit.ts`, `assertions/edit.ts`) |
+| `edit` | edit | 20 Open Images and Commons photos and synthetic pages | Change the image as instructed (recolour, remove, add, weather, time of day, style, text); a judge answers yes/no questions about the edit, and outside the allowed region the image must stay close to the original (`providers/mflux-edit.ts`, `assertions/edit.ts`) |
 | `similarity` | look (likeness) | 29 query photos ranked against a pool of 153 candidates | Rank the pool by likeness to the query: is a candidate a `copy` (resized, recompressed, cropped, flipped, brightened), an `edit` (our edit suite's output), the same `scene`, the same `class` of thing or `other`? pHash and dHash against DINOv2, DINOv3, SigLIP 2 and CLIP image encoders and the image side of EmbeddingGemma 2, a nomic text+vision pair and Jina CLIP v2; scored by average precision over copy, edit and scene, with recall@1 and @5 per level (`providers/image-embed.ts`, `assertions/similarity.ts`) |
-| `search` | find | 89 queries: 25 over 78 photos, 24 over 44 synthetic pages (read as images), 15 over 1500 USDA foods, 25 over 60 invented notes | Rank a corpus for a typed query: which photo, page, food or note answers it? EmbeddingGemma 2 (text and vision, one space) against SigLIP 2, CLIP B/16, a nomic text+vision pair, Jina CLIP v2 (CC BY-NC, restricted), and the text embedders EmbeddingGemma 1 (Gemma terms, restricted), Qwen3-Embedding 0.6B and nomic-embed-text; scored by nDCG@10, passes at 0.7, with recall@1/5/10 and MRR kept (`providers/search.ts`, `assertions/search.ts`) |
+| `search` | find | 231 queries: 90 over photos (25 over the 78 originals, 65 harder ones over those plus 54 near-duplicate copies), 50 over 44 synthetic pages (read as images), 48 over all 7,793 USDA foods, 43 over 88 invented notes (28 of them hard distractors) | Rank a corpus for a typed query: which photo, page, food or note answers it? EmbeddingGemma 2 (text and vision, one space) against SigLIP 2, CLIP B/16, a nomic text+vision pair, Jina CLIP v2 (CC BY-NC, restricted), and the text embedders EmbeddingGemma 1 (Gemma terms, restricted), Qwen3-Embedding 0.6B and nomic-embed-text; scored by nDCG@10, passes at 0.7, with recall@1/5/10 and MRR kept (`providers/search.ts`, `assertions/search.ts`) |
 
 The regions suites compare small non-LLM detectors run in-process: fixed-class (D-FINE, RT-DETR),
 open-vocabulary (OWLv2, Grounding DINO), Florence-2, OpenCV's YuNet face detector and PaddleOCR's
@@ -102,7 +147,7 @@ is reported, not scored); recall@1 and @5 per level (with the stronger levels se
 best cut-off are kept in each result for the site's gallery and its recall table. DINOv3 is under Meta's custom
 DINOv3 licence, not Apache or MIT; its catalogue entry says so.
 
-The `search` suite (plan: `docs/plans/search.md`) measures retrieval with embedding models, in three kinds of case (`metadata.kind`): `photos` (text to photos: object queries scored from Open Images annotations, descriptive ones by eye), `docs` (text to the synthetic pages, searched as images, no OCR) and `text` (USDA foods by a rule on the name, and invented CC0 notes). Image to image is the `similarity` suite's job; the text+image embedders are providers there too (`providers/similarity-search.ts`). A provider embeds the corpus once per run (`corpora.yaml`) and ranks it per query, with each model's documented prefixes; `kinds` in a provider's config limits it to the inputs it can take, and `scripts/run.ts` runs one eval per kind. EmbeddingGemma 2 runs q8 (its card warns off float16) with the audio encoder never loaded, and also records nDCG@10 at 256 dimensions. Two rivals are restricted (Jina CLIP v2: CC BY-NC 4.0; EmbeddingGemma 1: Gemma terms): marked in the catalogue and left out by the finder's permissive-licence filter.
+The `search` suite (plan: `docs/plans/search.md`) measures retrieval with embedding models, in three kinds of case (`metadata.kind`): `photos` (text to photos: object queries scored from Open Images annotations, descriptive ones by eye), `docs` (text to the synthetic pages, searched as images, no OCR) and `text` (USDA foods by a rule on the name, and invented CC0 notes). Since 2026-11-08 each kind has a harder set beside the original (near-duplicate photos, fine-grained page queries, paraphrase, negation and near-miss foods and notes), and the site splits each score into original and hard. Image to image is the `similarity` suite's job; the text+image embedders are providers there too (`providers/similarity-search.ts`). A provider embeds the corpus once per run (`corpora.yaml`) and ranks it per query, with each model's documented prefixes; `kinds` in a provider's config limits it to the inputs it can take, and `scripts/run.ts` runs one eval per kind. EmbeddingGemma 2 runs q8 (its card warns off float16) with the audio encoder never loaded, and also records nDCG@10 at 256 dimensions. Two rivals are restricted (Jina CLIP v2: CC BY-NC 4.0; EmbeddingGemma 1: Gemma terms): marked in the catalogue and left out by the finder's permissive-licence filter.
 
 The `sensitive` suite (plan: `docs/plans/sensitive.md`) asks for a risk per category and derives the overall level
 from the categories in one place, `assertions/sensitive-levels.ts` (the policy, the category definitions the prompt
@@ -122,7 +167,7 @@ edited image is saved as a JPEG under `results/edits/` (committed) for the site'
 `changed` questions (must be yes after the edit), `kept` questions (must still be yes) and, where the edit is
 local, a `region` (fractions of the image). An Ollama vision model (`qwen3.5:4b`, unloaded right after each
 answer so it is never in memory with the editor) answers each question about the edited image. Where there is a
-region, the mean per-pixel difference from the original outside it must be at most 12 of 255. The score is the
+region, the mean per-pixel difference from the original outside it must be at most `PRESERVED_MAX` (15 of 255, set from the drift of the edits that passed; the basis is in `assertions/edit.ts`). One case is a "change nothing" control (an empty region), which measures the editor's own drift. The score is the
 mean of the answers and the preservation check; a case passes only when every question is yes and the image is
 preserved. Time and peak memory of each edit are recorded as `edit_ms` and `peak_mb`.
 
@@ -216,10 +261,11 @@ promptfoo itself cycles through providers inside each test, which would swap mod
 | `results/ledger/<suite>.jsonl` | One line per scored case, appended by every run | Yes |
 | `results/suites/<suite>/<fp>.json` | Frozen suite snapshots the records link to | Yes |
 | `results/summary.md` | Latest result per machine, model and suite, built from the ledger | Yes |
+| `results/conditions/<run>.json` | How busy the machine was around each eval of a run | Yes |
 | `results/notes/<run>.md` | Observations about a run that the numbers do not carry | Yes |
 | `results/runs/<run>/` | promptfoo's raw output | No |
 
-A ledger record names what produced it: the machine (hardware model and memory), the Ollama and
+A ledger record names what produced it: the machine (hardware model, memory and class), the Ollama and
 promptfoo versions, the model tag and digest, the snapshot it ran against and the case id, with
 the model's whole reply. See `LedgerRecord` in `scripts/ledger.ts`.
 
@@ -232,7 +278,8 @@ scorer leaves them current. A new case shows as **not run** for each model until
   it can run, then `bun run eval --models <label>`.
 - **Add a case:** add `suites/<suite>/cases/<id>.yaml` with a new id, then rerun the suite.
 - **Add a suite:** a new folder under `suites/` with a `promptfooconfig.yaml` whose `tests` is
-  `file://cases/*.yaml`.
+  `file://cases/*.yaml`, and an entry in `SUITE_META` (`scripts/plan.ts`) giving its categories and
+  cost; `bun scripts/check.ts` fails without it.
 - **Import old output:** `bun scripts/import.ts results/runs/<run>` (same machine, models and
   suites; every case must carry its id).
 

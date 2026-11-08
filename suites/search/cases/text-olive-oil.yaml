@@ -1,8 +1,0 @@
-description: "search text: olive oil (1 relevant of 1500)"
-metadata: { id: text-olive-oil, kind: text }
-vars:
-  kind: text
-  corpus: foods
-  query: "olive oil"
-  relevant: ["f171413"]
-  how: "rule on the name: Oil, olive"

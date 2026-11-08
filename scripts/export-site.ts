@@ -15,17 +15,21 @@ import { conceptLabel, parseTags, tagMatches, type Concept } from '../assertions
 import { compareWorkout, type ExpectedWorkout } from '../assertions/workout.ts'
 import { compareFood, type ExpectedFood } from '../assertions/food.ts'
 import { compareDecide } from '../assertions/decide.ts'
-import { compareSensitive } from '../assertions/sensitive.ts'
-import { CATEGORIES, DEFINITIONS, LEVELS, PRIVATE_CATEGORIES, type Category } from '../assertions/sensitive-levels.ts'
+import { LEAK_WEIGHT, compareSensitive, type SensitiveGrading } from '../assertions/sensitive.ts'
+import { CATEGORIES, DEFINITIONS, LEVELS, PRIVATE_CATEGORIES, rank, type Category } from '../assertions/sensitive-levels.ts'
 import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
 import { compareSimilarity, type ExpectedSimilarity, type SimilarityDetail } from '../assertions/similarity.ts'
 import { compareSearch, type SearchDetail } from '../assertions/search.ts'
-import { ENV_DIR, MODEL_DIR } from './env.ts'
+import { ENV_DIR, MODEL_DIR, type Environment } from './env.ts'
+import { readConditions, type RunConditions } from './conditions.ts'
+import { ALL_CLASSES, describe } from './machine.ts'
+import { isHardSearchCase } from './search-sets.ts'
+import { TIGHT, fitOf, requirementOf, suiteNeed, type FitStatus } from './fit.ts'
 import type { CorpusImage } from './fetch-corpus.ts'
 import { CATALOG } from './catalog.ts'
 import { MODELS, ageMonths, skipReason } from './models.ts'
-import { ROOT, SCOPE, SUITES_DIR, currentSnapshot, latest, loadCases, readLedger, readSnapshot, type LedgerRecord } from './ledger.ts'
+import { RESULTS_DIR, ROOT, SCOPE, SUITES_DIR, currentSnapshot, latest, loadCases, readLedger, readSnapshot, type LedgerRecord } from './ledger.ts'
 
 interface CaseDef {
   description?: string
@@ -212,11 +216,17 @@ const CORPUS_REL = SCOPE === 'private' ? 'private/corpus' : 'corpus'
 
 const records = readLedger()
 const view = latest(records)
+
+/** The conditions each run was taken under (results/conditions/<run>.json), by run. */
+const conditionsByRun = new Map(readConditions(join(RESULTS_DIR, 'conditions')).map((rc: RunConditions) => [rc.run, rc] as const))
+/** Why an eval of one model and suite in one run was taken on a busy machine; empty when clean or not recorded. */
+const busyOf = (run: string, model: string, suite: string): string[] => [...new Set((conditionsByRun.get(run)?.evals ?? []).filter((e) => e.model === model && e.suite === suite).flatMap((e) => e.flags))]
 const suites = readdirSync(SUITES_DIR).sort()
 
 /**
  * The task families the site groups quality suites by (leaderboard sections), in
- * display order. The one place that says which suite belongs where: a suite no
+ * display order. These are for reading results; what a run selects is the suites'
+ * categories in scripts/plan.ts (SUITE_META). The one place that says which suite belongs where: a suite no
  * family claims lands in `other`.
  */
 const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string) => boolean }[] = [
@@ -339,6 +349,7 @@ const inproc = view
       load_ms: median(metrics('load_ms')),
       /** The largest reading: `rss` is the whole process's resident memory (an upper bound for the model), `peak` the editor's own peak. */
       mem_mb: mem.length > 0 ? Math.max(...mem) : null,
+      busy: busyOf(v.run, v.model, v.suite),
       mem_kind: peak.length > 0 ? ('peak' as const) : ('rss' as const),
     }
   })
@@ -365,7 +376,10 @@ const perf = view
         decode_tps: median(rs.map((r) => metric(r, 'decode_tps'))),
         embeds_per_s: median(rs.map((r) => metric(r, 'embeds_per_s'))),
         loaded_gb: loaded === null ? null : loaded / 1e9,
+        /** The context window this row was measured at, in tokens. */
+        ctx: median(rs.map((r) => metric(r, 'num_ctx'))),
         gpu_pct: loaded && vram !== null ? (100 * vram) / loaded : null,
+        busy: busyOf(v.run, v.model, v.suite),
       }
     })
   })
@@ -433,15 +447,51 @@ const runs = [...runMap]
     run,
     at: rs.map((r) => r.at).sort()[0]!,
     machine: rs[0]!.machine.key,
+    class: describe(rs[0]!.machine).class,
     ollama: rs[0]!.ollama,
     promptfoo: rs[0]!.promptfoo,
     envs: [...new Set(rs.map((r) => r.env).filter((e): e is string => !!e))],
     models: [...new Set(rs.map((r) => r.model.label))].sort(),
     suites: [...new Set(rs.map((r) => r.suite))].sort(),
     records: rs.length,
+    // How the machine was doing around each eval of the run; null for runs made before conditions were recorded.
+    conditions: (() => {
+      const c = conditionsByRun.get(run)
+      return c ? { evals: c.evals.length, flagged: c.evals.filter((e) => e.flags.length > 0).map((e) => ({ model: e.model, suite: e.suite, flags: e.flags })), first: c.evals[0]?.start ?? null } : null
+    })(),
   }))
 
-const machines = [...new Map(records.map((r) => [r.machine.key, r.machine])).values()]
+/** Every frozen environment and model build, keyed by hash and digest. */
+const frozen = (dir: string) =>
+  existsSync(dir)
+    ? Object.fromEntries(
+        readdirSync(dir)
+          .filter((f) => f.endsWith('.json'))
+          .map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(join(dir, f), 'utf8')) as unknown]),
+      )
+    : {}
+const environments = frozen(ENV_DIR)
+const builds = frozen(MODEL_DIR)
+
+/**
+ * Machines, newest record per key, with the class, accelerator and memory budget filled in: from
+ * the record when it has them, else derived (scripts/machine.ts), with the budget read back from the
+ * run's frozen environment when that has one (Metal's measured working set).
+ */
+const machines = [
+  ...new Map(
+    records.map((r) => {
+      const envBudget = r.env ? (environments[r.env] as Environment | undefined)?.hardware.gpu_budget_mib : undefined
+      return [r.machine.key, describe({ ...r.machine, budget_gib: r.machine.budget_gib ?? (envBudget ? envBudget / 1024 : undefined) } as typeof r.machine)] as const
+    }),
+  ).values(),
+]
+const classOf = new Map(machines.map((m) => [m.key, m.class]))
+
+/** A model's fit on every class of machine: its need against each class's nominal budget (scripts/fit.ts). */
+const fitsOf = (need: ReturnType<typeof requirementOf>, ranClasses: string[] = []): Record<string, FitStatus> =>
+  Object.fromEntries(ALL_CLASSES.map((c) => [c.class, fitOf(need, c.budget_gib, c.spill_gib, ranClasses.includes(c.class)).status]))
+
 const models = [...new Map(records.map((r) => [r.model.label, r.model])).values()]
   .sort((a, b) => a.label.localeCompare(b.label))
   .map((m) => {
@@ -465,6 +515,10 @@ const models = [...new Map(records.map((r) => [r.model.label, r.model])).values(
       baseline: entry?.baseline ?? null,
       catalog: CATALOG[m.label] ?? null,
       retired: entry ? skipReason(entry) : 'no longer in scripts/models.ts',
+      ...(() => {
+        const need = requirementOf(m.label, view)
+        return { need, fits: fitsOf(need, [...new Set(view.filter((v) => v.model === m.label).map((v) => v.class))]) }
+      })(),
     }
   })
 
@@ -545,33 +599,37 @@ for (const path of new Set([...usedBy.keys(), ...corpus.map((m) => m.path), ...o
   copyFileSync(join(ROOT, path), to)
 }
 
-/** Every frozen environment and model build, keyed by hash and digest. */
-const frozen = (dir: string) =>
-  existsSync(dir)
-    ? Object.fromEntries(
-        readdirSync(dir)
-          .filter((f) => f.endsWith('.json'))
-          .map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(join(dir, f), 'utf8')) as unknown]),
-      )
-    : {}
-const environments = frozen(ENV_DIR)
-const builds = frozen(MODEL_DIR)
 
 /** Licences anyone may use commercially without asking: Apache, MIT, BSD, ISC, CC0 and the like. */
 const PERMISSIVE = /^(apache|mit|bsd|isc|cc0|unlicense|zlib)\b/i
 
-/** A model's measured memory in GB: Ollama's loaded size (8K context row, else the smallest), else the largest in-process reading. */
-function memoryOf(machine: string, label: string): { gb: number; basis: 'loaded' | 'rss' | 'peak' } | null {
+/**
+ * A model's measured memory in GB. For Ollama: `gb` is the loaded size at 8K context on a fresh load (the perf
+ * suite's row, else the smallest), and `peak` the largest size seen inside a quality suite, with that suite's
+ * context window and request count: with images Ollama's reported size ramps up request by request
+ * (docs/plans/machines.md), so the two differ by up to ~8 GiB. In-process models: the largest rss or peak reading.
+ */
+function memoryOf(
+  machine: string,
+  label: string,
+): { gb: number; basis: 'loaded' | 'rss' | 'peak'; ctx: number | null; peak: { gb: number; suite: string; ctx: number | null; requests: number } | null } | null {
   if (runtimeOf(label) === 'ollama') {
     const rows = perf.filter((p) => p.machine === machine && p.model === label && p.loaded_gb !== null)
     const pick = rows.find((p) => p.case === 'ctx-8k') ?? rows.sort((a, b) => a.loaded_gb! - b.loaded_gb!)[0]
-    return pick ? { gb: pick.loaded_gb!, basis: 'loaded' } : null
+    const inSuite = view
+      .filter((v) => v.machine === machine && v.model === label && !v.suite.startsWith('perf'))
+      .flatMap((v) => {
+        const n = suiteNeed(v)
+        return n ? [{ gb: (n.gib * 2 ** 30) / 1e9, suite: v.suite, ctx: n.ctx, requests: n.requests }] : []
+      })
+    const peak = inSuite.length > 0 ? inSuite.reduce((a, b) => (b.gb > a.gb ? b : a)) : null
+    return pick ? { gb: pick.loaded_gb!, basis: 'loaded', ctx: pick.ctx, peak } : null
   }
   const mine = inproc.filter((p) => p.machine === machine && p.model === label && p.mem_mb !== null)
   const peaks = mine.filter((p) => p.mem_kind === 'peak')
   const use = peaks.length > 0 ? peaks : mine
   // The providers report MiB.
-  return use.length > 0 ? { gb: (Math.max(...use.map((p) => p.mem_mb!)) * 2 ** 20) / 1e9, basis: peaks.length > 0 ? 'peak' : 'rss' } : null
+  return use.length > 0 ? { gb: (Math.max(...use.map((p) => p.mem_mb!)) * 2 ** 20) / 1e9, basis: peaks.length > 0 ? 'peak' : 'rss', ctx: null, peak: null } : null
 }
 
 /**
@@ -580,6 +638,43 @@ function memoryOf(machine: string, label: string): { gb: number; basis: 'loaded'
  * precision and recall, and a leak-versus-false-alarm curve as the risk cut
  * moves. Computed here from each case's reply; the site only draws it.
  */
+/**
+ * Calibration of one model's risk scores against the expected categories (docs/plans/sensitive.md):
+ *  - Brier score: mean squared gap between a risk and 0/1 (category expected or not), per category and over
+ *    all of them; 0 is perfect, 0.25 is what a constant 0.5 scores.
+ *  - the zero-leak threshold: the HIGHEST cut at which no private case is called public. Raising the cut calls
+ *    fewer things present, so every lower cut leaks nothing too; the highest is the one that costs the fewest
+ *    false alarms. Its false alarms are all over-called cases (the level above the expected one).
+ *  - the cost-optimal threshold: the cut with the lowest weighted cost (LEAK_WEIGHT per level step under-called,
+ *    1 per step over-called, as the suite scores), the highest such cut on a tie.
+ * Candidate cuts are every distinct risk the model gave (a case's categories change only there), plus 0.
+ * The cuts are picked on this suite's own cases, so they are optimistic: confirm them on other data.
+ */
+function calibrationOf(graded: readonly SensitiveGrading[]) {
+  const sq = (g: SensitiveGrading, c: Category) => ((g.risks[c] ?? 0) - (g.expected.includes(c) ? 1 : 0)) ** 2
+  const mean = (xs: number[]) => (xs.length === 0 ? null : xs.reduce((a, b) => a + b, 0) / xs.length)
+  const per = Object.fromEntries(CATEGORIES.map((c) => [c, mean(graded.map((g) => sq(g, c)))]))
+  const overall = mean(graded.flatMap((g) => CATEGORIES.map((c) => sq(g, c))))
+  const cuts = [...new Set([0, ...graded.flatMap((g) => CATEGORIES.map((c) => g.risks[c] ?? 0).filter((r) => r > 0))])].sort((a, b) => a - b)
+  const at = (t: number) => {
+    let leaks = 0
+    let falseAlarms = 0
+    let cost = 0
+    for (const g of graded) {
+      const got = compareSensitive(g.expected, JSON.stringify({ categories: g.risks }), t)!
+      const step = rank(got.predicted_level) - rank(g.expected_level)
+      cost += step < 0 ? LEAK_WEIGHT * -step : step
+      if (g.expected_level === 'private' && got.predicted_level === 'public') leaks++
+      if (step > 0) falseAlarms++
+    }
+    return { t, leaks, false_alarms: falseAlarms, cost }
+  }
+  const points = cuts.map(at)
+  const zeroLeak = [...points].reverse().find((p) => p.leaks === 0) ?? null
+  const costOptimal = points.reduce((best, p) => (p.cost <= best.cost ? p : best))
+  return { brier: { overall, per }, zero_leak: zeroLeak, cost_optimal: costOptimal }
+}
+
 const SCREEN_THRESHOLDS = Array.from({ length: 19 }, (_, i) => Math.round((i + 1) * 5) / 100)
 const screening = (() => {
   const mine = results.filter((r) => r.suite === 'sensitive')
@@ -608,6 +703,7 @@ const screening = (() => {
       }
       return point
     })
+    const calibration = calibrationOf(graded.map(({ g }) => g))
     const cell = cells.find((c) => c.machine === machine && c.model === label && c.suite === 'sensitive')
     const loaded = median(rs.flatMap((r) => (r.metrics?.['loaded_bytes'] !== undefined ? [r.metrics['loaded_bytes']] : [])))
     // The composite records which stages ran for each image.
@@ -653,6 +749,7 @@ const screening = (() => {
       loaded_gb: loaded === null ? null : loaded / 1e9,
       per_category: per,
       curve,
+      calibration,
       stages,
     }
   })
@@ -717,7 +814,12 @@ const searchCells = view
           r10: pick('r10'),
           mrr: pick('mrr'),
           ndcg10_256: mean(n256),
-          /** Mean nDCG@10 per corpus, for the text kind's two corpora. */
+          /** Mean nDCG@10 over the original cases (2026-11-05) and over the hard set added 2026-11-08 (scripts/search-sets.ts); null when there are none. */
+          original: mean(rs.filter((r) => !isHardSearchCase(r.case)).map((r) => r.score)),
+          hard: mean(rs.filter((r) => isHardSearchCase(r.case)).map((r) => r.score)),
+          hard_passed: rs.filter((r) => isHardSearchCase(r.case) && r.pass).length,
+          hard_total: rs.filter((r) => isHardSearchCase(r.case)).length,
+          /** Mean nDCG@10 per corpus. */
           by_corpus: Object.fromEntries(
             [...new Set(rs.map((r) => (ranCase(r)?.expected as { corpus?: string } | null)?.corpus ?? ''))].map((corpus) => [
               corpus,
@@ -787,6 +889,10 @@ const finder = (() => {
       baseline: m?.baseline ?? null,
       retired: m?.retired ?? null,
       memory: memoryOf(machine, label),
+      ...(() => {
+        const need = requirementOf(label, view, classOf.get(machine))
+        return { need, fits: fitsOf(need, [classOf.get(machine)!]) }
+      })(),
       cells: Object.fromEntries(
         finderCells
           .filter((c) => c.machine === machine && c.model === label)
@@ -815,6 +921,6 @@ const finder = (() => {
 mkdirSync(DATA_OUT, { recursive: true })
 writeFileSync(
   join(DATA_OUT, 'evals.json'),
-  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus }),
+  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, classes: ALL_CLASSES, tight: TIGHT, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus }),
 )
 console.log(`${results.length} results, ${perf.length} speed rows, ${runs.length} runs → ${relative(ROOT, join(DATA_OUT, 'evals.json'))}`)

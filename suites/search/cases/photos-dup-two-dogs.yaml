@@ -1,0 +1,8 @@
+description: "search photos: two dogs together (6 relevant of 132)"
+metadata: { id: photos-dup-two-dogs, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "two dogs together"
+  relevant: ["copy-flip-oi-objects-0fd512f1bffb8cf3","copy-flip-oi-objects-5b7ab3baf4c0492f","copy-jpeg40-oi-objects-0fd512f1bffb8cf3","copy-resize-oi-objects-5b7ab3baf4c0492f","oi-objects-0fd512f1bffb8cf3","oi-objects-5b7ab3baf4c0492f"]
+  how: "judged by eye; copies of a relevant photo count"

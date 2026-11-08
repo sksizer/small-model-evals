@@ -1,0 +1,8 @@
+description: "search text: raw broccoli (2 relevant of 7793)"
+metadata: { id: text-food-raw-broccoli, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "raw broccoli"
+  relevant: ["f169330","f170379"]
+  how: "rule on the name: Broccoli, raw (or flower clusters, raw)"

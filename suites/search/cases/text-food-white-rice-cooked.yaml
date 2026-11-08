@@ -1,0 +1,8 @@
+description: "search text: cooked long-grain white rice (2 relevant of 7793)"
+metadata: { id: text-food-white-rice-cooked, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "cooked long-grain white rice"
+  relevant: ["f168878","f168935"]
+  how: "rule on the name: Rice, white, long-grain, regular, cooked"

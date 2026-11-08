@@ -1,0 +1,8 @@
+description: "search photos: a vintage red convertible parked on grass (6 relevant of 132)"
+metadata: { id: photos-dup-red-car-grass, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a vintage red convertible parked on grass"
+  relevant: ["copy-bright-oi-scene-spitfire-b","copy-flip-oi-scene-spitfire-a","copy-jpeg40-oi-scene-spitfire-b","copy-resize-oi-scene-spitfire-a","oi-scene-spitfire-a","oi-scene-spitfire-b"]
+  how: "judged by eye; copies of a relevant photo count"

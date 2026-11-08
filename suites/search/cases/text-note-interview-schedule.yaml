@@ -1,0 +1,8 @@
+description: "search text: who is interviewing on Monday (1 relevant of 88)"
+metadata: { id: text-note-interview-schedule, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "who is interviewing on Monday"
+  relevant: ["n85"]
+  how: "judged by reading"

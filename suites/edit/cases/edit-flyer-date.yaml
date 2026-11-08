@@ -1,0 +1,9 @@
+description: "text: change the date on a flyer (synthetic page)"
+metadata: { id: edit-flyer-date }
+vars:
+  image: file://../../corpus/images/event-flyer.png
+  instruction: "Change the date line from \"Saturday, May 9\" to \"Sunday, May 10\". Keep everything else the same."
+  expected:
+    changed: ["Does the date line read \"Sunday, May 10\"?"]
+    kept: ["Is the large title \"Spring Seed Swap\"?", "Is there a line that says \"Bring seeds, take seeds\"?"]
+    region: [0.2, 0.3, 0.8, 0.4]

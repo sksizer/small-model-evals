@@ -1,0 +1,8 @@
+description: "search text: fried egg (1 relevant of 7793)"
+metadata: { id: text-food-fried-egg, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "fried egg"
+  relevant: ["f173423"]
+  how: "rule on the name: Egg, whole, cooked, fried"
