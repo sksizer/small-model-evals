@@ -1,0 +1,126 @@
+{
+  "run": "2026-11-14T04-44-04",
+  "evals": [
+    {
+      "model": "botpsy-0.8b-think",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 8.23,
+        "load_per_core": 0.82,
+        "mem_available_gib": 2.5,
+        "mem_free_pct": 31,
+        "swap_used_gib": 13.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 360
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 15.06,
+        "load_per_core": 1.51,
+        "mem_available_gib": 2,
+        "mem_free_pct": 26,
+        "swap_used_gib": 18.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 162
+          },
+          {
+            "name": "fseventsd",
+            "cpu_pct": 83
+          },
+          {
+            "name": "build-script-build",
+            "cpu_pct": 58
+          }
+        ]
+      },
+      "flags": [
+        "load 8.23 on the cores (0.82/core): something is working; wait for it or close it",
+        "little free memory (2.5 GiB available, 31% free): close browsers, editors and VMs",
+        "13.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 360% of a core: close it if you can",
+        "little free memory (2 GiB available, 26% free): close browsers, editors and VMs",
+        "18.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 162% of a core: close it if you can",
+        "fseventsd is using 83% of a core: close it if you can",
+        "build-script-build is using 58% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b-think",
+      "suite": "orchestrate",
+      "kind": null,
+      "start": {
+        "load_1m": 15.06,
+        "load_per_core": 1.51,
+        "mem_available_gib": 2.1,
+        "mem_free_pct": 26,
+        "swap_used_gib": 18,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 170
+          },
+          {
+            "name": "fseventsd",
+            "cpu_pct": 101
+          },
+          {
+            "name": "build-script-build",
+            "cpu_pct": 70
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 16.56,
+        "load_per_core": 1.66,
+        "mem_available_gib": 2.1,
+        "mem_free_pct": 27,
+        "swap_used_gib": 18.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 248
+          },
+          {
+            "name": "claude.exe",
+            "cpu_pct": 100
+          },
+          {
+            "name": "rm",
+            "cpu_pct": 62
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.1 GiB available, 26% free): close browsers, editors and VMs",
+        "18 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 170% of a core: close it if you can",
+        "fseventsd is using 101% of a core: close it if you can",
+        "build-script-build is using 70% of a core: close it if you can",
+        "little free memory (2.1 GiB available, 27% free): close browsers, editors and VMs",
+        "18.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 248% of a core: close it if you can",
+        "claude.exe is using 100% of a core: close it if you can",
+        "rm is using 62% of a core: close it if you can"
+      ]
+    }
+  ]
+}

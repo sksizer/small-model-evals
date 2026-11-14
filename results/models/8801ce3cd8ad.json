@@ -1,0 +1,18 @@
+{
+  "tag": "hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0",
+  "digest": "8801ce3cd8ad",
+  "engine": "default",
+  "format": "gguf",
+  "family": "qwen35",
+  "quantization": "Q8_0",
+  "parameter_size": "752M",
+  "parameter_count": 752393024,
+  "context_length": 262144,
+  "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+  ],
+  "default_parameters": {},
+  "template_hash": "6d877b321d68"
+}

@@ -15,6 +15,8 @@ providers:
   - { id: file://../../providers/ollama-decide.ts, label: minicpm5-2b, config: { model: 'openbmb/minicpm5-2b:latest', think: false } }
   - { id: file://../../providers/ollama-decide.ts, label: granite4.2:3b, config: { model: 'granite4.2:3b', think: false } }
   - { id: file://../../providers/ollama-decide.ts, label: lfm3:1.7b, config: { model: 'lfm3:1.7b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: 'botpsy-0.8b', config: { model: 'hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: 'qwen3.5:0.8b', config: { model: 'qwen3.5:0.8b', think: false } }
   - { id: file://../../providers/ollama-decide.ts, label: granite4, config: { model: 'granite4:latest' } }
   # Decision models: probabilities over the options, no text generated.
   - { id: file://../../providers/ollama-decide.ts, label: d1-omni:600m, config: { model: 'd1-omni:600m', decision: true } }
