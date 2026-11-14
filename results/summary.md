@@ -12,6 +12,8 @@ Each cell: cases passed / total · mean score (partial credit) · median latency
 
 | Model | classify | edit | extract | food-lookup | nudity-flag | ocr | orchestrate | regions-faces | regions-find | regions-objects | regions-text | route | search | sensitive | similarity | tag-image | workout |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| botpsy-0.8b | 4/20 · 0.20 · 0.2 s · 2026-11-14 | n/a | 6/15 · 0.73 · 0.9 s · 2026-11-14 | 1/12 · 0.29 · 16.9 s · 2026-11-14 | n/a | n/a | 15/15 · 1.00 · 0.8 s · 2026-11-14 | n/a | n/a | n/a | n/a | 11/18 · 0.72 · 0.5 s · 2026-11-14 | n/a | n/a | n/a | n/a | 2/16 · 0.49 · 3.3 s · 2026-11-14 |
+| botpsy-0.8b-think | n/a | n/a | n/a | 0/12 · 0.04 · 39.4 s · 2026-11-14 | n/a | n/a | 14/15 · 0.99 · 2.0 s · 2026-11-14 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 | clip-vit-b16 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 122/140 · 0.91 · 0.0 s · 2026-11-08 | n/a | 29/29 · 0.98 · 0.0 s · 2026-11-03 | n/a | n/a |
 | clip-vit-b16-zs | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 45/108 · 0.43 · 0.0 s · 2026-11-07 | n/a | n/a | n/a |
 | clip-vit-b32 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 28/29 · 0.97 · 0.0 s · 2026-11-03 | n/a | n/a |
@@ -47,6 +49,7 @@ Each cell: cases passed / total · mean score (partial credit) · median latency
 | phash | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 11/29 · 0.68 · 0.0 s · 2026-11-03 | n/a | n/a |
 | ppocr-v5-mobile-det | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 6/8 · 0.75 · 0.0 s · 2026-11-07 | n/a | n/a | n/a | n/a | n/a | n/a |
 | qwen3-embedding:0.6b | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 63/91 · 0.79 · 0.0 s · 2026-11-08 | n/a | n/a | n/a | n/a |
+| qwen3.5:0.8b | 13/20 · 0.65 · 0.2 s · 2026-11-14 | n/a | 1/15 · 0.63 · 0.8 s · 2026-11-14 | 0/12 · 0.36 · 15.8 s · 2026-11-14 | n/a | n/a | 13/15 · 0.97 · 0.6 s · 2026-11-14 | n/a | n/a | n/a | n/a | 7/18 · 0.64 · 0.3 s · 2026-11-14 | n/a | n/a | n/a | n/a | 0/16 · 0.19 · 7.6 s · 2026-11-14 |
 | qwen3.5:4b | 17/20 · 0.85 · 0.6 s · 2026-11-01 | n/a | 12/15 · 0.95 · 2.3 s · 2026-11-01 | 8/12 · 0.80 · 25.9 s · 2026-11-01 | 73/77 · 0.95 · 2.7 s · 2026-11-01 | 10/10 · 1.00 · 6.1 s · 2026-11-01 | 12/15 · 0.91 · 1.6 s · 2026-11-01 | 13/15 · 0.90 · 3.9 s · 2026-11-01 | 17/18 · 0.98 · 3.0 s · 2026-11-01 | 12/14 · 0.81 · 4.8 s · 2026-11-01 | 0/8 · 0.11 · 21.7 s · 2026-11-01 | 15/18 · 0.89 · 0.7 s · 2026-11-01 | n/a | 74/108 · 0.75 · 8.8 s · 2026-11-04 | n/a | 41/42 · 0.95 · 5.3 s · 2026-11-01 | 3/16 · 0.67 · 7.4 s · 2026-11-01 |
 | qwen3.5:9b | 20/20 · 1.00 · 0.5 s · 2026-11-01 | n/a | 11/15 · 0.93 · 2.4 s · 2026-11-01 | 8/12 · 0.85 · 30.7 s · 2026-11-01 | 75/77 · 0.97 · 5.0 s · 2026-11-07 | 10/10 · 1.00 · 6.1 s · 2026-11-01 | 15/15 · 1.00 · 1.5 s · 2026-11-01 | 12/15 · 0.80 · 5.4 s · 2026-11-01 | 18/18 · 1.00 · 4.7 s · 2026-11-01 | 11/14 · 0.88 · 5.5 s · 2026-11-01 | 0/8 · 0.19 · 17.9 s · 2026-11-07 | 16/18 · 0.94 · 0.9 s · 2026-11-01 | n/a | 89/108 · 0.88 · 10.5 s · 2026-11-04 | n/a | 41/42 · 0.89 · 6.9 s · 2026-11-01 | 4/16 · 0.74 · 6.6 s · 2026-11-01 |
 | qwen3:4b | 15/20 · 0.75 · 0.4 s · 2026-11-01 | n/a | 8/15 · 0.85 · 1.6 s · 2026-11-01 | 1/12 · 0.41 · 42.1 s · 2026-11-01 | n/a | n/a | 15/15 · 1.00 · 7.8 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 6/16 · 0.76 · 6.4 s · 2026-11-01 |
@@ -64,6 +67,9 @@ the median of the repeats. Loaded is /api/ps `size`; GPU is the share of it in G
 
 | Model | Case | Load s | Prompt tok/s | Output tok/s | Embeds/s | Loaded GB | GPU |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| botpsy-0.8b | ctx-32k | 1.1 | 1932 | 58.9 | — | 1.42 | 100% |
+| botpsy-0.8b | ctx-4k | 1.3 | 1924 | 61.4 | — | 0.92 | 100% |
+| botpsy-0.8b | ctx-8k | 1.1 | 1939 | 64.9 | — | 1.02 | 100% |
 | gemma3:4b | ctx-32k | 1.8 | 431 | 34.9 | — | 3.00 | 100% |
 | gemma3:4b | ctx-4k | 1.1 | 414 | 34.2 | — | 2.33 | 100% |
 | gemma3:4b | ctx-8k | 1.1 | 430 | 35.0 | — | 2.34 | 100% |
@@ -89,9 +95,16 @@ the median of the repeats. Loaded is /api/ps `size`; GPU is the share of it in G
 | qwen3:4b | ctx-32k | 3.2 | 369 | 31.0 | — | 7.56 | 100% |
 | qwen3:4b | ctx-4k | 1.6 | 362 | 32.9 | — | 3.18 | 100% |
 | qwen3:4b | ctx-8k | 1.1 | 306 | 29.5 | — | 3.88 | 100% |
+| qwen3.5:0.8b | ctx-32k | 0.0 | cached | 53.9 | — | 1.34 | 100% |
+| qwen3.5:0.8b | ctx-4k | 0.0 | cached | 73.4 | — | 1.34 | 100% |
+| qwen3.5:0.8b | ctx-8k | 1.3 | 2025 | 71.8 | — | 1.32 | 100% |
 | qwen3.5:4b | ctx-32k | 0.0 | cached | 27.0 | — | 4.27 | 100% |
 | qwen3.5:4b | ctx-4k | 0.0 | cached | 26.4 | — | 4.27 | 100% |
 | qwen3.5:4b | ctx-8k | 1.9 | 462 | 26.8 | — | 4.21 | 100% |
 | qwen3.5:9b | ctx-32k | 0.0 | cached | 23.2 | — | 7.86 | 100% |
 | qwen3.5:9b | ctx-4k | 0.0 | cached | 23.0 | — | 7.90 | 100% |
 | qwen3.5:9b | ctx-8k | 3.8 | 241 | 22.9 | — | 7.86 | 100% |
+
+### Errors
+
+- botpsy-0.8b · food-lookup · eggs-toast-coffee: Error: /api/chat: 500 {"error":"------------\nWhile executing CallExpression at line 79, column 24 in source:\n...lti_step_tool %}↵    {{- raise_exception('No user query found in messages.') }}↵...\n                                           ^\nError: Jinja Exception: No user query found in messages."}
