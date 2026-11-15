@@ -22,20 +22,60 @@ date arithmetic ("next Tuesday"). There, the best scores come from models of 4B 
 | Model | Size | Licence | Runs as | Note |
 | --- | --- | --- | --- | --- |
 | LFM2-350M-Extract | 0.35B | LFM Open License (restricted: free below a revenue cap) | GGUF in Ollama | Smallest candidate; Sep 2025, so it needs `baseline` to pass the 12-month rule |
-| LFM2-1.2B-Extract | 1.2B | LFM Open License (restricted) | GGUF in Ollama | Schema given in the system prompt; JSON, XML or YAML out; Aug 2025 |
+| LFM2-1.2B-Extract | 1.2B | LFM Open License (restricted) | GGUF in Ollama | Schema given in the system prompt; JSON, XML or YAML out; Aug 2025. **Deprecated by Liquid**, which now recommends LFM2.5-1.2B-Instruct for extraction (below) |
+| LFM2.5-1.2B-Instruct | 1.2B | LFM Open License (restricted) | GGUF in Ollama | Liquid's recommended successor for extraction; general instruct model |
 | NuExtract 2.0 2B | 2.2B | MIT | GGUF in Ollama | Uses a JSON *template* (types as leaf values), not a JSON Schema; text and images; May 2025 |
 | NuExtract3 | 4.5B | Apache-2.0 | GGUF in Ollama (MLX builds also exist) | Newest (Apr 2026), on Qwen3.5-4B, adds OCR; the likely ceiling |
 | Schemer (Desert Ant Labs) | Not stated | Desert Ant Labs source-available 1.0 (restricted) | ONNX | The schema drives decoding; its own benchmark puts it ahead of LFM2-Extract. Size and runtime to confirm (Q4) |
 
-**General models not yet tested**, which also join the other text suites:
+**General models not yet tested**, which also join every other suite they can take (owner, 2026-11-14: multimodal models run every suite, text and vision):
 
 | Model | Size | Licence | Runs as |
 | --- | --- | --- | --- |
-| Gemma 4 E2B (`gemma4:e2b`) | About 5B with its encoders, roughly 2B effective | Apache-2.0 | Ollama; vision too, so it also joins the vision suites |
+| Gemma 4 E2B (`gemma4:e2b`) | About 5B with its encoders, roughly 2B effective | Apache-2.0 | Ollama; multimodal, so it runs every suite, text and vision |
 | LFM2.5-2.6B | 2.7B | LFM Open License (restricted) | GGUF in Ollama; the generation before lfm3, July 2026 |
 
 **Already measured, as the yardsticks:** qwen3.5:4b, gemma4:e4b, granite4.2:3b, minicpm5-2b, lfm3:1.7b,
 botpsy-0.8b and qwen3.5:0.8b.
+
+## Evidence on the older extractors
+
+Searched 2026-11-14 for results not published by the models' makers.
+
+- **NuExtract 2.0 2B has strong independent evidence.** VAREX ([arXiv 2603.15118](https://arxiv.org/html/2603.15118v1)) is a
+  document-extraction benchmark of 16 models. It reports image-input exact match:
+
+  | Model | Exact match |
+  | --- | --- |
+  | Gemini 2.5 Pro (reference) | 98.0% |
+  | Qwen3-VL 8B | 96.6% |
+  | **NuExtract 2.0 2B** | **90.8%**, best under 4B |
+  | InternVL3.5 2B | 85.6% |
+  | Qwen2.5-VL 3B | 82.5% |
+  | Gemma 3n E2B | 71.0% |
+  | Gemma 3 4B | 65.3% |
+  | Qwen3-VL 2B | 34.2% |
+  | NuExtract's base, Qwen2-VL 2B | 9.7% |
+
+  The paper's finding is that below 4B parameters the bottleneck is following the schema, not reading the
+  document. Small models "echo" the schema instead of filling it, especially when it uses `$defs`: compliance
+  failures rise from 2–3% on flat schemas to 68–69%. NuExtract 2.0 2B showed no schema echo.
+- **LFM2-Extract (350M and 1.2B) has no independent results.** The only numbers are Liquid's own (5,000
+  documents, syntax and faithfulness scores, a claim of beating Gemma 3 27B). Liquid's documentation now lists
+  LFM2-1.2B-Extract as deprecated.
+- **General findings:**
+  - Constrained decoding removes syntax failures in 0.6B–4B models, but a gap in getting the *values* right
+    remains and grows as models shrink ([arXiv 2609.23742](https://arxiv.org/html/2609.23742v1)).
+  - The Structured Output Benchmark ([arXiv 2604.25359](https://arxiv.org/html/2604.25359v1)) finds the same:
+    valid JSON is nearly solved, value accuracy separates models (Schematron-8B: 98.7% valid JSON, 73.1% value
+    accuracy).
+
+What this changes in the plan:
+- NuExtract 2.0 2B stays in as a baseline: independently the best small extractor, despite its age.
+- LFM2.5-1.2B-Instruct joins as Liquid's recommended successor. LFM2-Extract stays only as the smallest
+  extractor (350M) and the deprecated 1.2B as a yardstick.
+- Some cases use schemas with `$defs`, and **schema echo** (returning the schema's shape or field descriptions
+  instead of values) is scored as its own failure, so the site can show it.
 
 ## The restricted licences
 
@@ -155,7 +195,9 @@ passage plus its own schema:
   shopping lists from speech).
 - **Q4. Schemer.** Include it only if it runs in ONNX or Ollama without extra tooling, or is it worth a Python
   runtime like mflux?
-- **Q5. Older models.** LFM2-Extract and NuExtract 2.0 are over 12 months old. Should they be kept as baselines
-  (dedicated extractors age slowly, as the NSFW classifiers do)?
-- **Q6. Gemma 4 E2B and LFM2.5-2.6B.** Run them on every text suite (and the vision suites for E2B), or on
-  extraction only?
+- **Q5. Older models.** LFM2-Extract and NuExtract 2.0 are over 12 months old. The evidence ("Evidence on the
+  older extractors") supports keeping NuExtract 2.0 2B as a baseline. LFM2-1.2B-Extract is deprecated and has no
+  independent results, so it would be a yardstick only. Keep both, or drop the deprecated one?
+- **Q6. Answered (2026-11-14):** multimodal models run every suite, text and vision. Gemma 4 E2B, NuExtract 2.0 2B
+  and NuExtract3 take images, so they join the vision suites too (NuExtract may do poorly outside extraction;
+  that is worth knowing). LFM2.5-2.6B and LFM2.5-1.2B-Instruct run every text suite.
