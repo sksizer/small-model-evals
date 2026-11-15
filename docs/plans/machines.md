@@ -138,7 +138,18 @@ after: load average, available memory and memory pressure, swap, AC or battery, 
 limit, and other programs using over 40% of a core. It is a file per run, not a field per record, because
 a run has thousands of records and a few dozen evals, and the ledger is append-only. An eval is flagged
 when a threshold (`LIMITS` in `conditions.ts`) is crossed; the load average counts only before the first
-eval, since later it is mostly the eval's own work. The Runs and Speed pages show the flag.
+eval, since later it is mostly the eval's own work. The Runs, Speed and finder pages show the flag, and the Speed and finder pages can leave flagged timings out.
+
+## Queue
+
+Runs can be prepared ahead and filled in when the machine is free: `queue/<id>.yaml` holds a job (models, suites,
+priority, `needs`, `repeat`), `bun scripts/queue.ts sync` queues whatever is stale or missing for this machine
+(skipping what will not fit, `fit.ts`), and `bun scripts/queue.ts work` runs the jobs whose `needs` the machine meets,
+through the same loop as `run.ts` (`scripts/run-core.ts`). A job's `needs.class` limits it to one class of machine, so a
+queue committed to the repo can hold work for several machines; each worker takes only its own. The `needs` use the
+same samples as the run conditions above: between evals the load average is not held against a job (it is the eval's own
+work) but other heavy programs and memory, swap and power are; `quiet_minutes` makes a fresh start wait for a quiet window.
+Full format and commands: README, "Queued runs".
 
 ## Site
 
@@ -159,6 +170,6 @@ follow.
 
 ## Not done
 
-- No remote or scheduled orchestration of many machines; each runs by hand.
+- No remote orchestration of many machines: each runs its own worker (`bun scripts/queue.ts work`, see "Queue"); jobs are shared through the repo.
 - AMD GPUs are classed as CPU until someone adds ROCm detection.
 - Multi-GPU boxes are classed by their largest card.

@@ -86,6 +86,7 @@ const presets = [
     <label><input type="checkbox" data-f="perm" />Permissive licence only</label>
     <label><input type="checkbox" data-f="base" checked />Baselines</label>
     <label><input type="checkbox" data-f="ret" />Retired</label>
+    <label title="Leave out times taken while the machine was busy: they drop from the Slowdown column and the cells' timing lines"><input type="checkbox" data-f="clean" />Exclude timings taken under load</label>
     {
       machines.length > 1 && (
         <label>Machine
@@ -129,7 +130,7 @@ const presets = [
     <em>peak</em>: the image editor's own peak. These are not like for like; a blank means nothing was measured, and such
     models drop out under a memory limit. <strong>Slowdown</strong> is a model's time over the fastest model's on the same task and machine (×1.0 is the
     fastest), worst over the ticked tasks. Times are per image where a provider reports it and per case otherwise, so
-    compare across kinds with care. A baseline is kept as a yardstick; a retired model is no longer run.
+    compare across kinds with care. Under each cell's time, results from the Ollama chat providers add <em>ttft</em> (time to first token), decode speed, output tokens and the first call's model load, as medians over the suite's calls. A time is marked <em>under load</em> when the run's conditions (load, memory, swap, power, other heavy programs) flagged the eval; <em>Exclude timings taken under load</em> drops those from the cells and the Slowdown column, which is then judged against the fastest clean model. A baseline is kept as a yardstick; a retired model is no longer run.
   </p>
 </Base>
 

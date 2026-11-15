@@ -20,6 +20,7 @@
 // - a machine profile (machines/<name>.yaml) names a category, cost, suite, model or class that
 //   does not exist, or two profiles claim the same machine key or class;
 // - a run's results/conditions/<run>.json is not named by its run;
+// - a queued job (queue/<id>.yaml) is malformed: a model, suite, class or profile that does not exist, a bad status;
 // - a corpus image's licence is not one docs/standards/corpus.md allows (CC0,
 //   public domain, CC BY; Open Images exactly CC BY 2.0; a derived copy must
 //   match its parent). See scripts/licences.ts.
@@ -34,6 +35,7 @@ import { CATALOG } from './catalog.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import { licenceProblem } from './licences.ts'
 import { MODELS } from './models.ts'
+import { QUEUE_DIR, jobProblems, type Job } from './queue-lib.ts'
 import { ALL_CLASSES } from './machine.ts'
 import { CATEGORIES, COSTS, SUITE_META, loadProfiles } from './plan.ts'
 import { LEDGER_DIR, RESULTS_DIR, ROOT, SCOPE, SUITES_DIR, listSnapshots, loadCases, readLedger, readSnapshot, snapshotIntegrity } from './ledger.ts'
@@ -203,6 +205,24 @@ if (SCOPE === 'public') {
       claim(`class ${c}`, p.name)
     }
     for (const k of p.match?.keys ?? []) claim(`key ${k}`, p.name)
+  }
+}
+
+// Queue: every job under queue/ is sound (scripts/queue-lib.ts) and its class and profile exist.
+if (existsSync(QUEUE_DIR)) {
+  const classes = new Set(ALL_CLASSES.map((c) => c.class))
+  const profiles = new Set(loadProfiles().map((p) => p.name))
+  for (const f of readdirSync(QUEUE_DIR).filter((x) => x.endsWith('.yaml'))) {
+    let job: Partial<Job>
+    try {
+      job = Bun.YAML.parse(readFileSync(join(QUEUE_DIR, f), 'utf8')) as Partial<Job>
+    } catch (err) {
+      problems.push(`queue/${f}: does not parse: ${err}`)
+      continue
+    }
+    problems.push(...jobProblems(job, f))
+    if (job.needs?.class !== undefined && !classes.has(job.needs.class)) problems.push(`queue/${f}: unknown class ${job.needs.class} (see scripts/machine.ts)`)
+    if (job.needs?.profile !== undefined && !profiles.has(job.needs.profile)) problems.push(`queue/${f}: unknown profile ${job.needs.profile}`)
   }
 }
 

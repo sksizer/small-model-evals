@@ -6,7 +6,9 @@
 //
 // Output is JSON: `{"answer": <final reply>, "searches": [queries in order]}`,
 // so a result shows how the model searched as well as what it chose.
-// Metadata (recorded as ledger metrics): searches, turns.
+// Metadata (recorded as ledger metrics): searches, turns, and the timing of every turn
+// summed (providers/ollama-stream.ts: ttft_ms is the first turn's, turn_ms the turns' wall
+// clocks added, tokens and durations added, rates recomputed from the sums).
 //
 // Config: `model` (Ollama tag), `think` (false for models that reason by
 // default), `num_ctx`, `num_predict` (the reply cap, default 4096: thinking
@@ -16,8 +18,8 @@
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { DEFAULT_DB, searchFoods } from './food-search.ts'
+import { BASE, streamChat, sumTimings, type Timings } from './ollama-stream.ts'
 
-const BASE = process.env['OLLAMA_BASE_URL'] ?? 'http://localhost:11434'
 const MAX_TURNS = 8
 
 interface Config {
@@ -86,20 +88,16 @@ export default class OllamaFoodAgent {
   }
 
   private async chat(messages: Message[], extra: Record<string, unknown>) {
-    const res = await fetch(`${BASE}/api/chat`, {
-      method: 'POST',
-      body: JSON.stringify({
-        model: this.config.model,
-        messages,
-        stream: false,
-        ...(this.config.think === undefined ? {} : { think: this.config.think }),
-        // Caps a reply that repeats itself, so a case cannot stall the run.
-        options: { temperature: 0, num_ctx: this.config.num_ctx ?? 8192, num_predict: this.config.num_predict ?? 4096 },
-        ...extra,
-      }),
+    const r = await streamChat(BASE, {
+      model: this.config.model,
+      messages,
+      ...(this.config.think === undefined ? {} : { think: this.config.think }),
+      // Caps a reply that repeats itself, so a case cannot stall the run.
+      options: { temperature: 0, num_ctx: this.config.num_ctx ?? 8192, num_predict: this.config.num_predict ?? 4096 },
+      ...extra,
     })
-    if (!res.ok) throw new Error(`/api/chat: ${res.status} ${await res.text()}`)
-    return (await res.json()) as { message: Message; prompt_eval_count?: number; eval_count?: number }
+    const message: Message = { role: 'assistant', content: r.content, ...(r.toolCalls.length > 0 ? { tool_calls: r.toolCalls } : {}) }
+    return { message, prompt_eval_count: r.final.prompt_eval_count, eval_count: r.final.eval_count, timings: r.timings }
   }
 
   async callApi(prompt: string) {
@@ -112,7 +110,9 @@ export default class OllamaFoodAgent {
       const messages = JSON.parse(prompt) as Message[]
       const searches: string[] = []
       let tokens = { prompt: 0, completion: 0 }
-      const count = (r: { prompt_eval_count?: number; eval_count?: number }) => {
+      const turnTimings: Timings[] = []
+      const count = (r: { prompt_eval_count?: number | undefined; eval_count?: number | undefined; timings: Timings }) => {
+        turnTimings.push(r.timings)
         tokens = { prompt: tokens.prompt + (r.prompt_eval_count ?? 0), completion: tokens.completion + (r.eval_count ?? 0) }
       }
       let turns = 0
@@ -142,7 +142,7 @@ export default class OllamaFoodAgent {
       return {
         output: JSON.stringify({ answer, searches }),
         tokenUsage: { prompt: tokens.prompt, completion: tokens.completion, total: tokens.prompt + tokens.completion },
-        metadata: { searches: searches.length, turns: turns + 1 },
+        metadata: { ...sumTimings(turnTimings), searches: searches.length, turns: turns + 1 },
       }
     } catch (err) {
       return { error: String(err) }

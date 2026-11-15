@@ -2,13 +2,14 @@
 // the page embeds, and keeps the whole view in the URL query so it can be shared.
 //
 // Query keys: t (task ids, comma separated), q, params, mem, min, speed, kind
-// (comma separated), perm=1, base=0, ret=1, machine, fits, sort, dir. A key that is
+// (comma separated), perm=1, base=0, ret=1, clean=1 (leave timings taken under load out of the speed figures),
+// machine, fits, sort, dir. A key that is
 // absent means that filter is off (base is on unless base=0); `machine` falls back to the
 // machine picked on the last visit, and `fits` to the class of the chosen machine (`fits=any`
 // turns the badge off): every model shows its fit badge for that class. Nothing is hidden by
 // default; `nofit=1` hides the models that will not fit it.
 import { fmt, fmtDisk, fmtParams, fmtTime, modelSlug, tone } from '../lib/format'
-import { FIT_WORDS, type FinderRow, type FinderTask, type FitStatus } from '../lib/data'
+import { FIT_WORDS, type FinderCell, type FinderRow, type FinderTask, type FitStatus } from '../lib/data'
 import { remember, remembered } from './machine-pick'
 
 const payload = JSON.parse(document.getElementById('finder-data')!.textContent!) as { base: string; tasks: FinderTask[]; rows: FinderRow[]; machines: { key: string; class: string }[] }
@@ -36,6 +37,8 @@ interface State {
   perm: boolean
   base: boolean
   ret: boolean
+  /** Leave out timings taken while the machine was busy: the Slowdown column and the timing lines. */
+  clean: boolean
   machine: string
   /** The class whose fit each model's badge shows; '' for none. */
   fits: string
@@ -64,6 +67,7 @@ function read(): State {
     perm: p.get('perm') === '1',
     base: p.get('base') !== '0',
     ret: p.get('ret') === '1',
+    clean: p.get('clean') === '1',
     machine,
     nofit: p.get('nofit') === '1',
     fits: fits === null ? defaultFits(machine) : fits === 'any' ? '' : fits,
@@ -84,6 +88,7 @@ function show(s: State): void {
   toggle('perm').checked = s.perm
   toggle('base').checked = s.base
   toggle('ret').checked = s.ret
+  toggle('clean').checked = s.clean
 }
 
 /** Read the controls, keeping the sort from the previous state. */
@@ -101,6 +106,7 @@ function collect(prev: State): State {
     perm: toggle('perm').checked,
     base: toggle('base').checked,
     ret: toggle('ret').checked,
+    clean: toggle('clean').checked,
     machine: v('machine') || prev.machine,
     nofit: toggle('nofit').checked,
     // Changing machine moves the fit class with it, unless the viewer chose another class.
@@ -120,16 +126,36 @@ function write(s: State): void {
   if (s.perm) p.set('perm', '1')
   if (!s.base) p.set('base', '0')
   if (s.ret) p.set('ret', '1')
+  if (s.clean) p.set('clean', '1')
   if (s.sort !== 'avg' || s.dir !== 'desc') { p.set('sort', s.sort); p.set('dir', s.dir) }
   const q = p.toString()
   history.replaceState(null, '', q ? `?${q}` : location.pathname)
 }
 
+/**
+ * A model's time over the fastest model's on the same task and machine. With `clean`, timings taken under load
+ * count for nothing: they have no figure, and the fastest is found among the clean ones only.
+ */
+const cleanFastest = new Map<string, number>()
+for (const r of rows) {
+  for (const [t, c] of Object.entries(r.cells)) {
+    if (c.busy || c.time_ms === null || !(c.time_ms > 0)) continue
+    const k = `${r.machine}\u0000${t}`
+    cleanFastest.set(k, Math.min(cleanFastest.get(k) ?? Infinity, c.time_ms))
+  }
+}
+function relOf(r: FinderRow, task: string, clean: boolean): number | null {
+  const c = r.cells[task]!
+  if (!clean) return c.rel
+  const best = cleanFastest.get(`${r.machine}\u0000${task}`)
+  return c.busy || best === undefined || c.time_ms === null || !(c.time_ms > 0) ? null : c.time_ms / best
+}
+
 /** The figures a row shows for the chosen tasks (all it ran when none is chosen). */
-function figures(r: FinderRow, chosen: string[]) {
+function figures(r: FinderRow, chosen: string[], clean: boolean) {
   const cells = chosen.length > 0 ? chosen.map((t) => r.cells[t]!) : Object.values(r.cells)
   const avg = cells.reduce((sum, c) => sum + c.rate, 0) / cells.length
-  const rels = chosen.length > 0 ? chosen.map((t) => r.cells[t]!.rel) : []
+  const rels = chosen.length > 0 ? chosen.map((t) => relOf(r, t, clean)) : []
   const speed = rels.length > 0 && rels.every((x) => x !== null) ? Math.max(...(rels as number[])) : null
   const worst = Math.min(...cells.map((c) => c.rate))
   return { avg, speed, worst }
@@ -167,6 +193,18 @@ function key(r: FinderRow, f: ReturnType<typeof figures>, sort: string): number 
   }
 }
 
+/** "ttft 83 ms · 68 tok/s · 11 out · load 1.5 s": what a cell's timing says, for the fields the run recorded. */
+function timingLine(t: NonNullable<FinderCell['timing']>): string {
+  return [
+    t.ttft_ms !== null ? `ttft ${fmtTime(t.ttft_ms)}` : '',
+    t.decode_tps !== null ? `${fmt(t.decode_tps, 0)} tok/s` : '',
+    t.output_tokens !== null ? `${fmt(t.output_tokens, 0)} out` : '',
+    t.load_ms !== null && t.load_ms >= 100 ? `load ${fmtTime(t.load_ms)}` : '',
+  ]
+    .filter(Boolean)
+    .join(' · ')
+}
+
 const BASIS = { loaded: 'loaded', rss: 'rss ≤', peak: 'peak' } as const
 
 /** The memory the Memory filter and sort use: the larger of the fresh load and the in-suite peak, since a limit has to hold in use. */
@@ -199,7 +237,9 @@ function line(r: FinderRow, s: State, f: ReturnType<typeof figures>): string {
     .map((t) => {
       const c = r.cells[t]!
       const rate = Math.round(c.rate)
-      return `<td class="heat ${tone(rate)}"><a href="${base}/results/?suite=${encodeURIComponent(t.split(':')[0]!)}&model=${encodeURIComponent(r.model)}">${rate}%</a><small>${c.passed}/${c.total} · ${fmtTime(c.time_ms, c.time_per)}${c.stale ? ' · stale' : ''}</small></td>`
+      const hideTime = s.clean && c.busy
+      const tm = c.timing && !hideTime ? timingLine(c.timing) : ''
+      return `<td class="heat ${tone(rate)}"><a href="${base}/results/?suite=${encodeURIComponent(t.split(':')[0]!)}&model=${encodeURIComponent(r.model)}">${rate}%</a><small>${c.passed}/${c.total} · ${hideTime ? '<span class="muted">under load</span>' : fmtTime(c.time_ms, c.time_per)}${c.stale ? ' · stale' : ''}${c.busy && !s.clean ? ' · <span class="pill busy" title="The machine was busy while this ran, so its time is suspect">under load</span>' : ''}</small>${tm ? `<small title="Median over the suite's calls: time to first token, decode speed, output tokens, and the first call's model load">${tm}</small>` : ''}</td>`
     })
     .join('')
   const speed = f.speed === null ? '<span class="muted">—</span>' : `×${fmt(f.speed, 1)}`
@@ -212,7 +252,7 @@ function render(): void {
   const s = state
   const out = rows
     .filter((r) => s.tasks.every((t) => r.cells[t]))
-    .map((r) => ({ r, f: figures(r, s.tasks) }))
+    .map((r) => ({ r, f: figures(r, s.tasks, s.clean) }))
     .filter(({ r, f }) => keep(r, s, f))
   out.sort((a, b) => {
     const [x, y] = [key(a.r, a.f, s.sort), key(b.r, b.f, s.sort)]
@@ -224,7 +264,7 @@ function render(): void {
   table.tBodies[0]!.innerHTML =
     out.length > 0 ? out.map(({ r, f }) => line(r, s, f)).join('') : `<tr><td class="empty" colspan="${9 + s.tasks.length}">No model matches. Loosen a limit or untick a task.</td></tr>`
   // Models hidden only because they will not fit the chosen class, so the filter is never silent.
-  const unfit = rows.filter((r) => s.tasks.every((t) => r.cells[t]) && keep(r, { ...s, nofit: false }, figures(r, s.tasks))).length - out.length
+  const unfit = rows.filter((r) => s.tasks.every((t) => r.cells[t]) && keep(r, { ...s, nofit: false }, figures(r, s.tasks, s.clean))).length - out.length
   count.textContent = `${out.length} of ${rows.length} models${unfit > 0 ? ` · ${unfit} hidden: won't fit ${s.fits}` : ''}`
   document.querySelector('[data-kind-summary]')!.textContent = s.kinds.length > 0 ? `Kind: ${s.kinds.length} chosen` : 'Kind: all'
   write(s)

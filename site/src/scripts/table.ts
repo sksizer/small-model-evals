@@ -8,6 +8,8 @@
 //   whose `data-<key>` equals the chosen value. An empty value, or an option
 //   marked `data-all`, keeps all (use `data-all` when the default is a filter,
 //   so "all" survives in the URL).
+// - A checkbox `input[data-clean]` hides every row marked `data-busy` (a timing taken while the
+//   machine was busy), on every table of the page. Kept in the URL as `clean=1`.
 // - A row with `data-toggle` opens the detail row after it.
 // - `[data-count="<table id>"]` shows how many rows are visible.
 //
@@ -31,10 +33,11 @@ function apply(table: HTMLTableElement): void {
   const facets = [...document.querySelectorAll<HTMLSelectElement>(`[data-facet="${id}"]`)].filter(
     (s) => s.value && !s.selectedOptions[0]?.hasAttribute('data-all'),
   )
+  const clean = document.querySelector<HTMLInputElement>('input[data-clean]')?.checked ?? false
   let shown = 0
   for (const row of rowsOf(table)) {
     const text = (row.dataset['search'] ?? row.textContent ?? '').toLowerCase()
-    const visible = words.every((w) => text.includes(w)) && facets.every((s) => row.dataset[s.name] === s.value)
+    const visible = words.every((w) => text.includes(w)) && facets.every((s) => row.dataset[s.name] === s.value) && !(clean && row.dataset['busy'] === '1')
     row.hidden = !visible
     const detail = detailOf(row)
     if (detail && !visible) detail.hidden = true
@@ -48,6 +51,8 @@ function apply(table: HTMLTableElement): void {
   for (const s of document.querySelectorAll<HTMLSelectElement>(`[data-facet="${id}"]`)) {
     s.value ? params.set(s.name, s.value) : params.delete(s.name)
   }
+  const cleanBox = document.querySelector<HTMLInputElement>('input[data-clean]')
+  if (cleanBox) (cleanBox.checked ? params.set('clean', '1') : params.delete('clean'))
   const query = params.toString()
   history.replaceState(null, '', query ? `?${query}` : location.pathname)
 }
@@ -82,6 +87,11 @@ for (const table of document.querySelectorAll<HTMLTableElement>('table[data-tabl
   const search = document.querySelector<HTMLInputElement>(`[data-search="${table.id}"]`)
   if (search && params.get('q')) search.value = params.get('q')!
   search?.addEventListener('input', () => apply(table))
+  const cleanBox = document.querySelector<HTMLInputElement>('input[data-clean]')
+  if (cleanBox) {
+    cleanBox.checked = params.get('clean') === '1'
+    cleanBox.addEventListener('change', () => apply(table))
+  }
   for (const s of document.querySelectorAll<HTMLSelectElement>(`[data-facet="${table.id}"]`)) {
     if (params.get(s.name)) s.value = params.get(s.name)!
     s.addEventListener('change', () => apply(table))

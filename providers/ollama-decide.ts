@@ -17,8 +17,12 @@
 //
 // Output is JSON: {"answers": {"<question>": {"value": "...", "p": {option: prob}}}}.
 // A noul answer's value is "yes" or "no".
+//
+// Metadata (ledger metrics): the chat backend's timing, one call per question, summed over the
+// questions (providers/ollama-stream.ts; ttft_ms is the first question's). The decision backend
+// reports its wall clock only (`turn_ms`, `total_ms`, `turns`): the endpoint returns no timings.
 
-const BASE = process.env['OLLAMA_BASE_URL'] ?? 'http://localhost:11434'
+import { BASE, streamChat, sumTimings, type Timings } from './ollama-stream.ts'
 
 interface Question {
   type: 'choice' | 'noul' | 'score'
@@ -62,6 +66,7 @@ export default class OllamaDecide {
   }
 
   private async viaDecision(input: string, image: string | undefined, questions: Record<string, Question>) {
+    const began = performance.now()
     const res = (await this.post('/v1/systemone', {
       model: this.config.model,
       state: input,
@@ -88,20 +93,21 @@ export default class OllamaDecide {
         answers[id] = { value: (q.levels ?? [])[Number(best)] ?? best, p }
       }
     }
-    return answers
+    const wall = Math.round((performance.now() - began) * 100) / 100
+    return { answers, metrics: { turns: 1, turn_ms: wall, total_ms: wall } as Record<string, number> }
   }
 
   private async viaChat(input: string, image: string | undefined, questions: Record<string, Question>) {
     const answers: Record<string, Answer> = {}
+    const turns: Timings[] = []
     for (const [id, q] of Object.entries(questions)) {
       const opts = options(q)
       const described =
         q.type === 'choice'
           ? Object.entries(q.criteria ?? {}).map(([k, v]) => `- ${k}${v ? `: ${v}` : ''}`).join('\n')
           : opts.map((o) => `- ${o}`).join('\n')
-      const res = (await this.post('/api/chat', {
+      const res = await streamChat(BASE, {
         model: this.config.model,
-        stream: false,
         ...(this.config.think === undefined ? {} : { think: this.config.think }),
         // The answer is one short JSON field; the cap stops a runaway reply.
         options: { temperature: 0, num_ctx: this.config.num_ctx ?? 4096, num_predict: 64 },
@@ -110,21 +116,22 @@ export default class OllamaDecide {
           { role: 'system', content: `${q.instructions}\nAnswer with one of:\n${described}\nReply as JSON: {"answer": "<option>"}.` },
           { role: 'user', content: input, ...(image ? { images: [stripDataUrl(image)] } : {}) },
         ],
-      })) as { message: { content: string } }
+      })
+      turns.push(res.timings)
       try {
-        answers[id] = { value: String((JSON.parse(res.message.content) as { answer: unknown }).answer) }
+        answers[id] = { value: String((JSON.parse(res.content) as { answer: unknown }).answer) }
       } catch {
-        answers[id] = { value: res.message.content }
+        answers[id] = { value: res.content }
       }
     }
-    return answers
+    return { answers, metrics: sumTimings(turns) }
   }
 
   async callApi(_prompt: string, context: { vars: { input?: string; image?: string; questions: Record<string, Question> } }) {
     try {
       const { input = '', image, questions } = context.vars
-      const answers = this.config.decision ? await this.viaDecision(input, image, questions) : await this.viaChat(input, image, questions)
-      return { output: JSON.stringify({ answers }) }
+      const { answers, metrics } = this.config.decision ? await this.viaDecision(input, image, questions) : await this.viaChat(input, image, questions)
+      return { output: JSON.stringify({ answers }), metadata: metrics }
     } catch (err) {
       return { error: String(err) }
     }

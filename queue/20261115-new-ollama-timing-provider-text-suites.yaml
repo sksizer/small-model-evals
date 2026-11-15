@@ -1,0 +1,34 @@
+id: 20261115-new-ollama-timing-provider-text-suites
+created: 2026-11-15T20:05:11Z
+reason: "new Ollama timing provider: text suites"
+models:
+  - qwen3.5:4b
+  - qwen3.5:9b
+  - qwen3:4b
+  - gemma4:e4b
+  - minicpm5-2b
+  - granite4.2:3b
+  - lfm3:1.7b
+  - botpsy-0.8b
+  - qwen3.5:0.8b
+  - granite4
+  - gemma3:4b
+  - botpsy-0.8b-think
+  - d1-omni:600m
+  - d1:2b
+suites:
+  - classify
+  - extract
+  - orchestrate
+  - workout
+  - food-lookup
+  - route
+priority: 10
+needs:
+  max_load_per_core: 0.3
+  min_free_gib: 4
+  quiet_minutes: 10
+status: pending
+run_ids: []
+done: []
+notes: ""
