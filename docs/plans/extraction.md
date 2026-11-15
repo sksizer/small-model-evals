@@ -37,6 +37,43 @@ date arithmetic ("next Tuesday"). There, the best scores come from models of 4B 
 **Already measured, as the yardsticks:** qwen3.5:4b, gemma4:e4b, granite4.2:3b, minicpm5-2b, lfm3:1.7b,
 botpsy-0.8b and qwen3.5:0.8b.
 
+## The restricted licences
+
+Read from the licence texts on 2026-11-14.
+
+| | LFM Open License v1.0 (LFM2-Extract, LFM2.5-2.6B, also lfm3 here) | Desert Ant Labs Source-Available 1.0 (Schemer) |
+| --- | --- | --- |
+| Commercial use | Free while the user's organisation, including affiliates it controls or is controlled by, has under $10M annual revenue. Above that, not licensed. Qualified non-profits are exempt for research. | Free in apps under 100,000 monthly active devices per platform, counted per model. Above that, a paid licence. |
+| Research and publishing | Not restricted | Benchmarking to choose a model is expressly allowed; academic publication is allowed, with a request to cite |
+| Redistribution | Allowed, with the licence and notices; modified files marked | Only inside your app. Not as a standalone model, SDK or hosted service |
+| Attribution | Keep notices and the NOTICE file | "Powered by Desert Ant Labs" in an about or credits screen |
+| Prohibited uses | None beyond the revenue cap | Training or distilling a competing model from it or its outputs; reverse engineering; bypassing safety models; tampering with telemetry |
+| Outputs | Not addressed | Yours |
+| Other | Patent licence ends if you sue over patents; ends automatically on breach | **The SDK sends telemetry to count devices**; ends on breach, with 30 days to cure a curable breach, and shipped copies keep working |
+
+Neither stops us testing or publishing results. Both limit what someone may *ship*, so the site must say so
+wherever these models are recommended. Schemer's telemetry matters for an on-device, private use. If we run
+its bare ONNX weights without the SDK, we must check that this is allowed and that nothing phones home.
+
+## Recording licence facts
+
+Today `scripts/catalog.ts` holds one licence name and a link per model, with any limits in free text in the
+notes. The plan adds structured facts per licence, kept once per licence and referenced by each model:
+
+- `commercial`: `yes` / `conditional` / `no`, plus the condition in a few words ("under $10M annual revenue",
+  "under 100k devices per platform", "non-commercial only");
+- `redistribute`: `yes` / `in-app only` / `no`;
+- `attribution`: what must be shown;
+- `use_policy`: whether a prohibited-use policy applies, with a link (the Gemma terms, Meta's DINOv3 licence);
+- `no_competing_models`: whether outputs may be used to train other models;
+- `telemetry`: whether the official runtime phones home;
+- `checked`: the date the text was read, and the URL.
+
+The Model finder's "permissive licence only" switch is then computed from these facts rather than a name list.
+It gains a "commercial use without conditions" filter, and each model page shows the facts as a small table.
+This covers every model already here, including the Gemma terms (embeddinggemma:300m, gemma3), CC BY-NC (Jina
+CLIP v2) and Meta's DINOv3 licence, not only the new ones.
+
 ## How each model is asked
 
 Every model gets the same note and schema. What differs is how they're presented to it, using the method
@@ -99,17 +136,19 @@ passage plus its own schema:
 ## Order of work
 
 1. The owner answers the questions below.
-2. Write the 40 cases and their schemas, and the scorer with unit tests on hand-made right and wrong answers.
-3. Adapters: the NuExtract template converter, the LFM2-Extract prompt, and Schemer if it fits (Q4).
-4. Pull and pin the models. Run `bun scripts/run.ts --plan` first; everything fits this 16 GB machine.
-5. Runs, with the same low-load trigger as the food-lookup rerun. Then gemma4:e2b and LFM2.5-2.6B on the
+2. Licence facts in the catalogue ("Recording licence facts"), for every model, before new models are added.
+3. Write the 40 cases and their schemas, and the scorer with unit tests on hand-made right and wrong answers.
+4. Adapters: the NuExtract template converter, the LFM2-Extract prompt, and Schemer if it fits (Q4).
+5. Pull and pin the models. Run `bun scripts/run.ts --plan` first; everything fits this 16 GB machine.
+6. Runs, with the same low-load trigger as the food-lookup rerun. Then gemma4:e2b and LFM2.5-2.6B on the
    other suites.
-6. Site, notes, and a short "which model for which job" summary.
+7. Site, notes, and a short "which model for which job" summary.
 
 ## Questions for the owner
 
-- **Q1. Restricted licences.** LFM2-Extract, LFM2.5-2.6B and Schemer are under restricted licences. Should they
-  be included and marked as restricted, as was done for search?
+- **Q1. Restricted licences.** LFM2-Extract, LFM2.5-2.6B and Schemer are under restricted licences (see "The
+  restricted licences"). The owner leans to including them, marked as restricted (2026-11-14). Confirm, and say
+  whether Schemer's device telemetry rules it out.
 - **Q2. Native mode.** Is the unconstrained mode worth running (it doubles the runs), or is constrained enough?
   Native matters only where decoding can't be constrained.
 - **Q3. Prose domains.** Are the six groups the right mix? Add or drop any (for example health notes, or
