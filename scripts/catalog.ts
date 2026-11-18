@@ -195,6 +195,36 @@ export const CATALOG: Record<string, CatalogEntry> = {
     disk_gb: 3.3,
     notes: 'Older than the 12-month limit, so the runner skips it (it has no baseline flag); its classify row is stale.',
   },
+  'qwen3.5:0.8b': {
+    url: ollama('qwen3.5:0.8b'),
+    source_url: hf('Qwen/Qwen3.5-0.8B'),
+    publisher: 'Qwen (Alibaba)',
+    licence: 'Apache-2.0',
+    kind: 'vision-llm',
+    inputs: ['text', 'image'],
+    outputs: ['text'],
+    parameters: 873_438_784,
+    parameters_note: 'Includes the vision encoder; run here on text suites only, as the base BotPsy-0.8B was fine-tuned from.',
+    architecture: 'Hybrid Gated DeltaNet and gated-attention language model with a vision encoder',
+    base_model: 'Qwen/Qwen3.5-0.8B-Base',
+    disk_gb: 1.2,
+    notes: 'Ollama build (mxfp8). The yardstick for botpsy-0.8b: same base, no tool-use fine-tune.',
+  },
+  'botpsy-0.8b': {
+    url: hf('qvac/BotPsy-0.8B-GGUFs'),
+    source_url: hf('qvac/BotPsy-0.8B'),
+    publisher: 'qvac',
+    licence: 'Apache-2.0',
+    kind: 'llm',
+    inputs: ['text'],
+    outputs: ['text'],
+    parameters: 852_985_920,
+    architecture: 'Qwen3.5 (hybrid Gated DeltaNet and gated attention), text only',
+    base_model: 'Qwen/Qwen3.5-0.8B',
+    disk_gb: 0.81,
+    languages: 'English recommended; Multi-IF also evaluated in seven other languages (weaker in Hindi and Russian)',
+    notes: 'A function-calling fine-tune of Qwen3.5-0.8B for on-device agents; its card reports BFCL v4 44.0 against the base 23.4. Run from the publisher\'s Q8_0 GGUF (Ollama pull hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0, repo revision 17bb36a), thinking off like the other models here; the card recommends thinking on, temperature 0.3 and presence penalty 1.5.',
+  },
   'qwen3.5:4b': {
     url: ollama('qwen3.5:4b'),
     source_url: hf('Qwen/Qwen3.5-4B'),
@@ -707,4 +737,10 @@ export const CATALOG: Record<string, CatalogEntry> = {
     languages: LFM_LANGS,
     notes: 'Not a chat model: asked through /v1/systemone. Strong at route (15/18) and catches all 9 explicit nudes, but flags every swimsuit photo (0/8 cleared). The Ollama tag is stored as BF16, hence 3.9 GB for 1.9B parameters.',
   },
+}
+
+// The thinking-on run of BotPsy: the same build, so the same facts.
+CATALOG['botpsy-0.8b-think'] = {
+  ...CATALOG['botpsy-0.8b']!,
+  notes: 'botpsy-0.8b with thinking on, as its card recommends (temperature 0 like the rest, not the card\'s 0.3). Run on the tool suites only.',
 }

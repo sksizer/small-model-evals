@@ -1,0 +1,679 @@
+{
+  "suite": "food-lookup",
+  "fingerprint": "07e99403768e",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:78f14880ff9d5d8c023330d5c2a0d583c758830f69f77a5feb4ced631b207816"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "food-lookup — food note to database foods and grams",
+    "prompts": [
+      "[{\"role\": \"system\", \"content\": \"You log what someone ate or drank from a free-form note. Today is Thursday 2026-10-29. Use the search_foods tool to find each food in the USDA food database; search again with other words (for example the cooking method, or raw) when the results do not fit. Then for each food or drink consumed give: text, the note's words for it; fdc_id, the best matching food's id from the search results, or null when nothing in the database fits; grams, the amount consumed in grams, converted with that food's portions, and estimated from a typical portion when the note gives a count or no amount. Leave out food that was only planned or mentioned, not eaten.\"},\n {\"role\": \"user\", \"content\": {{ note | dump }}}]"
+    ],
+    "providers": [
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "qwen3.5:4b",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "qwen3.5:9b",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "qwen3:4b",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "qwen3:4b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "gemma4:e4b",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "openbmb/minicpm5-2b:latest",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "minicpm5-2b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "granite4.2:3b",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "granite4.2:3b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "lfm3:1.7b",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "lfm3:1.7b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "botpsy-0.8b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0",
+          "think": true
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "botpsy-0.8b-think"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "qwen3.5:0.8b",
+          "think": false
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "qwen3.5:0.8b"
+      },
+      {
+        "config": {
+          "db_sha256": "54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d",
+          "model": "granite4:latest"
+        },
+        "id": "sha256:a1749dc166c797c871dfb35b9924ce00572ad60573d0c6e17820fa8f032f641e",
+        "label": "granite4"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "2be475c881c2",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/search.ts": "9502e3f85933",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/search.ts": "730d7829fa38",
+    "providers/sensitive-composite.ts": "3a2ff71491cb",
+    "providers/similarity-search.ts": "7a69269b6c84",
+    "providers/zero-shot.ts": "eed5f8711d4f"
+  },
+  "setup_hash": "5c7ed4f264ec",
+  "cases": {
+    "almonds-and-an-apple": {
+      "hash": "61d8d060e4a5",
+      "def": {
+        "description": "a counted handful and a whole fruit",
+        "metadata": {
+          "id": "almonds-and-an-apple"
+        },
+        "vars": {
+          "note": "afternoon snack: about 20 almonds and an apple",
+          "expected": [
+            {
+              "text": [
+                "almond"
+              ],
+              "food": [
+                "almond"
+              ],
+              "kcal_100g": 579,
+              "grams": {
+                "approx": 24,
+                "tol": 6
+              }
+            },
+            {
+              "text": [
+                "apple"
+              ],
+              "food": [
+                "apple"
+              ],
+              "kcal_100g": 52,
+              "grams": {
+                "approx": 182,
+                "tol": 45
+              }
+            }
+          ]
+        }
+      }
+    },
+    "cans-of-drinks": {
+      "hash": "66cee3dddccf",
+      "def": {
+        "description": "drinks counted in cans",
+        "metadata": {
+          "id": "cans-of-drinks"
+        },
+        "vars": {
+          "note": "2 cans of coke and a beer at the game",
+          "expected": [
+            {
+              "text": [
+                "coke",
+                "cola"
+              ],
+              "food": [
+                "cola"
+              ],
+              "kcal_100g": 42,
+              "grams": {
+                "approx": 740,
+                "tol": 60
+              }
+            },
+            {
+              "text": [
+                "beer"
+              ],
+              "food": [
+                "beer"
+              ],
+              "kcal_100g": 43,
+              "grams": {
+                "approx": 356,
+                "tol": 40
+              }
+            }
+          ]
+        }
+      }
+    },
+    "eggs-toast-coffee": {
+      "hash": "61620556cd01",
+      "def": {
+        "description": "counts and unstated amounts at breakfast",
+        "metadata": {
+          "id": "eggs-toast-coffee"
+        },
+        "vars": {
+          "note": "breakfast: 2 scrambled eggs, a slice of whole wheat toast with butter, black coffee",
+          "expected": [
+            {
+              "text": [
+                "egg"
+              ],
+              "food": [
+                "egg"
+              ],
+              "kcal_100g": 149,
+              "grams": {
+                "approx": 122,
+                "tol": 30
+              }
+            },
+            {
+              "text": [
+                "toast",
+                "bread"
+              ],
+              "food": [
+                "bread"
+              ],
+              "kcal_100g": 252,
+              "grams": {
+                "approx": 30,
+                "tol": 8
+              }
+            },
+            {
+              "text": [
+                "butter"
+              ],
+              "food": [
+                "butter"
+              ],
+              "kcal_100g": 717,
+              "grams": {
+                "approx": 9,
+                "tol": 6
+              }
+            },
+            {
+              "text": [
+                "coffee"
+              ],
+              "food": [
+                "coffee"
+              ],
+              "kcal_100g": 1,
+              "grams": {
+                "approx": 237,
+                "tol": 60
+              }
+            }
+          ]
+        }
+      }
+    },
+    "hummus-and-carrots": {
+      "hash": "91f3f6f31bc8",
+      "def": {
+        "description": "a fraction of a cup and counted vegetables",
+        "metadata": {
+          "id": "hummus-and-carrots"
+        },
+        "vars": {
+          "note": "half a cup of hummus with 3 carrots",
+          "expected": [
+            {
+              "text": [
+                "hummus"
+              ],
+              "food": [
+                "hummus"
+              ],
+              "kcal_100g": 207,
+              "grams": {
+                "approx": 123,
+                "tol": 20
+              }
+            },
+            {
+              "text": [
+                "carrot"
+              ],
+              "food": [
+                "carrot"
+              ],
+              "kcal_100g": 41,
+              "grams": {
+                "approx": 183,
+                "tol": 45
+              }
+            }
+          ]
+        }
+      }
+    },
+    "lunch-in-grams": {
+      "hash": "d7c50f36e8a1",
+      "def": {
+        "description": "amounts already in grams, cooking methods to match",
+        "metadata": {
+          "id": "lunch-in-grams"
+        },
+        "vars": {
+          "note": "lunch - 150g cooked white rice, 120 g grilled chicken breast, 80g steamed broccoli",
+          "expected": [
+            {
+              "text": [
+                "rice"
+              ],
+              "food": [
+                "rice"
+              ],
+              "kcal_100g": 130,
+              "grams": {
+                "approx": 150,
+                "tol": 3
+              }
+            },
+            {
+              "text": [
+                "chicken"
+              ],
+              "food": [
+                "chicken"
+              ],
+              "kcal_100g": 165,
+              "grams": {
+                "approx": 120,
+                "tol": 3
+              }
+            },
+            {
+              "text": [
+                "broccoli"
+              ],
+              "food": [
+                "broccoli"
+              ],
+              "kcal_100g": 35,
+              "grams": {
+                "approx": 80,
+                "tol": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    "milk-millilitres": {
+      "hash": "056c1cc6cfa1",
+      "def": {
+        "description": "a drink in millilitres",
+        "metadata": {
+          "id": "milk-millilitres"
+        },
+        "vars": {
+          "note": "glass of 2% milk, about 250 ml",
+          "expected": [
+            {
+              "text": [
+                "milk"
+              ],
+              "food": [
+                "milk"
+              ],
+              "kcal_100g": 50,
+              "grams": {
+                "approx": 255,
+                "tol": 15
+              }
+            }
+          ]
+        }
+      }
+    },
+    "not-in-database": {
+      "hash": "4d1fe69738c6",
+      "def": {
+        "description": "two drinks the database lacks, one brand it has",
+        "metadata": {
+          "id": "not-in-database"
+        },
+        "vars": {
+          "note": "a cup of Cheerios with oat milk, and a can of kombucha",
+          "expected": [
+            {
+              "text": [
+                "cheerio"
+              ],
+              "food": [
+                "cheerios"
+              ],
+              "kcal_100g": 372,
+              "grams": {
+                "approx": 28,
+                "tol": 6
+              }
+            },
+            {
+              "text": [
+                "oat milk"
+              ],
+              "fdc_id": null
+            },
+            {
+              "text": [
+                "kombucha"
+              ],
+              "fdc_id": null
+            }
+          ]
+        }
+      }
+    },
+    "oatmeal-banana-peanut-butter": {
+      "hash": "2aacd0edb83b",
+      "def": {
+        "description": "household measures and a sized fruit",
+        "metadata": {
+          "id": "oatmeal-banana-peanut-butter"
+        },
+        "vars": {
+          "note": "bowl of oatmeal made with 1/2 cup dry oats, a sliced banana on top and a tablespoon of peanut butter",
+          "expected": [
+            {
+              "text": [
+                "oat",
+                "oatmeal"
+              ],
+              "food": [
+                "oat"
+              ],
+              "kcal_100g": 379,
+              "grams": {
+                "approx": 40,
+                "tol": 8
+              }
+            },
+            {
+              "text": [
+                "banana"
+              ],
+              "food": [
+                "banana"
+              ],
+              "kcal_100g": 89,
+              "grams": {
+                "approx": 118,
+                "tol": 25
+              }
+            },
+            {
+              "text": [
+                "peanut butter"
+              ],
+              "food": [
+                "peanut butter"
+              ],
+              "kcal_100g": 588,
+              "grams": {
+                "approx": 16,
+                "tol": 4
+              }
+            }
+          ]
+        }
+      }
+    },
+    "planned-not-eaten": {
+      "hash": "66a397185690",
+      "def": {
+        "description": "ignore a planned meal; an unstated amount of berries",
+        "metadata": {
+          "id": "planned-not-eaten"
+        },
+        "vars": {
+          "note": "had a greek yogurt with blueberries. planning pasta for dinner",
+          "expected": [
+            {
+              "text": [
+                "yogurt",
+                "yoghurt"
+              ],
+              "food": [
+                "yogurt"
+              ],
+              "kcal_100g": 66,
+              "grams": {
+                "approx": 170,
+                "tol": 50
+              }
+            },
+            {
+              "text": [
+                "blueberries",
+                "blueberry"
+              ],
+              "food": [
+                "blueberries"
+              ],
+              "kcal_100g": 57
+            }
+          ]
+        }
+      }
+    },
+    "salmon-ounces-quinoa": {
+      "hash": "9808da267b93",
+      "def": {
+        "description": "ounces to grams, a cup of a cooked grain",
+        "metadata": {
+          "id": "salmon-ounces-quinoa"
+        },
+        "vars": {
+          "note": "dinner was a 6 oz baked salmon fillet and a cup of quinoa",
+          "expected": [
+            {
+              "text": [
+                "salmon"
+              ],
+              "food": [
+                "salmon"
+              ],
+              "kcal_100g": 206,
+              "grams": {
+                "approx": 170,
+                "tol": 10
+              }
+            },
+            {
+              "text": [
+                "quinoa"
+              ],
+              "food": [
+                "quinoa"
+              ],
+              "kcal_100g": 120,
+              "grams": {
+                "approx": 185,
+                "tol": 25
+              }
+            }
+          ]
+        }
+      }
+    },
+    "strawberries-and-cheddar": {
+      "hash": "ab40b553ab40",
+      "def": {
+        "description": "a cup of fruit and an ounce of cheese",
+        "metadata": {
+          "id": "strawberries-and-cheddar"
+        },
+        "vars": {
+          "note": "cup of strawberries and 1 oz of cheddar",
+          "expected": [
+            {
+              "text": [
+                "strawberries",
+                "strawberry"
+              ],
+              "food": [
+                "strawberries"
+              ],
+              "kcal_100g": 32,
+              "grams": {
+                "approx": 152,
+                "tol": 20
+              }
+            },
+            {
+              "text": [
+                "cheddar",
+                "cheese"
+              ],
+              "food": [
+                "cheddar"
+              ],
+              "kcal_100g": 403,
+              "grams": {
+                "approx": 28.35,
+                "tol": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    "two-slices-half-avocado": {
+      "hash": "ee149c332ee9",
+      "def": {
+        "description": "slices and a fraction of a fruit",
+        "metadata": {
+          "id": "two-slices-half-avocado"
+        },
+        "vars": {
+          "note": "avocado toast: two slices of white bread and half an avocado",
+          "expected": [
+            {
+              "text": [
+                "bread",
+                "toast"
+              ],
+              "food": [
+                "bread"
+              ],
+              "kcal_100g": 266,
+              "grams": {
+                "approx": 56,
+                "tol": 12
+              }
+            },
+            {
+              "text": [
+                "avocado"
+              ],
+              "food": [
+                "avocado"
+              ],
+              "kcal_100g": 160,
+              "grams": {
+                "approx": 100,
+                "tol": 35
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

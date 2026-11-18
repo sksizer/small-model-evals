@@ -1,0 +1,1678 @@
+{
+  "suite": "workout",
+  "fingerprint": "b9a1af90aebd",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:a1459071ae8527e43ed3425dde88faa39dfa09023898979e47758f572f51d911"
+        }
+      ]
+    },
+    "description": "workout — free-form log to structured sets",
+    "prompts": [
+      "[{\"role\": \"system\", \"content\": \"You turn a free-form workout log into one JSON session. Today is Thursday 2026-10-29.\\n- date: the day the workout happened, YYYY-MM-DD; today when the log reads as today's; null when no workout happened.\\n- activity: the session's main type (strength, run, ride, swim, walk, row, yoga, mixed for a session that combines types, other), or null when no workout happened.\\n- duration_min: the whole session's length when the log states it, else null.\\n- exercises: one entry per exercise, in order. name: the common lowercase name, spelled out (bench press, not BP). sets: one object per set performed, in order, so 3x5 is three sets; reps per set; weight_kg per set, converting pounds to kilograms (1 lb = 0.4536 kg), the weight of one dumbbell for dumbbell work, null for bodyweight; seconds for timed sets such as planks. For cardio, sets is empty and duration_min and distance_km describe it (1 mile = 1.609 km).\\n- Use null for anything the log does not state. Leave out anything that is not exercise.\"},\n {\"role\": \"user\", \"content\": {{ log | dump }}}]"
+    ],
+    "providers": [
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:4b",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:9b",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3:4b",
+        "label": "qwen3:4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:gemma4:e4b",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:openbmb/minicpm5-2b:latest",
+        "label": "minicpm5-2b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:granite4.2:3b",
+        "label": "granite4.2:3b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:lfm3:1.7b",
+        "label": "lfm3:1.7b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0",
+        "label": "botpsy-0.8b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0,
+          "think": false
+        },
+        "id": "ollama:chat:qwen3.5:0.8b",
+        "label": "qwen3.5:0.8b"
+      },
+      {
+        "config": {
+          "format": {
+            "properties": {
+              "activity": {
+                "enum": [
+                  "strength",
+                  "run",
+                  "ride",
+                  "swim",
+                  "walk",
+                  "row",
+                  "yoga",
+                  "mixed",
+                  "other",
+                  null
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "duration_min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "exercises": {
+                "items": {
+                  "properties": {
+                    "distance_km": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "duration_min": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sets": {
+                      "items": {
+                        "properties": {
+                          "reps": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "weight_kg": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "reps",
+                          "weight_kg",
+                          "seconds"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "sets",
+                    "duration_min",
+                    "distance_km"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "date",
+              "activity",
+              "duration_min",
+              "exercises"
+            ],
+            "type": "object"
+          },
+          "num_ctx": 8192,
+          "num_predict": 1536,
+          "temperature": 0
+        },
+        "id": "ollama:chat:granite4:latest",
+        "label": "granite4"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "2be475c881c2",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/search.ts": "9502e3f85933",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/search.ts": "730d7829fa38",
+    "providers/sensitive-composite.ts": "3a2ff71491cb",
+    "providers/similarity-search.ts": "7a69269b6c84",
+    "providers/zero-shot.ts": "eed5f8711d4f"
+  },
+  "setup_hash": "5a6d0f3518f8",
+  "cases": {
+    "bodyweight-circuit": {
+      "hash": "5744d698fb77",
+      "def": {
+        "description": "a circuit repeated three times, with a timed hold",
+        "metadata": {
+          "id": "bodyweight-circuit"
+        },
+        "vars": {
+          "log": "circuit x3: 15 push-ups, 20 air squats, 30s plank",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "strength",
+            "exercises": [
+              {
+                "name": [
+                  "push up",
+                  "pushup"
+                ],
+                "sets": "3x15"
+              },
+              {
+                "name": [
+                  "squat"
+                ],
+                "sets": "3x20"
+              },
+              {
+                "name": [
+                  "plank"
+                ],
+                "sets": "3x30s"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "casual-typos": {
+      "hash": "18def9358d5b",
+      "def": {
+        "description": "casual writing with typos and kilos",
+        "metadata": {
+          "id": "casual-typos"
+        },
+        "vars": {
+          "log": "did legs tdy. sqauts 3 sets 8 reps 70 kilos, leg curls 3x12 40kg. felt strong",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "strength",
+            "exercises": [
+              {
+                "name": [
+                  "squat"
+                ],
+                "sets": "3x8@70"
+              },
+              {
+                "name": [
+                  "leg curl",
+                  "hamstring curl"
+                ],
+                "sets": "3x12@40"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "curls-drop-set": {
+      "hash": "31d110aa2f73",
+      "def": {
+        "description": "dumbbell sets with a drop set at a lighter weight",
+        "metadata": {
+          "id": "curls-drop-set"
+        },
+        "vars": {
+          "log": "dumbbell curls 12kg 3x10, last set dropped to 8kg for 6 more",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "strength",
+            "exercises": [
+              {
+                "name": [
+                  "curl"
+                ],
+                "sets": "3x10@12, 6@8"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "deadlift-pyramid": {
+      "hash": "a67e7c4fbfdb",
+      "def": {
+        "description": "varying sets and a back-off",
+        "metadata": {
+          "id": "deadlift-pyramid"
+        },
+        "vars": {
+          "log": "deadlift: 5 @ 100, 3 @ 120, 1 @ 140, then 2x5 @ 100 back-off",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "strength",
+            "exercises": [
+              {
+                "name": [
+                  "deadlift"
+                ],
+                "sets": "5@100, 3@120, 1@140, 2x5@100"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "erg-metres-clock": {
+      "hash": "116e5cdf21b0",
+      "def": {
+        "description": "rowing machine in metres with a clock time",
+        "metadata": {
+          "id": "erg-metres-clock"
+        },
+        "vars": {
+          "log": "rowed 5000 m on the erg in 21:30",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "row",
+            "exercises": [
+              {
+                "name": [
+                  "row",
+                  "erg"
+                ],
+                "distance_km": {
+                  "approx": 5,
+                  "tol": 0.01
+                },
+                "duration_min": {
+                  "approx": 21.5,
+                  "tol": 0.1
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "gym-shorthand": {
+      "hash": "1e52d07231e3",
+      "def": {
+        "description": "gym shorthand, slash sets, AMRAP with counts",
+        "metadata": {
+          "id": "gym-shorthand"
+        },
+        "vars": {
+          "log": "BP 5/5/5 @ 80, rows 3x10 @ 50, chins 3xAMRAP (8, 7, 6)",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "strength",
+            "exercises": [
+              {
+                "name": [
+                  "bench press",
+                  "bench"
+                ],
+                "sets": "3x5@80"
+              },
+              {
+                "name": [
+                  "row"
+                ],
+                "sets": "3x10@50"
+              },
+              {
+                "name": [
+                  "chin up",
+                  "chinup",
+                  "pull up"
+                ],
+                "sets": "8, 7, 6"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "journal-with-noise": {
+      "hash": "f1499035f6cc",
+      "def": {
+        "description": "a journal entry where only part is exercise",
+        "metadata": {
+          "id": "journal-with-noise"
+        },
+        "vars": {
+          "log": "Slept 7 hours. Gym at 6: squats 5x5 at 90kg, then 10 min on the bike. Had 2 eggs after and drove to work.",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": [
+              "mixed",
+              "strength"
+            ],
+            "exercises": [
+              {
+                "name": [
+                  "squat"
+                ],
+                "sets": "5x5@90"
+              },
+              {
+                "name": [
+                  "bike",
+                  "cycling",
+                  "ride"
+                ],
+                "duration_min": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    "push-day-kg": {
+      "hash": "b7aa4b5eb20c",
+      "def": {
+        "description": "strength, sets x reps at kg, bodyweight dips",
+        "metadata": {
+          "id": "push-day-kg"
+        },
+        "vars": {
+          "log": "Push day: bench 4x8 @ 60kg, OHP 3x10 at 35, tricep dips 3x12",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "strength",
+            "duration_min": null,
+            "exercises": [
+              {
+                "name": [
+                  "bench press",
+                  "bench"
+                ],
+                "sets": "4x8@60"
+              },
+              {
+                "name": [
+                  "overhead press",
+                  "shoulder press",
+                  "military press"
+                ],
+                "sets": "3x10@35"
+              },
+              {
+                "name": [
+                  "dip"
+                ],
+                "sets": "3x12"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "ride-saturday-hours": {
+      "hash": "92e7530bd8c0",
+      "def": {
+        "description": "ride last Saturday, hours and minutes",
+        "metadata": {
+          "id": "ride-saturday-hours"
+        },
+        "vars": {
+          "log": "Saturday ride 2h15m, 64 km, hilly route with Ana",
+          "expected": {
+            "date": "2026-10-24",
+            "activity": "ride",
+            "exercises": [
+              {
+                "name": [
+                  "ride",
+                  "cycling",
+                  "bike",
+                  "biking"
+                ],
+                "distance_km": {
+                  "approx": 64,
+                  "tol": 0.5
+                },
+                "duration_min": 135
+              }
+            ]
+          }
+        }
+      }
+    },
+    "run-miles-yesterday": {
+      "hash": "4b33419452d0",
+      "def": {
+        "description": "run in miles with a clock time, yesterday",
+        "metadata": {
+          "id": "run-miles-yesterday"
+        },
+        "vars": {
+          "log": "easy 4 mile run yesterday, 38:30, kept HR low",
+          "expected": {
+            "date": "2026-10-28",
+            "activity": "run",
+            "exercises": [
+              {
+                "name": [
+                  "run"
+                ],
+                "distance_km": {
+                  "approx": 6.44,
+                  "tol": 0.05
+                },
+                "duration_min": {
+                  "approx": 38.5,
+                  "tol": 0.1
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "session-total-time": {
+      "hash": "36d28bca7799",
+      "def": {
+        "description": "a stated session length with mixed weights and kg/lb",
+        "metadata": {
+          "id": "session-total-time"
+        },
+        "vars": {
+          "log": "1hr upper body. incline db press 3x10 w/ 50lb dbs, lat pulldown 3x12 @ 55kg, face pulls 3x15 light",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "strength",
+            "duration_min": 60,
+            "exercises": [
+              {
+                "name": [
+                  "incline dumbbell press",
+                  "incline press",
+                  "incline bench"
+                ],
+                "sets": "3x10@22.7"
+              },
+              {
+                "name": [
+                  "lat pulldown",
+                  "pulldown"
+                ],
+                "sets": "3x12@55"
+              },
+              {
+                "name": [
+                  "face pull"
+                ],
+                "sets": "3x15"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "skipped-no-workout": {
+      "hash": "002602b3370c",
+      "def": {
+        "description": "no workout happened; nothing to log",
+        "metadata": {
+          "id": "skipped-no-workout"
+        },
+        "vars": {
+          "log": "skipped the gym today, too tired. will do legs tomorrow",
+          "expected": {
+            "activity": null,
+            "exercises": []
+          }
+        }
+      }
+    },
+    "squat-rdl-pounds": {
+      "hash": "d860550c88ff",
+      "def": {
+        "description": "strength in pounds, weight-first notation",
+        "metadata": {
+          "id": "squat-rdl-pounds"
+        },
+        "vars": {
+          "log": "squat 225x5x3, RDL 185 for 3 sets of 8",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "strength",
+            "exercises": [
+              {
+                "name": [
+                  "squat"
+                ],
+                "sets": "3x5@102.1"
+              },
+              {
+                "name": [
+                  "romanian deadlift",
+                  "rdl"
+                ],
+                "sets": "3x8@83.9"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "swim-lengths": {
+      "hash": "719b2a55b887",
+      "def": {
+        "description": "swim counted in pool lengths",
+        "metadata": {
+          "id": "swim-lengths"
+        },
+        "vars": {
+          "log": "swam 40 lengths of the 25m pool, about 35 min",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "swim",
+            "exercises": [
+              {
+                "name": [
+                  "swim"
+                ],
+                "distance_km": {
+                  "approx": 1,
+                  "tol": 0.01
+                },
+                "duration_min": 35
+              }
+            ]
+          }
+        }
+      }
+    },
+    "treadmill-then-legs": {
+      "hash": "9221af9a8668",
+      "def": {
+        "description": "cardio warm-up then leg work, dumbbell weight per hand",
+        "metadata": {
+          "id": "treadmill-then-legs"
+        },
+        "vars": {
+          "log": "20 min treadmill warmup then legs: leg press 3x12 @ 140kg, walking lunges 3x10 each leg holding 12kg dumbbells, calf raises 4x15",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": [
+              "mixed",
+              "strength"
+            ],
+            "exercises": [
+              {
+                "name": [
+                  "treadmill",
+                  "run",
+                  "walk"
+                ],
+                "duration_min": 20
+              },
+              {
+                "name": [
+                  "leg press"
+                ],
+                "sets": "3x12@140"
+              },
+              {
+                "name": [
+                  "lunge"
+                ],
+                "sets": "3x10@12"
+              },
+              {
+                "name": [
+                  "calf raise"
+                ],
+                "sets": "4x15"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "yoga-duration-only": {
+      "hash": "61c14993a5de",
+      "def": {
+        "description": "a session with only a duration",
+        "metadata": {
+          "id": "yoga-duration-only"
+        },
+        "vars": {
+          "log": "45 min yoga flow this morning",
+          "expected": {
+            "date": "2026-10-29",
+            "activity": "yoga",
+            "exercises": [
+              {
+                "name": [
+                  "yoga"
+                ],
+                "duration_min": [
+                  45,
+                  null
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

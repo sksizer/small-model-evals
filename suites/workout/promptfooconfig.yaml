@@ -51,6 +51,8 @@ providers:
   - { id: 'ollama:chat:openbmb/minicpm5-2b:latest', label: minicpm5-2b, config: *config }
   - { id: 'ollama:chat:granite4.2:3b', label: granite4.2:3b, config: *config }
   - { id: 'ollama:chat:lfm3:1.7b', label: lfm3:1.7b, config: *config }
+  - { id: 'ollama:chat:hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0', label: 'botpsy-0.8b', config: *config }
+  - { id: 'ollama:chat:qwen3.5:0.8b', label: 'qwen3.5:0.8b', config: *config }
   - id: ollama:chat:granite4:latest
     label: granite4
     config: { temperature: 0, num_ctx: 8192, num_predict: 1536, format: *schema }

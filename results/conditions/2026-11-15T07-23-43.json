@@ -1,0 +1,439 @@
+{
+  "run": "2026-11-15T07-23-43",
+  "evals": [
+    {
+      "model": "granite4",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 1.83,
+        "load_per_core": 0.18,
+        "mem_available_gib": 5.2,
+        "mem_free_pct": 67,
+        "swap_used_gib": 9.2,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 1.45,
+        "load_per_core": 0.15,
+        "mem_available_gib": 2.1,
+        "mem_free_pct": 26,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "9.2 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "little free memory (2.1 GiB available, 26% free): close browsers, editors and VMs",
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "qwen3:4b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 1.45,
+        "load_per_core": 0.15,
+        "mem_available_gib": 2.1,
+        "mem_free_pct": 26,
+        "swap_used_gib": 10.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 1.91,
+        "load_per_core": 0.19,
+        "mem_available_gib": 1.9,
+        "mem_free_pct": 23,
+        "swap_used_gib": 21.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "little free memory (2.1 GiB available, 26% free): close browsers, editors and VMs",
+        "10.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "little free memory (1.9 GiB available, 23% free): close browsers, editors and VMs",
+        "21.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "qwen3.5:0.8b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 1.91,
+        "load_per_core": 0.19,
+        "mem_available_gib": 1.9,
+        "mem_free_pct": 24,
+        "swap_used_gib": 21.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 1.68,
+        "load_per_core": 0.17,
+        "mem_available_gib": 3.4,
+        "mem_free_pct": 35,
+        "swap_used_gib": 13.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "little free memory (1.9 GiB available, 24% free): close browsers, editors and VMs",
+        "21.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "13.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "qwen3.5:4b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 1.68,
+        "load_per_core": 0.17,
+        "mem_available_gib": 3.4,
+        "mem_free_pct": 36,
+        "swap_used_gib": 13.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 1.98,
+        "load_per_core": 0.2,
+        "mem_available_gib": 3,
+        "mem_free_pct": 29,
+        "swap_used_gib": 16.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "13.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "16.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "qwen3.5:9b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 1.98,
+        "load_per_core": 0.2,
+        "mem_available_gib": 2.9,
+        "mem_free_pct": 30,
+        "swap_used_gib": 16.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 3.13,
+        "load_per_core": 0.31,
+        "mem_available_gib": 1.8,
+        "mem_free_pct": 20,
+        "swap_used_gib": 17.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "duetexpertd",
+            "cpu_pct": 63
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.9 GiB available, 30% free): close browsers, editors and VMs",
+        "16.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "little free memory (1.8 GiB available, 20% free): close browsers, editors and VMs",
+        "17.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "duetexpertd is using 63% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "gemma4:e4b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 3.13,
+        "load_per_core": 0.31,
+        "mem_available_gib": 1.7,
+        "mem_free_pct": 20,
+        "swap_used_gib": 17.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "duetexpertd",
+            "cpu_pct": 75
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 3.4,
+        "load_per_core": 0.34,
+        "mem_available_gib": 1.9,
+        "mem_free_pct": 23,
+        "swap_used_gib": 11.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "little free memory (1.7 GiB available, 20% free): close browsers, editors and VMs",
+        "17.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "duetexpertd is using 75% of a core: close it if you can",
+        "little free memory (1.9 GiB available, 23% free): close browsers, editors and VMs",
+        "11.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "granite4.2:3b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 3.4,
+        "load_per_core": 0.34,
+        "mem_available_gib": 1.9,
+        "mem_free_pct": 23,
+        "swap_used_gib": 11.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 3.77,
+        "load_per_core": 0.38,
+        "mem_available_gib": 2,
+        "mem_free_pct": 24,
+        "swap_used_gib": 14,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "little free memory (1.9 GiB available, 23% free): close browsers, editors and VMs",
+        "11.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "little free memory (2 GiB available, 24% free): close browsers, editors and VMs",
+        "14 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "minicpm5-2b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 3.77,
+        "load_per_core": 0.38,
+        "mem_available_gib": 2,
+        "mem_free_pct": 25,
+        "swap_used_gib": 14,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 3.29,
+        "load_per_core": 0.33,
+        "mem_available_gib": 4.8,
+        "mem_free_pct": 59,
+        "swap_used_gib": 13.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "llama-server",
+            "cpu_pct": 93
+          },
+          {
+            "name": "spotlightknowledged",
+            "cpu_pct": 85
+          },
+          {
+            "name": "mds",
+            "cpu_pct": 43
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2 GiB available, 25% free): close browsers, editors and VMs",
+        "14 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "13.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "llama-server is using 93% of a core: close it if you can",
+        "spotlightknowledged is using 85% of a core: close it if you can",
+        "mds is using 43% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "lfm3:1.7b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 3.29,
+        "load_per_core": 0.33,
+        "mem_available_gib": 4.8,
+        "mem_free_pct": 60,
+        "swap_used_gib": 13.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "spotlightknowledged",
+            "cpu_pct": 85
+          },
+          {
+            "name": "mds",
+            "cpu_pct": 43
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 2.48,
+        "load_per_core": 0.25,
+        "mem_available_gib": 4.1,
+        "mem_free_pct": 47,
+        "swap_used_gib": 10.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "spotlightknowledged",
+            "cpu_pct": 100
+          }
+        ]
+      },
+      "flags": [
+        "13.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "spotlightknowledged is using 85% of a core: close it if you can",
+        "mds is using 43% of a core: close it if you can",
+        "10.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "spotlightknowledged is using 100% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 2.48,
+        "load_per_core": 0.25,
+        "mem_available_gib": 4.1,
+        "mem_free_pct": 48,
+        "swap_used_gib": 10.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "spotlightknowledged",
+            "cpu_pct": 99
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 4.3,
+        "load_per_core": 0.43,
+        "mem_available_gib": 2.5,
+        "mem_free_pct": 31,
+        "swap_used_gib": 10.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "llama-server",
+            "cpu_pct": 127
+          },
+          {
+            "name": "spotlightknowledged",
+            "cpu_pct": 100
+          }
+        ]
+      },
+      "flags": [
+        "10.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "spotlightknowledged is using 99% of a core: close it if you can",
+        "little free memory (2.5 GiB available, 31% free): close browsers, editors and VMs",
+        "10.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "llama-server is using 127% of a core: close it if you can",
+        "spotlightknowledged is using 100% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b-think",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 4.3,
+        "load_per_core": 0.43,
+        "mem_available_gib": 2.5,
+        "mem_free_pct": 32,
+        "swap_used_gib": 10.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "spotlightknowledged",
+            "cpu_pct": 97
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 4.06,
+        "load_per_core": 0.41,
+        "mem_available_gib": 2.4,
+        "mem_free_pct": 30,
+        "swap_used_gib": 10.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "llama-server",
+            "cpu_pct": 89
+          },
+          {
+            "name": "spotlightknowledged",
+            "cpu_pct": 59
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.5 GiB available, 32% free): close browsers, editors and VMs",
+        "10.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "spotlightknowledged is using 97% of a core: close it if you can",
+        "little free memory (2.4 GiB available, 30% free): close browsers, editors and VMs",
+        "10.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "llama-server is using 89% of a core: close it if you can",
+        "spotlightknowledged is using 59% of a core: close it if you can"
+      ]
+    }
+  ]
+}

@@ -39,6 +39,7 @@ export const MODELS: ModelEntry[] = [
   { label: 'granite4', tag: 'granite4:latest', released: '2025-10', approx: true, baseline: 'the previous Granite generation, yardstick for granite4.2' },
   { label: 'qwen3:4b', tag: 'qwen3:4b', released: '2025-04', approx: true, baseline: 'a common local default; yardstick for qwen3.5' },
   { label: 'gemma3:4b', tag: 'gemma3:4b', released: '2025-03', approx: true, baseline: 'the previous Gemma generation, yardstick for gemma4' },
+  { label: 'qwen3.5:0.8b', tag: 'qwen3.5:0.8b', released: '2026-02', approx: true },
   { label: 'qwen3.5:4b', tag: 'qwen3.5:4b', released: '2026-02', approx: true },
   { label: 'qwen3.5:9b', tag: 'qwen3.5:9b', released: '2026-02', approx: true },
   { label: 'gemma4:e4b', tag: 'gemma4:e4b', released: '2026-04', approx: true },
@@ -46,6 +47,9 @@ export const MODELS: ModelEntry[] = [
   { label: 'minicpm5-2b', tag: 'openbmb/minicpm5-2b:latest', released: '2026-09', approx: true },
   { label: 'lfm3:1.7b', tag: 'lfm3:1.7b', released: '2026-10', approx: true },
   { label: 'lfm3-vl:2b', tag: 'lfm3-vl:2b', released: '2026-10', approx: true },
+  { label: 'botpsy-0.8b', tag: 'hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0', released: '2026-11' },
+  // The same build with thinking on, as BotPsy's card recommends (the others here run with thinking off).
+  { label: 'botpsy-0.8b-think', tag: 'hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0', released: '2026-11' },
   // Dedicated classifiers age slowly next to generative models; the age limit is for the latter.
   { label: 'vit-nsfw-adamcodd-q8', tag: 'AdamCodd/vit-base-nsfw-detector', released: '2024-12', runtime: 'onnx', revision: '8587de998f441aac03fdd57a85d2e4cb808c7d64', dtype: 'q8', baseline: 'dedicated NSFW classifier, ~86M parameters' },
   { label: 'vit-nsfw-falconsai-q8', tag: 'onnx-community/nsfw_image_detection-ONNX', released: '2025-05', runtime: 'onnx', revision: '1ceb3c7fe1e9f3f2507e6df577437f23a9149fd5', dtype: 'q8', baseline: 'dedicated NSFW classifier, ~86M parameters (Falconsai, ONNX conversion)' },

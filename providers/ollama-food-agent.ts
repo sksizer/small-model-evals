@@ -9,7 +9,9 @@
 // Metadata (recorded as ledger metrics): searches, turns.
 //
 // Config: `model` (Ollama tag), `think` (false for models that reason by
-// default), `num_ctx`, and `db_sha256`: the database's hash, checked before
+// default), `num_ctx`, `num_predict` (the reply cap, default 4096: thinking
+// counts against it, and at 1024 botpsy-0.8b-think spent it all thinking and
+// answered nothing, 2026-11-14), and `db_sha256`: the database's hash, checked before
 // every case so a changed database cannot pass for the one a snapshot names.
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -22,6 +24,7 @@ interface Config {
   model: string
   think?: boolean
   num_ctx?: number
+  num_predict?: number
   db_sha256: string
 }
 
@@ -91,7 +94,7 @@ export default class OllamaFoodAgent {
         stream: false,
         ...(this.config.think === undefined ? {} : { think: this.config.think }),
         // Caps a reply that repeats itself, so a case cannot stall the run.
-        options: { temperature: 0, num_ctx: this.config.num_ctx ?? 8192, num_predict: 1024 },
+        options: { temperature: 0, num_ctx: this.config.num_ctx ?? 8192, num_predict: this.config.num_predict ?? 4096 },
         ...extra,
       }),
     })

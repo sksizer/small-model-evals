@@ -1,0 +1,26 @@
+{
+  "tag": "qwen3.5:0.8b",
+  "digest": "d9c89605f39a",
+  "engine": "mlx",
+  "format": "safetensors",
+  "family": "qwen3_5",
+  "quantization": "mxfp8",
+  "parameter_size": "852.88M",
+  "parameter_count": 852878912,
+  "context_length": 262144,
+  "capabilities": [
+    "completion",
+    "vision",
+    "thinking",
+    "tools"
+  ],
+  "default_parameters": {
+    "min_p": "0",
+    "presence_penalty": "1.5",
+    "repeat_penalty": "1",
+    "temperature": "1",
+    "top_k": "20",
+    "top_p": "0.95"
+  },
+  "template_hash": "b507b9c2f6ca"
+}
