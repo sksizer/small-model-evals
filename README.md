@@ -253,6 +253,72 @@ bun run view                                         # promptfoo's grid in the b
 
 `scripts/run.ts` runs one promptfoo eval per model and suite, unloading the model before each.
 promptfoo itself cycles through providers inside each test, which would swap models on every call.
+`--repeat N` runs every case N times (the ledger keeps each repeat; the site shows medians with their spread).
+The loop itself is `scripts/run-core.ts`, which the queue worker below shares.
+
+### Timing
+
+The Ollama text and vision suites (classify, extract, orchestrate, workout, ocr, tag-image) use
+`providers/ollama-chat.ts` instead of promptfoo's built-in `ollama:chat:` provider, which records only wall-clock
+latency. It sends the same request and returns the same output (so scores do not change), but streams the reply and
+records, per call, as ledger `metrics`: `ttft_ms` (time to first content or tool-call token), `ttft_think_ms` and
+`think_tokens` (thinking models), `load_ms`, `prompt_tokens`/`prompt_ms`/`prompt_tps`, `output_tokens`/`decode_ms`/`decode_tps`
+and `total_ms`. Ollama does not count thinking tokens separately (`output_tokens` includes them), so `think_tokens` is the
+number of streamed thinking chunks: close to the token count, not exact. The agent and decision providers
+(`ollama-food-agent.ts`, `ollama-decide.ts`) record the same fields summed over their turns, plus `turn_ms`, and
+`ollama-boxes.ts` records them per call; all share `providers/ollama-stream.ts`. The Speed & memory page and the
+model finder show the medians and flag timings taken under load (a run's conditions), with a toggle to leave those out.
+
+## Queued runs
+
+To prepare tests ahead and run them when the machine is free, queue them. A job is one YAML file in `queue/`
+(committed; one file per job so two branches never conflict and the worker rewrites only its own):
+
+```yaml
+id: 20261115-new-ollama-timing-provider-text-suites   # the file name
+created: 2026-11-15T20:05:11Z
+reason: "new Ollama timing provider: text suites"
+models: [qwen3.5:4b, qwen3:4b]
+suites: [classify, extract]
+priority: 10             # higher runs first; ties go to the older job
+needs:                   # what must hold before it runs; absent keys are not checked
+  max_load_per_core: 0.3 # 1-minute load per logical core
+  min_free_gib: 4        # memory available without swapping
+  max_swap_gib: 2
+  quiet_minutes: 10      # the above must hold continuously this long
+  ac_power: true
+  class: apple-16g       # only this class of machine runs it
+  profile: apple-16g     # a machines/<name>.yaml to narrow with
+repeat: 5                # optional: run every case 5 times
+kinds: [docs]            # optional: only the cases of these kinds
+status: pending          # pending | running | done | failed
+run_ids: []              # the runs that did its evals
+done: []                 # evals finished (model·suite): the resume point
+notes: ""
+```
+
+```sh
+bun scripts/queue.ts add --suites classify,extract --models all --reason "new prompt" --priority 5 \
+    --needs load=0.3,free=4,quiet=10,ac=true      # short names: load free swap quiet ac class profile
+bun scripts/queue.ts sync [--dry-run]            # queue every stale or missing (model, suite) on this machine, one job per suite
+bun scripts/queue.ts list                        # open jobs: evals left, time (from past latency medians), does this machine fit
+bun scripts/queue.ts drop <id>
+bun scripts/queue.ts work [--once] [--max-hours 8] [--watch]
+```
+
+`work` takes the open job with the highest priority (a `running` one first: it resumes), waits until its `needs` hold
+(sampling as `scripts/conditions.ts` does), then runs its evals through the same code as `bun run eval`. Between two
+evals it checks again; if the machine got busy (the load average is not held against it there: it is mostly the eval's
+own work, but another heavy program is) the job pauses, stays `running`, and carries on once the machine has been quiet
+for `quiet_minutes`. Each finished eval is written into the job's `done` list, so killing the worker loses at most the eval
+in flight; a restart resumes from the rest. A job whose evals error ends `failed` with the errors in `notes`; set
+`status: pending` to retry what is left. `--max-hours` starts no new eval after that long, `--watch` keeps polling for new
+jobs when none is waiting (for a service), and a lock (`queue/.worker.lock`) keeps two workers from running at once. Edit
+a job's `priority`, `needs` or `status` any time: the worker re-reads the file before each eval, and `drop` ends a running job
+at its next eval.
+
+`machines/launchd/dev.small-model-evals.queue.plist` is an example launchd agent that keeps a worker running across
+sessions; it is not installed (see the comments in it). The site's Queue page lists the open jobs as of the last export.
 
 ## Results
 

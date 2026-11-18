@@ -1,0 +1,90 @@
+---
+import Base from '../layouts/Base.astro'
+import { data } from '../lib/data'
+
+/** A long time as people read it: seconds, minutes or hours. */
+const dur = (ms: number) => (ms < 90_000 ? `${Math.round(ms / 1000)} s` : ms < 90 * 60_000 ? `${Math.round(ms / 60_000)} min` : `${(ms / 3_600_000).toFixed(1)} h`)
+
+const jobs = data.queue
+const open = jobs.filter((j) => j.status === 'pending' || j.status === 'running')
+const finished = jobs.filter((j) => j.status === 'done' || j.status === 'failed')
+const needs = (n: (typeof jobs)[number]['needs']) =>
+  [
+    n.max_load_per_core !== undefined ? `load ≤ ${n.max_load_per_core}/core` : '',
+    n.min_free_gib !== undefined ? `≥ ${n.min_free_gib} GiB free` : '',
+    n.max_swap_gib !== undefined ? `swap ≤ ${n.max_swap_gib} GiB` : '',
+    n.quiet_minutes ? `quiet for ${n.quiet_minutes} min` : '',
+    n.ac_power ? 'on AC power' : '',
+    n.class ? `class ${n.class}` : '',
+    n.profile ? `profile ${n.profile}` : '',
+  ]
+    .filter(Boolean)
+    .join(', ') || 'anything'
+const total = open.reduce((a, j) => a + j.estimate_ms, 0)
+---
+
+<Base title="Queue" description="Runs prepared ahead and waiting for the machine to be free. A worker (bun scripts/queue.ts work) picks the highest priority job whose conditions hold, runs it, and records the result in the ledger.">
+  <p class="lede">
+    {open.length} open {open.length === 1 ? 'job' : 'jobs'}{open.length > 0 && <> · about {dur(total)} of compute from the times the ledger shows</>}.
+    The list is as of the last export; the live queue is the files in <code>queue/</code>.
+  </p>
+  {open.length === 0 && <p class="muted">Nothing is waiting.</p>}
+  {
+    open.length > 0 && (
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Job</th>
+              <th>Status</th>
+              <th class="num">Priority</th>
+              <th>Suites</th>
+              <th class="num">Models</th>
+              <th class="num">Evals left</th>
+              <th class="num">About</th>
+              <th>Runs when</th>
+            </tr>
+          </thead>
+          <tbody>
+            {open.map((j) => (
+              <tr>
+                <td>
+                  <code>{j.id}</code>
+                  <div class="muted">{j.reason}</div>
+                  {j.notes && <div class="muted">{j.notes}</div>}
+                </td>
+                <td><span class={`pill ${j.status === 'running' ? 'pass' : 'stale'}`}>{j.status}</span></td>
+                <td class="num">{j.priority}</td>
+                <td>{j.suites.map((s) => <code>{s} </code>)}</td>
+                <td class="num" title={j.models.join(', ')}>{j.models.length}</td>
+                <td class="num">{j.evals_left}</td>
+                <td class="num">{dur(j.estimate_ms)}{j.repeat && j.repeat > 1 ? <div class="muted">{j.repeat}× each</div> : ''}</td>
+                <td>{needs(j.needs)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+  {
+    finished.length > 0 && (
+      <>
+        <h2>Finished</h2>
+        <ul>
+          {finished.map((j) => (
+            <li>
+              <code>{j.id}</code> <span class={`pill ${j.status === 'done' ? 'pass' : 'fail'}`}>{j.status}</span> {j.reason}
+              {j.notes && <span class="muted"> ({j.notes})</span>}
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+  <p class="note">
+    <code>bun scripts/queue.ts add</code> queues work, <code>sync</code> queues whatever is stale or missing on this machine,
+    <code>list</code> shows it with whether this machine fits, and <code>work</code> runs it when the job's conditions hold
+    and pauses when the machine gets busy (README, "Queued runs").
+  </p>
+</Base>

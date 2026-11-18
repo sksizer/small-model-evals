@@ -12,9 +12,10 @@ prompts:
      {"role": "user", "content": {{ log | dump }}}]
 
 providers:
-  - id: ollama:chat:qwen3.5:4b
+  - id: file://../../providers/ollama-chat.ts
     label: qwen3.5:4b
     config: &config
+      model: 'qwen3.5:4b'
       temperature: 0
       num_ctx: 8192
       # Caps a reply that repeats itself; the longest right answer is ~600 tokens.
@@ -45,17 +46,17 @@ providers:
                       seconds: { type: [number, 'null'] }
                 duration_min: { type: [number, 'null'] }
                 distance_km: { type: [number, 'null'] }
-  - { id: 'ollama:chat:qwen3.5:9b', label: qwen3.5:9b, config: *config }
-  - { id: 'ollama:chat:qwen3:4b', label: qwen3:4b, config: *config }
-  - { id: 'ollama:chat:gemma4:e4b', label: gemma4:e4b, config: *config }
-  - { id: 'ollama:chat:openbmb/minicpm5-2b:latest', label: minicpm5-2b, config: *config }
-  - { id: 'ollama:chat:granite4.2:3b', label: granite4.2:3b, config: *config }
-  - { id: 'ollama:chat:lfm3:1.7b', label: lfm3:1.7b, config: *config }
-  - { id: 'ollama:chat:hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0', label: 'botpsy-0.8b', config: *config }
-  - { id: 'ollama:chat:qwen3.5:0.8b', label: 'qwen3.5:0.8b', config: *config }
-  - id: ollama:chat:granite4:latest
+  - { id: file://../../providers/ollama-chat.ts, label: qwen3.5:9b, config: { <<: *config, model: 'qwen3.5:9b' } }
+  - { id: file://../../providers/ollama-chat.ts, label: qwen3:4b, config: { <<: *config, model: 'qwen3:4b' } }
+  - { id: file://../../providers/ollama-chat.ts, label: gemma4:e4b, config: { <<: *config, model: 'gemma4:e4b' } }
+  - { id: file://../../providers/ollama-chat.ts, label: minicpm5-2b, config: { <<: *config, model: 'openbmb/minicpm5-2b:latest' } }
+  - { id: file://../../providers/ollama-chat.ts, label: granite4.2:3b, config: { <<: *config, model: 'granite4.2:3b' } }
+  - { id: file://../../providers/ollama-chat.ts, label: lfm3:1.7b, config: { <<: *config, model: 'lfm3:1.7b' } }
+  - { id: file://../../providers/ollama-chat.ts, label: 'botpsy-0.8b', config: { <<: *config, model: 'hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0' } }
+  - { id: file://../../providers/ollama-chat.ts, label: 'qwen3.5:0.8b', config: { <<: *config, model: 'qwen3.5:0.8b' } }
+  - id: file://../../providers/ollama-chat.ts
     label: granite4
-    config: { temperature: 0, num_ctx: 8192, num_predict: 1536, format: *schema }
+    config: { model: 'granite4:latest', temperature: 0, num_ctx: 8192, num_predict: 1536, format: *schema }
 
 defaultTest:
   assert:

@@ -1,0 +1,26 @@
+id: 20261115-new-ollama-timing-provider-image-suites
+created: 2026-11-15T20:06:15Z
+reason: "new Ollama timing provider: image suites"
+models:
+  - qwen3.5:4b
+  - qwen3.5:9b
+  - gemma4:e4b
+  - lfm3-vl:2b
+  - gemma3:4b
+  - d1-omni:600m
+  - d1:2b
+suites:
+  - ocr
+  - tag-image
+  - nudity-flag
+priority: 5
+needs:
+  max_load_per_core: 0.3
+  min_free_gib: 4
+  quiet_minutes: 10
+status: pending
+run_ids:
+  []
+done:
+  []
+notes: ""

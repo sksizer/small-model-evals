@@ -98,6 +98,10 @@ export interface FinderCell {
   time_per: TimePer
   /** This model's time over the fastest model's on the same suite and machine (1 = fastest); null without a time. */
   rel: number | null
+  /** The run's eval was taken on a busy machine (results/conditions/), so its time is suspect. */
+  busy: boolean
+  /** Timing from the Ollama chat providers; null for results that predate them (or models that do not run in Ollama). */
+  timing: { ttft_ms: number | null; decode_tps: number | null; output_tokens: number | null; load_ms: number | null } | null
 }
 
 /**
@@ -161,6 +165,50 @@ export interface Perf {
   gpu_pct: number | null
   /** Why this run was taken on a busy machine (results/conditions/); empty when clean or not recorded. */
   busy: string[]
+}
+
+/** Timing of one model on one suite, from the Ollama chat providers (providers/ollama-stream.ts); medians over every call and repeat. */
+export interface Timing {
+  machine: string
+  model: string
+  suite: string
+  run: string
+  stale: boolean
+  /** Calls timed, and how many times each case ran. */
+  samples: number
+  repeats: number
+  /** Time to first token (content or tool call), ms, with its quartiles when there are repeats. */
+  ttft_ms: number | null
+  ttft_spread: { p25: number; p75: number } | null
+  decode_tps: number | null
+  decode_spread: { p25: number; p75: number } | null
+  prompt_tps: number | null
+  output_tokens: number | null
+  /** Approximate: streamed thinking chunks (Ollama reports no thinking token count); null when the model did not think. */
+  think_tokens: number | null
+  /** The first call's load time, ms. */
+  load_ms: number | null
+  /** Why the eval was taken on a busy machine; empty when clean or not recorded. */
+  busy: string[]
+}
+
+/** A queued run (queue/<id>.yaml, scripts/queue-lib.ts) with the evals it has left and a time estimate. */
+export interface QueueJob {
+  id: string
+  created: string
+  reason: string
+  models: string[]
+  suites: string[]
+  kinds?: string[]
+  priority: number
+  needs: { max_load_per_core?: number; min_free_gib?: number; max_swap_gib?: number; quiet_minutes?: number; ac_power?: boolean; class?: string; profile?: string }
+  repeat?: number
+  status: 'pending' | 'running' | 'done' | 'failed'
+  run_ids: string[]
+  done: string[]
+  notes: string
+  evals_left: number
+  estimate_ms: number
 }
 
 export interface Result {
@@ -592,6 +640,8 @@ export const data = raw as unknown as {
   suites: Suite[]
   cells: Cell[]
   perf: Perf[]
+  timing: Timing[]
+  queue: QueueJob[]
   inproc: InProc[]
   screening: { categories: { id: Category; definition: string; private: boolean }[]; levels: PrivacyLevel[]; thresholds: number[]; models: ScreeningModel[] } | null
   search: { kinds: ('photos' | 'docs' | 'text')[]; cells: SearchCell[]; items: Record<string, Record<string, { path?: string; title?: string | null; text?: string }>> }

@@ -29,6 +29,8 @@ import { TIGHT, fitOf, requirementOf, suiteNeed, type FitStatus } from './fit.ts
 import type { CorpusImage } from './fetch-corpus.ts'
 import { CATALOG } from './catalog.ts'
 import { MODELS, ageMonths, skipReason } from './models.ts'
+import { byTurn, estimate, jobEvals, readJobs } from './queue-lib.ts'
+import { evalKey } from './run-core.ts'
 import { RESULTS_DIR, ROOT, SCOPE, SUITES_DIR, currentSnapshot, latest, loadCases, readLedger, readSnapshot, type LedgerRecord } from './ledger.ts'
 
 interface CaseDef {
@@ -383,6 +385,53 @@ const perf = view
       }
     })
   })
+
+/** The p25 and p75 of a list: the spread beside a median, for timings that repeat. */
+const spread = (xs: number[]): { p25: number; p75: number } | null => {
+  const s = xs.filter(Number.isFinite).sort((a, b) => a - b)
+  return s.length < 2 ? null : { p25: s[Math.floor((s.length - 1) * 0.25)]!, p75: s[Math.ceil((s.length - 1) * 0.75)]! }
+}
+
+/**
+ * Timing from the Ollama chat providers (providers/ollama-stream.ts), per model and suite: the median over the
+ * suite's records (every case, every repeat) of the time to first token, decode speed, output tokens and prompt
+ * speed, and the first call's load time (the cold load; later calls find the model loaded). Models and suites
+ * whose newest results predate the timing provider have none. `busy` is why the run's eval was taken on a busy
+ * machine (results/conditions/), empty when clean or not recorded.
+ */
+const timing = view
+  .filter((v) => !v.suite.startsWith('perf'))
+  .flatMap((v) => {
+    const rs = v.records.filter((r) => r.metrics?.['total_ms'] !== undefined)
+    if (rs.length === 0) return []
+    const m = (key: string) => rs.flatMap((r) => (r.metrics?.[key] !== undefined && Number.isFinite(r.metrics[key]) ? [r.metrics[key]!] : []))
+    const ttft = m('ttft_ms')
+    const decode = m('decode_tps')
+    const think = m('think_tokens')
+    return [
+      {
+        machine: v.machine,
+        model: v.model,
+        suite: v.suite,
+        run: v.run,
+        stale: v.stale,
+        /** Calls timed, and how many times each case ran (more than 1 when the job set `repeat`). */
+        samples: rs.length,
+        repeats: Math.max(...rs.map((r) => r.repeat)) + 1,
+        ttft_ms: median(ttft),
+        ttft_spread: spread(ttft),
+        decode_tps: median(decode),
+        decode_spread: spread(decode),
+        prompt_tps: median(m('prompt_tps')),
+        output_tokens: median(m('output_tokens')),
+        /** Approximate: the count of streamed thinking chunks (Ollama reports no thinking token count). */
+        think_tokens: think.length > 0 ? median(think) : null,
+        load_ms: m('load_ms').length > 0 ? Math.max(...m('load_ms')) : null,
+        busy: busyOf(v.run, v.model, v.suite),
+      },
+    ]
+  })
+const timingBy = new Map(timing.map((t) => [[t.machine, t.model, t.suite].join('\u0000'), t] as const))
 
 const results = view
   .filter((v) => !v.suite.startsWith('perf'))
@@ -909,6 +958,12 @@ const finder = (() => {
                 time_ms: c.time_ms,
                 time_per: c.time_per,
                 rel: best !== undefined && c.time_ms !== null && c.time_ms > 0 ? c.time_ms / best : null,
+                /** The run's eval was taken on a busy machine, so its time is suspect. */
+                busy: busyOf(c.run, c.model, c.suite).length > 0,
+                timing: (() => {
+                  const t = timingBy.get([c.machine, c.model, c.suite].join('\u0000'))
+                  return t ? { ttft_ms: t.ttft_ms, decode_tps: t.decode_tps, output_tokens: t.output_tokens, load_ms: t.load_ms } : null
+                })(),
               },
             ]
           }),
@@ -918,9 +973,19 @@ const finder = (() => {
   return { families: familyDefs.map((f) => ({ id: f.id, title: f.title })), tasks, rows }
 })()
 
+/** The run queue (queue/, scripts/queue-lib.ts): each job with the evals it has left and about how long they take, from what the ledger shows each model taking. */
+const queue = await Promise.all(
+  readJobs()
+    .sort(byTurn)
+    .map(async (j) => {
+      const left = (await jobEvals(j)).filter((e) => !j.done.includes(evalKey(e)))
+      return { ...j, evals_left: left.length, estimate_ms: estimate(left, j.repeat ?? 1, view).ms }
+    }),
+)
+
 mkdirSync(DATA_OUT, { recursive: true })
 writeFileSync(
   join(DATA_OUT, 'evals.json'),
-  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, inproc, finder, screening, classes: ALL_CLASSES, tight: TIGHT, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus }),
+  JSON.stringify({ generated_at: new Date().toISOString(), scope: SCOPE, machines, models, suites: suiteData, cells, perf, timing, inproc, finder, queue, screening, classes: ALL_CLASSES, tight: TIGHT, search: { kinds: [...SEARCH_KINDS], cells: searchCells, items: searchItems }, leaderboard, results, history, runs, environments, builds, corpus }),
 )
 console.log(`${results.length} results, ${perf.length} speed rows, ${runs.length} runs → ${relative(ROOT, join(DATA_OUT, 'evals.json'))}`)
