@@ -1,6 +1,6 @@
 # Plan: audio and video search
 
-Status: approved (2026-11-06). The owner's answers are under "Decisions" at the end.
+Status: approved (2026-11-06). Stage 1 (corpus and contact sheet) is on branch `suite/av-search`, awaiting the owner's approval of the contact sheet. The owner's answers are under "Decisions" at the end.
 
 ## Goal
 
