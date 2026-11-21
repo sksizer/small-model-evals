@@ -9,9 +9,11 @@ suites:
 kinds:
   - videos
   - video-to-video
-priority: 9
+priority: 19
 needs:
-  {}
+  max_load_per_core: 0.3
+  min_free_gib: 4
+  quiet_minutes: 10
 status: pending
 run_ids: []
 done: []

@@ -2,6 +2,7 @@
 //
 //   bun scripts/queue.ts add --suites classify,extract --models all --reason "new prompt" [--priority 5]
 //                            [--needs load=0.3,free=4,quiet=10,ac=true,class=apple-16g] [--repeat 5] [--kinds docs]
+//                            (--needs overrides the defaults one by one: load 0.5/core, 3 GiB free, quiet 5 min, on AC)
 //   bun scripts/queue.ts sync [--dry-run]   enqueue every (model, suite) that is stale or missing on this machine, one job per suite (--dry-run: say what it would queue)
 //   bun scripts/queue.ts list          the open jobs, with the time each should take and whether this machine fits it
 //   bun scripts/queue.ts drop <id>     remove a job (--force for a running one)
@@ -81,7 +82,7 @@ async function add(v: { models?: string; suites?: string; reason?: string; prior
     suites,
     ...(v.kinds ? { kinds: csv(v.kinds) } : {}),
     priority: v.priority === undefined ? 0 : Number(v.priority),
-    needs: parseNeeds(v.needs),
+    needs: { ...DEFAULT_NEEDS, ...parseNeeds(v.needs) },
     ...(v.repeat ? { repeat: Number(v.repeat) } : {}),
   })
   writeJob(job)

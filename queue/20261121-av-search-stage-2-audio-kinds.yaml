@@ -11,9 +11,11 @@ kinds:
   - sounds
   - speech
   - sound-to-sound
-priority: 10
+priority: 20
 needs:
-  {}
+  max_load_per_core: 0.3
+  min_free_gib: 4
+  quiet_minutes: 10
 status: pending
 run_ids: []
 done: []
