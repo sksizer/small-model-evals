@@ -28,7 +28,10 @@ needs:
   max_load_per_core: 0.3
   min_free_gib: 4
   quiet_minutes: 10
-status: pending
-run_ids: []
-done: []
-notes: ""
+status: running
+run_ids:
+  - 2026-11-21T05-03-23
+done:
+  - granite4·classify
+  - granite4·extract
+notes: "paused 2026-11-21T07:28Z: llama-server is using 88% of a core; syspolicyd is using 41% of a core; 3.7 GiB free, needs 4"

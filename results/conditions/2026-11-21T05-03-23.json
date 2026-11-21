@@ -1,0 +1,82 @@
+{
+  "run": "2026-11-21T05-03-23",
+  "evals": [
+    {
+      "model": "granite4",
+      "suite": "classify",
+      "kind": null,
+      "start": {
+        "load_1m": 1.83,
+        "load_per_core": 0.18,
+        "mem_available_gib": 5.5,
+        "mem_free_pct": 69,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 1.85,
+        "load_per_core": 0.19,
+        "mem_available_gib": 3.8,
+        "mem_free_pct": 45,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "llama-server",
+            "cpu_pct": 93
+          }
+        ]
+      },
+      "flags": [
+        "8.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "llama-server is using 93% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "granite4",
+      "suite": "extract",
+      "kind": null,
+      "start": {
+        "load_1m": 2.2,
+        "load_per_core": 0.22,
+        "mem_available_gib": 5.3,
+        "mem_free_pct": 66,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 2.64,
+        "load_per_core": 0.26,
+        "mem_available_gib": 3.7,
+        "mem_free_pct": 46,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "llama-server",
+            "cpu_pct": 88
+          },
+          {
+            "name": "syspolicyd",
+            "cpu_pct": 41
+          }
+        ]
+      },
+      "flags": [
+        "8.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "llama-server is using 88% of a core: close it if you can",
+        "syspolicyd is using 41% of a core: close it if you can"
+      ]
+    }
+  ]
+}
