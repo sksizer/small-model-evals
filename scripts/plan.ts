@@ -60,8 +60,19 @@ export const SUITE_META: Record<string, { categories: Category[]; cost: Cost; ca
   edit: { categories: ['image-edit'], cost: 'heavy' },
 }
 
-/** A suite outside the registry (a private one) counts as light and in no category, so it runs by default and by name. */
-export const metaOf = (suite: string): { categories: Category[]; cost: Cost; case_timeout_min?: number } => SUITE_META[suite] ?? { categories: [], cost: 'light' }
+type SuiteMeta = { categories: Category[]; cost: Cost; case_timeout_min?: number }
+
+/**
+ * A suite outside the registry (a private one) may declare the same fields in `suite.yaml` beside its config,
+ * kept out of promptfooconfig.yaml for the reason above. Without one it counts as light and in no category; an
+ * uncategorised suite is never filtered out by category, so it runs by default and by name.
+ */
+export const metaOf = (suite: string): SuiteMeta => {
+  if (SUITE_META[suite]) return SUITE_META[suite]
+  const file = join(SUITES_DIR, suite, 'suite.yaml')
+  const own = existsSync(file) ? (Bun.YAML.parse(readFileSync(file, 'utf8')) as Partial<SuiteMeta>) : {}
+  return { categories: own.categories ?? [], cost: own.cost ?? 'light', ...(own.case_timeout_min ? { case_timeout_min: own.case_timeout_min } : {}) }
+}
 
 // ---- profiles ------------------------------------------------------------------
 
@@ -194,7 +205,7 @@ export async function buildPlan(opts: {
   const suites = readdirSync(SUITES_DIR)
     .sort()
     .filter((s) => !onlySuites || onlySuites.has(s))
-    .filter((s) => !categories || metaOf(s).categories.some((c) => categories.has(c)))
+    .filter((s) => !categories || metaOf(s).categories.length === 0 || metaOf(s).categories.some((c) => categories.has(c)))
     .filter((s) => !cost || metaOf(s).cost === cost)
   const labels = new Map(await Promise.all(suites.map(async (s) => [s, await suiteLabels(s)] as const)))
   const view = latest()

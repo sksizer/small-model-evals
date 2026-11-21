@@ -67,4 +67,4 @@ search suite's notes and foods, `suites/search/corpora.yaml`), the way the rules
 
 ## Changing this standard
 
-Changing a rule is the owner's decision. Record the change and its date here.
+Changing a rule is the maintainers' decision. Record the change and its date here.
