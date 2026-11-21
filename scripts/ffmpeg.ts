@@ -49,6 +49,26 @@ export function toVideo(src: string, out: string, start: number, duration: numbe
   ])
 }
 
+/**
+ * `duration` seconds from `start` of a stored clip, as Opus at `kbps` with `gainDb` decibels of volume
+ * change, into `out`: a derived copy (scripts/av-recipes.ts). Stays 16 kHz mono like every stored sound.
+ */
+export function reencodeAudio(src: string, out: string, start: number, duration: number, kbps: number, gainDb: number): void {
+  ffmpeg([
+    ...seek(start, duration, src, false), '-vn', '-ac', '1', '-ar', '16000', ...(gainDb === 0 ? [] : ['-af', `volume=${gainDb}dB`]),
+    '-c:a', 'libopus', '-b:a', `${kbps}k`, '-application', 'audio', ...CLEAN, out,
+  ])
+}
+
+/** `duration` seconds from `start` of a stored video, re-encoded at constant quality `crf` into `out`: a derived copy. Same 360p, 15 fps, no sound track. */
+export function reencodeVideo(src: string, out: string, start: number, duration: number, crf: number): void {
+  ffmpeg([
+    ...seek(start, duration, src, false),
+    '-an', '-vf', 'fps=15,scale=-2:360:flags=bicubic', '-c:v', 'libx264', '-preset', 'veryslow', '-crf', String(crf), '-pix_fmt', 'yuv420p',
+    '-movflags', '+faststart', ...CLEAN, out,
+  ])
+}
+
 /** What ffprobe reports about a stored clip. */
 export interface Probe {
   duration: number

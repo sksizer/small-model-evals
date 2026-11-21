@@ -16,6 +16,11 @@
 // Speech also carries a `summary` (one line) and, where the book's text could be
 // matched, an approximate `transcript`.
 //
+// - a derived copy (`derived: <id>`, `recipe: <name>`) of a stored clip, made with ffmpeg by one of the
+//   recipes of scripts/av-recipes.ts (trimmed, recompressed, quieter; a video re-encoded or cut). It
+//   keeps its parent's page, author and licence, and names the parent in the manifest (`derived_from`,
+//   `recipe`). The parent is listed above it, so it is already in the manifest.
+//
 // Freesound is in the standard (CC0 only) but not fetched here: its API needs a
 // key. The Freesound files that Commons hosts come in as Commons files.
 //
@@ -26,7 +31,8 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { UA, api, stripHtml } from './commons.ts'
-import { AUDIO_EXT, VIDEO_EXT, probe, toAudio, toVideo } from './ffmpeg.ts'
+import { AUDIO_RECIPES, VIDEO_RECIPES, type AvRecipe } from './av-recipes.ts'
+import { AUDIO_EXT, VIDEO_EXT, probe, reencodeAudio, reencodeVideo, toAudio, toVideo } from './ffmpeg.ts'
 import { ALLOWED } from './licences.ts'
 
 export type MediaKind = 'sound' | 'speech' | 'video'
@@ -34,6 +40,7 @@ export type MediaKind = 'sound' | 'speech' | 'video'
 type MediaSource = { id: string; kind: MediaKind; category: string; start?: number; duration?: number; summary?: string; transcript?: string } & (
   | { title: string }
   | { librivox: string; file: string }
+  | { derived: string; recipe: AvRecipe }
 )
 
 /** One stored clip: corpus/av-manifest.json. */
@@ -43,13 +50,13 @@ export interface CorpusMedia {
   category: string
   /** Path under corpus/. */
   file: string
-  /** `File:...` on Commons, or `LibriVox <item>/<file>: <book>, <chapter>`. */
+  /** `File:...` on Commons, `LibriVox <item>/<file>: <book>, <chapter>`, or for a derived copy `<recipe> of <parent>`. */
   title: string
   page: string
   author: string
   licence: string
   licence_url: string | null
-  /** Where in the source the clip starts, and its length in the stored file, in seconds. */
+  /** Where in the source (for a derived copy, in its parent) the clip starts, and its length in the stored file, in seconds. */
   start: number
   duration: number
   bytes: number
@@ -59,6 +66,9 @@ export interface CorpusMedia {
   summary?: string
   /** Speech only: the book text this clip reads, approximate (see av-sources.yaml). */
   transcript?: string
+  /** For a derived copy: the clip it was made from, and how (scripts/av-recipes.ts). */
+  derived_from?: string
+  recipe?: AvRecipe
 }
 
 /** Allowed stored length in seconds, per kind (docs/standards/corpus.md). */
@@ -181,10 +191,59 @@ export async function fetchAv(corpus: string): Promise<AvResult> {
       if (s.transcript) have.transcript = s.transcript
       else delete have.transcript
       const path = join(corpus, have.file)
-      const sameSource = 'title' in s ? have.title === s.title : have.title.startsWith(`LibriVox ${s.librivox}/${s.file}:`)
-      if (!sameSource || have.start !== start) failures.push(`${s.id}: source or start changed; give the new clip a new id`)
+      const sameSource =
+        'title' in s ? have.title === s.title : 'derived' in s ? have.title === `${s.recipe} of ${s.derived}` : have.title.startsWith(`LibriVox ${s.librivox}/${s.file}:`)
+      if (!sameSource || ('derived' in s ? false : have.start !== start)) failures.push(`${s.id}: source or start changed; give the new clip a new id`)
       else if (!existsSync(path)) failures.push(`${s.id}: in the manifest but corpus/${have.file} is missing`)
       else if (sha(path) !== have.sha256) failures.push(`${s.id}: clip bytes changed`)
+      continue
+    }
+    if ('derived' in s) {
+      const parent = known.get(s.derived)
+      if (!parent) {
+        failures.push(`${s.id}: parent ${s.derived} is not in the manifest (list it above this entry and rerun)`)
+        continue
+      }
+      const file = s.kind === 'video' ? `video/${s.id}.${VIDEO_EXT}` : `audio/${s.id}.${AUDIO_EXT}`
+      const out = join(corpus, file)
+      try {
+        const from = join(corpus, parent.file)
+        let at: number
+        if (s.kind === 'video') {
+          const r = VIDEO_RECIPES[s.recipe as keyof typeof VIDEO_RECIPES]
+          if (!r) throw new Error(`unknown video recipe ${s.recipe}`)
+          at = r.start
+          reencodeVideo(from, out, at, r.length ?? parent.duration, r.crf)
+        } else {
+          const r = AUDIO_RECIPES[s.recipe as keyof typeof AUDIO_RECIPES]
+          if (!r) throw new Error(`unknown audio recipe ${s.recipe}`)
+          at = r.start(parent.duration)
+          reencodeAudio(from, out, at, r.length(parent.duration), r.kbps, r.gainDb)
+        }
+        const p = probe(out)
+        if (p.duration < min - 0.5 || p.duration > max + 0.5) throw new Error(`${p.duration}s is outside the ${min}-${max}s a ${s.kind} clip may be`)
+        manifest.push({
+          id: s.id,
+          kind: s.kind,
+          category: s.category,
+          file,
+          title: `${s.recipe} of ${s.derived}`,
+          page: parent.page,
+          author: parent.author,
+          licence: parent.licence,
+          licence_url: parent.licence_url,
+          start: at,
+          duration: Math.round(p.duration * 10) / 10,
+          bytes: Bun.file(out).size,
+          sha256: sha(out),
+          ...(p.width && p.height ? { width: p.width, height: p.height } : {}),
+          derived_from: s.derived,
+          recipe: s.recipe,
+        })
+        console.log(`${s.id}: ${s.recipe} of ${s.derived}, ${p.duration.toFixed(1)}s, ${(Bun.file(out).size / 1024).toFixed(0)} KB`)
+      } catch (err) {
+        failures.push(`${s.id}: ${String(err).split('\n')[0]}`)
+      }
       continue
     }
     const src = await ('title' in s ? commons(s) : librivox(s))
@@ -256,7 +315,7 @@ export function avAttributionLines(manifest: CorpusMedia[]): string[] {
   return [
     '## Audio and video',
     '',
-    'Sound, speech and video clips are trimmed, converted renditions (16 kHz mono Opus; 360p H.264 without sound) of the Wikimedia Commons files and LibriVox recordings (public domain) linked below.',
+    'Sound, speech and video clips are trimmed, converted renditions (16 kHz mono Opus; 360p H.264 without sound) of the Wikimedia Commons files and LibriVox recordings (public domain) linked below, or derived copies of those (trimmed, recompressed, quieter, re-encoded, cut) that keep their parent\'s credit.',
     '',
     '| Clip | Kind | Source | Author | Licence |',
     '| --- | --- | --- | --- | --- |',

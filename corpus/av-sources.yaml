@@ -129,3 +129,58 @@
 - {"id": "vid-insect-2", "kind": "video", "category": "insect", "title": "File:Julia Butterfly (Dryas iulia).webm", "start": 3, "duration": 10}
 - {"id": "vid-cattle-1", "kind": "video", "category": "cattle", "title": "File:Cow crosses cattle grid.webm", "start": 5, "duration": 10}
 - {"id": "vid-cattle-2", "kind": "video", "category": "cattle", "title": "File:Sheep grazing in the countryside.webm", "start": 0, "duration": 8}
+
+# Derived copies (scripts/pick-av.ts; recipes in scripts/av-recipes.ts): the clip-to-clip cases of the search suite. A copy keeps its
+# parent's credit and licence; its id is copy-<recipe>-<parent>.
+- {"id":"copy-trim-snd-canine-1","kind":"sound","category":"canine","derived":"snd-canine-1","recipe":"trim"}
+- {"id":"copy-recode-snd-canine-1","kind":"sound","category":"canine","derived":"snd-canine-1","recipe":"recode"}
+- {"id":"copy-recode-snd-frog-1","kind":"sound","category":"frog","derived":"snd-frog-1","recipe":"recode"}
+- {"id":"copy-quiet-snd-frog-1","kind":"sound","category":"frog","derived":"snd-frog-1","recipe":"quiet"}
+- {"id":"copy-quiet-snd-rain-2","kind":"sound","category":"rain","derived":"snd-rain-2","recipe":"quiet"}
+- {"id":"copy-trim-snd-rain-2","kind":"sound","category":"rain","derived":"snd-rain-2","recipe":"trim"}
+- {"id":"copy-trim-snd-thunder-1","kind":"sound","category":"thunder","derived":"snd-thunder-1","recipe":"trim"}
+- {"id":"copy-recode-snd-thunder-1","kind":"sound","category":"thunder","derived":"snd-thunder-1","recipe":"recode"}
+- {"id":"copy-recode-snd-wind-1","kind":"sound","category":"wind","derived":"snd-wind-1","recipe":"recode"}
+- {"id":"copy-quiet-snd-wind-1","kind":"sound","category":"wind","derived":"snd-wind-1","recipe":"quiet"}
+- {"id":"copy-quiet-snd-sea-waves-1","kind":"sound","category":"sea-waves","derived":"snd-sea-waves-1","recipe":"quiet"}
+- {"id":"copy-trim-snd-sea-waves-1","kind":"sound","category":"sea-waves","derived":"snd-sea-waves-1","recipe":"trim"}
+- {"id":"copy-trim-snd-helicopter-1","kind":"sound","category":"helicopter","derived":"snd-helicopter-1","recipe":"trim"}
+- {"id":"copy-recode-snd-helicopter-1","kind":"sound","category":"helicopter","derived":"snd-helicopter-1","recipe":"recode"}
+- {"id":"copy-recode-snd-airplane-1","kind":"sound","category":"airplane","derived":"snd-airplane-1","recipe":"recode"}
+- {"id":"copy-quiet-snd-airplane-1","kind":"sound","category":"airplane","derived":"snd-airplane-1","recipe":"quiet"}
+- {"id":"copy-quiet-snd-train-1","kind":"sound","category":"train","derived":"snd-train-1","recipe":"quiet"}
+- {"id":"copy-trim-snd-train-1","kind":"sound","category":"train","derived":"snd-train-1","recipe":"trim"}
+- {"id":"copy-trim-snd-bell-1","kind":"sound","category":"bell","derived":"snd-bell-1","recipe":"trim"}
+- {"id":"copy-recode-snd-bell-1","kind":"sound","category":"bell","derived":"snd-bell-1","recipe":"recode"}
+- {"id":"copy-recode-snd-clock-1","kind":"sound","category":"clock","derived":"snd-clock-1","recipe":"recode"}
+- {"id":"copy-quiet-snd-clock-1","kind":"sound","category":"clock","derived":"snd-clock-1","recipe":"quiet"}
+- {"id":"copy-quiet-snd-typing-1","kind":"sound","category":"typing","derived":"snd-typing-1","recipe":"quiet"}
+- {"id":"copy-trim-snd-typing-1","kind":"sound","category":"typing","derived":"snd-typing-1","recipe":"trim"}
+- {"id":"copy-trim-snd-cooking-1","kind":"sound","category":"cooking","derived":"snd-cooking-1","recipe":"trim"}
+- {"id":"copy-recode-snd-cooking-1","kind":"sound","category":"cooking","derived":"snd-cooking-1","recipe":"recode"}
+- {"id":"copy-recode-snd-flute-1","kind":"sound","category":"flute","derived":"snd-flute-1","recipe":"recode"}
+- {"id":"copy-quiet-snd-flute-1","kind":"sound","category":"flute","derived":"snd-flute-1","recipe":"quiet"}
+- {"id":"copy-quiet-snd-guitar-1","kind":"sound","category":"guitar","derived":"snd-guitar-1","recipe":"quiet"}
+- {"id":"copy-trim-snd-guitar-1","kind":"sound","category":"guitar","derived":"snd-guitar-1","recipe":"trim"}
+- {"id":"copy-trim-snd-piano-1","kind":"sound","category":"piano","derived":"snd-piano-1","recipe":"trim"}
+- {"id":"copy-recode-snd-piano-1","kind":"sound","category":"piano","derived":"snd-piano-1","recipe":"recode"}
+- {"id":"copy-reencode-vid-tram-1","kind":"video","category":"tram","derived":"vid-tram-1","recipe":"reencode"}
+- {"id":"copy-cut-vid-tram-1","kind":"video","category":"tram","derived":"vid-tram-1","recipe":"cut"}
+- {"id":"copy-reencode-vid-horse-1","kind":"video","category":"horse","derived":"vid-horse-1","recipe":"reencode"}
+- {"id":"copy-cut-vid-horse-1","kind":"video","category":"horse","derived":"vid-horse-1","recipe":"cut"}
+- {"id":"copy-reencode-vid-traffic-1","kind":"video","category":"traffic","derived":"vid-traffic-1","recipe":"reencode"}
+- {"id":"copy-cut-vid-traffic-1","kind":"video","category":"traffic","derived":"vid-traffic-1","recipe":"cut"}
+- {"id":"copy-reencode-vid-clouds-2","kind":"video","category":"clouds","derived":"vid-clouds-2","recipe":"reencode"}
+- {"id":"copy-cut-vid-clouds-2","kind":"video","category":"clouds","derived":"vid-clouds-2","recipe":"cut"}
+- {"id":"copy-reencode-vid-snow-1","kind":"video","category":"snow","derived":"vid-snow-1","recipe":"reencode"}
+- {"id":"copy-cut-vid-snow-1","kind":"video","category":"snow","derived":"vid-snow-1","recipe":"cut"}
+- {"id":"copy-reencode-vid-airplane-1","kind":"video","category":"airplane","derived":"vid-airplane-1","recipe":"reencode"}
+- {"id":"copy-cut-vid-airplane-1","kind":"video","category":"airplane","derived":"vid-airplane-1","recipe":"cut"}
+- {"id":"copy-reencode-vid-ship-2","kind":"video","category":"ship","derived":"vid-ship-2","recipe":"reencode"}
+- {"id":"copy-cut-vid-ship-2","kind":"video","category":"ship","derived":"vid-ship-2","recipe":"cut"}
+- {"id":"copy-reencode-vid-insect-1","kind":"video","category":"insect","derived":"vid-insect-1","recipe":"reencode"}
+- {"id":"copy-cut-vid-insect-1","kind":"video","category":"insect","derived":"vid-insect-1","recipe":"cut"}
+- {"id":"copy-reencode-vid-train-2","kind":"video","category":"train","derived":"vid-train-2","recipe":"reencode"}
+- {"id":"copy-cut-vid-train-2","kind":"video","category":"train","derived":"vid-train-2","recipe":"cut"}
+- {"id":"copy-reencode-vid-waterfall-1","kind":"video","category":"waterfall","derived":"vid-waterfall-1","recipe":"reencode"}
+- {"id":"copy-cut-vid-waterfall-1","kind":"video","category":"waterfall","derived":"vid-waterfall-1","recipe":"cut"}

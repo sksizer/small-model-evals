@@ -12,7 +12,8 @@ import { poster } from './ffmpeg.ts'
 import { ROOT } from './ledger.ts'
 
 const OUT = join(ROOT, 'results', 'contact')
-const media = JSON.parse(readFileSync(join(ROOT, 'corpus', 'av-manifest.json'), 'utf8')) as CorpusMedia[]
+// The derived copies (scripts/av-recipes.ts) are not on the sheet: it is for approving the clips they come from.
+const media = (JSON.parse(readFileSync(join(ROOT, 'corpus', 'av-manifest.json'), 'utf8')) as CorpusMedia[]).filter((m) => !m.derived_from)
 mkdirSync(join(OUT, 'posters'), { recursive: true })
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')

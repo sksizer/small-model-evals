@@ -267,7 +267,7 @@ Images are 768 px renditions of the Wikimedia Commons files and Open Images phot
 
 ## Audio and video
 
-Sound, speech and video clips are trimmed, converted renditions (16 kHz mono Opus; 360p H.264 without sound) of the Wikimedia Commons files and LibriVox recordings (public domain) linked below.
+Sound, speech and video clips are trimmed, converted renditions (16 kHz mono Opus; 360p H.264 without sound) of the Wikimedia Commons files and LibriVox recordings (public domain) linked below, or derived copies of those (trimmed, recompressed, quieter, re-encoded, cut) that keep their parent's credit.
 
 | Clip | Kind | Source | Author | Licence |
 | --- | --- | --- | --- | --- |
@@ -389,3 +389,55 @@ Sound, speech and video clips are trimmed, converted renditions (16 kHz mono Opu
 | `vid-insect-2` | video | [Julia Butterfly (Dryas iulia).webm](https://commons.wikimedia.org/wiki/File:Julia_Butterfly_(Dryas_iulia).webm) | Brandon | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | `vid-cattle-1` | video | [Cow crosses cattle grid.webm](https://commons.wikimedia.org/wiki/File:Cow_crosses_cattle_grid.webm) | Luke Byers | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | `vid-cattle-2` | video | [Sheep grazing in the countryside.webm](https://commons.wikimedia.org/wiki/File:Sheep_grazing_in_the_countryside.webm) | François Nguyen | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `copy-trim-snd-canine-1` | sound | [trim of snd-canine-1](https://commons.wikimedia.org/wiki/File:Dog.ogg) | soerena | Public domain |
+| `copy-recode-snd-canine-1` | sound | [recode of snd-canine-1](https://commons.wikimedia.org/wiki/File:Dog.ogg) | soerena | Public domain |
+| `copy-recode-snd-frog-1` | sound | [recode of snd-frog-1](https://commons.wikimedia.org/wiki/File:Night_Chorus_of_Frogs_and_Toads_in_Niger_Delta.ogg) | ElemePodcast | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `copy-quiet-snd-frog-1` | sound | [quiet of snd-frog-1](https://commons.wikimedia.org/wiki/File:Night_Chorus_of_Frogs_and_Toads_in_Niger_Delta.ogg) | ElemePodcast | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `copy-quiet-snd-rain-2` | sound | [quiet of snd-rain-2](https://commons.wikimedia.org/wiki/File:Rain_against_the_window.ogg) | cori | Public domain |
+| `copy-trim-snd-rain-2` | sound | [trim of snd-rain-2](https://commons.wikimedia.org/wiki/File:Rain_against_the_window.ogg) | cori | Public domain |
+| `copy-trim-snd-thunder-1` | sound | [trim of snd-thunder-1](https://commons.wikimedia.org/wiki/File:Thunder.ogg) | Bidgee | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-recode-snd-thunder-1` | sound | [recode of snd-thunder-1](https://commons.wikimedia.org/wiki/File:Thunder.ogg) | Bidgee | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-recode-snd-wind-1` | sound | [recode of snd-wind-1](https://commons.wikimedia.org/wiki/File:Howling_wind.ogg) | Tvabutzku1234 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-quiet-snd-wind-1` | sound | [quiet of snd-wind-1](https://commons.wikimedia.org/wiki/File:Howling_wind.ogg) | Tvabutzku1234 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-quiet-snd-sea-waves-1` | sound | [quiet of snd-sea-waves-1](https://commons.wikimedia.org/wiki/File:Oceanwavescrushing.ogg) | Luftrum | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-trim-snd-sea-waves-1` | sound | [trim of snd-sea-waves-1](https://commons.wikimedia.org/wiki/File:Oceanwavescrushing.ogg) | Luftrum | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-trim-snd-helicopter-1` | sound | [trim of snd-helicopter-1](https://commons.wikimedia.org/wiki/File:Helicopter_over_a_lake.ogg) | ezwa | Public domain |
+| `copy-recode-snd-helicopter-1` | sound | [recode of snd-helicopter-1](https://commons.wikimedia.org/wiki/File:Helicopter_over_a_lake.ogg) | ezwa | Public domain |
+| `copy-recode-snd-airplane-1` | sound | [recode of snd-airplane-1](https://commons.wikimedia.org/wiki/File:Sound_of_AN-24_airplane.ogg) | Grachev. The original uploader was Grachev at Russian Wikipedia. | Public domain |
+| `copy-quiet-snd-airplane-1` | sound | [quiet of snd-airplane-1](https://commons.wikimedia.org/wiki/File:Sound_of_AN-24_airplane.ogg) | Grachev. The original uploader was Grachev at Russian Wikipedia. | Public domain |
+| `copy-quiet-snd-train-1` | sound | [quiet of snd-train-1](https://commons.wikimedia.org/wiki/File:Taiwan_railways_EP727_train_cars_sounds.ogg) | Jidanni | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-trim-snd-train-1` | sound | [trim of snd-train-1](https://commons.wikimedia.org/wiki/File:Taiwan_railways_EP727_train_cars_sounds.ogg) | Jidanni | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-trim-snd-bell-1` | sound | [trim of snd-bell-1](https://commons.wikimedia.org/wiki/File:Church_bells_-_Leverkusen,_2007.oga) | natalie | Public domain |
+| `copy-recode-snd-bell-1` | sound | [recode of snd-bell-1](https://commons.wikimedia.org/wiki/File:Church_bells_-_Leverkusen,_2007.oga) | natalie | Public domain |
+| `copy-recode-snd-clock-1` | sound | [recode of snd-clock-1](https://commons.wikimedia.org/wiki/File:Clock_ticking.ogg) | natalie | Public domain |
+| `copy-quiet-snd-clock-1` | sound | [quiet of snd-clock-1](https://commons.wikimedia.org/wiki/File:Clock_ticking.ogg) | natalie | Public domain |
+| `copy-quiet-snd-typing-1` | sound | [quiet of snd-typing-1](https://commons.wikimedia.org/wiki/File:Typing_fast.ogg) | stephan | Public domain |
+| `copy-trim-snd-typing-1` | sound | [trim of snd-typing-1](https://commons.wikimedia.org/wiki/File:Typing_fast.ogg) | stephan | Public domain |
+| `copy-trim-snd-cooking-1` | sound | [trim of snd-cooking-1](https://commons.wikimedia.org/wiki/File:Frying_fries_going_in_and_out_of_oil.ogg) | ezwa | Public domain |
+| `copy-recode-snd-cooking-1` | sound | [recode of snd-cooking-1](https://commons.wikimedia.org/wiki/File:Frying_fries_going_in_and_out_of_oil.ogg) | ezwa | Public domain |
+| `copy-recode-snd-flute-1` | sound | [recode of snd-flute-1](https://commons.wikimedia.org/wiki/File:Flute.ogg) | hokuspokus | Public domain |
+| `copy-quiet-snd-flute-1` | sound | [quiet of snd-flute-1](https://commons.wikimedia.org/wiki/File:Flute.ogg) | hokuspokus | Public domain |
+| `copy-quiet-snd-guitar-1` | sound | [quiet of snd-guitar-1](https://commons.wikimedia.org/wiki/File:Wikipedia_guitar_solo.ogg) | Leechfoot | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-trim-snd-guitar-1` | sound | [trim of snd-guitar-1](https://commons.wikimedia.org/wiki/File:Wikipedia_guitar_solo.ogg) | Leechfoot | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-trim-snd-piano-1` | sound | [trim of snd-piano-1](https://commons.wikimedia.org/wiki/File:6-Pieces-for-Piano-VI.-Intermezzo-Serenata.ogg) | Pandora Selfridge | Public domain |
+| `copy-recode-snd-piano-1` | sound | [recode of snd-piano-1](https://commons.wikimedia.org/wiki/File:6-Pieces-for-Piano-VI.-Intermezzo-Serenata.ogg) | Pandora Selfridge | Public domain |
+| `copy-reencode-vid-tram-1` | video | [reencode of vid-tram-1](https://commons.wikimedia.org/wiki/File:Kolomna_tram_125_2006-09_1159361040_Myasokombinat_71-605.webm) | Artyom Svetlov | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `copy-cut-vid-tram-1` | video | [cut of vid-tram-1](https://commons.wikimedia.org/wiki/File:Kolomna_tram_125_2006-09_1159361040_Myasokombinat_71-605.webm) | Artyom Svetlov | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `copy-reencode-vid-horse-1` | video | [reencode of vid-horse-1](https://commons.wikimedia.org/wiki/File:A_grazing_horse_at_the_%C3%89comus%C3%A9e_de_la_Bintinais.webm) | Seb35 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-cut-vid-horse-1` | video | [cut of vid-horse-1](https://commons.wikimedia.org/wiki/File:A_grazing_horse_at_the_%C3%89comus%C3%A9e_de_la_Bintinais.webm) | Seb35 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-reencode-vid-traffic-1` | video | [reencode of vid-traffic-1](https://commons.wikimedia.org/wiki/File:Traffic_on_a_cobbled_street_-_soundscape.webm) | Sounds of Changes | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-cut-vid-traffic-1` | video | [cut of vid-traffic-1](https://commons.wikimedia.org/wiki/File:Traffic_on_a_cobbled_street_-_soundscape.webm) | Sounds of Changes | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-reencode-vid-clouds-2` | video | [reencode of vid-clouds-2](https://commons.wikimedia.org/wiki/File:Wolken_Zeitraffer_-_Clouds_Timelapse_(Royalty_Free)_(Kostenlos)_3840x2160p_30FPS.webm) | `https://www.youtube.com/user/FreeSwissVideo` | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-cut-vid-clouds-2` | video | [cut of vid-clouds-2](https://commons.wikimedia.org/wiki/File:Wolken_Zeitraffer_-_Clouds_Timelapse_(Royalty_Free)_(Kostenlos)_3840x2160p_30FPS.webm) | `https://www.youtube.com/user/FreeSwissVideo` | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-reencode-vid-snow-1` | video | [reencode of vid-snow-1](https://commons.wikimedia.org/wiki/File:Snowfall.webm) | Cody Logan | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-cut-vid-snow-1` | video | [cut of vid-snow-1](https://commons.wikimedia.org/wiki/File:Snowfall.webm) | Cody Logan | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `copy-reencode-vid-airplane-1` | video | [reencode of vid-airplane-1](https://commons.wikimedia.org/wiki/File:Landing_in_Kolkata.webm) | Shyamal | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-cut-vid-airplane-1` | video | [cut of vid-airplane-1](https://commons.wikimedia.org/wiki/File:Landing_in_Kolkata.webm) | Shyamal | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-reencode-vid-ship-2` | video | [reencode of vid-ship-2](https://commons.wikimedia.org/wiki/File:Ship_Containerships_VIII.ogv) | Tvabutzku1234 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-cut-vid-ship-2` | video | [cut of vid-ship-2](https://commons.wikimedia.org/wiki/File:Ship_Containerships_VIII.ogv) | Tvabutzku1234 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-reencode-vid-insect-1` | video | [reencode of vid-insect-1](https://commons.wikimedia.org/wiki/File:Bees_on_flowers.webm) | J. M. Pearson | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-cut-vid-insect-1` | video | [cut of vid-insect-1](https://commons.wikimedia.org/wiki/File:Bees_on_flowers.webm) | J. M. Pearson | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `copy-reencode-vid-train-2` | video | [reencode of vid-train-2](https://commons.wikimedia.org/wiki/File:Outbound_train_arriving_at_Malden_Center_station_(1).webm) | Beantowndude316 | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `copy-cut-vid-train-2` | video | [cut of vid-train-2](https://commons.wikimedia.org/wiki/File:Outbound_train_arriving_at_Malden_Center_station_(1).webm) | Beantowndude316 | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `copy-reencode-vid-waterfall-1` | video | [reencode of vid-waterfall-1](https://commons.wikimedia.org/wiki/File:Front_view_video_of_Kawaida_Waterfall,_Cianda,_Kiambu_County.webm) | Lebu Ayiga | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `copy-cut-vid-waterfall-1` | video | [cut of vid-waterfall-1](https://commons.wikimedia.org/wiki/File:Front_view_video_of_Kawaida_Waterfall,_Cianda,_Kiambu_County.webm) | Lebu Ayiga | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
