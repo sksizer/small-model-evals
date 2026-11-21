@@ -11,6 +11,11 @@
 //   query with one relevant item scores 1 at k = 1 when it ranks first, and a query with six cannot
 //   be penalised for returning only five slots. (Plain recall at k = 1 would be at most 1/6 there.)
 // - MRR: 1 / the rank of the first relevant item (0 when none is in the top 20).
+// - for a clip query (the kinds sound-to-sound and video-to-video, whose case lists `vars.levels` as the
+//   similarity suite does: copy, scene, class, ranked by the same rule), recall@1 and @5 per level with the
+//   stronger levels set aside (assertions/similarity.ts), so the case says whether the copies came first
+//   and whether another recording of the same kind came next. The score stays nDCG@10 over `relevant`,
+//   which then holds the copies, scenes and class matches together.
 // - nDCG@10 again on `ranked_256`, when the provider supplies it (EmbeddingGemma 2 truncated to 256
 //   dimensions and re-normalised), recorded in the metadata as a bonus column.
 //
@@ -19,6 +24,7 @@
 // one near miss, and anything weaker fails: a person looks at the top of a result list, and a good
 // answer that sits third is a miss. It is the same bar as the other ranking suites.
 import { parseJson, type GradingResult } from './match.ts'
+import { detailOf as similarityDetail, type ExpectedSimilarity, type LevelRecall } from './similarity.ts'
 
 const PASS_AT = 0.7
 const CUT = 10
@@ -35,6 +41,8 @@ export interface SearchDetail {
   /** nDCG@10 of the 256-dimension ranking, when the provider made one. */
   ndcg10_256: number | null
   relevant: number
+  /** Clip queries only: recall per level (similarity levels), absent for text queries. */
+  levels?: Partial<Record<keyof ExpectedSimilarity, LevelRecall>>
 }
 
 export interface SearchGrading extends GradingResult {
@@ -58,7 +66,7 @@ export function ndcg(ranked: Ranked, relevant: Set<string>, cut = CUT): number {
 
 const recall = (ranked: Ranked, relevant: Set<string>, k: number) => ranked.slice(0, k).filter(([id]) => relevant.has(id)).length / Math.min(k, relevant.size)
 
-export function detailOf(kind: string, relevant: string[], output: unknown): SearchDetail | null {
+export function detailOf(kind: string, relevant: string[], output: unknown, levels?: ExpectedSimilarity): SearchDetail | null {
   const ranked = parseRanking(output)
   if (!ranked) return null
   const rel = new Set(relevant)
@@ -73,14 +81,15 @@ export function detailOf(kind: string, relevant: string[], output: unknown): Sea
     mrr: first < 0 ? 0 : 1 / (first + 1),
     ndcg10_256: r256 ? ndcg(r256, rel) : null,
     relevant: rel.size,
+    ...(levels ? { levels: similarityDetail(levels, ranked).levels } : {}),
   }
 }
 
-export function gradeSearch(vars: { kind?: string; relevant: string[] }, output: unknown): SearchGrading {
-  const d = detailOf(vars.kind ?? '', vars.relevant, output)
+export function gradeSearch(vars: { kind?: string; relevant: string[]; levels?: ExpectedSimilarity }, output: unknown): SearchGrading {
+  const d = detailOf(vars.kind ?? '', vars.relevant, output, vars.levels)
   if (!d) return { pass: false, score: 0, reason: 'reply has no ranking', metadata: null }
   const pct = (x: number) => `${Math.round(x * 100)}%`
-  const reason = `nDCG@10 ${d.ndcg10.toFixed(2)}; recall @1 ${pct(d.r1)} @5 ${pct(d.r5)} @10 ${pct(d.r10)}; MRR ${d.mrr.toFixed(2)}${d.ndcg10_256 === null ? '' : `; 256-d nDCG@10 ${d.ndcg10_256.toFixed(2)}`}`
+  const reason = `nDCG@10 ${d.ndcg10.toFixed(2)}; recall @1 ${pct(d.r1)} @5 ${pct(d.r5)} @10 ${pct(d.r10)}; MRR ${d.mrr.toFixed(2)}${d.ndcg10_256 === null ? '' : `; 256-d nDCG@10 ${d.ndcg10_256.toFixed(2)}`}${Object.entries(d.levels ?? {}).map(([level, r]) => `; ${level} @1 ${pct(r.r1)} @5 ${pct(r.r5)}`).join('')}`
   return { pass: d.ndcg10 >= PASS_AT, score: d.ndcg10, reason, metadata: d }
 }
 
@@ -89,15 +98,18 @@ export interface RankedView {
   id: string
   score: number
   relevant: boolean
+  /** The pipeline's words for this item (a transcript), when the provider supplied some. */
+  note?: string
 }
 
 /** The top candidates of a reply with their relevance, or null when the reply has no ranking. */
 export function compareSearch(relevant: string[], output: unknown, top = 5): RankedView[] | null {
   const ranked = parseRanking(output)
+  const snippets = ((parseJson(output) as { snippets?: Record<string, string> } | undefined)?.snippets ?? {}) as Record<string, string>
   const rel = new Set(relevant)
-  return ranked ? ranked.slice(0, top).map(([id, score]) => ({ id, score, relevant: rel.has(id) })) : null
+  return ranked ? ranked.slice(0, top).map(([id, score]) => ({ id, score, relevant: rel.has(id), ...(snippets[id] ? { note: snippets[id] } : {}) })) : null
 }
 
-export default function (output: unknown, context: { vars: { kind?: string; relevant: string[] } }): SearchGrading {
+export default function (output: unknown, context: { vars: { kind?: string; relevant: string[]; levels?: ExpectedSimilarity } }): SearchGrading {
   return gradeSearch(context.vars, output)
 }

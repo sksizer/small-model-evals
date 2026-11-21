@@ -20,34 +20,55 @@
 // - `jina-clip-v2`: jinaai/jina-clip-v2 (CC BY-NC 4.0), transformers.js' JinaCLIP, q8. Queries take the
 //   card's retrieval prefix `Represent the query for retrieving evidence documents: `.
 // - `ollama`: `model` (an Ollama tag), `query_prefix`, `doc_prefix`; text only.
+// - audio and video (docs/plans/av-search.md). A corpus item's `file` says what it is (providers/media.ts):
+//   `.ogg` audio, `.mp4` video, else an image. ffmpeg decodes (clips are decoded here, not stored decoded).
+//   - `egemma2` with `modalities: text+audio` also loads the 300M audio encoder and embeds a clip as
+//     mono 16 kHz samples, no prefix (the card). With `text+image` it also embeds a video: frames at 1 fps
+//     as a `RawVideo`, which the card's processor runs through the vision encoder (140 tokens a frame).
+//   - `siglip` embeds a video as the mean of its 1 fps frame vectors, re-normalised.
+//   - `clap`: Xenova/clap-htsat-unfused (transformers.js, q8): text <-> sound. CLAP takes 48 kHz audio of
+//     10 s; a longer clip is cut to its middle 10 s (the extractor would crop at random, which no run
+//     could repeat).
+//   - `whisper`: speech -> transcript -> text. `model` is a Whisper checkpoint (transformers.js ASR
+//     pipeline, 30 s windows with 5 s strides); `embedder` is the text embedder (a SearchConfig, here
+//     EmbeddingGemma 2 text only) that embeds the transcript. The corpus item's `title` is for display and
+//     never reaches the embedder. The reply carries each top result's transcript as `snippets`.
+//   - `fingerprint`: no weights, our own (like pHash for images): 32 ms frames, 17 log-spaced bands, one
+//     bit per band pair for whether the energy difference rose since the last frame (Haitsma and Kalker's
+//     Philips fingerprint); two clips score 1 minus the bit error rate at the best alignment, so a
+//     trimmed copy still matches. Clip queries only.
 // Every entry: `kinds` (which case kinds the model runs, read by scripts/run.ts), `model`, `revision`,
 // `dtype` where it applies.
 //
-// Vars: `corpus` (a key of `corpora`), `query`, `corpora` (suites/search/corpora.yaml). A corpus item
-// with a `file` is an image, else text (`title`, `text`). Each item is embedded once per run and kept,
+// Vars: `corpus` (a key of `corpora`), `query` (text) or `query_item` (the id of a corpus clip: ranks the
+// rest of the corpus by likeness to it), `corpora` (suites/search/corpora.yaml). A corpus item
+// with a `file` is an image or clip, else text (`title`, `text`). Each item is embedded once per run and kept,
 // so only the first case of a corpus pays for it.
 //
-// Output: {"query", "ranked": [[id, score], ...], "ranked_256": [...]?}, the top 20, best first
-// (assertions/search.ts). Metadata: item_ms (mean per item embedded by this case, absent when all
+// Output: {"query", "ranked": [[id, score], ...], "ranked_256": [...]?, "snippets": {id: text}?}, the top 20,
+// best first (assertions/search.ts); a clip query is `query_item` and is not in the ranking. Metadata: item_ms (mean per item embedded by this case, absent when all
 // were cached), items, query_ms, load_ms (first case only), rss_mb (in-process) or loaded_bytes
 // (Ollama's reported size).
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import * as ort from 'onnxruntime-node'
-import { AutoConfig, AutoModel, AutoProcessor, AutoTokenizer, CLIPTextModelWithProjection, CLIPVisionModelWithProjection, RawImage, SiglipTextModel, SiglipVisionModel } from '@huggingface/transformers'
+import { AutoConfig, AutoModel, AutoProcessor, AutoTokenizer, CLIPTextModelWithProjection, CLIPVisionModelWithProjection, ClapAudioModelWithProjection, ClapTextModelWithProjection, RawImage, RawVideo, SiglipTextModel, SiglipVisionModel, pipeline } from '@huggingface/transformers'
+import { frames, mediumOf, samples } from './media.ts'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const OLLAMA = process.env['OLLAMA_HOST']?.startsWith('http') ? process.env['OLLAMA_HOST'] : 'http://localhost:11434'
 const TOP = 20
 
 export interface SearchConfig {
-  family: 'egemma2' | 'siglip' | 'clip' | 'nomic-pair' | 'jina-clip-v2' | 'ollama'
+  family: 'egemma2' | 'siglip' | 'clip' | 'nomic-pair' | 'jina-clip-v2' | 'ollama' | 'clap' | 'whisper' | 'fingerprint'
   kinds?: string[]
   model: string
   revision?: string
   dtype?: string
-  modalities?: 'text' | 'text+image'
+  modalities?: 'text' | 'text+image' | 'text+audio'
+  /** `whisper`: the text embedder for the transcripts. */
+  embedder?: SearchConfig
   mrl?: number
   query_prefix?: string
   doc_prefix?: string
@@ -67,6 +88,10 @@ export interface Encoder {
   docs(items: Item[]): Promise<Float32Array[]>
   /** What the model reports about its own size, for Ollama. */
   loadedBytes?(): Promise<number | null>
+  /** How alike two document vectors are, when a dot product is not the measure (the fingerprint). */
+  compare?(a: Vec, b: Vec): number
+  /** A line to show beside a result, once the item is embedded (the transcript of a spoken clip). */
+  note?(id: string): string | undefined
 }
 
 type Vec = Float32Array
@@ -89,6 +114,12 @@ const rows = (t: { data: ArrayLike<number>; dims: number[] }): Vec[] => {
   return Array.from({ length: n }, (_, i) => Float32Array.from(Array.prototype.slice.call(t.data, i * width, (i + 1) * width) as number[]))
 }
 const image = async (item: Item) => (await RawImage.read(join(ROOT, item.file!))).rgb()
+/** A clip's frames at 1 per second, as the pictures of a video (providers/media.ts). */
+const videoFrames = async (item: Item) => Promise.all(frames(item.file!).map(async (f) => (await RawImage.read(f)).rgb()))
+const video = async (item: Item) => {
+  const fs = await videoFrames(item)
+  return new RawVideo(fs, fs.length)
+}
 const textDoc = (item: Item) => item.text ?? ''
 const chunks = <T>(xs: T[], n: number): T[][] => Array.from({ length: Math.ceil(xs.length / n) }, (_, i) => xs.slice(i * n, (i + 1) * n))
 
@@ -104,8 +135,9 @@ async function egemma2(c: SearchConfig): Promise<Encoder> {
   const { model } = c
   const revision = c.revision!
   const config = await AutoConfig.from_pretrained(model, { revision })
-  ;(config as unknown as Record<string, unknown>)['audio_config'] = null
   const withImages = c.modalities === 'text+image'
+  const withAudio = c.modalities === 'text+audio'
+  if (!withAudio) (config as unknown as Record<string, unknown>)['audio_config'] = null
   if (!withImages) (config as unknown as Record<string, unknown>)['vision_config'] = null
   const processor = await AutoProcessor.from_pretrained(model, { revision })
   const net = await AutoModel.from_pretrained(model, { revision, config, dtype: (c.dtype ?? 'q8') as 'q8' })
@@ -116,14 +148,20 @@ async function egemma2(c: SearchConfig): Promise<Encoder> {
   return {
     query: async (q) => (await embed([`task: search result | query: ${q}`]))[0]!,
     docs: async (items) => {
-      if (items[0]?.file) {
-        if (!withImages) throw new Error(`${model}: loaded as text only`)
-        const out: Vec[] = []
-        for (const it of items) out.push((await embed(null, [[await image(it)]]))[0]!)
-        return out
-      }
+      const medium = mediumOf(items[0] ?? {})
       const out: Vec[] = []
-      for (const batch of chunks(items, 16)) out.push(...(await embed(batch.map((it) => `title: ${it.title ?? 'none'} | text: ${textDoc(it)}`))))
+      if (medium === 'image') {
+        if (!withImages) throw new Error(`${model}: loaded without the vision encoder`)
+        for (const it of items) out.push((await embed(null, [[await image(it)]]))[0]!)
+      } else if (medium === 'video') {
+        if (!withImages) throw new Error(`${model}: loaded without the vision encoder`)
+        for (const it of items) out.push((await embed(null, null, null, await video(it)))[0]!)
+      } else if (medium === 'audio') {
+        if (!withAudio) throw new Error(`${model}: loaded without the audio encoder`)
+        for (const it of items) out.push((await embed(null, null, samples(it.file!, 16000)))[0]!)
+      } else {
+        for (const batch of chunks(items, 16)) out.push(...(await embed(batch.map((it) => `title: ${it.title ?? 'none'} | text: ${textDoc(it)}`))))
+      }
       return out
     },
   }
@@ -139,6 +177,10 @@ async function pair(c: SearchConfig): Promise<Encoder> {
   const siglip = family === 'siglip'
   const text = siglip ? await SiglipTextModel.from_pretrained(model, { revision, dtype }) : await CLIPTextModelWithProjection.from_pretrained(model, { revision, dtype })
   const vision = siglip ? await SiglipVisionModel.from_pretrained(model, { revision, dtype }) : await CLIPVisionModelWithProjection.from_pretrained(model, { revision, dtype })
+  const embedImage = async (img: RawImage) => {
+    const o = (await (vision as unknown as (i: unknown) => Promise<Out>)(await (processor as unknown as (i: unknown) => Promise<unknown>)(img))) as Out
+    return unit(rows(pick(o, siglip ? 'pooler_output' : 'image_embeds', model))[0]!)
+  }
   return {
     query: async (q) => {
       const inputs = siglip ? tokenizer([q.toLowerCase()], { padding: 'max_length', max_length: 64, truncation: true }) : tokenizer([q], { padding: true, truncation: true })
@@ -146,14 +188,186 @@ async function pair(c: SearchConfig): Promise<Encoder> {
       return unit(rows(pick(out, siglip ? 'pooler_output' : 'text_embeds', model))[0]!)
     },
     docs: async (items) => {
-      if (!items[0]?.file) throw new Error(`${model}: an image-text pair cannot index text`)
+      const medium = mediumOf(items[0] ?? {})
+      if (medium === 'text' || medium === 'audio') throw new Error(`${model}: an image-text pair cannot index ${medium}`)
       const out: Vec[] = []
       for (const it of items) {
-        const o = (await (vision as unknown as (i: unknown) => Promise<Out>)(await (processor as unknown as (i: unknown) => Promise<unknown>)(await image(it)))) as Out
-        out.push(unit(rows(pick(o, siglip ? 'pooler_output' : 'image_embeds', model))[0]!))
+        // A video is its frames, one vector each, averaged and re-normalised.
+        if (medium === 'video') {
+          const vs: Vec[] = []
+          for (const f of await videoFrames(it)) vs.push(await embedImage(f))
+          out.push(unit(vs[0]!.map((_, d) => vs.reduce((a, v) => a + v[d]!, 0) / vs.length)))
+        } else out.push(await embedImage(await image(it)))
       }
       return out
     },
+  }
+}
+
+// ---- CLAP ---------------------------------------------------------------------------------------
+const CLAP_RATE = 48000
+const CLAP_SAMPLES = 10 * CLAP_RATE
+
+async function clap(c: SearchConfig): Promise<Encoder> {
+  const { model } = c
+  const revision = c.revision!
+  const dtype = (c.dtype ?? 'q8') as 'q8'
+  const tokenizer = await AutoTokenizer.from_pretrained(model, { revision })
+  const processor = await AutoProcessor.from_pretrained(model, { revision })
+  const text = await ClapTextModelWithProjection.from_pretrained(model, { revision, dtype })
+  const audio = await ClapAudioModelWithProjection.from_pretrained(model, { revision, dtype })
+  return {
+    query: async (q) => {
+      const out = (await (text as unknown as (i: unknown) => Promise<Out>)(tokenizer([q], { padding: true, truncation: true }))) as Out
+      return unit(rows(pick(out, 'text_embeds', model))[0]!)
+    },
+    docs: async (items) => {
+      if (mediumOf(items[0] ?? {}) !== 'audio') throw new Error(`${model}: CLAP embeds sound clips and text only`)
+      const out: Vec[] = []
+      for (const it of items) {
+        let wave = samples(it.file!, CLAP_RATE)
+        if (wave.length > CLAP_SAMPLES) {
+          const at = Math.floor((wave.length - CLAP_SAMPLES) / 2)
+          wave = wave.subarray(at, at + CLAP_SAMPLES)
+        }
+        const o = (await (audio as unknown as (i: unknown) => Promise<Out>)(await (processor as unknown as (a: Float32Array) => Promise<unknown>)(wave))) as Out
+        out.push(unit(rows(pick(o, 'audio_embeds', model))[0]!))
+      }
+      return out
+    },
+  }
+}
+
+// ---- Whisper, then a text embedder ---------------------------------------------------------------
+type Transcribe = (audio: Float32Array, options: Record<string, unknown>) => Promise<{ text: string } | { text: string }[]>
+
+async function whisper(c: SearchConfig): Promise<Encoder> {
+  if (!c.embedder) throw new Error('whisper: config.embedder (the text embedder for the transcripts) is required')
+  const asr = (await pipeline('automatic-speech-recognition', c.model, { revision: c.revision!, dtype: (c.dtype ?? 'q8') as 'q8' })) as unknown as Transcribe
+  const embedder = await loadEncoder(c.embedder)
+  const transcripts = new Map<string, string>()
+  return {
+    query: (q) => embedder.query(q),
+    docs: async (items) => {
+      const spoken: Item[] = []
+      for (const it of items) {
+        if (mediumOf(it) !== 'audio') throw new Error(`${c.model}: Whisper transcribes sound clips`)
+        const r = await asr(samples(it.file!, 16000), { chunk_length_s: 30, stride_length_s: 5 })
+        const words = (Array.isArray(r) ? r.map((x) => x.text).join(' ') : r.text).trim()
+        transcripts.set(it.id, words)
+        spoken.push({ id: it.id, text: words }) // no `title`: it is for the site and says what the clip is about
+      }
+      return embedder.docs(spoken)
+    },
+    note: (id) => transcripts.get(id),
+  }
+}
+
+// ---- audio fingerprint ----------------------------------------------------------------------------
+const FP_RATE = 16000
+const FP_WINDOW = 1024
+const FP_HOP = 512
+const FP_BANDS = 17
+const FP_LOW_HZ = 300
+const FP_HIGH_HZ = 6000
+const POPCOUNT = Uint8Array.from({ length: 1 << 16 }, (_, n) => {
+  let bits = 0
+  for (let x = n; x > 0; x >>= 1) bits += x & 1
+  return bits
+})
+
+/** In-place radix-2 FFT of `re` + i `im`; the length is a power of two. */
+function fft(re: Float64Array, im: Float64Array): void {
+  const n = re.length
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1
+    for (; j & bit; bit >>= 1) j ^= bit
+    j ^= bit
+    if (i < j) {
+      ;[re[i], re[j]] = [re[j]!, re[i]!]
+      ;[im[i], im[j]] = [im[j]!, im[i]!]
+    }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const angle = (-2 * Math.PI) / len
+    for (let i = 0; i < n; i += len) {
+      for (let k = 0; k < len / 2; k++) {
+        const wr = Math.cos(angle * k)
+        const wi = Math.sin(angle * k)
+        const a = i + k
+        const b = a + len / 2
+        const tr = re[b]! * wr - im[b]! * wi
+        const ti = re[b]! * wi + im[b]! * wr
+        re[b] = re[a]! - tr
+        im[b] = im[a]! - ti
+        re[a] = re[a]! + tr
+        im[a] = im[a]! + ti
+      }
+    }
+  }
+}
+
+/** One 16-bit word per frame (after the first): bit b is whether the energy step from band b to b+1 grew since the previous frame. */
+export function fingerprint(wave: Float32Array): Float32Array {
+  const hann = Float64Array.from({ length: FP_WINDOW }, (_, i) => 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / FP_WINDOW))
+  const edges = Array.from({ length: FP_BANDS + 1 }, (_, i) => Math.round((FP_LOW_HZ * (FP_HIGH_HZ / FP_LOW_HZ) ** (i / FP_BANDS) * FP_WINDOW) / FP_RATE))
+  const re = new Float64Array(FP_WINDOW)
+  const im = new Float64Array(FP_WINDOW)
+  const words: number[] = []
+  let previous: number[] | null = null
+  for (let start = 0; start + FP_WINDOW <= wave.length; start += FP_HOP) {
+    for (let i = 0; i < FP_WINDOW; i++) {
+      re[i] = wave[start + i]! * hann[i]!
+      im[i] = 0
+    }
+    fft(re, im)
+    // Log energy per band: a change of volume shifts every band alike, which the differences cancel.
+    const energy = Array.from({ length: FP_BANDS }, (_, b) => {
+      let e = 0
+      for (let k = edges[b]!; k < Math.max(edges[b + 1]!, edges[b]! + 1); k++) e += re[k]! ** 2 + im[k]! ** 2
+      return Math.log(e + 1e-9)
+    })
+    if (previous) {
+      let word = 0
+      for (let b = 0; b < FP_BANDS - 1; b++) {
+        const step = energy[b]! - energy[b + 1]!
+        const before = previous[b]! - previous[b + 1]!
+        if (step - before > 0) word |= 1 << b
+      }
+      words.push(word)
+    }
+    previous = energy
+  }
+  return Float32Array.from(words)
+}
+
+/** One minus the bit error rate at the best alignment of the shorter clip inside the longer, over at least half of the shorter. */
+export function fingerprintMatch(a: Float32Array, b: Float32Array): number {
+  const [s, l] = a.length <= b.length ? [a, b] : [b, a]
+  const least = Math.ceil(s.length / 2)
+  let best = 0
+  for (let offset = least - s.length; offset <= l.length - least; offset++) {
+    const from = Math.max(0, -offset)
+    const to = Math.min(s.length, l.length - offset)
+    if (to - from < least) continue
+    let wrong = 0
+    for (let i = from; i < to; i++) wrong += POPCOUNT[s[i]! ^ l[i + offset]!]!
+    best = Math.max(best, 1 - wrong / ((FP_BANDS - 1) * (to - from)))
+  }
+  return best
+}
+
+function fingerprinter(c: SearchConfig): Encoder {
+  return {
+    query: async () => {
+      throw new Error(`${c.model}: a fingerprint ranks clips by clips, it has no text query`)
+    },
+    docs: async (items) =>
+      items.map((it) => {
+        if (mediumOf(it) !== 'audio') throw new Error(`${c.model}: the fingerprint is for sound clips`)
+        return fingerprint(samples(it.file!, FP_RATE))
+      }),
+    compare: fingerprintMatch,
   }
 }
 
@@ -275,6 +489,9 @@ export const loadEncoder = (c: SearchConfig): Promise<Encoder> => {
     case 'nomic-pair': return nomicPair(c as SearchConfig & { vision_model: string; vision_revision: string })
     case 'jina-clip-v2': return jina(c)
     case 'ollama': return ollama(c)
+    case 'clap': return clap(c)
+    case 'whisper': return whisper(c)
+    case 'fingerprint': return Promise.resolve(fingerprinter(c))
   }
 }
 
@@ -293,13 +510,14 @@ export default class Search {
     return `search:${this.config.model}@${this.config.revision?.slice(0, 7) ?? 'tag'}${this.config.modalities ? `:${this.config.modalities}` : ''}`
   }
 
-  async callApi(_prompt: string, context: { vars: { corpus?: string; query?: string; corpora?: Record<string, Item[]> | string } }) {
+  async callApi(_prompt: string, context: { vars: { corpus?: string; query?: string; query_item?: string; corpora?: Record<string, Item[]> | string } }) {
     try {
       const c = this.config
-      const { corpus, query } = context.vars
+      const { corpus, query, query_item: queryItem } = context.vars
       const corpora = typeof context.vars.corpora === 'string' ? (JSON.parse(context.vars.corpora) as Record<string, Item[]>) : context.vars.corpora
       const items = corpus ? corpora?.[corpus] : undefined
-      if (!query || !items) throw new Error('vars.query, vars.corpus and vars.corpora are required')
+      if ((!query && !queryItem) || !items) throw new Error('vars.query (or vars.query_item), vars.corpus and vars.corpora are required')
+      if (queryItem && !items.some((it) => it.id === queryItem)) throw new Error(`query_item ${queryItem} is not in the ${corpus} corpus`)
       const key = `${c.family}:${c.model}@${c.revision ?? ''}:${c.dtype ?? ''}:${c.modalities ?? ''}`
       let loadMs: number | undefined
       if (!encoders.has(key)) {
@@ -325,18 +543,21 @@ export default class Search {
       }
       const embedMs = performance.now() - t0
       const t1 = performance.now()
-      if (!queryVectors.has(`${key}\u0000${query}`)) queryVectors.set(`${key}\u0000${query}`, enc.query(query))
-      const q = await queryVectors.get(`${key}\u0000${query}`)!
-      const docs = await Promise.all(items.map(async (it) => [it.id, await vectors.get(vkey(it.id))!] as const))
-      const rank = (a: Vec, score: (d: Vec) => number) =>
+      // A clip query is another corpus item: its own vector, and it stays out of the ranking.
+      if (!queryItem && !queryVectors.has(`${key}\u0000${query}`)) queryVectors.set(`${key}\u0000${query}`, enc.query(query!))
+      const q = queryItem ? await vectors.get(vkey(queryItem))! : await queryVectors.get(`${key}\u0000${query}`)!
+      const docs = await Promise.all(items.filter((it) => it.id !== queryItem).map(async (it) => [it.id, await vectors.get(vkey(it.id))!] as const))
+      const similar = enc.compare ?? dot
+      const rank = (score: (d: Vec) => number) =>
         docs.map(([id, d]) => [id, Math.round(score(d) * 10000) / 10000] as const).sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0])).slice(0, TOP)
-      const ranked = rank(q, (d) => dot(q, d))
+      const ranked = rank((d) => similar(q, d))
       const trunc = (v: Vec, n: number) => unit(v.slice(0, n))
-      const ranked256 = c.mrl ? ((qn) => rank(qn, (d) => dot(qn, trunc(d, c.mrl!))))(trunc(q, c.mrl)) : null
+      const ranked256 = c.mrl ? ((qn) => rank((d) => dot(qn, trunc(d, c.mrl!))))(trunc(q, c.mrl)) : null
+      const snippets = Object.fromEntries(ranked.slice(0, 5).flatMap(([id]) => (enc.note?.(id) ? [[id, enc.note(id)!.slice(0, 240)] as const] : [])))
       const queryMs = performance.now() - t1
       const loaded = enc.loadedBytes ? await enc.loadedBytes() : null
       return {
-        output: JSON.stringify({ query, ranked, ...(ranked256 ? { ranked_256: ranked256 } : {}) }),
+        output: JSON.stringify({ query: query ?? queryItem, ranked, ...(ranked256 ? { ranked_256: ranked256 } : {}), ...(Object.keys(snippets).length > 0 ? { snippets } : {}) }),
         metadata: {
           ...(fresh.length > 0 ? { item_ms: embedMs / fresh.length } : {}),
           items: fresh.length,
