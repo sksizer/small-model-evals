@@ -1,0 +1,8 @@
+description: "search sounds: fast typing on a keyboard (2 relevant of 59)"
+metadata: { id: sounds-typing, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "fast typing on a keyboard"
+  relevant: ["snd-typing-1","snd-typing-2"]
+  how: "by file name and category"

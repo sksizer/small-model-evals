@@ -1,0 +1,8 @@
+description: "search speech: how mason bees build their nests (1 relevant of 20)"
+metadata: { id: speech-mason-bees, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "how mason bees build their nests"
+  relevant: ["sp-bees-mason"]
+  how: "by the clip's summary (book, chapter and topic)"

@@ -1,0 +1,8 @@
+description: "search videos: milk heating in a pot on a stove (1 relevant of 39)"
+metadata: { id: videos-milk-on-stove, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "milk heating in a pot on a stove"
+  relevant: ["vid-cooking-1"]
+  how: "by poster frame (\"Milchkochen\")"

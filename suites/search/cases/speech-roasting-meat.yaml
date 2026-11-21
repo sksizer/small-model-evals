@@ -1,0 +1,8 @@
+description: "search speech: an old cookbook on roasting and boiling meat (1 relevant of 20)"
+metadata: { id: speech-roasting-meat, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "an old cookbook on roasting and boiling meat"
+  relevant: ["sp-cookery-oldrecipes"]
+  how: "by the clip's summary (book, chapter and topic)"

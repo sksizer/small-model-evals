@@ -1,0 +1,8 @@
+description: "search speech: cooking advice from old cookbooks (3 relevant of 20)"
+metadata: { id: speech-hard-cooking-advice, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "cooking advice from old cookbooks"
+  relevant: ["sp-cookery-bread","sp-cookery-fish","sp-cookery-oldrecipes"]
+  how: "by the clip's summary (book, chapter and topic): the three cookery books"

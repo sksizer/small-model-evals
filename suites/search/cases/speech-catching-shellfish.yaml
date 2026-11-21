@@ -1,0 +1,8 @@
+description: "search speech: catching shellfish before cooking them (1 relevant of 20)"
+metadata: { id: speech-catching-shellfish, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "catching shellfish before cooking them"
+  relevant: ["sp-cookery-fish"]
+  how: "by the clip's summary (book, chapter and topic)"

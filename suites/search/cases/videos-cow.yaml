@@ -1,0 +1,8 @@
+description: "search videos: a cow (1 relevant of 39)"
+metadata: { id: videos-cow, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a cow"
+  relevant: ["vid-cattle-1"]
+  how: "by file name and category (\"Cow crosses cattle grid\"); a night shot, unsure"

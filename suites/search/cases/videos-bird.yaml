@@ -1,0 +1,8 @@
+description: "search videos: a small colourful bird (1 relevant of 39)"
+metadata: { id: videos-bird, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a small colourful bird"
+  relevant: ["vid-bird-1"]
+  how: "by poster frame"

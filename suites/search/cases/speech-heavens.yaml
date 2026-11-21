@@ -1,0 +1,8 @@
+description: "search speech: early ideas about the sun, moon and stars (1 relevant of 20)"
+metadata: { id: speech-heavens, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "early ideas about the sun, moon and stars"
+  relevant: ["sp-astronomy-history"]
+  how: "by the clip's summary (book, chapter and topic)"

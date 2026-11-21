@@ -1,0 +1,8 @@
+description: "search videos: sheep grazing in the countryside (1 relevant of 39)"
+metadata: { id: videos-sheep, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "sheep grazing in the countryside"
+  relevant: ["vid-cattle-2"]
+  how: "by file name and category (\"Sheep grazing in the countryside\")"

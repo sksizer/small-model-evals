@@ -1,0 +1,8 @@
+description: "search videos: snow falling (2 relevant of 39)"
+metadata: { id: videos-snowfall, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "snow falling"
+  relevant: ["vid-snow-1","vid-snow-2"]
+  how: "by file name and category"

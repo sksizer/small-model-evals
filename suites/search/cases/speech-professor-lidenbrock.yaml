@@ -1,0 +1,8 @@
+description: "search speech: a nephew remembering his eccentric German professor uncle (1 relevant of 20)"
+metadata: { id: speech-professor-lidenbrock, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "a nephew remembering his eccentric German professor uncle"
+  relevant: ["sp-earth-journey"]
+  how: "by the clip's summary (book, chapter and topic)"

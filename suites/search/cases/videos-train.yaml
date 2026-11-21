@@ -1,0 +1,8 @@
+description: "search videos: a train on rails (3 relevant of 39)"
+metadata: { id: videos-train, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a train on rails"
+  relevant: ["vid-train-1","vid-train-2","vid-train-3"]
+  how: "by file name and category; the trams are a near miss, unsure"

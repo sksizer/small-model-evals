@@ -1,0 +1,8 @@
+description: "search sounds: food frying in hot oil (2 relevant of 59)"
+metadata: { id: sounds-frying, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "food frying in hot oil"
+  relevant: ["snd-cooking-1","snd-cooking-2"]
+  how: "by file name and category (\"Frying fries\", \"Oil boiling\")"

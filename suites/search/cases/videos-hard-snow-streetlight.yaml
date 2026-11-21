@@ -1,0 +1,8 @@
+description: "search videos: snow falling at night under a street light (1 relevant of 39)"
+metadata: { id: videos-hard-snow-streetlight, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "snow falling at night under a street light"
+  relevant: ["vid-snow-2"]
+  how: "by file name and poster frame"

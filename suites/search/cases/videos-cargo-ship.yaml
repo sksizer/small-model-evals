@@ -1,0 +1,8 @@
+description: "search videos: a cargo ship on a river (2 relevant of 39)"
+metadata: { id: videos-cargo-ship, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a cargo ship on a river"
+  relevant: ["vid-ship-1","vid-ship-2"]
+  how: "by file name and category (Danube, Elbe); the sea-wave clips are a near miss"

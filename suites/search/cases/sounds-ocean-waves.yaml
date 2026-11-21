@@ -1,0 +1,8 @@
+description: "search sounds: ocean waves crashing on a shore (2 relevant of 59)"
+metadata: { id: sounds-ocean-waves, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "ocean waves crashing on a shore"
+  relevant: ["snd-sea-waves-1","snd-sea-waves-2"]
+  how: "by file name and category"

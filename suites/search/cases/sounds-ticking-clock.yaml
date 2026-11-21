@@ -1,0 +1,8 @@
+description: "search sounds: a clock ticking (2 relevant of 59)"
+metadata: { id: sounds-ticking-clock, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a clock ticking"
+  relevant: ["snd-clock-1","snd-clock-2"]
+  how: "by file name and category"

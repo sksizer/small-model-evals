@@ -1,0 +1,8 @@
+description: "search speech: a British expedition sailing to the Arctic in 1875 (1 relevant of 20)"
+metadata: { id: speech-arctic-expedition, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "a British expedition sailing to the Arctic in 1875"
+  relevant: ["sp-arctic-expedition"]
+  how: "by the clip's summary (book, chapter and topic)"

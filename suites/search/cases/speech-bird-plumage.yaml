@@ -1,0 +1,8 @@
+description: "search speech: how beautiful birds are and why they are hunted for their feathers (1 relevant of 20)"
+metadata: { id: speech-bird-plumage, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "how beautiful birds are and why they are hunted for their feathers"
+  relevant: ["sp-birds-plumage"]
+  how: "by the clip's summary (book, chapter and topic)"

@@ -1,0 +1,8 @@
+description: "search speech: the 1906 San Francisco earthquake (1 relevant of 20)"
+metadata: { id: speech-san-francisco-earthquake, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "the 1906 San Francisco earthquake"
+  relevant: ["sp-earthquake-sf"]
+  how: "by the clip's summary (book, chapter and topic)"

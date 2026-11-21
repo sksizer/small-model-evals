@@ -1,0 +1,8 @@
+description: "search videos: a city seen from above through an aircraft window (1 relevant of 39)"
+metadata: { id: videos-hard-city-from-air, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a city seen from above through an aircraft window"
+  relevant: ["vid-airplane-1"]
+  how: "by poster frame"

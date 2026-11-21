@@ -1,0 +1,8 @@
+description: "search sounds: an audience applauding (2 relevant of 59)"
+metadata: { id: sounds-applause, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "an audience applauding"
+  relevant: ["snd-applause-1","snd-applause-2"]
+  how: "by file name and category"

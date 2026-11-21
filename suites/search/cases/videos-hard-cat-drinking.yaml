@@ -1,0 +1,8 @@
+description: "search videos: a cat drinking from a puddle (1 relevant of 39)"
+metadata: { id: videos-hard-cat-drinking, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a cat drinking from a puddle"
+  relevant: ["vid-cat-3"]
+  how: "by file name and category and poster; the jumping cat is a near miss"

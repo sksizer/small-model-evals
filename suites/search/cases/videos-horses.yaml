@@ -1,0 +1,8 @@
+description: "search videos: horses (2 relevant of 39)"
+metadata: { id: videos-horses, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "horses"
+  relevant: ["vid-horse-1","vid-horse-2"]
+  how: "by file name and category"

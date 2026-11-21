@@ -1,10 +1,11 @@
-// Which search cases belong to the hard set added on 2026-11-08 (docs/plans/search.md), for the site's split of
-// each kind's score into "original" and "hard". Cases carry no such mark in their files: they are immutable and
-// the set was added after the first 89 were frozen, so the set is named here by id. scripts/pick-search.ts checks
-// that this list and its hard note queries agree.
+// Which search cases belong to the hard set (added 2026-11-08, docs/plans/search.md; the audio and video near-miss
+// cases carry `hard-` in their ids, docs/plans/av-search.md), for the site's split of each kind's score into
+// "original" and "hard". Cases carry no such mark in their files: they are immutable and the 2026-11-08 set was added
+// after the first 89 were frozen, so the set is named here by id. scripts/pick-search.ts checks that this list and its
+// hard note queries agree.
 
-/** Case id prefixes of the hard set: photos over photos-dup, fine-grained page queries, and the foods over all 7793. */
-export const HARD_PREFIXES = ['photos-dup-', 'docs-fine-', 'text-food-'] as const
+/** Case id prefixes of the hard set: photos over photos-dup, fine-grained page queries, the foods over all 7793, and the near-miss audio and video queries (scripts/av-search-sets.ts). */
+export const HARD_PREFIXES = ['photos-dup-', 'docs-fine-', 'text-food-', 'sounds-hard-', 'speech-hard-', 'videos-hard-'] as const
 
 /** Slugs of the hard note queries (their case ids are `text-note-<slug>`). */
 export const HARD_NOTE_SLUGS = [

@@ -1,0 +1,8 @@
+description: "search sounds: a train on the tracks (2 relevant of 59)"
+metadata: { id: sounds-hard-train, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a train on the tracks"
+  relevant: ["snd-train-1","snd-train-2"]
+  how: "by file name and category; the train videos are a different corpus"

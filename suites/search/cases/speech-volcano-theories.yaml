@@ -1,0 +1,8 @@
+description: "search speech: theories of how volcanoes work (1 relevant of 20)"
+metadata: { id: speech-volcano-theories, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "theories of how volcanoes work"
+  relevant: ["sp-volcanoes-italy"]
+  how: "by the clip's summary (book, chapter and topic)"

@@ -1,0 +1,8 @@
+description: "search videos: a tram (2 relevant of 39)"
+metadata: { id: videos-hard-tram, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a tram"
+  relevant: ["vid-tram-1","vid-tram-2"]
+  how: "by file name and category; unsure about tram-1, its poster is a meadow"

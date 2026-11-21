@@ -1,0 +1,8 @@
+description: "search speech: a lecture on how a candle burns (1 relevant of 20)"
+metadata: { id: speech-candle-flame, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "a lecture on how a candle burns"
+  relevant: ["sp-candle-lecture"]
+  how: "by the clip's summary (book, chapter and topic)"

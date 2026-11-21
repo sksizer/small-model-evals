@@ -1,0 +1,8 @@
+description: "search sounds: water running in a kitchen sink (2 relevant of 59)"
+metadata: { id: sounds-hard-kitchen-sink, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "water running in a kitchen sink"
+  relevant: ["snd-running-water-1","snd-running-water-2"]
+  how: "by file name and category; a stream is a near miss"

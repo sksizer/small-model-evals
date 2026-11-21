@@ -1,0 +1,8 @@
+description: "search sounds: solo piano music (2 relevant of 59)"
+metadata: { id: sounds-piano, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "solo piano music"
+  relevant: ["snd-piano-1","snd-piano-2"]
+  how: "by file name and category"

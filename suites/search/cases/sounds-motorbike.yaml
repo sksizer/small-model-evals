@@ -1,0 +1,8 @@
+description: "search sounds: a motorbike engine (2 relevant of 59)"
+metadata: { id: sounds-motorbike, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a motorbike engine"
+  relevant: ["snd-motorbike-1","snd-motorbike-2"]
+  how: "by file name and category"

@@ -1,0 +1,8 @@
+description: "search sounds: rain against a window (1 relevant of 59)"
+metadata: { id: sounds-hard-rain-on-window, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "rain against a window"
+  relevant: ["snd-rain-2"]
+  how: "by file name and category (\"Rain against the window\"); the plain rain clip is a near miss"

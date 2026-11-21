@@ -1,0 +1,9 @@
+description: "search sound-to-sound: snd-rain-2 (2 copy, 1 class of 90)"
+metadata: { id: sound-to-sound-rain-2, kind: sound-to-sound }
+vars:
+  kind: sound-to-sound
+  corpus: sounds-dup
+  query_item: snd-rain-2
+  relevant: ["copy-quiet-snd-rain-2","copy-trim-snd-rain-2","snd-rain-1"]
+  levels: {"copy":["copy-quiet-snd-rain-2","copy-trim-snd-rain-2"],"class":["snd-rain-1"]}
+  how: "levels by original: copy = its derived copies, class = another clip of the same category (rain)"

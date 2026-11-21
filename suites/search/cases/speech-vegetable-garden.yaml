@@ -1,0 +1,8 @@
+description: "search speech: growing vegetables in a small garden plot (1 relevant of 20)"
+metadata: { id: speech-vegetable-garden, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "growing vegetables in a small garden plot"
+  relevant: ["sp-gardening-vegetables"]
+  how: "by the clip's summary (book, chapter and topic)"

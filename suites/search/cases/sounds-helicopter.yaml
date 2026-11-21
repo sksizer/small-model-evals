@@ -1,0 +1,8 @@
+description: "search sounds: a helicopter flying overhead (2 relevant of 59)"
+metadata: { id: sounds-helicopter, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a helicopter flying overhead"
+  relevant: ["snd-helicopter-1","snd-helicopter-2"]
+  how: "by file name and category"

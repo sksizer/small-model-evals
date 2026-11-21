@@ -1,0 +1,8 @@
+description: "search sounds: a dawn chorus of many birds (2 relevant of 59)"
+metadata: { id: sounds-hard-dawn-chorus, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a dawn chorus of many birds"
+  relevant: ["snd-bird-2","snd-bird-3"]
+  how: "by file name and category (\"dawn chorus\"); the blackbird is one bird"

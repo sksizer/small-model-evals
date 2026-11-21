@@ -1,0 +1,8 @@
+description: "search speech: earthquakes and volcanoes (2 relevant of 20)"
+metadata: { id: speech-hard-earth-disasters, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "earthquakes and volcanoes"
+  relevant: ["sp-volcanoes-italy","sp-earthquake-sf"]
+  how: "by the clip's summary (book, chapter and topic)"

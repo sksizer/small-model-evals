@@ -1,0 +1,9 @@
+description: "search video-to-video: vid-waterfall-1 (2 copy, 1 scene, 1 class of 58)"
+metadata: { id: video-to-video-waterfall-1, kind: video-to-video }
+vars:
+  kind: video-to-video
+  corpus: videos-dup
+  query_item: vid-waterfall-1
+  relevant: ["copy-cut-vid-waterfall-1","copy-reencode-vid-waterfall-1","vid-waterfall-2","vid-waterfall-3"]
+  levels: {"copy":["copy-reencode-vid-waterfall-1","copy-cut-vid-waterfall-1"],"scene":["vid-waterfall-2"],"class":["vid-waterfall-3"]}
+  how: "levels by original: copy = its derived copies, scene = another clip of the same place, class = another clip of the same category (waterfall)"

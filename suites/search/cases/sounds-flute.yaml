@@ -1,0 +1,8 @@
+description: "search sounds: a flute playing (2 relevant of 59)"
+metadata: { id: sounds-flute, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a flute playing"
+  relevant: ["snd-flute-1","snd-flute-2"]
+  how: "by file name and category"

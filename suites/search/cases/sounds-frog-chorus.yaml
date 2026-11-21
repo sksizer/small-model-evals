@@ -1,0 +1,8 @@
+description: "search sounds: a chorus of frogs (2 relevant of 59)"
+metadata: { id: sounds-frog-chorus, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a chorus of frogs"
+  relevant: ["snd-frog-1","snd-frog-2"]
+  how: "by file name and category"

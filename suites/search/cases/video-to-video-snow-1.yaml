@@ -1,0 +1,9 @@
+description: "search video-to-video: vid-snow-1 (2 copy, 1 class of 58)"
+metadata: { id: video-to-video-snow-1, kind: video-to-video }
+vars:
+  kind: video-to-video
+  corpus: videos-dup
+  query_item: vid-snow-1
+  relevant: ["copy-cut-vid-snow-1","copy-reencode-vid-snow-1","vid-snow-2"]
+  levels: {"copy":["copy-reencode-vid-snow-1","copy-cut-vid-snow-1"],"class":["vid-snow-2"]}
+  how: "levels by original: copy = its derived copies, class = another clip of the same category (snow)"

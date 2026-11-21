@@ -1,0 +1,8 @@
+description: "search sounds: a blackbird singing (1 relevant of 59)"
+metadata: { id: sounds-hard-blackbird-song, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a blackbird singing"
+  relevant: ["snd-bird-1"]
+  how: "by file name and category; the two dawn choruses are other birds"

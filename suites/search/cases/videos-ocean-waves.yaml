@@ -1,0 +1,8 @@
+description: "search videos: waves on the sea (3 relevant of 39)"
+metadata: { id: videos-ocean-waves, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "waves on the sea"
+  relevant: ["vid-sea-waves-1","vid-sea-waves-2","vid-sea-waves-3"]
+  how: "by file name and category"

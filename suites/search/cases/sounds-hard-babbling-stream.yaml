@@ -1,0 +1,8 @@
+description: "search sounds: a stream running over rocks (2 relevant of 59)"
+metadata: { id: sounds-hard-babbling-stream, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a stream running over rocks"
+  relevant: ["snd-stream-1","snd-stream-2"]
+  how: "by file name and category; unsure about \"Swale\"; a tap is a near miss"

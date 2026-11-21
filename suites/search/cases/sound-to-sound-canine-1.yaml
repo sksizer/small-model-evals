@@ -1,0 +1,9 @@
+description: "search sound-to-sound: snd-canine-1 (2 copy, 1 class of 90)"
+metadata: { id: sound-to-sound-canine-1, kind: sound-to-sound }
+vars:
+  kind: sound-to-sound
+  corpus: sounds-dup
+  query_item: snd-canine-1
+  relevant: ["copy-recode-snd-canine-1","copy-trim-snd-canine-1","snd-canine-2"]
+  levels: {"copy":["copy-trim-snd-canine-1","copy-recode-snd-canine-1"],"class":["snd-canine-2"]}
+  how: "levels by original: copy = its derived copies, class = another clip of the same category (canine)"

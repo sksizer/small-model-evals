@@ -1,0 +1,8 @@
+description: "search videos: the inside of a tram with empty seats (1 relevant of 39)"
+metadata: { id: videos-tram-interior, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "the inside of a tram with empty seats"
+  relevant: ["vid-tram-2"]
+  how: "by its poster frame (seats and windows)"

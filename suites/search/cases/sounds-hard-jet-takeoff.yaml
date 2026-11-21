@@ -1,0 +1,8 @@
+description: "search sounds: a jet airliner taking off (1 relevant of 59)"
+metadata: { id: sounds-hard-jet-takeoff, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a jet airliner taking off"
+  relevant: ["snd-airplane-2"]
+  how: "by file name; unsure, the title is thin (\"Start einer Airbus A320\"); the AN-24 clip is a propeller aircraft"

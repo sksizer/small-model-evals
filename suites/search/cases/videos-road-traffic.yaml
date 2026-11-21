@@ -1,0 +1,8 @@
+description: "search videos: cars driving on a street (2 relevant of 39)"
+metadata: { id: videos-road-traffic, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "cars driving on a street"
+  relevant: ["vid-traffic-1","vid-traffic-3"]
+  how: "by file name and category"

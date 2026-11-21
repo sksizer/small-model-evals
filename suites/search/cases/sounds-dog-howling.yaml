@@ -1,0 +1,8 @@
+description: "search sounds: a dog howling (1 relevant of 59)"
+metadata: { id: sounds-dog-howling, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a dog howling"
+  relevant: ["snd-canine-2"]
+  how: "by file name and category (\"Jem howls\")"

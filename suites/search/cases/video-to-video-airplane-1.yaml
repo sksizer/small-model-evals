@@ -1,0 +1,9 @@
+description: "search video-to-video: vid-airplane-1 (2 copy, 1 class of 58)"
+metadata: { id: video-to-video-airplane-1, kind: video-to-video }
+vars:
+  kind: video-to-video
+  corpus: videos-dup
+  query_item: vid-airplane-1
+  relevant: ["copy-cut-vid-airplane-1","copy-reencode-vid-airplane-1","vid-airplane-2"]
+  levels: {"copy":["copy-reencode-vid-airplane-1","copy-cut-vid-airplane-1"],"class":["vid-airplane-2"]}
+  how: "levels by original: copy = its derived copies, class = another clip of the same category (airplane)"

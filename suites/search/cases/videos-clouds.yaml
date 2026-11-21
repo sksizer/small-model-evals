@@ -1,0 +1,8 @@
+description: "search videos: clouds moving across the sky (2 relevant of 39)"
+metadata: { id: videos-clouds, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "clouds moving across the sky"
+  relevant: ["vid-clouds-1","vid-clouds-2"]
+  how: "by file name and category"

@@ -1,0 +1,8 @@
+description: "search speech: a club of cannon enthusiasts in Baltimore after the war (1 relevant of 20)"
+metadata: { id: speech-gun-club, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "a club of cannon enthusiasts in Baltimore after the war"
+  relevant: ["sp-moon-gun-club"]
+  how: "by the clip's summary (book, chapter and topic)"

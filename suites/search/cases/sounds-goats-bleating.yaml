@@ -1,0 +1,8 @@
+description: "search sounds: goats bleating (1 relevant of 59)"
+metadata: { id: sounds-goats-bleating, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "goats bleating"
+  relevant: ["snd-farm-animal-3"]
+  how: "by file name and category"

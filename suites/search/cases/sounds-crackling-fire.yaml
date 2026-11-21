@@ -1,0 +1,8 @@
+description: "search sounds: a crackling fire (2 relevant of 59)"
+metadata: { id: sounds-crackling-fire, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a crackling fire"
+  relevant: ["snd-fire-1","snd-fire-2"]
+  how: "by file name and category"

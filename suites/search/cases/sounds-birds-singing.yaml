@@ -1,0 +1,8 @@
+description: "search sounds: birds singing (3 relevant of 59)"
+metadata: { id: sounds-birds-singing, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "birds singing"
+  relevant: ["snd-bird-1","snd-bird-2","snd-bird-3"]
+  how: "by file name and category"

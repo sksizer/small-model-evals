@@ -1,0 +1,8 @@
+description: "search videos: a waterfall (3 relevant of 39)"
+metadata: { id: videos-waterfall, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a waterfall"
+  relevant: ["vid-waterfall-1","vid-waterfall-2","vid-waterfall-3"]
+  how: "by file name and category; unsure about Watagataki Falls, its poster is a hillside"

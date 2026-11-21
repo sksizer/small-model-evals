@@ -1,0 +1,9 @@
+description: "search video-to-video: vid-train-2 (2 copy, 1 scene, 1 class of 58)"
+metadata: { id: video-to-video-train-2, kind: video-to-video }
+vars:
+  kind: video-to-video
+  corpus: videos-dup
+  query_item: vid-train-2
+  relevant: ["copy-cut-vid-train-2","copy-reencode-vid-train-2","vid-train-1","vid-train-3"]
+  levels: {"copy":["copy-reencode-vid-train-2","copy-cut-vid-train-2"],"scene":["vid-train-3"],"class":["vid-train-1"]}
+  how: "levels by original: copy = its derived copies, scene = another clip of the same place, class = another clip of the same category (train)"

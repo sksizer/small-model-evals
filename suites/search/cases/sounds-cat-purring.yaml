@@ -1,0 +1,8 @@
+description: "search sounds: a cat purring (2 relevant of 59)"
+metadata: { id: sounds-cat-purring, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a cat purring"
+  relevant: ["snd-cat-2","snd-cat-3"]
+  how: "by file name and category"

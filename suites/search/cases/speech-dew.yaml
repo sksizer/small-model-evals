@@ -1,0 +1,8 @@
+description: "search speech: where dew comes from (1 relevant of 20)"
+metadata: { id: speech-dew, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "where dew comes from"
+  relevant: ["sp-weather-dew"]
+  how: "by the clip's summary (book, chapter and topic)"

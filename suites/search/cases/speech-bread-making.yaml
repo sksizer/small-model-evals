@@ -1,0 +1,8 @@
+description: "search speech: why good bread-making matters most in cooking, and home-made yeast (1 relevant of 20)"
+metadata: { id: speech-bread-making, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "why good bread-making matters most in cooking, and home-made yeast"
+  relevant: ["sp-cookery-bread"]
+  how: "by the clip's summary (book, chapter and topic)"

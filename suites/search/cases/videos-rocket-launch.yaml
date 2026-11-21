@@ -1,0 +1,8 @@
+description: "search videos: a rocket launching (3 relevant of 39)"
+metadata: { id: videos-rocket-launch, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a rocket launching"
+  relevant: ["vid-rocket-launch-1","vid-rocket-launch-2","vid-rocket-launch-3"]
+  how: "by file name and category; unsure, the posters of -1 and -3 are black or a title card"

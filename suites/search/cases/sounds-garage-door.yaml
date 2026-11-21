@@ -1,0 +1,8 @@
+description: "search sounds: a garage door opening (1 relevant of 59)"
+metadata: { id: sounds-garage-door, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a garage door opening"
+  relevant: ["snd-door-2"]
+  how: "by file name and category (\"Garage door opening\")"

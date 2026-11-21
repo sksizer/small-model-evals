@@ -1,0 +1,8 @@
+description: "search videos: a cat (2 relevant of 39)"
+metadata: { id: videos-cat, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a cat"
+  relevant: ["vid-cat-1","vid-cat-3"]
+  how: "by file name and category; the poster of cat-1 shows a room, the cat is out of frame"

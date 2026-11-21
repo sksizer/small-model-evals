@@ -1,0 +1,8 @@
+description: "search sounds: rain falling (2 relevant of 59)"
+metadata: { id: sounds-rain-falling, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "rain falling"
+  relevant: ["snd-rain-1","snd-rain-2"]
+  how: "by file name and category"

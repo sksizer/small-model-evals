@@ -1,0 +1,8 @@
+description: "search sounds: a guitar being played (2 relevant of 59)"
+metadata: { id: sounds-guitar, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a guitar being played"
+  relevant: ["snd-guitar-1","snd-guitar-2"]
+  how: "by file name and category"

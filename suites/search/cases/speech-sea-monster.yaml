@@ -1,0 +1,8 @@
+description: "search speech: a mysterious sea monster sighted by ships in 1866 (1 relevant of 20)"
+metadata: { id: speech-sea-monster, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "a mysterious sea monster sighted by ships in 1866"
+  relevant: ["sp-sea-nautilus"]
+  how: "by the clip's summary (book, chapter and topic)"

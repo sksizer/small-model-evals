@@ -1,0 +1,8 @@
+description: "search sounds: an airplane engine (2 relevant of 59)"
+metadata: { id: sounds-hard-airplane, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "an airplane engine"
+  relevant: ["snd-airplane-1","snd-airplane-2"]
+  how: "by file name and category; a helicopter is a near miss"

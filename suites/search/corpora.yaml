@@ -1,5 +1,6 @@
 # The candidates each search case is ranked against, by corpus (scripts/pick-search.ts; docs/plans/search.md).
-# photos, docs: images (`file`, a path from the repo root). foods, notes: text (`title`, `text`).
+# photos, docs: images (`file`, a path from the repo root). foods, notes: text (`title`, `text`). The corpora after the marker line
+# (sounds, speech, videos, with -dup for clips plus derived copies) are audio and video clips: `file` is the clip.
 # foods is all 7793 foods of the USDA SR Legacy database (public domain); notes are invented (CC0). photos-dup is photos plus their derived copies.
 photos:
   - {"id":"salad-ham","file":"corpus/images/salad-ham.jpg"}
@@ -8141,3 +8142,277 @@ notes:
   - {"id":"n86","title":"Pager app","text":"The old pager app is being retired. Install the new one by Friday and test an alert on your own phone."}
   - {"id":"n87","title":"Cloud certificate","text":"Study guide chapters one to four, practice exam on Sunday, real exam on the 12th of December."}
   - {"id":"n88","title":"Evening wind-down","text":"Warm shower, ten minutes of reading, phone in the other room by 22:00. Lights low from nine."}
+# ---- audio and video (scripts/av-search-sets.ts): `file` is a clip, `title` is for display only
+sounds:
+  - {"id":"snd-canine-1","file":"corpus/audio/snd-canine-1.ogg","title":"Dog.ogg"}
+  - {"id":"snd-canine-2","file":"corpus/audio/snd-canine-2.ogg","title":"Jem howls.ogg"}
+  - {"id":"snd-cat-1","file":"corpus/audio/snd-cat-1.ogg","title":"Meow of a pleading cat.oga"}
+  - {"id":"snd-cat-2","file":"corpus/audio/snd-cat-2.ogg","title":"Purr (10 sec loopable).ogg"}
+  - {"id":"snd-cat-3","file":"corpus/audio/snd-cat-3.ogg","title":"Purring cat.oga"}
+  - {"id":"snd-farm-animal-1","file":"corpus/audio/snd-farm-animal-1.ogg","title":"Small rooster crowing.ogg"}
+  - {"id":"snd-farm-animal-2","file":"corpus/audio/snd-farm-animal-2.ogg","title":"Medium rooster crowing.ogg"}
+  - {"id":"snd-farm-animal-3","file":"corpus/audio/snd-farm-animal-3.ogg","title":"Herd of goats bleating.ogg"}
+  - {"id":"snd-bird-1","file":"corpus/audio/snd-bird-1.ogg","title":"Common Blackbird song (Turdus merula).ogg"}
+  - {"id":"snd-bird-2","file":"corpus/audio/snd-bird-2.ogg","title":"RainforestDawnChorus Selaliparai DM.ogg"}
+  - {"id":"snd-bird-3","file":"corpus/audio/snd-bird-3.ogg","title":"Royal Natal National Park dawn chorus (W1CDR0001146 BD3).ogg"}
+  - {"id":"snd-insect-1","file":"corpus/audio/snd-insect-1.ogg","title":"Bee buzzing sound (animal noises).opus"}
+  - {"id":"snd-insect-2","file":"corpus/audio/snd-insect-2.ogg","title":"Hummel bee.ogg"}
+  - {"id":"snd-frog-1","file":"corpus/audio/snd-frog-1.ogg","title":"Night Chorus of Frogs and Toads in Niger Delta.ogg"}
+  - {"id":"snd-frog-2","file":"corpus/audio/snd-frog-2.ogg","title":"Pseudacris triseriata chorus.wav"}
+  - {"id":"snd-rain-1","file":"corpus/audio/snd-rain-1.ogg","title":"Rain.ogg"}
+  - {"id":"snd-rain-2","file":"corpus/audio/snd-rain-2.ogg","title":"Rain against the window.ogg"}
+  - {"id":"snd-thunder-1","file":"corpus/audio/snd-thunder-1.ogg","title":"Thunder.ogg"}
+  - {"id":"snd-thunder-2","file":"corpus/audio/snd-thunder-2.ogg","title":"Tonitrus.ogg"}
+  - {"id":"snd-wind-1","file":"corpus/audio/snd-wind-1.ogg","title":"Howling wind.ogg"}
+  - {"id":"snd-wind-2","file":"corpus/audio/snd-wind-2.ogg","title":"帕卡颱風逼近下的風聲.ogg"}
+  - {"id":"snd-stream-1","file":"corpus/audio/snd-stream-1.ogg","title":"Hemlock stream.ogg"}
+  - {"id":"snd-stream-2","file":"corpus/audio/snd-stream-2.ogg","title":"Swale.ogg"}
+  - {"id":"snd-sea-waves-1","file":"corpus/audio/snd-sea-waves-1.ogg","title":"Oceanwavescrushing.ogg"}
+  - {"id":"snd-sea-waves-2","file":"corpus/audio/snd-sea-waves-2.ogg","title":"On a pebble beach.ogg"}
+  - {"id":"snd-running-water-1","file":"corpus/audio/snd-running-water-1.ogg","title":"Faucet water into sink.ogg"}
+  - {"id":"snd-running-water-2","file":"corpus/audio/snd-running-water-2.ogg","title":"Kitchen sink draining water.ogg"}
+  - {"id":"snd-fire-1","file":"corpus/audio/snd-fire-1.ogg","title":"Campfire sound ambience.ogg"}
+  - {"id":"snd-fire-2","file":"corpus/audio/snd-fire-2.ogg","title":"Dry grass burning in open fireplace.ogg"}
+  - {"id":"snd-helicopter-1","file":"corpus/audio/snd-helicopter-1.ogg","title":"Helicopter over a lake.ogg"}
+  - {"id":"snd-helicopter-2","file":"corpus/audio/snd-helicopter-2.ogg","title":"Helicopter over quiet neighbourhood.ogg"}
+  - {"id":"snd-airplane-1","file":"corpus/audio/snd-airplane-1.ogg","title":"Sound of AN-24 airplane.ogg"}
+  - {"id":"snd-airplane-2","file":"corpus/audio/snd-airplane-2.ogg","title":"Start einer Airbus A320 (Air Berlin).ogg"}
+  - {"id":"snd-motorbike-1","file":"corpus/audio/snd-motorbike-1.ogg","title":"Motorbike 1.ogg"}
+  - {"id":"snd-motorbike-2","file":"corpus/audio/snd-motorbike-2.ogg","title":"Motorbike 2.ogg"}
+  - {"id":"snd-train-1","file":"corpus/audio/snd-train-1.ogg","title":"Taiwan railways EP727 train cars sounds.ogg"}
+  - {"id":"snd-train-2","file":"corpus/audio/snd-train-2.ogg","title":"Train sounds from Iowa - Glaneur de sons.ogg"}
+  - {"id":"snd-siren-1","file":"corpus/audio/snd-siren-1.ogg","title":"Siren.ogg"}
+  - {"id":"snd-siren-2","file":"corpus/audio/snd-siren-2.ogg","title":"American police siren i.ogg"}
+  - {"id":"snd-bell-1","file":"corpus/audio/snd-bell-1.ogg","title":"Church bells - Leverkusen, 2007.oga"}
+  - {"id":"snd-bell-2","file":"corpus/audio/snd-bell-2.ogg","title":"Cloche de l'Eglise de Sainte-Marie-des-Batignolles.ogg"}
+  - {"id":"snd-clock-1","file":"corpus/audio/snd-clock-1.ogg","title":"Clock ticking.ogg"}
+  - {"id":"snd-clock-2","file":"corpus/audio/snd-clock-2.ogg","title":"Clock (tic tac).ogg"}
+  - {"id":"snd-door-1","file":"corpus/audio/snd-door-1.ogg","title":"Squeaky door.ogg"}
+  - {"id":"snd-door-2","file":"corpus/audio/snd-door-2.ogg","title":"Garage door opening.ogg"}
+  - {"id":"snd-typing-1","file":"corpus/audio/snd-typing-1.ogg","title":"Typing fast.ogg"}
+  - {"id":"snd-typing-2","file":"corpus/audio/snd-typing-2.ogg","title":"Typing - Model M 1986.ogg"}
+  - {"id":"snd-applause-1","file":"corpus/audio/snd-applause-1.ogg","title":"Applause i.ogg"}
+  - {"id":"snd-applause-2","file":"corpus/audio/snd-applause-2.ogg","title":"Applause ii.ogg"}
+  - {"id":"snd-cooking-1","file":"corpus/audio/snd-cooking-1.ogg","title":"Frying fries going in and out of oil.ogg"}
+  - {"id":"snd-cooking-2","file":"corpus/audio/snd-cooking-2.ogg","title":"Oil boiling.ogg"}
+  - {"id":"snd-flute-1","file":"corpus/audio/snd-flute-1.ogg","title":"Flute.ogg"}
+  - {"id":"snd-flute-2","file":"corpus/audio/snd-flute-2.ogg","title":"Flute 2.ogg"}
+  - {"id":"snd-percussion-1","file":"corpus/audio/snd-percussion-1.ogg","title":"Cymbal sounds.ogg"}
+  - {"id":"snd-percussion-2","file":"corpus/audio/snd-percussion-2.ogg","title":"Tambourine.ogg"}
+  - {"id":"snd-guitar-1","file":"corpus/audio/snd-guitar-1.ogg","title":"Wikipedia guitar solo.ogg"}
+  - {"id":"snd-guitar-2","file":"corpus/audio/snd-guitar-2.ogg","title":"Steel guitar solo in Ryūkōka.ogg"}
+  - {"id":"snd-piano-1","file":"corpus/audio/snd-piano-1.ogg","title":"6-Pieces-for-Piano-VI.-Intermezzo-Serenata.ogg"}
+  - {"id":"snd-piano-2","file":"corpus/audio/snd-piano-2.ogg","title":"Bach Preludio XXI from Well-tempered Clavier, Vol 1.wav"}
+sounds-dup:
+  - {"id":"snd-canine-1","file":"corpus/audio/snd-canine-1.ogg","title":"Dog.ogg"}
+  - {"id":"snd-canine-2","file":"corpus/audio/snd-canine-2.ogg","title":"Jem howls.ogg"}
+  - {"id":"snd-cat-1","file":"corpus/audio/snd-cat-1.ogg","title":"Meow of a pleading cat.oga"}
+  - {"id":"snd-cat-2","file":"corpus/audio/snd-cat-2.ogg","title":"Purr (10 sec loopable).ogg"}
+  - {"id":"snd-cat-3","file":"corpus/audio/snd-cat-3.ogg","title":"Purring cat.oga"}
+  - {"id":"snd-farm-animal-1","file":"corpus/audio/snd-farm-animal-1.ogg","title":"Small rooster crowing.ogg"}
+  - {"id":"snd-farm-animal-2","file":"corpus/audio/snd-farm-animal-2.ogg","title":"Medium rooster crowing.ogg"}
+  - {"id":"snd-farm-animal-3","file":"corpus/audio/snd-farm-animal-3.ogg","title":"Herd of goats bleating.ogg"}
+  - {"id":"snd-bird-1","file":"corpus/audio/snd-bird-1.ogg","title":"Common Blackbird song (Turdus merula).ogg"}
+  - {"id":"snd-bird-2","file":"corpus/audio/snd-bird-2.ogg","title":"RainforestDawnChorus Selaliparai DM.ogg"}
+  - {"id":"snd-bird-3","file":"corpus/audio/snd-bird-3.ogg","title":"Royal Natal National Park dawn chorus (W1CDR0001146 BD3).ogg"}
+  - {"id":"snd-insect-1","file":"corpus/audio/snd-insect-1.ogg","title":"Bee buzzing sound (animal noises).opus"}
+  - {"id":"snd-insect-2","file":"corpus/audio/snd-insect-2.ogg","title":"Hummel bee.ogg"}
+  - {"id":"snd-frog-1","file":"corpus/audio/snd-frog-1.ogg","title":"Night Chorus of Frogs and Toads in Niger Delta.ogg"}
+  - {"id":"snd-frog-2","file":"corpus/audio/snd-frog-2.ogg","title":"Pseudacris triseriata chorus.wav"}
+  - {"id":"snd-rain-1","file":"corpus/audio/snd-rain-1.ogg","title":"Rain.ogg"}
+  - {"id":"snd-rain-2","file":"corpus/audio/snd-rain-2.ogg","title":"Rain against the window.ogg"}
+  - {"id":"snd-thunder-1","file":"corpus/audio/snd-thunder-1.ogg","title":"Thunder.ogg"}
+  - {"id":"snd-thunder-2","file":"corpus/audio/snd-thunder-2.ogg","title":"Tonitrus.ogg"}
+  - {"id":"snd-wind-1","file":"corpus/audio/snd-wind-1.ogg","title":"Howling wind.ogg"}
+  - {"id":"snd-wind-2","file":"corpus/audio/snd-wind-2.ogg","title":"帕卡颱風逼近下的風聲.ogg"}
+  - {"id":"snd-stream-1","file":"corpus/audio/snd-stream-1.ogg","title":"Hemlock stream.ogg"}
+  - {"id":"snd-stream-2","file":"corpus/audio/snd-stream-2.ogg","title":"Swale.ogg"}
+  - {"id":"snd-sea-waves-1","file":"corpus/audio/snd-sea-waves-1.ogg","title":"Oceanwavescrushing.ogg"}
+  - {"id":"snd-sea-waves-2","file":"corpus/audio/snd-sea-waves-2.ogg","title":"On a pebble beach.ogg"}
+  - {"id":"snd-running-water-1","file":"corpus/audio/snd-running-water-1.ogg","title":"Faucet water into sink.ogg"}
+  - {"id":"snd-running-water-2","file":"corpus/audio/snd-running-water-2.ogg","title":"Kitchen sink draining water.ogg"}
+  - {"id":"snd-fire-1","file":"corpus/audio/snd-fire-1.ogg","title":"Campfire sound ambience.ogg"}
+  - {"id":"snd-fire-2","file":"corpus/audio/snd-fire-2.ogg","title":"Dry grass burning in open fireplace.ogg"}
+  - {"id":"snd-helicopter-1","file":"corpus/audio/snd-helicopter-1.ogg","title":"Helicopter over a lake.ogg"}
+  - {"id":"snd-helicopter-2","file":"corpus/audio/snd-helicopter-2.ogg","title":"Helicopter over quiet neighbourhood.ogg"}
+  - {"id":"snd-airplane-1","file":"corpus/audio/snd-airplane-1.ogg","title":"Sound of AN-24 airplane.ogg"}
+  - {"id":"snd-airplane-2","file":"corpus/audio/snd-airplane-2.ogg","title":"Start einer Airbus A320 (Air Berlin).ogg"}
+  - {"id":"snd-motorbike-1","file":"corpus/audio/snd-motorbike-1.ogg","title":"Motorbike 1.ogg"}
+  - {"id":"snd-motorbike-2","file":"corpus/audio/snd-motorbike-2.ogg","title":"Motorbike 2.ogg"}
+  - {"id":"snd-train-1","file":"corpus/audio/snd-train-1.ogg","title":"Taiwan railways EP727 train cars sounds.ogg"}
+  - {"id":"snd-train-2","file":"corpus/audio/snd-train-2.ogg","title":"Train sounds from Iowa - Glaneur de sons.ogg"}
+  - {"id":"snd-siren-1","file":"corpus/audio/snd-siren-1.ogg","title":"Siren.ogg"}
+  - {"id":"snd-siren-2","file":"corpus/audio/snd-siren-2.ogg","title":"American police siren i.ogg"}
+  - {"id":"snd-bell-1","file":"corpus/audio/snd-bell-1.ogg","title":"Church bells - Leverkusen, 2007.oga"}
+  - {"id":"snd-bell-2","file":"corpus/audio/snd-bell-2.ogg","title":"Cloche de l'Eglise de Sainte-Marie-des-Batignolles.ogg"}
+  - {"id":"snd-clock-1","file":"corpus/audio/snd-clock-1.ogg","title":"Clock ticking.ogg"}
+  - {"id":"snd-clock-2","file":"corpus/audio/snd-clock-2.ogg","title":"Clock (tic tac).ogg"}
+  - {"id":"snd-door-1","file":"corpus/audio/snd-door-1.ogg","title":"Squeaky door.ogg"}
+  - {"id":"snd-door-2","file":"corpus/audio/snd-door-2.ogg","title":"Garage door opening.ogg"}
+  - {"id":"snd-typing-1","file":"corpus/audio/snd-typing-1.ogg","title":"Typing fast.ogg"}
+  - {"id":"snd-typing-2","file":"corpus/audio/snd-typing-2.ogg","title":"Typing - Model M 1986.ogg"}
+  - {"id":"snd-applause-1","file":"corpus/audio/snd-applause-1.ogg","title":"Applause i.ogg"}
+  - {"id":"snd-applause-2","file":"corpus/audio/snd-applause-2.ogg","title":"Applause ii.ogg"}
+  - {"id":"snd-cooking-1","file":"corpus/audio/snd-cooking-1.ogg","title":"Frying fries going in and out of oil.ogg"}
+  - {"id":"snd-cooking-2","file":"corpus/audio/snd-cooking-2.ogg","title":"Oil boiling.ogg"}
+  - {"id":"snd-flute-1","file":"corpus/audio/snd-flute-1.ogg","title":"Flute.ogg"}
+  - {"id":"snd-flute-2","file":"corpus/audio/snd-flute-2.ogg","title":"Flute 2.ogg"}
+  - {"id":"snd-percussion-1","file":"corpus/audio/snd-percussion-1.ogg","title":"Cymbal sounds.ogg"}
+  - {"id":"snd-percussion-2","file":"corpus/audio/snd-percussion-2.ogg","title":"Tambourine.ogg"}
+  - {"id":"snd-guitar-1","file":"corpus/audio/snd-guitar-1.ogg","title":"Wikipedia guitar solo.ogg"}
+  - {"id":"snd-guitar-2","file":"corpus/audio/snd-guitar-2.ogg","title":"Steel guitar solo in Ryūkōka.ogg"}
+  - {"id":"snd-piano-1","file":"corpus/audio/snd-piano-1.ogg","title":"6-Pieces-for-Piano-VI.-Intermezzo-Serenata.ogg"}
+  - {"id":"snd-piano-2","file":"corpus/audio/snd-piano-2.ogg","title":"Bach Preludio XXI from Well-tempered Clavier, Vol 1.wav"}
+  - {"id":"copy-trim-snd-canine-1","file":"corpus/audio/copy-trim-snd-canine-1.ogg","title":"trim of snd-canine-1"}
+  - {"id":"copy-recode-snd-canine-1","file":"corpus/audio/copy-recode-snd-canine-1.ogg","title":"recode of snd-canine-1"}
+  - {"id":"copy-recode-snd-frog-1","file":"corpus/audio/copy-recode-snd-frog-1.ogg","title":"recode of snd-frog-1"}
+  - {"id":"copy-quiet-snd-frog-1","file":"corpus/audio/copy-quiet-snd-frog-1.ogg","title":"quiet of snd-frog-1"}
+  - {"id":"copy-quiet-snd-rain-2","file":"corpus/audio/copy-quiet-snd-rain-2.ogg","title":"quiet of snd-rain-2"}
+  - {"id":"copy-trim-snd-rain-2","file":"corpus/audio/copy-trim-snd-rain-2.ogg","title":"trim of snd-rain-2"}
+  - {"id":"copy-trim-snd-thunder-1","file":"corpus/audio/copy-trim-snd-thunder-1.ogg","title":"trim of snd-thunder-1"}
+  - {"id":"copy-recode-snd-thunder-1","file":"corpus/audio/copy-recode-snd-thunder-1.ogg","title":"recode of snd-thunder-1"}
+  - {"id":"copy-recode-snd-wind-1","file":"corpus/audio/copy-recode-snd-wind-1.ogg","title":"recode of snd-wind-1"}
+  - {"id":"copy-quiet-snd-wind-1","file":"corpus/audio/copy-quiet-snd-wind-1.ogg","title":"quiet of snd-wind-1"}
+  - {"id":"copy-quiet-snd-sea-waves-1","file":"corpus/audio/copy-quiet-snd-sea-waves-1.ogg","title":"quiet of snd-sea-waves-1"}
+  - {"id":"copy-trim-snd-sea-waves-1","file":"corpus/audio/copy-trim-snd-sea-waves-1.ogg","title":"trim of snd-sea-waves-1"}
+  - {"id":"copy-trim-snd-helicopter-1","file":"corpus/audio/copy-trim-snd-helicopter-1.ogg","title":"trim of snd-helicopter-1"}
+  - {"id":"copy-recode-snd-helicopter-1","file":"corpus/audio/copy-recode-snd-helicopter-1.ogg","title":"recode of snd-helicopter-1"}
+  - {"id":"copy-recode-snd-airplane-1","file":"corpus/audio/copy-recode-snd-airplane-1.ogg","title":"recode of snd-airplane-1"}
+  - {"id":"copy-quiet-snd-airplane-1","file":"corpus/audio/copy-quiet-snd-airplane-1.ogg","title":"quiet of snd-airplane-1"}
+  - {"id":"copy-quiet-snd-train-1","file":"corpus/audio/copy-quiet-snd-train-1.ogg","title":"quiet of snd-train-1"}
+  - {"id":"copy-trim-snd-train-1","file":"corpus/audio/copy-trim-snd-train-1.ogg","title":"trim of snd-train-1"}
+  - {"id":"copy-trim-snd-bell-1","file":"corpus/audio/copy-trim-snd-bell-1.ogg","title":"trim of snd-bell-1"}
+  - {"id":"copy-recode-snd-bell-1","file":"corpus/audio/copy-recode-snd-bell-1.ogg","title":"recode of snd-bell-1"}
+  - {"id":"copy-recode-snd-clock-1","file":"corpus/audio/copy-recode-snd-clock-1.ogg","title":"recode of snd-clock-1"}
+  - {"id":"copy-quiet-snd-clock-1","file":"corpus/audio/copy-quiet-snd-clock-1.ogg","title":"quiet of snd-clock-1"}
+  - {"id":"copy-quiet-snd-typing-1","file":"corpus/audio/copy-quiet-snd-typing-1.ogg","title":"quiet of snd-typing-1"}
+  - {"id":"copy-trim-snd-typing-1","file":"corpus/audio/copy-trim-snd-typing-1.ogg","title":"trim of snd-typing-1"}
+  - {"id":"copy-trim-snd-cooking-1","file":"corpus/audio/copy-trim-snd-cooking-1.ogg","title":"trim of snd-cooking-1"}
+  - {"id":"copy-recode-snd-cooking-1","file":"corpus/audio/copy-recode-snd-cooking-1.ogg","title":"recode of snd-cooking-1"}
+  - {"id":"copy-recode-snd-flute-1","file":"corpus/audio/copy-recode-snd-flute-1.ogg","title":"recode of snd-flute-1"}
+  - {"id":"copy-quiet-snd-flute-1","file":"corpus/audio/copy-quiet-snd-flute-1.ogg","title":"quiet of snd-flute-1"}
+  - {"id":"copy-quiet-snd-guitar-1","file":"corpus/audio/copy-quiet-snd-guitar-1.ogg","title":"quiet of snd-guitar-1"}
+  - {"id":"copy-trim-snd-guitar-1","file":"corpus/audio/copy-trim-snd-guitar-1.ogg","title":"trim of snd-guitar-1"}
+  - {"id":"copy-trim-snd-piano-1","file":"corpus/audio/copy-trim-snd-piano-1.ogg","title":"trim of snd-piano-1"}
+  - {"id":"copy-recode-snd-piano-1","file":"corpus/audio/copy-recode-snd-piano-1.ogg","title":"recode of snd-piano-1"}
+speech:
+  - {"id":"sp-cookery-bread","file":"corpus/audio/sp-cookery-bread.ogg","title":"Marion Harland, Cookery for Beginners, lesson 1: why good bread-making is the most important cooking skill, then home-made yeast."}
+  - {"id":"sp-cookery-fish","file":"corpus/audio/sp-cookery-fish.ogg","title":"Olive Green, How to Cook Fish, chapter 1: catching shellfish and unshelled fish, before the recipes."}
+  - {"id":"sp-gardening-vegetables","file":"corpus/audio/sp-gardening-vegetables.ogg","title":"Eben Rexford, ABC of Vegetable Gardening, foreword: anyone with a small plot can grow vegetables."}
+  - {"id":"sp-weather-dew","file":"corpus/audio/sp-weather-dew.ogg","title":"M'Pherson, Meteorology, chapter 2: where dew comes from and how it forms."}
+  - {"id":"sp-sea-nautilus","file":"corpus/audio/sp-sea-nautilus.ogg","title":"Jules Verne, Twenty Thousand Leagues Under the Sea, chapter 1: the strange sea monster sighted in 1866."}
+  - {"id":"sp-sea-whaling","file":"corpus/audio/sp-sea-whaling.ogg","title":"Herman Melville, Moby Dick, chapter 1: Ishmael goes to sea and describes the pull of the water."}
+  - {"id":"sp-arctic-expedition","file":"corpus/audio/sp-arctic-expedition.ogg","title":"Moss, Shores of the Polar Sea, chapter 1: the 1875 British Arctic expedition sails and enters the Arctic."}
+  - {"id":"sp-birds-plumage","file":"corpus/audio/sp-birds-plumage.ogg","title":"Edmund Selous, Beautiful Birds, chapter 1: how beautiful birds are, and why they are killed for plumage."}
+  - {"id":"sp-earth-journey","file":"corpus/audio/sp-earth-journey.ogg","title":"Jules Verne, Journey to the Centre of the Earth, chapter 1: the narrator recalls his uncle, Professor Lidenbrock."}
+  - {"id":"sp-moon-gun-club","file":"corpus/audio/sp-moon-gun-club.ogg","title":"Jules Verne, From the Earth to the Moon, chapter 1: the Baltimore Gun Club and its cannon-loving members."}
+  - {"id":"sp-river-colorado","file":"corpus/audio/sp-river-colorado.ogg","title":"John Wesley Powell, Canyons of the Colorado, chapter 1: the Colorado River valley, its sources and its country."}
+  - {"id":"sp-candle-lecture","file":"corpus/audio/sp-candle-lecture.ogg","title":"Michael Faraday, The Chemical History of a Candle, lecture 1: the flame, its structure and how a candle burns."}
+  - {"id":"sp-cookery-oldrecipes","file":"corpus/audio/sp-cookery-oldrecipes.ogg","title":"Hannah Glasse, The Art of Cookery, chapter 1: roasting and boiling meats (an 18th-century cookbook)."}
+  - {"id":"sp-astronomy-history","file":"corpus/audio/sp-astronomy-history.ogg","title":"Bryant, A History of Astronomy, chapter 1: early notions of the heavens, sun, moon and stars."}
+  - {"id":"sp-electricity-friction","file":"corpus/audio/sp-electricity-friction.ogg","title":"John Munro, The Story of Electricity, chapter 1: electricity from friction, amber and early experiments."}
+  - {"id":"sp-telegraph-cable","file":"corpus/audio/sp-telegraph-cable.ogg","title":"Henry Field, The Story of the Atlantic Telegraph, chapter 1: the sea as a barrier and the plan for a cable."}
+  - {"id":"sp-alps-climbing","file":"corpus/audio/sp-alps-climbing.ogg","title":"Guy Mannering, With Axe and Rope in the New Zealand Alps, chapter 2: the route to the Mount Cook district."}
+  - {"id":"sp-bees-mason","file":"corpus/audio/sp-bees-mason.ogg","title":"Jean-Henri Fabre, The Mason-Bees, chapter 1: the habits and nests of mason bees."}
+  - {"id":"sp-volcanoes-italy","file":"corpus/audio/sp-volcanoes-italy.ogg","title":"Volcanoes and Vulcanology, a reading on new theories of vulcanism."}
+  - {"id":"sp-earthquake-sf","file":"corpus/audio/sp-earthquake-sf.ogg","title":"Charles Morris, The San Francisco Calamity, chapter 1: San Francisco and the terrific 1906 earthquake."}
+videos:
+  - {"id":"vid-rocket-launch-1","file":"corpus/video/vid-rocket-launch-1.mp4","title":"Falcon 9 - Starlink 10-31 Launch (1007898).webm"}
+  - {"id":"vid-rocket-launch-2","file":"corpus/video/vid-rocket-launch-2.mp4","title":"Falcon 9 - Starlink 6-110 Launch (998195).webm"}
+  - {"id":"vid-rocket-launch-3","file":"corpus/video/vid-rocket-launch-3.mp4","title":"Falcon 9 - Starlink 10-33 Launch (1000540).webm"}
+  - {"id":"vid-train-1","file":"corpus/video/vid-train-1.mp4","title":"Tokyo - Kawagoe train passing by platform.webm"}
+  - {"id":"vid-train-2","file":"corpus/video/vid-train-2.mp4","title":"Outbound train arriving at Malden Center station (1).webm"}
+  - {"id":"vid-train-3","file":"corpus/video/vid-train-3.mp4","title":"Outbound train arriving at Malden Center station (2).webm"}
+  - {"id":"vid-tram-1","file":"corpus/video/vid-tram-1.mp4","title":"Kolomna tram 125 2006-09 1159361040 Myasokombinat 71-605.webm"}
+  - {"id":"vid-tram-2","file":"corpus/video/vid-tram-2.mp4","title":"Moscow tram 1103 2014-09 1410986940 Krzhizhanovskogo Street 71-619.webm"}
+  - {"id":"vid-sea-waves-1","file":"corpus/video/vid-sea-waves-1.mp4","title":"Ocean surface waves 03.ogv"}
+  - {"id":"vid-sea-waves-2","file":"corpus/video/vid-sea-waves-2.mp4","title":"Ocean surface waves 05.ogv"}
+  - {"id":"vid-sea-waves-3","file":"corpus/video/vid-sea-waves-3.mp4","title":"Ocean surface waves 08.ogv"}
+  - {"id":"vid-waterfall-1","file":"corpus/video/vid-waterfall-1.mp4","title":"Front view video of Kawaida Waterfall, Cianda, Kiambu County.webm"}
+  - {"id":"vid-waterfall-2","file":"corpus/video/vid-waterfall-2.mp4","title":"Side view video of Kawaida Waterfall cascading, Cianda, Kiambu County.webm"}
+  - {"id":"vid-waterfall-3","file":"corpus/video/vid-waterfall-3.mp4","title":"Watagataki Falls (Video).webm"}
+  - {"id":"vid-cat-1","file":"corpus/video/vid-cat-1.mp4","title":"Cat jumping backwards.webm"}
+  - {"id":"vid-cat-3","file":"corpus/video/vid-cat-3.mp4","title":"Black and white cat drinks from a puddle.ogv"}
+  - {"id":"vid-bird-1","file":"corpus/video/vid-bird-1.mp4","title":"Cute Colorful Bird on Walking on Ledge.webm"}
+  - {"id":"vid-horse-1","file":"corpus/video/vid-horse-1.mp4","title":"A grazing horse at the Écomusée de la Bintinais.webm"}
+  - {"id":"vid-horse-2","file":"corpus/video/vid-horse-2.mp4","title":"Brumbies (feral horses) in Australia.webm"}
+  - {"id":"vid-traffic-1","file":"corpus/video/vid-traffic-1.mp4","title":"Traffic on a cobbled street - soundscape.webm"}
+  - {"id":"vid-traffic-3","file":"corpus/video/vid-traffic-3.mp4","title":"Queen Victoria Street (Fremantle Traffic Bridge) south.ogv"}
+  - {"id":"vid-clouds-1","file":"corpus/video/vid-clouds-1.mp4","title":"Moving clouds timelapse 1152x694x10fps.ogv"}
+  - {"id":"vid-clouds-2","file":"corpus/video/vid-clouds-2.mp4","title":"Wolken Zeitraffer - Clouds Timelapse (Royalty Free) (Kostenlos) 3840x2160p 30FPS.webm"}
+  - {"id":"vid-snow-1","file":"corpus/video/vid-snow-1.mp4","title":"Snowfall.webm"}
+  - {"id":"vid-snow-2","file":"corpus/video/vid-snow-2.mp4","title":"Snow under LED street light in Tuntorp, Brastad.webm"}
+  - {"id":"vid-lightning-1","file":"corpus/video/vid-lightning-1.mp4","title":"Heat lightning - tokyo area - Aug 30 2021.webm"}
+  - {"id":"vid-lightning-2","file":"corpus/video/vid-lightning-2.mp4","title":"Megaflash.webm"}
+  - {"id":"vid-cooking-1","file":"corpus/video/vid-cooking-1.mp4","title":"Milchkochen.webm"}
+  - {"id":"vid-cooking-2","file":"corpus/video/vid-cooking-2.mp4","title":"Friteuse Actifry.ogv"}
+  - {"id":"vid-cooking-3","file":"corpus/video/vid-cooking-3.mp4","title":"Cookies baking.webm"}
+  - {"id":"vid-airplane-1","file":"corpus/video/vid-airplane-1.mp4","title":"Landing in Kolkata.webm"}
+  - {"id":"vid-airplane-2","file":"corpus/video/vid-airplane-2.mp4","title":"SCA takeoff and landing.ogv"}
+  - {"id":"vid-ship-1","file":"corpus/video/vid-ship-1.mp4","title":"Freight-ship-danube-320x240.ogv"}
+  - {"id":"vid-ship-2","file":"corpus/video/vid-ship-2.mp4","title":"Ship Containerships VIII.ogv"}
+  - {"id":"vid-volcano-1","file":"corpus/video/vid-volcano-1.mp4","title":"Poas Volcano Eruption April 3 2025 CNE (2).webm"}
+  - {"id":"vid-insect-1","file":"corpus/video/vid-insect-1.mp4","title":"Bees on flowers.webm"}
+  - {"id":"vid-insect-2","file":"corpus/video/vid-insect-2.mp4","title":"Julia Butterfly (Dryas iulia).webm"}
+  - {"id":"vid-cattle-1","file":"corpus/video/vid-cattle-1.mp4","title":"Cow crosses cattle grid.webm"}
+  - {"id":"vid-cattle-2","file":"corpus/video/vid-cattle-2.mp4","title":"Sheep grazing in the countryside.webm"}
+videos-dup:
+  - {"id":"vid-rocket-launch-1","file":"corpus/video/vid-rocket-launch-1.mp4","title":"Falcon 9 - Starlink 10-31 Launch (1007898).webm"}
+  - {"id":"vid-rocket-launch-2","file":"corpus/video/vid-rocket-launch-2.mp4","title":"Falcon 9 - Starlink 6-110 Launch (998195).webm"}
+  - {"id":"vid-rocket-launch-3","file":"corpus/video/vid-rocket-launch-3.mp4","title":"Falcon 9 - Starlink 10-33 Launch (1000540).webm"}
+  - {"id":"vid-train-1","file":"corpus/video/vid-train-1.mp4","title":"Tokyo - Kawagoe train passing by platform.webm"}
+  - {"id":"vid-train-2","file":"corpus/video/vid-train-2.mp4","title":"Outbound train arriving at Malden Center station (1).webm"}
+  - {"id":"vid-train-3","file":"corpus/video/vid-train-3.mp4","title":"Outbound train arriving at Malden Center station (2).webm"}
+  - {"id":"vid-tram-1","file":"corpus/video/vid-tram-1.mp4","title":"Kolomna tram 125 2006-09 1159361040 Myasokombinat 71-605.webm"}
+  - {"id":"vid-tram-2","file":"corpus/video/vid-tram-2.mp4","title":"Moscow tram 1103 2014-09 1410986940 Krzhizhanovskogo Street 71-619.webm"}
+  - {"id":"vid-sea-waves-1","file":"corpus/video/vid-sea-waves-1.mp4","title":"Ocean surface waves 03.ogv"}
+  - {"id":"vid-sea-waves-2","file":"corpus/video/vid-sea-waves-2.mp4","title":"Ocean surface waves 05.ogv"}
+  - {"id":"vid-sea-waves-3","file":"corpus/video/vid-sea-waves-3.mp4","title":"Ocean surface waves 08.ogv"}
+  - {"id":"vid-waterfall-1","file":"corpus/video/vid-waterfall-1.mp4","title":"Front view video of Kawaida Waterfall, Cianda, Kiambu County.webm"}
+  - {"id":"vid-waterfall-2","file":"corpus/video/vid-waterfall-2.mp4","title":"Side view video of Kawaida Waterfall cascading, Cianda, Kiambu County.webm"}
+  - {"id":"vid-waterfall-3","file":"corpus/video/vid-waterfall-3.mp4","title":"Watagataki Falls (Video).webm"}
+  - {"id":"vid-cat-1","file":"corpus/video/vid-cat-1.mp4","title":"Cat jumping backwards.webm"}
+  - {"id":"vid-cat-3","file":"corpus/video/vid-cat-3.mp4","title":"Black and white cat drinks from a puddle.ogv"}
+  - {"id":"vid-bird-1","file":"corpus/video/vid-bird-1.mp4","title":"Cute Colorful Bird on Walking on Ledge.webm"}
+  - {"id":"vid-horse-1","file":"corpus/video/vid-horse-1.mp4","title":"A grazing horse at the Écomusée de la Bintinais.webm"}
+  - {"id":"vid-horse-2","file":"corpus/video/vid-horse-2.mp4","title":"Brumbies (feral horses) in Australia.webm"}
+  - {"id":"vid-traffic-1","file":"corpus/video/vid-traffic-1.mp4","title":"Traffic on a cobbled street - soundscape.webm"}
+  - {"id":"vid-traffic-3","file":"corpus/video/vid-traffic-3.mp4","title":"Queen Victoria Street (Fremantle Traffic Bridge) south.ogv"}
+  - {"id":"vid-clouds-1","file":"corpus/video/vid-clouds-1.mp4","title":"Moving clouds timelapse 1152x694x10fps.ogv"}
+  - {"id":"vid-clouds-2","file":"corpus/video/vid-clouds-2.mp4","title":"Wolken Zeitraffer - Clouds Timelapse (Royalty Free) (Kostenlos) 3840x2160p 30FPS.webm"}
+  - {"id":"vid-snow-1","file":"corpus/video/vid-snow-1.mp4","title":"Snowfall.webm"}
+  - {"id":"vid-snow-2","file":"corpus/video/vid-snow-2.mp4","title":"Snow under LED street light in Tuntorp, Brastad.webm"}
+  - {"id":"vid-lightning-1","file":"corpus/video/vid-lightning-1.mp4","title":"Heat lightning - tokyo area - Aug 30 2021.webm"}
+  - {"id":"vid-lightning-2","file":"corpus/video/vid-lightning-2.mp4","title":"Megaflash.webm"}
+  - {"id":"vid-cooking-1","file":"corpus/video/vid-cooking-1.mp4","title":"Milchkochen.webm"}
+  - {"id":"vid-cooking-2","file":"corpus/video/vid-cooking-2.mp4","title":"Friteuse Actifry.ogv"}
+  - {"id":"vid-cooking-3","file":"corpus/video/vid-cooking-3.mp4","title":"Cookies baking.webm"}
+  - {"id":"vid-airplane-1","file":"corpus/video/vid-airplane-1.mp4","title":"Landing in Kolkata.webm"}
+  - {"id":"vid-airplane-2","file":"corpus/video/vid-airplane-2.mp4","title":"SCA takeoff and landing.ogv"}
+  - {"id":"vid-ship-1","file":"corpus/video/vid-ship-1.mp4","title":"Freight-ship-danube-320x240.ogv"}
+  - {"id":"vid-ship-2","file":"corpus/video/vid-ship-2.mp4","title":"Ship Containerships VIII.ogv"}
+  - {"id":"vid-volcano-1","file":"corpus/video/vid-volcano-1.mp4","title":"Poas Volcano Eruption April 3 2025 CNE (2).webm"}
+  - {"id":"vid-insect-1","file":"corpus/video/vid-insect-1.mp4","title":"Bees on flowers.webm"}
+  - {"id":"vid-insect-2","file":"corpus/video/vid-insect-2.mp4","title":"Julia Butterfly (Dryas iulia).webm"}
+  - {"id":"vid-cattle-1","file":"corpus/video/vid-cattle-1.mp4","title":"Cow crosses cattle grid.webm"}
+  - {"id":"vid-cattle-2","file":"corpus/video/vid-cattle-2.mp4","title":"Sheep grazing in the countryside.webm"}
+  - {"id":"copy-reencode-vid-tram-1","file":"corpus/video/copy-reencode-vid-tram-1.mp4","title":"reencode of vid-tram-1"}
+  - {"id":"copy-cut-vid-tram-1","file":"corpus/video/copy-cut-vid-tram-1.mp4","title":"cut of vid-tram-1"}
+  - {"id":"copy-reencode-vid-horse-1","file":"corpus/video/copy-reencode-vid-horse-1.mp4","title":"reencode of vid-horse-1"}
+  - {"id":"copy-cut-vid-horse-1","file":"corpus/video/copy-cut-vid-horse-1.mp4","title":"cut of vid-horse-1"}
+  - {"id":"copy-reencode-vid-traffic-1","file":"corpus/video/copy-reencode-vid-traffic-1.mp4","title":"reencode of vid-traffic-1"}
+  - {"id":"copy-cut-vid-traffic-1","file":"corpus/video/copy-cut-vid-traffic-1.mp4","title":"cut of vid-traffic-1"}
+  - {"id":"copy-reencode-vid-clouds-2","file":"corpus/video/copy-reencode-vid-clouds-2.mp4","title":"reencode of vid-clouds-2"}
+  - {"id":"copy-cut-vid-clouds-2","file":"corpus/video/copy-cut-vid-clouds-2.mp4","title":"cut of vid-clouds-2"}
+  - {"id":"copy-reencode-vid-snow-1","file":"corpus/video/copy-reencode-vid-snow-1.mp4","title":"reencode of vid-snow-1"}
+  - {"id":"copy-cut-vid-snow-1","file":"corpus/video/copy-cut-vid-snow-1.mp4","title":"cut of vid-snow-1"}
+  - {"id":"copy-reencode-vid-airplane-1","file":"corpus/video/copy-reencode-vid-airplane-1.mp4","title":"reencode of vid-airplane-1"}
+  - {"id":"copy-cut-vid-airplane-1","file":"corpus/video/copy-cut-vid-airplane-1.mp4","title":"cut of vid-airplane-1"}
+  - {"id":"copy-reencode-vid-ship-2","file":"corpus/video/copy-reencode-vid-ship-2.mp4","title":"reencode of vid-ship-2"}
+  - {"id":"copy-cut-vid-ship-2","file":"corpus/video/copy-cut-vid-ship-2.mp4","title":"cut of vid-ship-2"}
+  - {"id":"copy-reencode-vid-insect-1","file":"corpus/video/copy-reencode-vid-insect-1.mp4","title":"reencode of vid-insect-1"}
+  - {"id":"copy-cut-vid-insect-1","file":"corpus/video/copy-cut-vid-insect-1.mp4","title":"cut of vid-insect-1"}
+  - {"id":"copy-reencode-vid-train-2","file":"corpus/video/copy-reencode-vid-train-2.mp4","title":"reencode of vid-train-2"}
+  - {"id":"copy-cut-vid-train-2","file":"corpus/video/copy-cut-vid-train-2.mp4","title":"cut of vid-train-2"}
+  - {"id":"copy-reencode-vid-waterfall-1","file":"corpus/video/copy-reencode-vid-waterfall-1.mp4","title":"reencode of vid-waterfall-1"}
+  - {"id":"copy-cut-vid-waterfall-1","file":"corpus/video/copy-cut-vid-waterfall-1.mp4","title":"cut of vid-waterfall-1"}

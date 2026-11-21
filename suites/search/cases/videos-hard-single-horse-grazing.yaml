@@ -1,0 +1,8 @@
+description: "search videos: a single horse eating grass (1 relevant of 39)"
+metadata: { id: videos-hard-single-horse-grazing, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a single horse eating grass"
+  relevant: ["vid-horse-1"]
+  how: "by file name and category; the other clip is a distant herd"

@@ -1,0 +1,8 @@
+description: "search videos: cookies baking in the oven (1 relevant of 39)"
+metadata: { id: videos-baking-cookies, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "cookies baking in the oven"
+  relevant: ["vid-cooking-3"]
+  how: "by poster frame and file name"

@@ -1,0 +1,8 @@
+description: "search videos: bees on purple flowers (1 relevant of 39)"
+metadata: { id: videos-bees-on-flowers, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "bees on purple flowers"
+  relevant: ["vid-insect-1"]
+  how: "by poster frame (\"Bees on flowers\")"

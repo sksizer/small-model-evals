@@ -1,0 +1,8 @@
+description: "search speech: laying a telegraph cable across the Atlantic (1 relevant of 20)"
+metadata: { id: speech-atlantic-cable, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "laying a telegraph cable across the Atlantic"
+  relevant: ["sp-telegraph-cable"]
+  how: "by the clip's summary (book, chapter and topic)"

@@ -1,0 +1,8 @@
+description: "search videos: an aircraft taking off or landing (2 relevant of 39)"
+metadata: { id: videos-airplane, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "an aircraft taking off or landing"
+  relevant: ["vid-airplane-1","vid-airplane-2"]
+  how: "by file name and category; the Kolkata clip is shot from the aircraft"

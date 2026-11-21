@@ -1,0 +1,8 @@
+description: "search sounds: shaking a tambourine (1 relevant of 59)"
+metadata: { id: sounds-tambourine, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "shaking a tambourine"
+  relevant: ["snd-percussion-2"]
+  how: "by file name and category (\"Tambourine\")"

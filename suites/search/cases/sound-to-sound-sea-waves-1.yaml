@@ -1,0 +1,9 @@
+description: "search sound-to-sound: snd-sea-waves-1 (2 copy, 1 class of 90)"
+metadata: { id: sound-to-sound-sea-waves-1, kind: sound-to-sound }
+vars:
+  kind: sound-to-sound
+  corpus: sounds-dup
+  query_item: snd-sea-waves-1
+  relevant: ["copy-quiet-snd-sea-waves-1","copy-trim-snd-sea-waves-1","snd-sea-waves-2"]
+  levels: {"copy":["copy-quiet-snd-sea-waves-1","copy-trim-snd-sea-waves-1"],"class":["snd-sea-waves-2"]}
+  how: "levels by original: copy = its derived copies, class = another clip of the same category (sea-waves)"

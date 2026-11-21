@@ -1,0 +1,8 @@
+description: "search videos: lightning in the night sky (2 relevant of 39)"
+metadata: { id: videos-lightning, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "lightning in the night sky"
+  relevant: ["vid-lightning-1","vid-lightning-2"]
+  how: "by file name and category; unsure about \"Megaflash\", its poster is a lightning-mapper plot"

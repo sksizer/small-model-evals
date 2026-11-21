@@ -1,0 +1,8 @@
+description: "search sounds: thunder rumbling (2 relevant of 59)"
+metadata: { id: sounds-thunderstorm, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "thunder rumbling"
+  relevant: ["snd-thunder-1","snd-thunder-2"]
+  how: "by file name and category"

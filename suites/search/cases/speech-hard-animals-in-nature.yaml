@@ -1,0 +1,8 @@
+description: "search speech: studying animals in nature (2 relevant of 20)"
+metadata: { id: speech-hard-animals-in-nature, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "studying animals in nature"
+  relevant: ["sp-birds-plumage","sp-bees-mason"]
+  how: "by the clip's summary (book, chapter and topic): the bird and the bee books; unsure, a broad query"

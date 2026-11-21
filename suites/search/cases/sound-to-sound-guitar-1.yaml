@@ -1,0 +1,9 @@
+description: "search sound-to-sound: snd-guitar-1 (2 copy, 1 class of 90)"
+metadata: { id: sound-to-sound-guitar-1, kind: sound-to-sound }
+vars:
+  kind: sound-to-sound
+  corpus: sounds-dup
+  query_item: snd-guitar-1
+  relevant: ["copy-quiet-snd-guitar-1","copy-trim-snd-guitar-1","snd-guitar-2"]
+  levels: {"copy":["copy-quiet-snd-guitar-1","copy-trim-snd-guitar-1"],"class":["snd-guitar-2"]}
+  how: "levels by original: copy = its derived copies, class = another clip of the same category (guitar)"

@@ -1,0 +1,8 @@
+description: "search sounds: wind howling (2 relevant of 59)"
+metadata: { id: sounds-wind-howling, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "wind howling"
+  relevant: ["snd-wind-1","snd-wind-2"]
+  how: "by file name and category"

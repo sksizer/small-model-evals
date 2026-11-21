@@ -1,0 +1,9 @@
+description: "search sound-to-sound: snd-clock-1 (2 copy, 1 class of 90)"
+metadata: { id: sound-to-sound-clock-1, kind: sound-to-sound }
+vars:
+  kind: sound-to-sound
+  corpus: sounds-dup
+  query_item: snd-clock-1
+  relevant: ["copy-quiet-snd-clock-1","copy-recode-snd-clock-1","snd-clock-2"]
+  levels: {"copy":["copy-recode-snd-clock-1","copy-quiet-snd-clock-1"],"class":["snd-clock-2"]}
+  how: "levels by original: copy = its derived copies, class = another clip of the same category (clock)"

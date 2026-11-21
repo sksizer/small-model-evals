@@ -1,0 +1,8 @@
+description: "search sounds: a rooster crowing (2 relevant of 59)"
+metadata: { id: sounds-rooster-crowing, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a rooster crowing"
+  relevant: ["snd-farm-animal-1","snd-farm-animal-2"]
+  how: "by file name and category"

@@ -1,5 +1,6 @@
-// Builds the search suite's inputs: the four corpora (suites/search/corpora.yaml) and one
-// case per query (suites/search/cases/*.yaml). The choices are written down here so a later
+// Builds the search suite's inputs: the corpora (suites/search/corpora.yaml) and one
+// case per query (suites/search/cases/*.yaml). The audio and video corpora and cases come from
+// scripts/pick-av.ts (the corpora are appended here so a rewrite keeps them). The choices are written down here so a later
 // person can see why a candidate counts as relevant (docs/plans/search.md).
 //
 //   bun scripts/pick-search.ts
@@ -37,6 +38,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { csvLine, OI_CACHE } from './openimages.ts'
 import { ROOT, SUITES_DIR } from './ledger.ts'
+import { avCorporaText } from './av-search-sets.ts'
+import type { CorpusMedia } from './fetch-av.ts'
 import { HARD_NOTE_SLUGS } from './search-sets.ts'
 
 const SUITE = join(SUITES_DIR, 'search')
@@ -375,10 +378,12 @@ const corpora = {
 }
 const header = [
   '# The candidates each search case is ranked against, by corpus (scripts/pick-search.ts; docs/plans/search.md).',
-  '# photos, docs: images (`file`, a path from the repo root). foods, notes: text (`title`, `text`).',
+  '# photos, docs: images (`file`, a path from the repo root). foods, notes: text (`title`, `text`). The corpora after the marker line',
+  '# (sounds, speech, videos, with -dup for clips plus derived copies) are audio and video clips: `file` is the clip.',
   '# foods is all 7793 foods of the USDA SR Legacy database (public domain); notes are invented (CC0). photos-dup is photos plus their derived copies.',
 ].join('\n')
-writeFileSync(join(SUITE, 'corpora.yaml'), `${header}\n${Object.entries(corpora).map(([k, items]) => `${k}:\n${items.map((i) => `  - ${yaml(i)}`).join('\n')}`).join('\n')}\n`)
+const avManifest = JSON.parse(readFileSync(join(ROOT, 'corpus', 'av-manifest.json'), 'utf8')) as CorpusMedia[]
+writeFileSync(join(SUITE, 'corpora.yaml'), `${header}\n${Object.entries(corpora).map(([k, items]) => `${k}:\n${items.map((i) => `  - ${yaml(i)}`).join('\n')}`).join('\n')}\n${avCorporaText(avManifest)}\n`)
 
 mkdirSync(join(SUITE, 'cases'), { recursive: true })
 let written = 0

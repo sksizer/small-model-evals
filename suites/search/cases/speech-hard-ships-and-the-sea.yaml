@@ -1,0 +1,8 @@
+description: "search speech: voyages at sea (3 relevant of 20)"
+metadata: { id: speech-hard-ships-and-the-sea, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "voyages at sea"
+  relevant: ["sp-sea-nautilus","sp-sea-whaling","sp-arctic-expedition"]
+  how: "by the clip's summary (book, chapter and topic): the three voyages; the telegraph cable crosses the sea but is not a voyage"

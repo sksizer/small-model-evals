@@ -1,0 +1,8 @@
+description: "search sounds: a cat meowing (1 relevant of 59)"
+metadata: { id: sounds-cat-meowing, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a cat meowing"
+  relevant: ["snd-cat-1"]
+  how: "by file name and category (\"Meow of a pleading cat\")"

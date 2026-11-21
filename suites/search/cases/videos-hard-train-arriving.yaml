@@ -1,0 +1,8 @@
+description: "search videos: a train arriving at a station (2 relevant of 39)"
+metadata: { id: videos-hard-train-arriving, kind: videos }
+vars:
+  kind: videos
+  corpus: videos
+  query: "a train arriving at a station"
+  relevant: ["vid-train-2","vid-train-3"]
+  how: "by file name and category (\"arriving at Malden Center\"); the Tokyo train only passes a platform"

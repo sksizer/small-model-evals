@@ -1,0 +1,8 @@
+description: "search sounds: a cymbal crash (1 relevant of 59)"
+metadata: { id: sounds-hard-cymbal, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "a cymbal crash"
+  relevant: ["snd-percussion-1"]
+  how: "by file name and category (\"Cymbal sounds\"); the tambourine is a near miss"

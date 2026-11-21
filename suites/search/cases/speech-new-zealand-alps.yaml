@@ -1,0 +1,8 @@
+description: "search speech: climbing in the New Zealand Alps near Mount Cook (1 relevant of 20)"
+metadata: { id: speech-new-zealand-alps, kind: speech }
+vars:
+  kind: speech
+  corpus: speech
+  query: "climbing in the New Zealand Alps near Mount Cook"
+  relevant: ["sp-alps-climbing"]
+  how: "by the clip's summary (book, chapter and topic)"

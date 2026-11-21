@@ -1,0 +1,8 @@
+description: "search sounds: church bells ringing (2 relevant of 59)"
+metadata: { id: sounds-church-bells, kind: sounds }
+vars:
+  kind: sounds
+  corpus: sounds
+  query: "church bells ringing"
+  relevant: ["snd-bell-1","snd-bell-2"]
+  how: "by file name and category"
