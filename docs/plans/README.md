@@ -6,7 +6,7 @@
 | [similarity](similarity.md) | Built | — |
 | [sensitive](sensitive.md) | Built | — |
 | [search](search.md) | Built | — |
-| [av-search](av-search.md) | Corpus approved (118 clips) | Cases, providers and runs (stage 2) |
+| [av-search](av-search.md) | Cases and providers built; smoke tests and runs pending | Runs, X-CLIP export (stage 2) |
 | [extraction](extraction.md) | Proposed | Owner answers Q1–Q5 |
 | [image-gen](image-gen.md) | Proposed | Owner answers Q1–Q4 |
 

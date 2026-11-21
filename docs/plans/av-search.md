@@ -1,6 +1,6 @@
 # Plan: audio and video search
 
-Status: approved (2026-11-06). Stage 1 (corpus and contact sheet) approved by the owner on 2026-11-20; stage 2 (cases, providers, runs) in progress. The owner's answers are under "Decisions" at the end.
+Status: approved (2026-11-06). Stage 1 (corpus and contact sheet) approved by the owner on 2026-11-20; stage 2: cases, providers, site players and finder tasks are built (2026-11-20); smoke tests, runs and notes are pending, and X-CLIP is pending (below). The owner's answers are under "Decisions" at the end.
 
 ## Goal
 
@@ -130,3 +130,10 @@ The plan adds it to `scripts/setup.ts`'s checklist (`brew install ffmpeg`) and r
 - **Q5.** Clips are committed to the repo, like the images.
 - **Q6.** X-CLIP is in if a one-off ONNX export works in reasonable time (hours, not days). Otherwise it's
   dropped and frame-averaged SigLIP 2 is the video rival.
+
+## Stage 2 build notes (2026-11-20)
+
+- **Where the cases live.** In the `search` suite, as the plan said: five new `metadata.kind` values (`sounds`, `speech`, `videos`, `sound-to-sound`, `video-to-video`; `videos` and not `video`, because promptfoo's `--filter-metadata` matches substrings). 117 cases. Clip-to-clip cases give `query_item` and `levels` instead of `query`; the score is nDCG@10 over the copies, scenes and class matches together, with per-level recall recorded. Relevance is judged in `scripts/av-search-sets.ts` (file names, categories, summaries, poster frames; nothing was listened to); doubtful cases say "unsure" in their `how`.
+- **Models.** `embeddinggemma2-audio` (audio encoder, q8), `embeddinggemma2` also runs the video kinds (the card's `RawVideo` path, 1 fps frames), `siglip2-base` frame-averaged for video, `clap-htsat-unfused`, `whisper-base-en-embeddinggemma2`, `audio-fingerprint`.
+- **X-CLIP: pending.** The one-off ONNX export was not attempted in this round (it needs Python and downloads); frame-averaged SigLIP 2 is the video rival until it is.
+- **Not yet run.** No model has been loaded; the owner runs the smoke tests first.

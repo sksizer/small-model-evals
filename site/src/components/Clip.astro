@@ -1,0 +1,30 @@
+---
+// A sound or video clip of the corpus with its player: an `<audio>` for a sound or a spoken reading, a poster
+// frame and `<video>` for a silent video. Nothing loads until it is played (preload none), so a gallery of
+// hundreds of clips stays light.
+import { clipAt, href } from '../lib/data'
+
+interface Props {
+  /** The clip's repo path (corpus/audio/... or corpus/video/...). */
+  path: string
+  alt: string
+}
+const { path, alt } = Astro.props
+const src = href(`/${path}`)
+const poster = clipAt(path)?.poster
+const video = /\.(mp4|webm)$/i.test(path)
+---
+
+{
+  video ? (
+    <video class="clip" controls preload="none" muted playsinline poster={poster ? href(`/${poster}`) : undefined} src={src} aria-label={alt} />
+  ) : (
+    <audio class="clip" controls preload="none" src={src} aria-label={alt} />
+  )
+}
+
+<style>
+  .clip { display: block; width: 100%; max-width: 100%; border-radius: 4px; }
+  video.clip { aspect-ratio: 16 / 9; background: #000; }
+  audio.clip { height: 32px; }
+</style>

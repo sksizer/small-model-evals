@@ -65,7 +65,7 @@ const count = (c: string) => images.filter((m) => m.category === c).length
       <section id="media">
         <h2>Audio and video</h2>
         <p class="muted">
-          {media.length} clips for the audio and video search suite: sounds, public-domain speech readings, and short silent videos.
+          {media.length} clips for the audio and video search suite: sounds, public-domain speech readings, and short silent videos, with derived copies (trimmed, recompressed, quieter; re-encoded, cut) of some of them for the clip-to-clip cases.
         </p>
         {mediaKinds.map((k) => (
           <>
@@ -73,12 +73,13 @@ const count = (c: string) => images.filter((m) => m.category === c).length
             <div class="grid">
               {media.filter((m) => m.kind === k).map((m) => (
                 <figure class="item" id={m.id}>
-                  {m.kind === 'video' ? <video controls preload="none" muted playsinline src={href(`/${m.path}`)} /> : <audio controls preload="none" src={href(`/${m.path}`)} />}
+                  {m.kind === 'video' ? <video controls preload="none" muted playsinline poster={m.poster ? href(`/${m.poster}`) : undefined} src={href(`/${m.path}`)} /> : <audio controls preload="none" src={href(`/${m.path}`)} />}
                   <figcaption>
                     <div class="id"><code>{m.id}</code> <span class="tag">{m.category}</span></div>
                     <div class="meta">{m.licence_url ? <a href={m.licence_url}>{m.licence}</a> : m.licence} · {m.author}</div>
                     <div class="meta"><a href={m.page}>Source</a> · {m.duration.toFixed(1)} s · {(m.bytes / 1024).toFixed(0)} KB</div>
                     {m.summary && <div class="meta">{m.summary}</div>}
+                    {m.derived_from && <div class="meta">Derived copy of <a href={`#${m.derived_from}`}>{m.derived_from}</a> ({m.recipe})</div>}
                   </figcaption>
                 </figure>
               ))}

@@ -58,7 +58,13 @@ const currentPool = (suite: string) => {
 }
 
 
-function inputOf(suite: string, vars: Record<string, unknown> = {}): { text: string; image?: string } {
+function inputOf(suite: string, vars: Record<string, unknown> = {}): { text: string; image?: string; media?: string } {
+  // A clip-query search case names a corpus clip; the corpus says where the clip is.
+  const clip = vars['query_item']
+  if (typeof clip === 'string') {
+    const file = (corporaOf(currentSnapshot(suite).setup)[String(vars['corpus'])] ?? []).find((i) => i.id === clip)?.file
+    return { text: clip, ...(file ? { media: file } : {}) }
+  }
   // A similarity case names its query by candidate id; the pool says where the image is.
   const query = vars['query']
   const file = typeof query === 'string' ? currentPool(suite).get(query)?.file : undefined
@@ -92,7 +98,7 @@ function compare(expected: unknown, absent: unknown, output: string, detail?: un
     const items = new Map((corpora[expected.corpus] ?? []).map((i) => [i.id, i] as const))
     return {
       search: {
-        top: (compareSearch(expected.relevant, output) ?? []).map((t) => ({ ...t, ...(items.get(t.id)?.file ? { path: items.get(t.id)!.file } : {}), ...(items.get(t.id)?.text ? { text: items.get(t.id)!.text, title: items.get(t.id)!.title ?? null } : {}) })),
+        top: (compareSearch(expected.relevant, output) ?? []).map((t) => ({ ...t, ...(items.get(t.id)?.file ? { path: items.get(t.id)!.file, ...(items.get(t.id)!.title ? { title: items.get(t.id)!.title } : {}) } : {}), ...(items.get(t.id)?.text ? { text: items.get(t.id)!.text, title: items.get(t.id)!.title ?? null } : {}) })),
         detail: (detail as SearchDetail | null | undefined) ?? null,
       },
     }
@@ -179,11 +185,20 @@ const corporaOf = (setup: unknown): Record<string, CorpusItem[]> =>
   ((setup as { defaultTest?: { vars?: { corpora?: unknown } } } | null)?.defaultTest?.vars?.corpora as Record<string, CorpusItem[]> | undefined) ?? {}
 
 /** What a search case expects: the relevant ids, in the named corpus (assertions/search.ts). */
-interface ExpectedSearch { relevant: string[]; corpus: string; kind: string; how: string }
+interface ExpectedSearch { relevant: string[]; corpus: string; kind: string; how: string; query_item?: string; levels?: ExpectedSimilarity }
 const isSearch = (e: unknown): e is ExpectedSearch =>
   !!e && typeof e === 'object' && Array.isArray((e as { relevant?: unknown }).relevant) && typeof (e as { corpus?: unknown }).corpus === 'string'
 const searchExpected = (vars: Record<string, unknown> | undefined): ExpectedSearch | null =>
-  Array.isArray(vars?.['relevant']) ? { relevant: vars['relevant'] as string[], corpus: String(vars['corpus']), kind: String(vars['kind']), how: String(vars['how'] ?? '') } : null
+  Array.isArray(vars?.['relevant'])
+    ? {
+        relevant: vars['relevant'] as string[],
+        corpus: String(vars['corpus']),
+        kind: String(vars['kind']),
+        how: String(vars['how'] ?? ''),
+        ...(typeof vars['query_item'] === 'string' ? { query_item: vars['query_item'] } : {}),
+        ...(vars['levels'] ? { levels: vars['levels'] as ExpectedSimilarity } : {}),
+      }
+    : null
 
 /** What the site shows of a case, from its definition as written. */
 function caseView(suite: string, id: string, raw: Record<string, unknown>, hash: string) {
@@ -237,7 +252,7 @@ const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string)
   { id: 'vision', title: 'Vision understanding', blurb: 'A photo in, text or a flag out.', has: (s) => ['ocr', 'tag-image', 'nudity-flag', 'sensitive'].includes(s) },
   { id: 'regions', title: 'Regions', blurb: 'A photo in, boxes around things out.', has: (s) => s.startsWith('regions-') },
   { id: 'image', title: 'Image', blurb: 'Edit an image as told, or tell which images are alike.', has: (s) => ['edit', 'similarity'].includes(s) },
-  { id: 'search', title: 'Search', blurb: 'A typed query in, the right photo, page or note out: embedding models, ranked by nDCG@10.', has: (s) => s === 'search' },
+  { id: 'search', title: 'Search', blurb: 'A typed query or a clip in, the right photo, page, note, sound, spoken reading or video out: embedding models, ranked by nDCG@10.', has: (s) => s === 'search' },
 ]
 
 /**
@@ -266,6 +281,11 @@ const TASKS: Record<string, { label: string; about: string }> = {
   'search:photos': { label: 'Photo search by text', about: 'Find the photos that match a typed description, with no captions or tags.' },
   'search:docs': { label: 'Document search by text', about: 'Find the scanned or screenshotted page a query describes, reading its pixels (no OCR step).' },
   'search:text': { label: 'Text search', about: 'Find the food entries or notes that answer a query, including paraphrases.' },
+  'search:sounds': { label: 'Sound search by text', about: 'Find the sound clips that match a typed description ("a dog barking", "rain against a window"), from the audio alone.' },
+  'search:speech': { label: 'Speech search', about: 'Find the spoken reading (about 100 s of a public-domain book) that a typed question is about.' },
+  'search:videos': { label: 'Video search by text', about: 'Find the short silent videos that match a typed description, from their pictures alone.' },
+  'search:sound-to-sound': { label: 'Similar sound search', about: 'Given a sound clip, find its trimmed, recompressed or quieter copies, and other sounds of the same kind.' },
+  'search:video-to-video': { label: 'Similar video search', about: 'Given a video clip, find its re-encoded or cut copies, other shots of the same place, and other videos of the same kind.' },
 }
 const familyOf = (suite: string) => FAMILIES.find((f) => f.has(suite))?.id ?? 'other'
 
@@ -638,12 +658,20 @@ const corpus = existsSync(manifestPath)
 // The audio and video corpus (corpus/av-manifest.json), listed on the corpus page with players.
 const mediaPath = join(ROOT, CORPUS_REL, 'av-manifest.json')
 const media = existsSync(mediaPath)
-  ? (JSON.parse(readFileSync(mediaPath, 'utf8')) as CorpusMedia[]).map((m) => ({ ...m, path: `${CORPUS_REL}/${m.file}` }))
+  ? (JSON.parse(readFileSync(mediaPath, 'utf8')) as CorpusMedia[]).map((m) => {
+      // A video's poster is the frame the contact sheet made (results/contact/posters); copies have none.
+      const poster = m.kind === 'video' && existsSync(join(ROOT, 'results', 'contact', 'posters', `${m.id}.jpg`)) ? `${CORPUS_REL}/posters/${m.id}.jpg` : null
+      return { ...m, path: `${CORPUS_REL}/${m.file}`, poster }
+    })
   : []
 for (const m of media) {
   const to = join(PUBLIC_OUT, m.path)
   mkdirSync(dirname(to), { recursive: true })
   copyFileSync(join(ROOT, m.path), to)
+  if (m.poster) {
+    mkdirSync(join(PUBLIC_OUT, CORPUS_REL, 'posters'), { recursive: true })
+    copyFileSync(join(ROOT, 'results', 'contact', 'posters', `${m.id}.jpg`), join(PUBLIC_OUT, m.poster))
+  }
 }
 
 // Copy every image a case or the corpus shows, and every edited image a
@@ -835,7 +863,7 @@ const searchItems = (() => {
   return Object.fromEntries(
     Object.entries(corpora).map(([name, items]) => [
       name,
-      Object.fromEntries(items.filter((i) => i.file || name !== 'foods' || used.has(i.id)).map((i) => [i.id, i.file ? { path: i.file } : { title: i.title ?? null, text: i.text ?? '' }])),
+      Object.fromEntries(items.filter((i) => i.file || name !== 'foods' || used.has(i.id)).map((i) => [i.id, i.file ? { path: i.file, ...(i.title ? { title: i.title } : {}) } : { title: i.title ?? null, text: i.text ?? '' }])),
     ]),
   )
 })()
@@ -845,14 +873,20 @@ const searchItems = (() => {
  * nDCG@10 and the time per item embedded (the provider's `item_ms` weighted by `items`, so the 1500 foods
  * count for what they cost). The finder offers each kind as a task; the search tables read the numbers.
  */
-const SEARCH_KINDS = ['photos', 'docs', 'text'] as const
-const searchKindOf = (caseId: string) => caseId.split('-')[0]!
+const SEARCH_KINDS = ['photos', 'docs', 'text', 'sounds', 'speech', 'videos', 'sound-to-sound', 'video-to-video'] as const
+/** The kinds whose items are sound or video clips (time per clip). */
+const CLIP_KINDS = new Set<string>(['sounds', 'speech', 'videos', 'sound-to-sound', 'video-to-video'])
 const mean = (xs: number[]): number | null => (xs.length === 0 ? null : xs.reduce((a, b) => a + b, 0) / xs.length)
+const kindOfRecord = new Map<LedgerRecord, string>()
+const searchKindOf = (r: LedgerRecord): string => {
+  if (!kindOfRecord.has(r)) kindOfRecord.set(r, (ranCase(r)?.expected as { kind?: string } | null)?.kind ?? '')
+  return kindOfRecord.get(r)!
+}
 const searchCells = view
   .filter((v) => v.suite === 'search')
   .flatMap((v) =>
     SEARCH_KINDS.flatMap((kind) => {
-      const rs = v.records.filter((r) => searchKindOf(r.case) === kind)
+      const rs = v.records.filter((r) => searchKindOf(r) === kind)
       if (rs.length === 0) return []
       const embedded = rs.filter((r) => r.metrics?.['item_ms'] !== undefined && (r.metrics['items'] ?? 0) > 0)
       const items = embedded.reduce((a, r) => a + r.metrics!['items']!, 0)
@@ -888,7 +922,7 @@ const searchCells = view
             ]),
           ),
           time_ms: items > 0 ? embedded.reduce((a, r) => a + r.metrics!['item_ms']! * r.metrics!['items']!, 0) / items : null,
-          time_per: (kind === 'text' ? 'item' : 'image') as 'item' | 'image',
+          time_per: (kind === 'text' ? 'item' : CLIP_KINDS.has(kind) ? 'clip' : 'image') as 'item' | 'image' | 'clip',
           query_ms: median(rs.flatMap((r) => (r.metrics?.['query_ms'] !== undefined ? [r.metrics['query_ms']] : []))),
           load_ms: median(rs.flatMap((r) => (r.metrics?.['load_ms'] !== undefined ? [r.metrics['load_ms']] : []))),
           mem_mb: (() => {

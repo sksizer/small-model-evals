@@ -333,6 +333,8 @@ export interface SearchCandidate {
   id: string
   score: number
   relevant: boolean
+  /** The pipeline's words for a spoken clip (the Whisper transcript). */
+  note?: string
   path?: string
   text?: string
   title?: string | null
@@ -348,6 +350,8 @@ export interface SearchDetail {
   mrr: number
   ndcg10_256: number | null
   relevant: number
+  /** Clip queries: recall per similarity level (copy, scene, class). */
+  levels?: Partial<Record<'copy' | 'edit' | 'scene' | 'class', { n: number; r1: number; r5: number }>>
 }
 
 /** A search case's expectation: the relevant candidate ids in a named corpus. */
@@ -356,15 +360,20 @@ export interface ExpectedSearch {
   corpus: string
   kind: string
   how: string
+  /** A clip query: the id of the corpus clip, and its copy / scene / class lists. */
+  query_item?: string
+  levels?: Partial<Record<'copy' | 'scene' | 'class', string[]>>
 }
 export const isSearch = (e: unknown): e is ExpectedSearch =>
   !!e && typeof e === 'object' && Array.isArray((e as { relevant?: unknown }).relevant) && typeof (e as { corpus?: unknown }).corpus === 'string'
+
+export type SearchKindId = 'photos' | 'docs' | 'text' | 'sounds' | 'speech' | 'videos' | 'sound-to-sound' | 'video-to-video'
 
 /** One model's search numbers for one kind of case (scripts/export-site.ts `searchCells`). */
 export interface SearchCell {
   machine: string
   model: string
-  kind: 'photos' | 'docs' | 'text'
+  kind: SearchKindId
   run: string
   stale: boolean
   passed: number
@@ -376,7 +385,7 @@ export interface SearchCell {
   r10: number | null
   mrr: number | null
   ndcg10_256: number | null
-  /** Mean nDCG@10 over the original cases and over the harder set added 2026-11-08 (scripts/search-sets.ts); null when there are none. */
+  /** Mean nDCG@10 over the original cases and over the harder set (scripts/search-sets.ts); null when there are none. */
   original: number | null
   hard: number | null
   hard_passed: number
@@ -518,7 +527,7 @@ export interface CaseView {
   id: string
   hash: string
   description: string
-  input: { text: string; image?: string }
+  input: { text: string; image?: string; media?: string }
   expected: unknown
   /** Tags that would be wrong for the image (tag-image suite). */
   absent: unknown
@@ -625,6 +634,11 @@ export interface CorpusMedia {
   height?: number
   summary?: string
   transcript?: string
+  /** A video's poster frame, served beside the clips; null for a copy or a sound. */
+  poster?: string | null
+  /** For a derived copy: the clip it was made from, and how. */
+  derived_from?: string
+  recipe?: string
 }
 
 /** The repository the site is built from, for links to source files. */
@@ -664,7 +678,7 @@ export const data = raw as unknown as {
   queue: QueueJob[]
   inproc: InProc[]
   screening: { categories: { id: Category; definition: string; private: boolean }[]; levels: PrivacyLevel[]; thresholds: number[]; models: ScreeningModel[] } | null
-  search: { kinds: ('photos' | 'docs' | 'text')[]; cells: SearchCell[]; items: Record<string, Record<string, { path?: string; title?: string | null; text?: string }>> }
+  search: { kinds: SearchKindId[]; cells: SearchCell[]; items: Record<string, Record<string, { path?: string; title?: string | null; text?: string }>> }
   finder: { families: { id: string; title: string }[]; tasks: FinderTask[]; rows: FinderRow[] }
   leaderboard: { machine: Machine; families: LeaderFamily[] }[]
   results: Result[]
@@ -676,6 +690,10 @@ export const data = raw as unknown as {
   /** Audio and video clips; absent in data exported before they existed. */
   media?: CorpusMedia[]
 }
+
+/** The clip at a repo path, with its poster, for the gallery's players. */
+const mediaByPath = new Map((data.media ?? []).map((m) => [m.path, m] as const))
+export const clipAt = (path: string | undefined) => (path ? mediaByPath.get(path) : undefined)
 
 export const qualitySuites = data.suites.filter((s) => s.kind === 'quality')
 export const modelLabels = data.models.map((m) => m.label)
