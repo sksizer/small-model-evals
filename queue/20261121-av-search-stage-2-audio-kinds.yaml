@@ -1,0 +1,20 @@
+id: 20261121-av-search-stage-2-audio-kinds
+created: 2026-11-21T05:02:00Z
+reason: "av-search stage 2: audio kinds"
+models:
+  - embeddinggemma2-audio
+  - clap-htsat-unfused
+  - whisper-base-en-embeddinggemma2
+suites:
+  - search
+kinds:
+  - sounds
+  - speech
+  - sound-to-sound
+priority: 10
+needs:
+  {}
+status: pending
+run_ids: []
+done: []
+notes: ""

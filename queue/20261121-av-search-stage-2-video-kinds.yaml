@@ -1,0 +1,18 @@
+id: 20261121-av-search-stage-2-video-kinds
+created: 2026-11-21T05:02:00Z
+reason: "av-search stage 2: video kinds"
+models:
+  - embeddinggemma2
+  - siglip2-base
+suites:
+  - search
+kinds:
+  - videos
+  - video-to-video
+priority: 9
+needs:
+  {}
+status: pending
+run_ids: []
+done: []
+notes: ""
