@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
 # search: how well does an embedding model find the right thing for a typed query? Each case is one
 # query ranked against a corpus (corpora.yaml), scored by nDCG@10 (assertions/search.ts, pass at 0.7).
-# Three kinds of case, each tagged `kind`:
+# Eight kinds of case, each tagged `kind` (the five audio and video ones are described after the first three):
 #   photos  text -> photos: 90 queries. The first 25 run over the 78 non-sensitive corpus photos (13 object
 #           queries from Open Images V7 annotations, 12 descriptive ones judged by eye); the other 65
 #           (2026-11-08) run over photos-dup, those photos plus 54 derived copies (resized, cropped,
@@ -17,6 +17,12 @@
 #           rule on the food's name, written in scripts/pick-search.ts; the 2026-11-08 ones are
 #           paraphrases, negations and near-misses such as whole against low-fat milk, raw against cooked)
 #           and 43 note queries over 88 invented notes (CC0; 28 of the notes are hard distractors).
+#   sounds, speech, videos, sound-to-sound, video-to-video: audio and video (docs/plans/av-search.md). 38 text -> sound queries over 59
+#           clips, 24 text -> spoken-reading queries over 20 LibriVox clips, 29 text -> video queries over 39 silent clips; 16
+#           sound-to-sound and 10 video-to-video cases, a clip as the query, ranked against the clips plus derived copies
+#           (trimmed, recompressed, quieter; re-encoded, cut) with copy / scene / class levels. Relevance is judged from file
+#           names, categories, summaries and poster frames (scripts/av-search-sets.ts). A kind is never a substring of another
+#           (promptfoo's --filter-metadata matches substrings): `videos`, not `video`, because of `video-to-video`.
 # Image -> image is not here: the similarity suite measures it, and the multimodal models are also
 # providers there.
 #
@@ -36,12 +42,16 @@ prompts:
   - '{{ query }}' # unused: the provider reads vars directly
 
 providers:
-  - { id: file://../../providers/search.ts, label: embeddinggemma2, config: { family: egemma2, kinds: [photos, docs, text], model: onnx-community/embeddinggemma-2-ONNX, revision: daa72c51243991dfcaf9f9137d2c573d8f7790c0, dtype: q8, modalities: text+image, mrl: 256 } }
+  - { id: file://../../providers/search.ts, label: embeddinggemma2, config: { family: egemma2, kinds: [photos, docs, text, videos, video-to-video], model: onnx-community/embeddinggemma-2-ONNX, revision: daa72c51243991dfcaf9f9137d2c573d8f7790c0, dtype: q8, modalities: text+image, mrl: 256 } }
+  - { id: file://../../providers/search.ts, label: embeddinggemma2-audio, config: { family: egemma2, kinds: [sounds, speech, sound-to-sound], model: onnx-community/embeddinggemma-2-ONNX, revision: daa72c51243991dfcaf9f9137d2c573d8f7790c0, dtype: q8, modalities: text+audio, mrl: 256 } }
   - { id: file://../../providers/search.ts, label: embeddinggemma2-text, config: { family: egemma2, kinds: [text], model: onnx-community/embeddinggemma-2-ONNX, revision: daa72c51243991dfcaf9f9137d2c573d8f7790c0, dtype: q8, modalities: text, mrl: 256 } }
-  - { id: file://../../providers/search.ts, label: siglip2-base, config: { family: siglip, kinds: [photos, docs], model: onnx-community/siglip2-base-patch16-224-ONNX, revision: ba1f3b0843f24bc5417d38e19c37b287d719b2f4, dtype: fp32 } }
+  - { id: file://../../providers/search.ts, label: siglip2-base, config: { family: siglip, kinds: [photos, docs, videos, video-to-video], model: onnx-community/siglip2-base-patch16-224-ONNX, revision: ba1f3b0843f24bc5417d38e19c37b287d719b2f4, dtype: fp32 } }
   - { id: file://../../providers/search.ts, label: clip-vit-b16, config: { family: clip, kinds: [photos, docs], model: Xenova/clip-vit-base-patch16, revision: 342fdf2f67aded64d138ff074745fb4a5d2bba5f, dtype: fp32 } }
   - { id: file://../../providers/search.ts, label: nomic-embed-v1.5-pair, config: { family: nomic-pair, kinds: [photos, docs, text], model: nomic-ai/nomic-embed-text-v1.5, revision: e9b6763023c676ca8431644204f50c2b100d9aab, vision_model: nomic-ai/nomic-embed-vision-v1.5, vision_revision: e3a725bce72db07ca4adb1d83da08903f3ee02f8 } }
   - { id: file://../../providers/search.ts, label: jina-clip-v2, config: { family: jina-clip-v2, kinds: [photos, docs, text], model: jinaai/jina-clip-v2, revision: e10d47f5691d0454a0fb5d13f46f2199b74cb436, dtype: q8 } }
+  - { id: file://../../providers/search.ts, label: clap-htsat-unfused, config: { family: clap, kinds: [sounds, sound-to-sound], model: Xenova/clap-htsat-unfused, revision: c28f2883575e590e04d3146ff0713c2448d691ba, dtype: q8 } }
+  - { id: file://../../providers/search.ts, label: whisper-base-en-embeddinggemma2, config: { family: whisper, kinds: [speech], model: Xenova/whisper-base.en, revision: 95bf40a508535962c6483ead40270b2e32267508, dtype: q8, embedder: { family: egemma2, model: onnx-community/embeddinggemma-2-ONNX, revision: daa72c51243991dfcaf9f9137d2c573d8f7790c0, dtype: q8, modalities: text } } }
+  - { id: file://../../providers/search.ts, label: audio-fingerprint, config: { family: fingerprint, kinds: [sound-to-sound], model: audio-fingerprint, revision: audio-fingerprint-v1 } }
   - { id: file://../../providers/search.ts, label: embeddinggemma:300m, config: { family: ollama, kinds: [text], model: 'embeddinggemma:300m', query_prefix: 'task: search result | query: ', doc_prefix: 'title: none | text: ' } }
   - { id: file://../../providers/search.ts, label: qwen3-embedding:0.6b, config: { family: ollama, kinds: [text], model: 'qwen3-embedding:0.6b', query_prefix: "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:" } }
   - { id: file://../../providers/search.ts, label: nomic-embed-text, config: { family: ollama, kinds: [text], model: 'nomic-embed-text:latest', query_prefix: 'search_query: ', doc_prefix: 'search_document: ' } }

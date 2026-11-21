@@ -55,7 +55,8 @@ export const SUITE_META: Record<string, { categories: Category[]; cost: Cost; ca
   'regions-find': { categories: ['regions'], cost: 'light' },
   'regions-objects': { categories: ['regions'], cost: 'light' },
   'regions-text': { categories: ['regions'], cost: 'light' },
-  search: { categories: ['search'], cost: 'heavy', case_timeout_min: 20 },
+  // Its audio and video kinds make it selectable by `--category audio` or `video` too; pair that with `--kinds` (sounds, speech, sound-to-sound; videos, video-to-video) to run only those.
+  search: { categories: ['search', 'audio', 'video'], cost: 'heavy', case_timeout_min: 20 },
   'perf-embed': { categories: ['search'], cost: 'heavy' },
   edit: { categories: ['image-edit'], cost: 'heavy' },
 }

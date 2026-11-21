@@ -35,6 +35,10 @@ export type ModelKind =
   | 'composite'
   /** Text, and images (EmbeddingGemma 2, Jina CLIP, a nomic text+vision pair), embedded into one space, so text finds images and text. */
   | 'multimodal-embedder'
+  /** Text and sound clips embedded into one space (CLAP). */
+  | 'audio-embedder'
+  /** Speech to text, then the text searched (the Whisper pipeline). */
+  | 'speech-pipeline'
 
 export type Modality = 'text' | 'image' | 'audio' | 'boxes' | 'labels' | 'probabilities' | 'embedding'
 
@@ -483,7 +487,63 @@ export const CATALOG: Record<string, CatalogEntry> = {
     // onnx/model_quantized.onnx_data 314 MB + onnx/vision_encoder_quantized.onnx_data 195 MB, plus the graphs.
     disk_gb: 0.51,
     paper: arxiv('2610.37364'),
-    notes: 'Run at q8 with transformers.js; the model card says never float16 (activations overflow it, giving NaN), and the ONNX repo reports q8 within 0.9997 cosine of fp32. Text needs task prefixes (`task: search result | query: ...` for queries, `title: ... | text: ...` for documents); images take none. This entry is text and vision together; the audio encoder is never loaded.',
+    notes: 'Run at q8 with transformers.js; the model card says never float16 (activations overflow it, giving NaN), and the ONNX repo reports q8 within 0.9997 cosine of fp32. Text needs task prefixes (`task: search result | query: ...` for queries, `title: ... | text: ...` for documents); images take none. This entry is text and vision together; the audio encoder is never loaded. It also embeds a video as frames at 1 per second through the vision encoder (140 tokens a frame; the card\'s `RawVideo` path), decoded by ffmpeg.',
+  },
+  'embeddinggemma2-audio': {
+    url: hf('onnx-community/embeddinggemma-2-ONNX'),
+    source_url: hf('google/embeddinggemma-2'),
+    publisher: 'Google DeepMind',
+    licence: 'Apache-2.0',
+    kind: 'multimodal-embedder',
+    inputs: ['text', 'audio'],
+    outputs: ['embedding'],
+    parameters: 744_371_512,
+    parameters_note: 'The original google/embeddinggemma-2 checkpoint; the 270M text model and the 300M audio encoder run (vision config removed, about 570M).',
+    architecture: 'Gemma 4-based encoder: the 300M audio encoder maps mono 16 kHz audio to 25 tokens a second in the same 768-d space as text',
+    base_model: 'google/embeddinggemma-2',
+    // onnx/model_quantized.onnx_data 314 MB + onnx/audio_encoder_quantized.onnx_data 340 MB, plus the graphs.
+    disk_gb: 0.654,
+    paper: arxiv('2610.37364'),
+    notes: 'The same repo and revision as `embeddinggemma2`, with the audio encoder instead of the vision one, at q8 (the card: 4-bit hurts audio most). Audio takes no prefix; text queries take `task: search result | query: ...`. Clips are decoded to mono 16 kHz by ffmpeg; a 100 s speech clip is about 2,500 tokens of the 8,192 window.',
+  },
+  'clap-htsat-unfused': {
+    url: hf('Xenova/clap-htsat-unfused'),
+    source_url: hf('laion/clap-htsat-unfused'),
+    publisher: 'LAION',
+    licence: 'Apache-2.0',
+    kind: 'audio-embedder',
+    inputs: ['text', 'audio'],
+    outputs: ['embedding'],
+    architecture: 'CLAP: an HTSAT audio transformer and a RoBERTa text encoder trained contrastively, 512-d shared space',
+    base_model: 'laion/clap-htsat-unfused',
+    // onnx/audio_model_quantized.onnx 34 MB + onnx/text_model_quantized.onnx 127 MB.
+    disk_gb: 0.161,
+    notes: 'Apache-2.0 per the laion/clap-htsat-unfused card; the Xenova ONNX repo carries no licence tag. Run at q8 with transformers.js. Takes 48 kHz audio of 10 s: our clips are stored at 16 kHz (so upsampled, with no content above 8 kHz) and a longer clip is cut to its middle 10 s. Parameter count not confirmed.',
+  },
+  'whisper-base-en-embeddinggemma2': {
+    url: hf('Xenova/whisper-base.en'),
+    source_url: hf('openai/whisper-base.en'),
+    publisher: 'OpenAI',
+    licence: 'Apache-2.0',
+    kind: 'speech-pipeline',
+    inputs: ['audio', 'text'],
+    outputs: ['embedding'],
+    architecture: 'Whisper base.en (English-only speech recogniser, 30 s windows) writes a transcript; EmbeddingGemma 2 (text only) embeds it; the query is embedded the same way',
+    base_model: 'openai/whisper-base.en',
+    // onnx/encoder_model_quantized.onnx 23 MB + onnx/decoder_model_merged_quantized.onnx 54 MB, plus the 314 MB EmbeddingGemma 2 text model.
+    disk_gb: 0.391,
+    notes: 'Apache-2.0 per the Hugging Face cards (the Whisper code is MIT). A two-step pipeline, so its time per clip is transcription plus embedding. The clip is transcribed in 30 s windows with 5 s strides; the transcript is shown on the site beside each result. Never given the clip\'s summary, only what it hears.',
+  },
+  'audio-fingerprint': {
+    url: 'https://github.com/sksizer/small-model-evals/blob/main/providers/search.ts',
+    source_url: 'https://ieeexplore.ieee.org/document/1021024',
+    publisher: 'this repo',
+    licence: 'MIT (our code)',
+    kind: 'perceptual-hash',
+    inputs: ['audio'],
+    outputs: ['embedding'],
+    architecture: 'Haitsma and Kalker\'s Philips fingerprint, simplified: 32 ms frames, 17 log-spaced bands from 300 to 6000 Hz, one bit per band pair for whether the energy step grew since the last frame',
+    notes: 'Our own implementation (providers/search.ts), no weights. Two clips score 1 minus the bit error rate at their best alignment (at least half of the shorter overlapping), so a trimmed copy still matches. It finds copies, not other recordings of the same kind of sound.',
   },
   'embeddinggemma2-text': {
     url: hf('onnx-community/embeddinggemma-2-ONNX'),

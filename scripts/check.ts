@@ -18,6 +18,9 @@
 //
 // - a corpus audio or video clip (corpus/av-manifest.json) is missing, differs from its
 //   sha256, is outside the length its kind allows, or has a licence the standard does not allow;
+// - a derived audio or video copy has no parent of its kind in the manifest, or an unknown recipe;
+// - a search corpus names a clip that is not in the audio and video manifest; a clip-query case's
+//   query_item is not in its corpus, or its levels name a clip that is not in `relevant`;
 // - a suite has no entry in SUITE_META (scripts/plan.ts) or an entry names a suite that is gone;
 // - a machine profile (machines/<name>.yaml) names a category, cost, suite, model or class that
 //   does not exist, or two profiles claim the same machine key or class;
@@ -33,6 +36,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { spawnRunner } from '@osdlc/command-seam'
 import type { CorpusImage } from './fetch-corpus.ts'
+import { AUDIO_RECIPES, VIDEO_RECIPES } from './av-recipes.ts'
 import { LENGTH, type CorpusMedia } from './fetch-av.ts'
 import { CATALOG } from './catalog.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
@@ -127,6 +131,13 @@ for (const m of media) {
   if (m.duration < min - 0.5 || m.duration > max + 0.5) problems.push(`corpus: ${m.id}: ${m.duration}s is outside the ${min}-${max}s a ${m.kind} clip may be`)
   if (m.kind === 'video' ? !m.file.startsWith('video/') : !m.file.startsWith('audio/')) problems.push(`corpus: ${m.id}: a ${m.kind} clip belongs under ${m.kind === 'video' ? 'video' : 'audio'}/`)
 }
+for (const m of media) {
+  if (!m.derived_from) continue
+  const parent = mediaById.get(m.derived_from)
+  if (parent && parent.kind !== m.kind) problems.push(`corpus: ${m.id}: a ${m.kind} copy of a ${parent.kind} clip`)
+  if (!m.recipe || !(m.recipe in (m.kind === 'video' ? VIDEO_RECIPES : AUDIO_RECIPES))) problems.push(`corpus: ${m.id}: unknown ${m.kind} recipe ${m.recipe}`)
+}
+const mediaFiles = new Set(media.map((m) => m.file))
 const listed = new Set(manifest.map((m) => m.file))
 for (const suite of readdirSync(SUITES_DIR)) {
   for (const c of loadCases(suite)) {
@@ -171,13 +182,20 @@ for (const suite of readdirSync(SUITES_DIR)) {
       if (sensitive.has(it.file)) problems.push(`${suite}/corpora.yaml: ${name}/${it.id}: a sensitive image must not be searched`)
       const m = /^corpus\/(images\/[^/]+)$/.exec(it.file)
       if (m && !listed.has(m[1]!)) problems.push(`${suite}/corpora.yaml: ${name}/${it.id}: ${m[1]} is not in corpus/manifest.json`)
+      const clip = /^corpus\/((?:audio|video)\/[^/]+)$/.exec(it.file)
+      if (clip && !mediaFiles.has(clip[1]!)) problems.push(`${suite}/corpora.yaml: ${name}/${it.id}: ${clip[1]} is not in corpus/av-manifest.json`)
     }
   }
   for (const c of loadCases(suite)) {
-    const vars = c.def['vars'] as { corpus?: string; relevant?: string[] } | undefined
+    const vars = c.def['vars'] as { corpus?: string; relevant?: string[]; query_item?: string; levels?: Record<string, string[]> } | undefined
     const ids = new Set((corpora[vars?.corpus ?? ''] ?? []).map((i) => i.id))
     if (ids.size === 0) problems.push(`${suite}/${c.id}: corpus ${vars?.corpus} is not in corpora.yaml`)
     for (const id of vars?.relevant ?? []) if (!ids.has(id)) problems.push(`${suite}/${c.id}: relevant id ${id} is not in the ${vars?.corpus} corpus`)
+    if (vars?.query_item !== undefined) {
+      if (!ids.has(vars.query_item)) problems.push(`${suite}/${c.id}: query_item ${vars.query_item} is not in the ${vars.corpus} corpus`)
+      if ((vars.relevant ?? []).includes(vars.query_item)) problems.push(`${suite}/${c.id}: the query ${vars.query_item} is listed as relevant to itself`)
+    }
+    for (const id of Object.values(vars?.levels ?? {}).flat()) if (!(vars?.relevant ?? []).includes(id)) problems.push(`${suite}/${c.id}: level id ${id} is not in relevant`)
   }
 }
 
