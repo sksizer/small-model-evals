@@ -1,0 +1,8 @@
+description: "search text: rocket leaves (1 relevant of 7793)"
+metadata: { id: text-food-rocket, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "rocket leaves"
+  relevant: ["f169387"]
+  how: "rule on the name: Arugula"

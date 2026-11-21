@@ -1,0 +1,9 @@
+description: "remove: the right-hand armchair of two (Open Images 5ea13fbbd1a1474f)"
+metadata: { id: edit-armchair-remove-right }
+vars:
+  image: file://../../corpus/images/oi-objects-5ea13fbbd1a1474f.jpg
+  instruction: "Remove the armchair on the right. Keep everything else the same."
+  expected:
+    changed: ["Is there only one armchair?"]
+    kept: ["Is there a grey armchair on the left?", "Is this a photograph?"]
+    region: [0.5, 0.2, 0.96, 0.84]

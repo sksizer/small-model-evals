@@ -1,0 +1,698 @@
+{
+  "suite": "regions-faces",
+  "fingerprint": "277be58d2bfe",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:fbf7ea45a9b87b74a24175d5dfde31ab6b2fb25f0d8b1f9e9413c5f07c179fc9"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "regions-faces — box every face",
+    "prompts": [
+      "{{ find }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "file": "face_detection_yunet_2023mar.onnx",
+          "kind": "yunet",
+          "repo": "opencv/face_detection_yunet",
+          "revision": "3cc26e7f1014a5ee5d74a42acee58bafc9d0a310",
+          "sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4"
+        },
+        "id": "sha256:a884e038e8f846ae11eb2257b7b0df5b4e5582d97a4f9d1a546eb5cb4fe003af",
+        "label": "yunet-2023mar"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/owlv2-base-patch16-ensemble-ONNX",
+          "revision": "180d6ef7599bd69bb48db5c72bd49ad03ddfab80",
+          "task": "zero-shot-object-detection",
+          "threshold": 0.2
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "owlv2-base-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "join_phrases": true,
+          "model": "onnx-community/grounding-dino-tiny-ONNX",
+          "revision": "ff690b0a8050566c290287545bd059350f3e9096",
+          "task": "zero-shot-object-detection",
+          "threshold": 0.3
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "grounding-dino-tiny-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/Florence-2-base",
+          "revision": "d59e079711c57174f29265539fb4cc9f0f335916",
+          "task": "od"
+        },
+        "id": "sha256:30f819e7bb93fa05e1137015480b04a7821d38918f91f3388216c9f74e1d6261",
+        "label": "florence2-base-od-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/Florence-2-base",
+          "revision": "d59e079711c57174f29265539fb4cc9f0f335916",
+          "task": "grounding"
+        },
+        "id": "sha256:30f819e7bb93fa05e1137015480b04a7821d38918f91f3388216c9f74e1d6261",
+        "label": "florence2-base-ground-q8"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:4b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:9b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "model": "gemma4:e4b",
+          "order": "yxyx",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "model": "lfm3-vl:2b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "lfm3-vl:2b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "bed813328b89",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/search.ts": "9502e3f85933",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/search.ts": "730d7829fa38",
+    "providers/sensitive-composite.ts": "78b6be0406c7",
+    "providers/similarity-search.ts": "7a69269b6c84",
+    "providers/zero-shot.ts": "5593d1a832c8"
+  },
+  "setup_hash": "d22d3b1b52c1",
+  "cases": {
+    "oi-faces-01fe16fca259a75a": {
+      "hash": "040523d4a131",
+      "def": {
+        "description": "faces: human face (Open Images 01fe16fca259a75a)",
+        "metadata": {
+          "id": "oi-faces-01fe16fca259a75a"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-01fe16fca259a75a.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.2786,
+                  0.0896,
+                  0.3756,
+                  0.3521
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.5994,
+                  0.1229,
+                  0.7214,
+                  0.3375
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-1a5a8e2cdbdeaab0": {
+      "hash": "b006e576f2b1",
+      "def": {
+        "description": "faces: human face (Open Images 1a5a8e2cdbdeaab0)",
+        "metadata": {
+          "id": "oi-faces-1a5a8e2cdbdeaab0"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-1a5a8e2cdbdeaab0.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.3627,
+                  0.3578,
+                  0.4361,
+                  0.4756
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.6975,
+                  0.1667,
+                  0.8032,
+                  0.3333
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-363fbcd9d3492c8f": {
+      "hash": "628330511a61",
+      "def": {
+        "description": "faces: human face (Open Images 363fbcd9d3492c8f)",
+        "metadata": {
+          "id": "oi-faces-363fbcd9d3492c8f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-363fbcd9d3492c8f.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.0735,
+                  0.0887,
+                  0.1868,
+                  0.3126
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.4794,
+                  0.2905,
+                  0.7853,
+                  0.8004
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-3f85aab38e4fee07": {
+      "hash": "73fe555a1aa2",
+      "def": {
+        "description": "faces: human face (Open Images 3f85aab38e4fee07)",
+        "metadata": {
+          "id": "oi-faces-3f85aab38e4fee07"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-3f85aab38e4fee07.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.2996,
+                  0.2081,
+                  0.5447,
+                  0.4228
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-450dc8db3bfee2c9": {
+      "hash": "698056a1ad88",
+      "def": {
+        "description": "faces: human face (Open Images 450dc8db3bfee2c9)",
+        "metadata": {
+          "id": "oi-faces-450dc8db3bfee2c9"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-450dc8db3bfee2c9.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.1235,
+                  0.1453,
+                  0.2744,
+                  0.3974
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.6997,
+                  0.1603,
+                  0.846,
+                  0.3974
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-58f524841563410b": {
+      "hash": "606738f98201",
+      "def": {
+        "description": "faces: human face (Open Images 58f524841563410b)",
+        "metadata": {
+          "id": "oi-faces-58f524841563410b"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-58f524841563410b.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.5531,
+                  0.3717,
+                  0.7139,
+                  0.7898
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-83f3f5f1b4864969": {
+      "hash": "abca13f138e9",
+      "def": {
+        "description": "faces: human face (Open Images 83f3f5f1b4864969)",
+        "metadata": {
+          "id": "oi-faces-83f3f5f1b4864969"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-83f3f5f1b4864969.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.3909,
+                  0.6195,
+                  0.5177,
+                  0.885
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.3968,
+                  0.385,
+                  0.5059,
+                  0.5221
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-8d4d6659f45bd396": {
+      "hash": "5c02a38ab851",
+      "def": {
+        "description": "faces: human face (Open Images 8d4d6659f45bd396)",
+        "metadata": {
+          "id": "oi-faces-8d4d6659f45bd396"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-8d4d6659f45bd396.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.4251,
+                  0.0726,
+                  0.5485,
+                  0.1822
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-bf5d9fdef70c9334": {
+      "hash": "ee3554481785",
+      "def": {
+        "description": "faces: human face (Open Images bf5d9fdef70c9334)",
+        "metadata": {
+          "id": "oi-faces-bf5d9fdef70c9334"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-bf5d9fdef70c9334.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.1672,
+                  0.1189,
+                  0.2423,
+                  0.2505
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.5399,
+                  0.1868,
+                  0.5951,
+                  0.2887
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.7408,
+                  0.0998,
+                  0.8144,
+                  0.2335
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-c03b166fe8428bb6": {
+      "hash": "bed5674b337a",
+      "def": {
+        "description": "faces: human face (Open Images c03b166fe8428bb6)",
+        "metadata": {
+          "id": "oi-faces-c03b166fe8428bb6"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-c03b166fe8428bb6.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.125,
+                  0.1264,
+                  0.2279,
+                  0.3038
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.4176,
+                  0.4235,
+                  0.5088,
+                  0.5898
+                ]
+              },
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.6765,
+                  0.49,
+                  0.7897,
+                  0.6364
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-d9a2eaa90a597834": {
+      "hash": "1d6d4242cfe3",
+      "def": {
+        "description": "faces: human face (Open Images d9a2eaa90a597834)",
+        "metadata": {
+          "id": "oi-faces-d9a2eaa90a597834"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-d9a2eaa90a597834.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.3688,
+                  0.3333,
+                  0.7344,
+                  0.8458
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-fca6fb7f00addeae": {
+      "hash": "8f79f71f23f4",
+      "def": {
+        "description": "faces: human face (Open Images fca6fb7f00addeae)",
+        "metadata": {
+          "id": "oi-faces-fca6fb7f00addeae"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-faces-fca6fb7f00addeae.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "face",
+                  "human face"
+                ],
+                "box": [
+                  0.1734,
+                  0,
+                  1,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-faces-none-25d107f1590c1772": {
+      "hash": "f1f84ee5559e",
+      "def": {
+        "description": "faces: none, cups and a bowl (Open Images 25d107f1590c1772)",
+        "metadata": {
+          "id": "oi-faces-none-25d107f1590c1772"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-25d107f1590c1772.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "labels": [
+              [
+                "face",
+                "human face"
+              ]
+            ],
+            "boxes": []
+          }
+        }
+      }
+    },
+    "oi-faces-none-948794bfee784412": {
+      "hash": "9b649a6f0910",
+      "def": {
+        "description": "faces: none, a dog and a houseplant (Open Images 948794bfee784412)",
+        "metadata": {
+          "id": "oi-faces-none-948794bfee784412"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-948794bfee784412.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "labels": [
+              [
+                "face",
+                "human face"
+              ]
+            ],
+            "boxes": []
+          }
+        }
+      }
+    },
+    "oi-faces-none-e51e3156ed41b3a8": {
+      "hash": "e2a58be0aa84",
+      "def": {
+        "description": "faces: none, a bottle and a wine glass (Open Images e51e3156ed41b3a8)",
+        "metadata": {
+          "id": "oi-faces-none-e51e3156ed41b3a8"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-objects-e51e3156ed41b3a8.jpg",
+          "find": [
+            "face"
+          ],
+          "expected": {
+            "labels": [
+              [
+                "face",
+                "human face"
+              ]
+            ],
+            "boxes": []
+          }
+        }
+      }
+    }
+  }
+}

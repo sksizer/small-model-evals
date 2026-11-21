@@ -1,18 +1,28 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { buildOf, data, fmt, fmtDisk, fmtParams, fmtTime, href, modelSlug, pct, qualitySuites, shortUrl, tone } from '../../lib/data'
+import { FIT_WORDS, buildOf, data, fmt, fmtDisk, fmtParams, fmtTime, href, machineLabel, modelSlug, pct, qualitySuites, shortUrl, tone } from '../../lib/data'
 
 export function getStaticPaths() {
   return data.models.map((model) => ({ params: { model: modelSlug(model.label) }, props: { model } }))
 }
 
 const { model } = Astro.props as { model: (typeof data.models)[number] }
-const cells = data.cells.filter((c) => c.model === model.label)
-const perf = data.perf.filter((p) => p.model === model.label)
+const allCells = data.cells.filter((c) => c.model === model.label)
+const allPerf = data.perf.filter((p) => p.model === model.label)
 const failures = data.results.filter((r) => r.model === model.label && !r.pass)
 const build = buildOf(model.label)
 const cat = model.catalog
-const inproc = data.inproc.filter((p) => p.model === model.label)
+const allInproc = data.inproc.filter((p) => p.model === model.label)
+// Results are shown per machine, never pooled: a 16 GB Mac and a 24 GB NVIDIA box are different results.
+const forMachines = data.machines
+  .map((machine) => ({
+    machine,
+    cells: allCells.filter((c) => c.machine === machine.key),
+    perf: allPerf.filter((p) => p.machine === machine.key),
+    inproc: allInproc.filter((p) => p.machine === machine.key),
+  }))
+  .filter((m) => m.cells.length + m.perf.length + m.inproc.length > 0)
+const fitClasses = model.need.gib === null ? [] : data.classes
 // Only the suites that list this model as a provider; the others cannot run it.
 const suites = qualitySuites.filter((s) => s.models.includes(model.label))
 const params = build?.parameter_count ?? cat?.parameters
@@ -153,101 +163,128 @@ const history = data.history.filter((h) => h.model === model.label).sort((a, b) 
       </div>
     )
   }
-  <div class="cards">
+  <h2>Memory and fit</h2>
+  <p class="lede">
     {
-      suites.map((s) => {
-        const c = cells.find((x) => x.suite === s.id)
-        if (!c)
-          return (
-            <div class="card">
-              <div class="k">{s.id}</div>
-              <div class="v muted">not run</div>
-            </div>
-          )
-        const rate = pct(c.passed, c.total)
-        return (
-          <a class={`card heat ${tone(rate)}`} href={href(`/results/?suite=${s.id}&model=${encodeURIComponent(model.label)}`)}>
-            <div class="k">{s.id}</div>
-            <div class="v">{rate}%</div>
-            <div>
-              {c.passed}/{c.total} · {fmtTime(c.time_ms, c.time_per)}{c.stale && ' · stale'}
-            </div>
-          </a>
-        )
-      })
+      model.need.gib === null
+        ? 'Memory need unknown: never measured, and the catalogue has no size.'
+        : `Needs about ${fmt(model.need.gib, 1)} GiB (${model.need.note}).`
     }
+    Against each class of machine's memory budget:
+  </p>
+  <div class="fits">
+    {fitClasses.map((c) => (
+      <span class={`pill fit ${model.fits[c.class]}`} title={`${c.class}: budget ${fmt(c.budget_gib, 1)} GiB`}>{c.class} · {FIT_WORDS[model.fits[c.class]!]}</span>
+    ))}
   </div>
-
-  <h2>Speed and memory</h2>
+  <p class="note">
+    <strong>Tight</strong> is over {Math.round(data.tight * 100)}% of the accelerator budget, <strong>offload</strong> over all of it but within usable system memory (runs with layers on the CPU, slower, speed not comparable), <strong>won't fit</strong> beyond that. A
+    measured need is the largest the ledger shows across suites; without one, the catalogue size times a factor
+    (scripts/fit.ts).
+  </p>
   {
-    perf.length === 0 && inproc.length === 0 ? (
-      <p class="muted">No speed runs yet.</p>
-    ) : null
-  }
-  {
-    inproc.length > 0 && (
-      <>
+    forMachines.map(({ machine, cells, perf, inproc }, i) => (
+      <section data-machine={machine.key}>
+        <h2>{machineLabel(machine)}</h2>
+  <div class="cards">
+      {
+        suites.map((s) => {
+          const c = cells.find((x) => x.suite === s.id)
+          if (!c)
+            return (
+              <div class="card">
+                <div class="k">{s.id}</div>
+                <div class="v muted">not run</div>
+              </div>
+            )
+          const rate = pct(c.passed, c.total)
+          return (
+            <a class={`card heat ${tone(rate)}`} href={href(`/results/?suite=${s.id}&model=${encodeURIComponent(model.label)}`)}>
+              <div class="k">{s.id}</div>
+              <div class="v">{rate}%</div>
+              <div>
+                {c.passed}/{c.total} · {fmtTime(c.time_ms, c.time_per)}{c.stale && ' · stale'}
+              </div>
+            </a>
+          )
+        })
+      }
+    </div>
+  
+    <h3>Speed and memory</h3>
+    {
+      perf.length === 0 && inproc.length === 0 ? (
+        <p class="muted">No speed runs yet.</p>
+      ) : null
+    }
+    {
+      inproc.length > 0 && (
+        <>
+          <div class="scroll">
+            <table data-table id={`model-inproc-${i}`}>
+              <thead>
+                <tr>
+                  <th data-sort="text">Suite</th>
+                  <th data-sort="num" class="num">Per image</th>
+                  <th data-sort="num" class="num">Load</th>
+                  <th data-sort="num" class="num">Memory</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inproc.map((p) => (
+                  <tr>
+                    <td>{p.suite}</td>
+                    <td class="num" data-value={p.per_image_ms ?? -1}>{fmtTime(p.per_image_ms)}</td>
+                    <td class="num" data-value={p.load_ms ?? -1}>{fmtTime(p.load_ms)}</td>
+                    <td class="num" data-value={p.mem_mb ?? -1}>
+                      {p.mem_mb === null ? '—' : `${Math.round(p.mem_mb).toLocaleString('en-US')} MB`} <span class="muted">{p.mem_kind}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Runs in-process, not in Ollama. <strong>rss</strong> is the whole process's resident memory, so an upper bound for the model; <strong>peak</strong> is the editor's own peak.</p>
+        </>
+      )
+    }
+    {
+      perf.length > 0 && (
         <div class="scroll">
-          <table data-table id="model-inproc">
+          <table data-table id={`model-speed-${i}`}>
             <thead>
               <tr>
-                <th data-sort="text">Suite</th>
-                <th data-sort="num" class="num">Per image</th>
-                <th data-sort="num" class="num">Load</th>
-                <th data-sort="num" class="num">Memory</th>
+                <th data-sort="text">Case</th>
+                <th data-sort="num" class="num">Output tok/s</th>
+                <th data-sort="num" class="num">Prompt tok/s</th>
+                <th data-sort="num" class="num">Loaded GB</th>
+                <th data-sort="num" class="num">Cold load s</th>
               </tr>
             </thead>
             <tbody>
-              {inproc.map((p) => (
+              {perf.map((p) => (
                 <tr>
-                  <td>{p.suite}</td>
-                  <td class="num" data-value={p.per_image_ms ?? -1}>{fmtTime(p.per_image_ms)}</td>
-                  <td class="num" data-value={p.load_ms ?? -1}>{fmtTime(p.load_ms)}</td>
-                  <td class="num" data-value={p.mem_mb ?? -1}>
-                    {p.mem_mb === null ? '—' : `${Math.round(p.mem_mb).toLocaleString('en-US')} MB`} <span class="muted">{p.mem_kind}</span>
+                  <td>
+                    <code>{p.case}</code>
                   </td>
+                  <td class="num" data-value={p.decode_tps ?? p.embeds_per_s ?? -1}>
+                    {p.embeds_per_s !== null ? `${fmt(p.embeds_per_s, 0)} embeds/s` : fmt(p.decode_tps)}
+                  </td>
+                  <td class="num" data-value={p.prompt_tps ?? -1}>
+                    {p.prompt_cached ? <span class="muted">cached</span> : fmt(p.prompt_tps, 0)}
+                  </td>
+                  <td class="num" data-value={p.loaded_gb ?? -1}>{fmt(p.loaded_gb, 2)}</td>
+                  <td class="num" data-value={p.load_s ?? -1}>{fmt(p.load_s)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p class="note">Runs in-process, not in Ollama. <strong>rss</strong> is the whole process's resident memory, so an upper bound for the model; <strong>peak</strong> is the editor's own peak.</p>
-      </>
-    )
-  }
-  {
-    perf.length > 0 && (
-      <div class="scroll">
-        <table data-table id="model-speed">
-          <thead>
-            <tr>
-              <th data-sort="text">Case</th>
-              <th data-sort="num" class="num">Output tok/s</th>
-              <th data-sort="num" class="num">Prompt tok/s</th>
-              <th data-sort="num" class="num">Loaded GB</th>
-              <th data-sort="num" class="num">Cold load s</th>
-            </tr>
-          </thead>
-          <tbody>
-            {perf.map((p) => (
-              <tr>
-                <td>
-                  <code>{p.case}</code>
-                </td>
-                <td class="num" data-value={p.decode_tps ?? p.embeds_per_s ?? -1}>
-                  {p.embeds_per_s !== null ? `${fmt(p.embeds_per_s, 0)} embeds/s` : fmt(p.decode_tps)}
-                </td>
-                <td class="num" data-value={p.prompt_tps ?? -1}>
-                  {p.prompt_cached ? <span class="muted">cached</span> : fmt(p.prompt_tps, 0)}
-                </td>
-                <td class="num" data-value={p.loaded_gb ?? -1}>{fmt(p.loaded_gb, 2)}</td>
-                <td class="num" data-value={p.load_s ?? -1}>{fmt(p.load_s)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )
+      )
+    }
+  
+      </section>
+    ))
   }
 
   <h2>Failed cases ({failures.length})</h2>

@@ -1,0 +1,8 @@
+description: "recolour: teal sofa dark red (Open Images e916dd0b766b2f40)"
+metadata: { id: edit-sofa-dark-red }
+vars:
+  image: file://../../corpus/images/oi-find-e916dd0b766b2f40.jpg
+  instruction: "Make the sofa dark red. Keep everything else the same."
+  expected:
+    changed: ["Is the sofa red?"]
+    kept: ["Is there a floor lamp?", "Is this a photograph?"]

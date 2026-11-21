@@ -1,0 +1,48 @@
+{
+  "run": "2026-11-08T01-44-35",
+  "evals": [
+    {
+      "model": "flux2-klein-4b-q4",
+      "suite": "edit",
+      "kind": null,
+      "start": {
+        "load_1m": 5.74,
+        "load_per_core": 0.57,
+        "mem_available_gib": 4.3,
+        "mem_free_pct": 52,
+        "swap_used_gib": 8.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 8.38,
+        "load_per_core": 0.84,
+        "mem_available_gib": 6.5,
+        "mem_free_pct": 58,
+        "swap_used_gib": 10.2,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 460
+          },
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 164
+          }
+        ]
+      },
+      "flags": [
+        "load 5.74 on the cores (0.57/core): something is working; wait for it or close it",
+        "8.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "10.2 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 460% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 164% of a core: close it if you can"
+      ]
+    }
+  ]
+}

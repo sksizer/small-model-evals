@@ -1,0 +1,264 @@
+{
+  "run": "2026-11-08T01-13-12",
+  "evals": [
+    {
+      "model": "siglip2-base",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 6.65,
+        "load_per_core": 0.66,
+        "mem_available_gib": 3.8,
+        "mem_free_pct": 48,
+        "swap_used_gib": 7.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 204
+          },
+          {
+            "name": "XProtectRemediatorPirrit",
+            "cpu_pct": 99
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 9.93,
+        "load_per_core": 0.99,
+        "mem_available_gib": 4.8,
+        "mem_free_pct": 48,
+        "swap_used_gib": 8.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 319
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 71
+          }
+        ]
+      },
+      "flags": [
+        "load 6.65 on the cores (0.66/core): something is working; wait for it or close it",
+        "7.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 204% of a core: close it if you can",
+        "XProtectRemediatorPirrit is using 99% of a core: close it if you can",
+        "8.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 319% of a core: close it if you can",
+        "Storage is using 71% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "clip-vit-b16",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 9.93,
+        "load_per_core": 0.99,
+        "mem_available_gib": 4.7,
+        "mem_free_pct": 48,
+        "swap_used_gib": 8.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 319
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 71
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 11.24,
+        "load_per_core": 1.12,
+        "mem_available_gib": 4.1,
+        "mem_free_pct": 46,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "8.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 319% of a core: close it if you can",
+        "Storage is using 71% of a core: close it if you can",
+        "8.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 11.24,
+        "load_per_core": 1.12,
+        "mem_available_gib": 4.1,
+        "mem_free_pct": 46,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 25.98,
+        "load_per_core": 2.6,
+        "mem_available_gib": 3.7,
+        "mem_free_pct": 41,
+        "swap_used_gib": 8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 193
+          },
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 182
+          },
+          {
+            "name": "mobileassetd",
+            "cpu_pct": 64
+          }
+        ]
+      },
+      "flags": [
+        "8.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 193% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 182% of a core: close it if you can",
+        "mobileassetd is using 64% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "nomic-embed-v1.5-pair",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 24.54,
+        "load_per_core": 2.45,
+        "mem_available_gib": 3.6,
+        "mem_free_pct": 41,
+        "swap_used_gib": 8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 197
+          },
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 168
+          },
+          {
+            "name": "modelcatalogd",
+            "cpu_pct": 59
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 36,
+        "load_per_core": 3.6,
+        "mem_available_gib": 5.6,
+        "mem_free_pct": 59,
+        "swap_used_gib": 9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 161
+          },
+          {
+            "name": "XprotectService",
+            "cpu_pct": 82
+          }
+        ]
+      },
+      "flags": [
+        "8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 197% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 168% of a core: close it if you can",
+        "modelcatalogd is using 59% of a core: close it if you can",
+        "9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 161% of a core: close it if you can",
+        "XprotectService is using 82% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "jina-clip-v2",
+      "suite": "search",
+      "kind": "photos",
+      "start": {
+        "load_1m": 36,
+        "load_per_core": 3.6,
+        "mem_available_gib": 5.6,
+        "mem_free_pct": 59,
+        "swap_used_gib": 9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 169
+          },
+          {
+            "name": "XprotectService",
+            "cpu_pct": 82
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 10.23,
+        "load_per_core": 1.02,
+        "mem_available_gib": 4.5,
+        "mem_free_pct": 43,
+        "swap_used_gib": 7.9,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "tar",
+            "cpu_pct": 144
+          },
+          {
+            "name": "fseventsd",
+            "cpu_pct": 75
+          },
+          {
+            "name": "mds_stores",
+            "cpu_pct": 40
+          }
+        ]
+      },
+      "flags": [
+        "9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 169% of a core: close it if you can",
+        "XprotectService is using 82% of a core: close it if you can",
+        "7.9 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "tar is using 144% of a core: close it if you can",
+        "fseventsd is using 75% of a core: close it if you can",
+        "mds_stores is using 40% of a core: close it if you can"
+      ]
+    }
+  ]
+}

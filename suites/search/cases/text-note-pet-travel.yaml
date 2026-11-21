@@ -1,0 +1,8 @@
+description: "search text: travel certificate for the pet (1 relevant of 88)"
+metadata: { id: text-note-pet-travel, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "travel certificate for the pet"
+  relevant: ["n79"]
+  how: "judged by reading"

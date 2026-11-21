@@ -1,0 +1,1768 @@
+{
+  "suite": "orchestrate",
+  "fingerprint": "fad1ed77e16e",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:6b6f0245022f8215c9c1708ce64e86a3f1fc35a65e3f4dd2c0914d1a406f845e"
+        }
+      ]
+    },
+    "description": "orchestrate — one-turn tool choice",
+    "prompts": [
+      "[{\"role\": \"system\", \"content\": \"You are the assistant inside a personal notes and planning app. Today is Thursday 2026-10-29. Call a tool when the request needs one. Answer directly when it does not.\"},\n {\"role\": \"user\", \"content\": {{ request | dump }}}]"
+    ],
+    "providers": [
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:qwen3.5:4b",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:qwen3.5:9b",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:qwen3:4b",
+        "label": "qwen3:4b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:gemma4:e4b",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:openbmb/minicpm5-2b:latest",
+        "label": "minicpm5-2b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:granite4.2:3b",
+        "label": "granite4.2:3b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:lfm3:1.7b",
+        "label": "lfm3:1.7b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0",
+        "label": "botpsy-0.8b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": true,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0",
+        "label": "botpsy-0.8b-think"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "think": false,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:qwen3.5:0.8b",
+        "label": "qwen3.5:0.8b"
+      },
+      {
+        "config": {
+          "num_ctx": 8192,
+          "temperature": 0,
+          "tools": [
+            {
+              "function": {
+                "description": "Full-text search over the vault's notes.",
+                "name": "search_notes",
+                "parameters": {
+                  "properties": {
+                    "limit": {
+                      "description": "Most results to return. Default 10.",
+                      "type": "integer"
+                    },
+                    "query": {
+                      "description": "Words to search for.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Add a task to the task list.",
+                "name": "create_task",
+                "parameters": {
+                  "properties": {
+                    "due_date": {
+                      "description": "Due day as YYYY-MM-DD.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Record a workout in the fitness log.",
+                "name": "log_workout",
+                "parameters": {
+                  "properties": {
+                    "activity": {
+                      "description": "For example run, ride, swim, walk.",
+                      "type": "string"
+                    },
+                    "date": {
+                      "description": "YYYY-MM-DD. Default today.",
+                      "type": "string"
+                    },
+                    "distance_km": {
+                      "type": "number"
+                    },
+                    "duration_min": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "activity"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Switch the app to one of its views.",
+                "name": "open_view",
+                "parameters": {
+                  "properties": {
+                    "view": {
+                      "enum": [
+                        "calendar",
+                        "tasks",
+                        "fitness",
+                        "notes",
+                        "search"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "view"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            },
+            {
+              "function": {
+                "description": "Notify the user at a time.",
+                "name": "set_reminder",
+                "parameters": {
+                  "properties": {
+                    "at": {
+                      "description": "Local time as YYYY-MM-DDTHH:MM.",
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "at"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "id": "ollama:chat:granite4:latest",
+        "label": "granite4"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "2be475c881c2",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/search.ts": "9502e3f85933",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/search.ts": "730d7829fa38",
+    "providers/sensitive-composite.ts": "3a2ff71491cb",
+    "providers/similarity-search.ts": "7a69269b6c84",
+    "providers/zero-shot.ts": "eed5f8711d4f"
+  },
+  "setup_hash": "a9556488cb1f",
+  "cases": {
+    "log-ride-yesterday": {
+      "hash": "091deec59c48",
+      "def": {
+        "metadata": {
+          "id": "log-ride-yesterday"
+        },
+        "vars": {
+          "request": "I cycled 20 km yesterday in an hour",
+          "tool": "log_workout",
+          "args": {
+            "distance_km": {
+              "approx": 20,
+              "tol": 0.05
+            },
+            "duration_min": 60,
+            "date": "2026-10-28"
+          }
+        }
+      }
+    },
+    "log-run-30min-5k": {
+      "hash": "db507460457b",
+      "def": {
+        "metadata": {
+          "id": "log-run-30min-5k"
+        },
+        "vars": {
+          "request": "log a 30 minute run, 5k",
+          "tool": "log_workout",
+          "args": {
+            "activity": {
+              "contains": "run"
+            },
+            "duration_min": 30,
+            "distance_km": {
+              "approx": 5,
+              "tol": 0.05
+            }
+          }
+        }
+      }
+    },
+    "no-tool-question": {
+      "hash": "f6c25709aed2",
+      "def": {
+        "metadata": {
+          "id": "no-tool-question"
+        },
+        "vars": {
+          "request": "what does BYOK stand for?",
+          "tool": "none"
+        }
+      }
+    },
+    "no-tool-thanks": {
+      "hash": "af97242b8021",
+      "def": {
+        "metadata": {
+          "id": "no-tool-thanks"
+        },
+        "vars": {
+          "request": "thanks, that's all for now",
+          "tool": "none"
+        }
+      }
+    },
+    "no-tool-translate": {
+      "hash": "b1676027d29b",
+      "def": {
+        "metadata": {
+          "id": "no-tool-translate"
+        },
+        "vars": {
+          "request": "how do I say good morning in Spanish?",
+          "tool": "none"
+        }
+      }
+    },
+    "open-calendar": {
+      "hash": "80e9a1a595d9",
+      "def": {
+        "metadata": {
+          "id": "open-calendar"
+        },
+        "vars": {
+          "request": "show me my calendar",
+          "tool": "open_view",
+          "args": {
+            "view": "calendar"
+          }
+        }
+      }
+    },
+    "open-fitness": {
+      "hash": "4ee109041e91",
+      "def": {
+        "metadata": {
+          "id": "open-fitness"
+        },
+        "vars": {
+          "request": "go to the fitness page",
+          "tool": "open_view",
+          "args": {
+            "view": "fitness"
+          }
+        }
+      }
+    },
+    "open-tasks": {
+      "hash": "68b0d4f4aa73",
+      "def": {
+        "metadata": {
+          "id": "open-tasks"
+        },
+        "vars": {
+          "request": "open my task list",
+          "tool": "open_view",
+          "args": {
+            "view": "tasks"
+          }
+        }
+      }
+    },
+    "remind-6pm-today": {
+      "hash": "da455b311072",
+      "def": {
+        "metadata": {
+          "id": "remind-6pm-today"
+        },
+        "vars": {
+          "request": "remind me at 6pm to take the bins out",
+          "tool": "set_reminder",
+          "args": {
+            "text": {
+              "contains": "bin"
+            },
+            "at": {
+              "startsWith": "2026-10-29T18"
+            }
+          }
+        }
+      }
+    },
+    "remind-9am-tomorrow": {
+      "hash": "fba21dd9aa07",
+      "def": {
+        "metadata": {
+          "id": "remind-9am-tomorrow"
+        },
+        "vars": {
+          "request": "remind me tomorrow at 9am to call the bank",
+          "tool": "set_reminder",
+          "args": {
+            "text": {
+              "contains": "bank"
+            },
+            "at": {
+              "startsWith": "2026-10-30T09"
+            }
+          }
+        }
+      }
+    },
+    "search-kitchen-notes": {
+      "hash": "92d66ddf114d",
+      "def": {
+        "metadata": {
+          "id": "search-kitchen-notes"
+        },
+        "vars": {
+          "request": "find my notes about the kitchen renovation",
+          "tool": "search_notes",
+          "args": {
+            "query": {
+              "contains": "kitchen"
+            }
+          }
+        }
+      }
+    },
+    "search-sourdough": {
+      "hash": "7371aaf6f9d6",
+      "def": {
+        "metadata": {
+          "id": "search-sourdough"
+        },
+        "vars": {
+          "request": "what did I write about sourdough?",
+          "tool": "search_notes",
+          "args": {
+            "query": {
+              "contains": "sourdough"
+            }
+          }
+        }
+      }
+    },
+    "search-with-limit": {
+      "hash": "b3a7f4ce1453",
+      "def": {
+        "metadata": {
+          "id": "search-with-limit"
+        },
+        "vars": {
+          "request": "search for anything mentioning Kubernetes, just the top 3",
+          "tool": "search_notes",
+          "args": {
+            "query": {
+              "contains": "kubernetes"
+            },
+            "limit": 3
+          }
+        }
+      }
+    },
+    "task-due-friday": {
+      "hash": "f2f154d21df6",
+      "def": {
+        "metadata": {
+          "id": "task-due-friday"
+        },
+        "vars": {
+          "request": "add a task to email Sam about the invoice, due Friday",
+          "tool": "create_task",
+          "args": {
+            "title": {
+              "contains": "invoice"
+            },
+            "due_date": "2026-10-30"
+          }
+        }
+      }
+    },
+    "task-no-date": {
+      "hash": "19ef2d4fcdb0",
+      "def": {
+        "metadata": {
+          "id": "task-no-date"
+        },
+        "vars": {
+          "request": "create a todo: book flights to Lisbon",
+          "tool": "create_task",
+          "args": {
+            "title": {
+              "contains": "lisbon"
+            }
+          }
+        }
+      }
+    }
+  }
+}

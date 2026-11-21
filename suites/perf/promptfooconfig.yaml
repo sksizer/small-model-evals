@@ -20,6 +20,8 @@ providers:
   - { id: file://../../providers/ollama-perf.ts, label: 'minicpm5-2b', config: { model: 'openbmb/minicpm5-2b:latest', think: false } }
   - { id: file://../../providers/ollama-perf.ts, label: 'granite4.2:3b', config: { model: 'granite4.2:3b', think: false } }
   - { id: file://../../providers/ollama-perf.ts, label: 'lfm3:1.7b', config: { model: 'lfm3:1.7b', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'botpsy-0.8b', config: { model: 'hf.co/qvac/BotPsy-0.8B-GGUFs:Q8_0', think: false } }
+  - { id: file://../../providers/ollama-perf.ts, label: 'qwen3.5:0.8b', config: { model: 'qwen3.5:0.8b', think: false } }
   - { id: file://../../providers/ollama-perf.ts, label: 'lfm3-vl:2b', config: { model: 'lfm3-vl:2b', think: false } }
 
 defaultTest:

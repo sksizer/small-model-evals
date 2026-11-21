@@ -17,6 +17,9 @@
 //   p_negmax), its best positive prompt against the best negative one (the
 //   softmax denominator cancels, so it is sigmoid(100 * (cos_best - cos_negmax))).
 //   Risk >= 0.5 is exactly "the category beats every negative".
+// `ordinary` is the mirror image: the best negative ("nothing sensitive") prompt scored the same
+// way (siglip: its sigmoid; clip: the best negative against the best positive of any category).
+// The composite uses it as positive evidence that a scene is ordinary (providers/sensitive-composite.ts).
 // The threshold sweep (leaks against false alarms as the cut moves) is computed
 // from these risks by scripts/export-site.ts, not here.
 //
@@ -105,7 +108,7 @@ const cosine = (a: Float32Array, b: Float32Array) => a.reduce((s, x, i) => s + x
 const sigmoid = (x: number) => 1 / (1 + Math.exp(-x))
 
 /** The risk of every category for one image, and how long the load took when this call paid for it. */
-export async function zeroShotRisks(c: ZeroShotConfig, image: RawImage): Promise<{ categories: Record<Category, number>; loadMs?: number }> {
+export async function zeroShotRisks(c: ZeroShotConfig, image: RawImage): Promise<{ categories: Record<Category, number>; ordinary: number; loadMs?: number }> {
   const key = `${c.model}@${c.revision}:${c.dtype ?? 'fp32'}`
   let loadMs: number | undefined
   if (!loaded.has(key)) {
@@ -122,15 +125,19 @@ export async function zeroShotRisks(c: ZeroShotConfig, image: RawImage): Promise
   const img = unit(Float32Array.from(v.data))
   const categories = {} as Record<Category, number>
   const r3 = (n: number) => Math.round(n * 1000) / 1000
+  const bestNegCos = Math.max(...m.negative.map((t) => cosine(img, t)))
+  const bestPosCos = Math.max(...CATEGORIES.flatMap((cat) => m.positive[cat].map((t) => cosine(img, t))))
+  let ordinary: number
   if (c.kind === 'siglip') {
     const { logit_scale, logit_bias } = c
     if (logit_scale === undefined || logit_bias === undefined) throw new Error('kind siglip needs logit_scale and logit_bias')
     for (const cat of CATEGORIES) categories[cat] = r3(Math.max(...m.positive[cat].map((t) => sigmoid(logit_scale * cosine(img, t) + logit_bias))))
+    ordinary = r3(sigmoid(logit_scale * bestNegCos + logit_bias))
   } else {
-    const bestNeg = Math.max(...m.negative.map((t) => cosine(img, t)))
-    for (const cat of CATEGORIES) categories[cat] = r3(sigmoid(100 * (Math.max(...m.positive[cat].map((t) => cosine(img, t))) - bestNeg)))
+    for (const cat of CATEGORIES) categories[cat] = r3(sigmoid(100 * (Math.max(...m.positive[cat].map((t) => cosine(img, t))) - bestNegCos)))
+    ordinary = r3(sigmoid(100 * (bestNegCos - bestPosCos)))
   }
-  return { categories, ...(loadMs === undefined ? {} : { loadMs }) }
+  return { categories, ordinary, ...(loadMs === undefined ? {} : { loadMs }) }
 }
 
 export default class ZeroShot {

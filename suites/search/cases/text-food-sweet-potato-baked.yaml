@@ -1,0 +1,8 @@
+description: "search text: baked sweet potato (2 relevant of 7793)"
+metadata: { id: text-food-sweet-potato-baked, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "baked sweet potato"
+  relevant: ["f168483","f170134"]
+  how: "rule on the name: Sweet potato, cooked, baked in skin"

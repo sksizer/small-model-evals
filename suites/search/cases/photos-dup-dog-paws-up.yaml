@@ -1,0 +1,8 @@
+description: "search photos: a dog lying on its back with its paws in the air (3 relevant of 132)"
+metadata: { id: photos-dup-dog-paws-up, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a dog lying on its back with its paws in the air"
+  relevant: ["copy-bright-dog-border-terrier","copy-crop10-dog-border-terrier","dog-border-terrier"]
+  how: "judged by eye; copies of a relevant photo count"

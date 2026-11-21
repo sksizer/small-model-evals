@@ -1,0 +1,9 @@
+description: "recolour, small region: watch dial black to blue (Open Images 66a342dcdafc7607)"
+metadata: { id: edit-watch-dial-blue }
+vars:
+  image: file://../../corpus/images/oi-find-66a342dcdafc7607.jpg
+  instruction: "Change the watch dial from black to blue. Keep everything else the same."
+  expected:
+    changed: ["Is the watch dial blue?"]
+    kept: ["Is there a steel bracelet?", "Is this a photograph?"]
+    region: [0.1, 0.2, 0.75, 1]

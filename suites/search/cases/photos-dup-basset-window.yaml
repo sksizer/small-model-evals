@@ -1,0 +1,8 @@
+description: "search photos: a basset hound by a window (3 relevant of 132)"
+metadata: { id: photos-dup-basset-window, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a basset hound by a window"
+  relevant: ["copy-bright-oi-objects-d8cac8b54e9fa89c","copy-crop10-oi-objects-d8cac8b54e9fa89c","oi-objects-d8cac8b54e9fa89c"]
+  how: "judged by eye; copies of a relevant photo count"

@@ -1,0 +1,8 @@
+description: "search photos: a wrist watch (4 relevant of 132)"
+metadata: { id: photos-dup-watch, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a wrist watch"
+  relevant: ["copy-bright-oi-find-149a74e86e8161a5","copy-jpeg40-oi-find-149a74e86e8161a5","oi-find-149a74e86e8161a5","oi-find-66a342dcdafc7607"]
+  how: "Open Images: Watch; copies of a relevant photo count"

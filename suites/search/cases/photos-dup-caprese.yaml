@@ -1,0 +1,8 @@
+description: "search photos: tomato and mozzarella salad with basil (1 relevant of 132)"
+metadata: { id: photos-dup-caprese, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "tomato and mozzarella salad with basil"
+  relevant: ["salad-party-dish"]
+  how: "judged by eye; copies of a relevant photo count"

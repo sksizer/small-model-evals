@@ -1,0 +1,8 @@
+description: "search photos: a red hydrant sign (1 relevant of 132)"
+metadata: { id: photos-dup-hydrant-sign, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a red hydrant sign"
+  relevant: ["oi-find-01d3fdb0f6383edb"]
+  how: "judged by eye; copies of a relevant photo count"

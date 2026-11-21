@@ -1,0 +1,8 @@
+description: "search text: wind-down routine before bed (1 relevant of 88)"
+metadata: { id: text-note-evening-wind-down, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "wind-down routine before bed"
+  relevant: ["n88"]
+  how: "judged by reading"

@@ -1,0 +1,8 @@
+description: "search photos: a hot tub in a small room with a plant (1 relevant of 132)"
+metadata: { id: photos-dup-hot-tub, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a hot tub in a small room with a plant"
+  relevant: ["oi-objects-eccb080e57b2aac5"]
+  how: "judged by eye; copies of a relevant photo count"

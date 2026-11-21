@@ -18,6 +18,11 @@
 //
 // - a corpus audio or video clip (corpus/av-manifest.json) is missing, differs from its
 //   sha256, is outside the length its kind allows, or has a licence the standard does not allow;
+// - a suite has no entry in SUITE_META (scripts/plan.ts) or an entry names a suite that is gone;
+// - a machine profile (machines/<name>.yaml) names a category, cost, suite, model or class that
+//   does not exist, or two profiles claim the same machine key or class;
+// - a run's results/conditions/<run>.json is not named by its run;
+// - a queued job (queue/<id>.yaml) is malformed: a model, suite, class or profile that does not exist, a bad status;
 // - a corpus image's licence is not one docs/standards/corpus.md allows (CC0,
 //   public domain, CC BY; Open Images exactly CC BY 2.0; a derived copy must
 //   match its parent). See scripts/licences.ts.
@@ -33,7 +38,10 @@ import { CATALOG } from './catalog.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
 import { licenceProblem } from './licences.ts'
 import { MODELS } from './models.ts'
-import { LEDGER_DIR, ROOT, SCOPE, SUITES_DIR, listSnapshots, loadCases, readLedger, readSnapshot, snapshotIntegrity } from './ledger.ts'
+import { QUEUE_DIR, jobProblems, type Job } from './queue-lib.ts'
+import { ALL_CLASSES } from './machine.ts'
+import { CATEGORIES, COSTS, SUITE_META, loadProfiles } from './plan.ts'
+import { LEDGER_DIR, RESULTS_DIR, ROOT, SCOPE, SUITES_DIR, listSnapshots, loadCases, readLedger, readSnapshot, snapshotIntegrity } from './ledger.ts'
 
 const problems: string[] = []
 
@@ -181,6 +189,67 @@ for (const m of MODELS) {
 }
 for (const label of Object.keys(CATALOG)) {
   if (!MODELS.some((m) => m.label === label)) problems.push(`${label}: in scripts/catalog.ts but not in scripts/models.ts`)
+}
+
+// Categories: every suite is declared once in SUITE_META, with real categories and a cost.
+if (SCOPE === 'public') {
+  const suiteDirs = readdirSync(SUITES_DIR)
+  for (const s of suiteDirs) if (!SUITE_META[s]) problems.push(`${s}: suite has no entry in SUITE_META (scripts/plan.ts)`)
+  for (const [s, meta] of Object.entries(SUITE_META)) {
+    if (!suiteDirs.includes(s)) problems.push(`SUITE_META: ${s} is not a suite`)
+    if (meta.categories.length === 0) problems.push(`SUITE_META: ${s} has no category`)
+    for (const c of meta.categories) if (!(CATEGORIES as readonly string[]).includes(c)) problems.push(`SUITE_META: ${s}: unknown category ${c}`)
+    if (!(COSTS as readonly string[]).includes(meta.cost)) problems.push(`SUITE_META: ${s}: unknown cost ${meta.cost}`)
+  }
+}
+
+// Machine profiles: they name only things that exist, and each machine matches one.
+{
+  const classes = new Set(ALL_CLASSES.map((c) => c.class))
+  const claimed = new Map<string, string>()
+  const claim = (what: string, by: string) => {
+    if (claimed.has(what)) problems.push(`machines/${by}.yaml: ${what} is already claimed by ${claimed.get(what)}`)
+    else claimed.set(what, by)
+  }
+  for (const p of loadProfiles()) {
+    const at = `machines/${p.name}.yaml`
+    for (const c of p.categories ?? []) if (!(CATEGORIES as readonly string[]).includes(c)) problems.push(`${at}: unknown category ${c}`)
+    if (p.cost !== undefined && !(COSTS as readonly string[]).includes(p.cost)) problems.push(`${at}: unknown cost ${p.cost}`)
+    for (const s of p.suites ?? []) if (!SUITE_META[s]) problems.push(`${at}: unknown suite ${s}`)
+    for (const m of [...(p.models ?? []), ...(p.skip_models ?? [])]) if (!MODELS.some((x) => x.label === m)) problems.push(`${at}: unknown model ${m}`)
+    for (const c of p.match?.classes ?? []) {
+      if (!classes.has(c)) problems.push(`${at}: unknown class ${c} (see scripts/machine.ts)`)
+      claim(`class ${c}`, p.name)
+    }
+    for (const k of p.match?.keys ?? []) claim(`key ${k}`, p.name)
+  }
+}
+
+// Queue: every job under queue/ is sound (scripts/queue-lib.ts) and its class and profile exist.
+if (existsSync(QUEUE_DIR)) {
+  const classes = new Set(ALL_CLASSES.map((c) => c.class))
+  const profiles = new Set(loadProfiles().map((p) => p.name))
+  for (const f of readdirSync(QUEUE_DIR).filter((x) => x.endsWith('.yaml'))) {
+    let job: Partial<Job>
+    try {
+      job = Bun.YAML.parse(readFileSync(join(QUEUE_DIR, f), 'utf8')) as Partial<Job>
+    } catch (err) {
+      problems.push(`queue/${f}: does not parse: ${err}`)
+      continue
+    }
+    problems.push(...jobProblems(job, f))
+    if (job.needs?.class !== undefined && !classes.has(job.needs.class)) problems.push(`queue/${f}: unknown class ${job.needs.class} (see scripts/machine.ts)`)
+    if (job.needs?.profile !== undefined && !profiles.has(job.needs.profile)) problems.push(`queue/${f}: unknown profile ${job.needs.profile}`)
+  }
+}
+
+// Conditions: one file per run, named by it.
+const condDir = join(RESULTS_DIR, 'conditions')
+if (existsSync(condDir)) {
+  for (const f of readdirSync(condDir).filter((x) => x.endsWith('.json'))) {
+    const rc = JSON.parse(readFileSync(join(condDir, f), 'utf8')) as { run?: string }
+    if (`${rc.run}.json` !== f) problems.push(`results/conditions/${f}: names run ${rc.run}`)
+  }
 }
 
 if (problems.length > 0) {

@@ -1,0 +1,24 @@
+id: 20261115-new-ollama-timing-provider-regions-suite
+created: 2026-11-15T20:06:15Z
+reason: "new Ollama timing provider: regions suites (the vision chat models)"
+models:
+  - qwen3.5:4b
+  - qwen3.5:9b
+  - gemma4:e4b
+  - lfm3-vl:2b
+suites:
+  - regions-faces
+  - regions-find
+  - regions-objects
+  - regions-text
+priority: 1
+needs:
+  max_load_per_core: 0.3
+  min_free_gib: 4
+  quiet_minutes: 10
+status: pending
+run_ids:
+  []
+done:
+  []
+notes: ""

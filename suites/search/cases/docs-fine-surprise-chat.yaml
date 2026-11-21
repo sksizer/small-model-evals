@@ -1,0 +1,8 @@
+description: "search docs: a chat about a surprise and a door code (1 relevant of 44)"
+metadata: { id: docs-fine-surprise-chat, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "a chat about a surprise and a door code"
+  relevant: ["chat-screenshot"]
+  how: "judged from the page source"

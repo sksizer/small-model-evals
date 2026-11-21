@@ -1,8 +1,0 @@
-description: "search text: extra lean ground beef, 95% (5 relevant of 1500)"
-metadata: { id: text-lean-beef, kind: text }
-vars:
-  kind: text
-  corpus: foods
-  query: "extra lean ground beef, 95%"
-  relevant: ["f171790","f171791","f171792","f174028","f174029"]
-  how: "rule on the name: Beef, ground, 95% lean"

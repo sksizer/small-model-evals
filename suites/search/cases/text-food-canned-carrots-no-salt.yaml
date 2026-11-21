@@ -1,0 +1,8 @@
+description: "search text: canned carrots with no salt added (2 relevant of 7793)"
+metadata: { id: text-food-canned-carrots-no-salt, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "canned carrots with no salt added"
+  relevant: ["f168518","f169340"]
+  how: "rule on the name: Carrots, canned, no salt added"

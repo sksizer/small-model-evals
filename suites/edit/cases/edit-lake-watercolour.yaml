@@ -1,0 +1,8 @@
+description: "style: watercolour painting (Commons lake-sherburne)"
+metadata: { id: edit-lake-watercolour }
+vars:
+  image: file://../../corpus/images/lake-sherburne.jpg
+  instruction: "Turn the picture into a watercolour painting. Keep the same scene."
+  expected:
+    changed: ["Is this a watercolour painting rather than a photograph?"]
+    kept: ["Are there snow-capped mountains?", "Is there a lake reflecting the mountains?"]

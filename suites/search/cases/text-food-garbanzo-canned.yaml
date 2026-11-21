@@ -1,0 +1,8 @@
+description: "search text: tinned chickpeas (4 relevant of 7793)"
+metadata: { id: text-food-garbanzo-canned, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "tinned chickpeas"
+  relevant: ["f173800","f173801","f175206","f175250"]
+  how: "rule on the name: Chickpeas (garbanzo beans), canned"

@@ -5,9 +5,9 @@
 //   1. yunet   (providers/onnx-detector.ts)  faces: how many, and how much of the image the largest fills.
 //   2. nsfw    (providers/image-classifier.ts, Falconsai ViT)  p(nsfw).
 //   3. siglip  (providers/zero-shot.ts)  a risk per category.
-//   4. ocr     (providers/florence2.ts)  every line of text, then the regexes below. Runs only
-//              when siglip puts a text-bearing category (id-document, financial, screen, medical,
-//              credential, document, location) at risk >= OCR_IF, since OCR is the slow specialist.
+//   4. ocr     (providers/florence2.ts)  every line of text, then the regexes below. Runs on every
+//              image: text is the one thing the other specialists cannot rule out, and OCR (about 1-2 s)
+//              costs far less than the LLM.
 //   5. llm     (providers/ollama-sensitive.ts)  the full category rating. Runs only when not decisive.
 //
 // Strong evidence (risk 0.9 for the category), each rule fixed up front:
@@ -24,15 +24,26 @@
 // "Decisive", defined simply:
 //   - private: strong evidence for a private category (nudity, id-document, financial, credential).
 //     `private` is the top level, so nothing the LLM could say changes the level.
-//   - public: no strong evidence at all, nsfw < 0.1, no face at all and every siglip risk < 0.3.
-//   Anything else (including every siglip risk between 0.3 and 0.5, a mid nsfw score, or strong
-//   evidence for review-level categories only) goes to the LLM.
+//   - public: only with positive evidence that the image is ordinary, never from the silence of the
+//     specialists. ALL of these must hold:
+//       * no strong evidence for any category;
+//       * OCR found no text (a line with two or more letters or digits): text can carry any
+//         text-bearing category, and a zero-shot model that scores "quiet" on a letter, a label or
+//         a plate says nothing about what the words reveal, so any text goes to the LLM;
+//       * no face at all, and p(nsfw) < 0.1: any person-bearing signal, however weak, goes to the LLM
+//         (the face detector misses faces in small, turned-away or partly covered figures, and the
+//         categories intimate, minor and nudity are about bodies, not only faces);
+//       * SigLIP positively recognises an ordinary scene: its best generic-negative prompt scores
+//         >= 0.5 (the sigmoid's own midpoint, the same cut as for a category) AND above every
+//         category's risk. SigLIP scoring every category low is not enough: its sigmoid scores are
+//         low for most images, sensitive ones included, so silence is not evidence.
+//   Anything else goes to the LLM.
 // The result: categories = strong evidence, max'd with the LLM's risks when it ran; when it did
 // not, siglip risks >= 0.5 are added too (a decisive-public image has none).
 //
 // Config: `yunet`, `nsfw`, `siglip`, `ocr` (each the config of that provider), `llm` (Ollama
 // config as in providers/ollama-sensitive.ts). Vars: `image`.
-// Output: {"categories", "level", "stages": {name: ms}, "decided_by": "rules" | "public-signals" | "llm"}.
+// Output: {"categories", "level", "stages": {name: ms}, "decided_by": "rules" | "public-signals" | "llm", "ordinary" (SigLIP's score for an ordinary scene), "ocr_lines" (count)}.
 // Metadata: classify_ms (everything except loading), load_ms (first case), rss_mb, loaded_bytes
 // (the LLM's size in memory, when it ran), ran_ocr / ran_llm (0 or 1), yunet_ms, nsfw_ms,
 // siglip_ms, ocr_ms, llm_ms (when the stage ran).
@@ -53,8 +64,7 @@ interface Config {
 }
 
 const STRONG = 0.9
-const OCR_IF = 0.2
-const TEXT_CATEGORIES: Category[] = ['id-document', 'financial', 'screen', 'medical', 'credential', 'document', 'location']
+const ORDINARY_MIN = 0.5
 
 /** Text rules over the OCR lines joined with spaces: the categories the text is strong evidence for. */
 export function textEvidence(lines: string[], screenRisk: number): Category[] {
@@ -118,18 +128,23 @@ export default class SensitiveComposite {
       const zs = await zeroShotRisks(c.siglip, await imageOf(image))
       note('siglip', performance.now() - t, zs.loadMs)
 
-      // 4. OCR, when a text-bearing category looks possible
-      if (TEXT_CATEGORIES.some((cat) => zs.categories[cat] >= OCR_IF)) {
-        ocrModel ??= new Florence2({ config: c.ocr })
-        t = performance.now()
-        const ocr = await ocrModel.ocrText(image)
-        note('ocr', performance.now() - t, ocr.loadMs)
-        for (const cat of textEvidence(ocr.lines, zs.categories.screen)) strong[cat] = STRONG
-      }
+      // 4. OCR, on every image
+      ocrModel ??= new Florence2({ config: c.ocr })
+      t = performance.now()
+      const ocr = await ocrModel.ocrText(image)
+      note('ocr', performance.now() - t, ocr.loadMs)
+      for (const cat of textEvidence(ocr.lines, zs.categories.screen)) strong[cat] = STRONG
+      const textLines = ocr.lines.filter((l) => (l.match(/[\p{L}\p{N}]/gu) ?? []).length >= 2).length
 
       // Decisive? (see the header)
       const privateHit = PRIVATE_CATEGORIES.some((cat) => strong[cat] !== undefined)
-      const quiet = Object.keys(strong).length === 0 && nsfw.pFlag < 0.1 && faces.found.length === 0 && CATEGORIES.every((cat) => zs.categories[cat] < 0.3)
+      const quiet =
+        Object.keys(strong).length === 0 &&
+        textLines === 0 &&
+        nsfw.pFlag < 0.1 &&
+        faces.found.length === 0 &&
+        zs.ordinary >= ORDINARY_MIN &&
+        CATEGORIES.every((cat) => zs.categories[cat] < zs.ordinary)
       const risks = {} as Record<Category, number>
       for (const cat of CATEGORIES) risks[cat] = strong[cat] ?? 0
       let decidedBy: 'rules' | 'public-signals' | 'llm'
@@ -148,7 +163,7 @@ export default class SensitiveComposite {
 
       for (const [name, ms] of Object.entries(stages)) meta[`${name}_ms`] = ms
       return {
-        output: JSON.stringify({ categories: risks, level: levelFromRisks(risks), stages, decided_by: decidedBy }),
+        output: JSON.stringify({ categories: risks, level: levelFromRisks(risks), stages, decided_by: decidedBy, ordinary: zs.ordinary, ocr_lines: textLines }),
         metadata: {
           ...meta,
           classify_ms: performance.now() - t0 - loadMs,

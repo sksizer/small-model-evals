@@ -5,3 +5,6 @@ results/runs/
 # Cases built from your own notes or photos stay on this machine.
 private/
 .cache/
+# The queue worker's lock (scripts/queue.ts): one pid, this machine only.
+queue/.worker.lock
+queue/*.tmp

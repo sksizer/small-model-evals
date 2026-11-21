@@ -1,0 +1,59 @@
+{
+  "run": "2026-11-07T23-50-40",
+  "evals": [
+    {
+      "model": "siglip2-base-zs",
+      "suite": "sensitive",
+      "kind": null,
+      "start": {
+        "load_1m": 9.39,
+        "load_per_core": 0.94,
+        "mem_available_gib": 5.5,
+        "mem_free_pct": 70,
+        "swap_used_gib": 11.2,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rm",
+            "cpu_pct": 82
+          },
+          {
+            "name": "fseventsd",
+            "cpu_pct": 71
+          },
+          {
+            "name": "WindowServer",
+            "cpu_pct": 47
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 8.46,
+        "load_per_core": 0.85,
+        "mem_available_gib": 6.4,
+        "mem_free_pct": 68,
+        "swap_used_gib": 11.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rm",
+            "cpu_pct": 50
+          }
+        ]
+      },
+      "flags": [
+        "load 9.39 on the cores (0.94/core): something is working; wait for it or close it",
+        "11.2 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rm is using 82% of a core: close it if you can",
+        "fseventsd is using 71% of a core: close it if you can",
+        "WindowServer is using 47% of a core: close it if you can",
+        "11.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rm is using 50% of a core: close it if you can"
+      ]
+    }
+  ]
+}

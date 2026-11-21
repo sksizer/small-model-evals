@@ -1,0 +1,8 @@
+description: "search photos: a laptop and a notebook on a desk (6 relevant of 132)"
+metadata: { id: photos-dup-laptop-and-notebook, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a laptop and a notebook on a desk"
+  relevant: ["copy-flip-desk-laptop-top-down","copy-jpeg40-desk-laptop-top-down","desk-coffee-laptop-notebook","desk-laptop-notebook-pen","desk-laptop-top-down","laptop-notepad"]
+  how: "judged by eye; copies of a relevant photo count"

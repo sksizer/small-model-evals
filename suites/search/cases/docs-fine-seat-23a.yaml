@@ -1,0 +1,8 @@
+description: "search docs: a boarding pass for seat 23A (1 relevant of 44)"
+metadata: { id: docs-fine-seat-23a, kind: docs }
+vars:
+  kind: docs
+  corpus: docs
+  query: "a boarding pass for seat 23A"
+  relevant: ["boarding-pass"]
+  how: "judged from the page source"

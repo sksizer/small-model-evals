@@ -1,0 +1,8 @@
+description: "search photos: a guitar (4 relevant of 132)"
+metadata: { id: photos-dup-guitar, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a guitar"
+  relevant: ["copy-crop10-oi-find-c4d62e55691ed1e4","copy-resize-oi-find-c4d62e55691ed1e4","oi-find-29de4e35add89b69","oi-find-c4d62e55691ed1e4"]
+  how: "Open Images: Guitar; copies of a relevant photo count"

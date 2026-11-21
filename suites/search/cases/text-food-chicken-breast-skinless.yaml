@@ -1,0 +1,8 @@
+description: "search text: roasted chicken breast without skin (1 relevant of 7793)"
+metadata: { id: text-food-chicken-breast-skinless, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "roasted chicken breast without skin"
+  relevant: ["f171477"]
+  how: "rule on the name: chicken, broilers or fryers, breast, meat only, cooked, roasted"

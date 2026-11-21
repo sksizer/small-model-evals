@@ -1,0 +1,8 @@
+description: "search text: aubergine (3 relevant of 7793)"
+metadata: { id: text-food-aubergine, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "aubergine"
+  relevant: ["f169228","f169229","f169352"]
+  how: "rule on the name: Eggplant, raw or cooked"

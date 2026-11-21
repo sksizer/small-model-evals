@@ -1,0 +1,8 @@
+description: "search text: courgette (8 relevant of 7793)"
+metadata: { id: text-food-courgette, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "courgette"
+  relevant: ["f168469","f168470","f168471","f168565","f169291","f169292","f170534","f170535"]
+  how: "rule on the name: name contains zucchini"

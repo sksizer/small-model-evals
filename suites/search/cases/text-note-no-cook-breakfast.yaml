@@ -1,0 +1,8 @@
+description: "search text: a quick breakfast that needs no cooking (2 relevant of 88)"
+metadata: { id: text-note-no-cook-breakfast, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "a quick breakfast that needs no cooking"
+  relevant: ["n14","n62"]
+  how: "judged by reading"

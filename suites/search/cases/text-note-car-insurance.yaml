@@ -1,0 +1,8 @@
+description: "search text: quote for the car insurance renewal (1 relevant of 88)"
+metadata: { id: text-note-car-insurance, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "quote for the car insurance renewal"
+  relevant: ["n71"]
+  how: "judged by reading"

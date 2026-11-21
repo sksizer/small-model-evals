@@ -1,0 +1,8 @@
+description: "search photos: a black bicycle leaning against a wall (3 relevant of 132)"
+metadata: { id: photos-dup-bike-against-wall, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a black bicycle leaning against a wall"
+  relevant: ["copy-bright-oi-objects-2fba54286aaac20e","copy-jpeg40-oi-objects-2fba54286aaac20e","oi-objects-2fba54286aaac20e"]
+  how: "judged by eye; copies of a relevant photo count"

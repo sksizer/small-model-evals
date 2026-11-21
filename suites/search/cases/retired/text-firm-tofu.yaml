@@ -1,0 +1,8 @@
+description: "search text: firm tofu (2 relevant of 1500)"
+metadata: { id: text-firm-tofu, kind: text, retired: "2026-11-08: ran over a 1500-food subset; superseded by text-food-firm-tofu over all 7793 foods" }
+vars:
+  kind: text
+  corpus: foods
+  query: "firm tofu"
+  relevant: ["f172448","f172475"]
+  how: "rule on the name: Tofu, firm"

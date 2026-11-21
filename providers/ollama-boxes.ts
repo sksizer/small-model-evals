@@ -17,7 +17,9 @@
 // list in the request when the phrases alone are ambiguous (regions-text asks
 // for each line of text: asked for "text", models box the whole page); labels
 // stay limited to the `find` phrases.
-const BASE = process.env['OLLAMA_BASE_URL'] ?? 'http://localhost:11434'
+//
+// Metadata (ledger metrics): `boxes`, and the call's timing (providers/ollama-stream.ts).
+import { BASE, streamChat } from './ollama-stream.ts'
 
 interface Config {
   model: string
@@ -67,24 +69,18 @@ export default class OllamaBoxes {
         `For each one, give its label (one of: ${find.map((f) => `"${f}"`).join(', ')}) and its bounding box as box_2d: [x0, y0, x1, y1], ` +
         'with coordinates from 0 to 1000 relative to the image width and height, top left origin. ' +
         'Give an empty list when there are none. Reply as JSON: {"boxes": [{"label": "...", "box_2d": [x0, y0, x1, y1]}]}.'
-      const res = await fetch(`${BASE}/api/chat`, {
-        method: 'POST',
-        body: JSON.stringify({
-          model: this.config.model,
-          stream: false,
-          ...(this.config.think === undefined ? {} : { think: this.config.think }),
-          options: { temperature: 0, num_ctx: this.config.num_ctx ?? 8192, num_predict: this.config.num_predict ?? 1024 },
-          format: schema(find),
-          messages: [{ role: 'user', content: ask, images: [image.replace(/^data:image\/[a-z]+;base64,/, '')] }],
-        }),
+      const body = await streamChat(BASE, {
+        model: this.config.model,
+        ...(this.config.think === undefined ? {} : { think: this.config.think }),
+        options: { temperature: 0, num_ctx: this.config.num_ctx ?? 8192, num_predict: this.config.num_predict ?? 1024 },
+        format: schema(find),
+        messages: [{ role: 'user', content: ask, images: [image.replace(/^data:image\/[a-z]+;base64,/, '')] }],
       })
-      if (!res.ok) throw new Error(`/api/chat: ${res.status} ${await res.text()}`)
-      const body = (await res.json()) as { message: { content: string }; prompt_eval_count?: number; eval_count?: number }
       let raw: { boxes?: { label?: unknown; box_2d?: unknown }[] }
       try {
-        raw = JSON.parse(body.message.content) as typeof raw
+        raw = JSON.parse(body.content) as typeof raw
       } catch {
-        return { output: body.message.content }
+        return { output: body.content, metadata: { ...body.timings } }
       }
       const boxes = (raw.boxes ?? [])
         .filter((b) => typeof b.label === 'string' && Array.isArray(b.box_2d) && b.box_2d.length === 4)
@@ -95,11 +91,11 @@ export default class OllamaBoxes {
       return {
         output: JSON.stringify({ boxes }),
         tokenUsage: {
-          prompt: body.prompt_eval_count ?? 0,
-          completion: body.eval_count ?? 0,
-          total: (body.prompt_eval_count ?? 0) + (body.eval_count ?? 0),
+          prompt: body.final.prompt_eval_count ?? 0,
+          completion: body.final.eval_count ?? 0,
+          total: (body.final.prompt_eval_count ?? 0) + (body.final.eval_count ?? 0),
         },
-        metadata: { boxes: boxes.length },
+        metadata: { ...body.timings, boxes: boxes.length },
       }
     } catch (err) {
       return { error: String(err) }

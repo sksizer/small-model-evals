@@ -1,0 +1,8 @@
+description: "search photos: a laptop (8 relevant of 132)"
+metadata: { id: photos-dup-laptop, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a laptop"
+  relevant: ["copy-flip-desk-laptop-top-down","copy-jpeg40-desk-laptop-top-down","desk-coffee-laptop-notebook","desk-laptop-notebook-pen","desk-laptop-top-down","laptop-notepad","oi-objects-7408fef212a5d3bc","oi-objects-a7e5d2727af4299d"]
+  how: "Open Images: Laptop; by eye: 4 Commons or unannotated photos; copies of a relevant photo count"

@@ -1,0 +1,8 @@
+description: "search text: a peeled raw apple (1 relevant of 7793)"
+metadata: { id: text-food-apple-peeled, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "a peeled raw apple"
+  relevant: ["f171689"]
+  how: "rule on the name: Apples, raw, without skin"

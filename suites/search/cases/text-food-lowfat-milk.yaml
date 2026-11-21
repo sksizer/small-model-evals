@@ -1,0 +1,8 @@
+description: "search text: low-fat milk, 1 percent (3 relevant of 7793)"
+metadata: { id: text-food-lowfat-milk, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "low-fat milk, 1 percent"
+  relevant: ["f170872","f170873","f171268"]
+  how: "rule on the name: Milk, lowfat, fluid, 1% milkfat"

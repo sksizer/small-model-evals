@@ -1,0 +1,6 @@
+# A 24 GB NVIDIA card (RTX 3090/4090 class). No image-edit: the mflux editors
+# run only on Apple silicon. Everything else is the same set of suites.
+description: NVIDIA GPU with 24 GB of VRAM, run through Ollama and onnxruntime
+match:
+  classes: [nvidia-24g]
+categories: [text, vision, regions, search]

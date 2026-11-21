@@ -33,6 +33,7 @@ providers:
   - { id: file://../../providers/ollama-decide.ts, label: d1-omni:600m, config: { model: 'd1-omni:600m', decision: true } }
   - { id: file://../../providers/ollama-decide.ts, label: d1:2b, config: { model: 'd1:2b', decision: true } }
   - { id: file://../../providers/ollama-decide.ts, label: qwen3.5:4b, config: { model: 'qwen3.5:4b', think: false } }
+  - { id: file://../../providers/ollama-decide.ts, label: qwen3.5:9b, config: { model: 'qwen3.5:9b', think: false } }
   - { id: file://../../providers/ollama-decide.ts, label: gemma4:e4b, config: { model: 'gemma4:e4b', think: false } }
   - { id: file://../../providers/ollama-decide.ts, label: lfm3-vl:2b, config: { model: 'lfm3-vl:2b', think: false } }
 

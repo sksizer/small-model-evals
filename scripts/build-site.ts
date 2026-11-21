@@ -7,7 +7,7 @@
 //
 // The public site holds the committed suites and results. The private site
 // shows everything at once: every public suite plus the suites under private/
-// (your own notes and photos, the private nudity set), which are listed as
+// (a private collection: cases and images that are never published), listed as
 // `private-<suite>` since a suite id can exist in both scopes. It is never
 // published: its data, images and build all stay under private/site/.
 // SITE_BASE is passed through for the public build.

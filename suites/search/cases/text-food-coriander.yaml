@@ -1,0 +1,8 @@
+description: "search text: fresh coriander leaves (1 relevant of 7793)"
+metadata: { id: text-food-coriander, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "fresh coriander leaves"
+  relevant: ["f169997"]
+  how: "rule on the name: Coriander (cilantro) leaves, raw"

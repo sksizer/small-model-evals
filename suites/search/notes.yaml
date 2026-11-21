@@ -1,4 +1,4 @@
-# 60 short invented notes, the text corpus of the search suite's `notes` queries. Written for this
+# 88 short invented notes, the text corpus of the search suite's `notes` queries. Written for this
 # repo and released under CC0 (docs/standards/corpus.md, "Text corpus"). Every person, place and
 # number is made up; none is real personal data.
 - { id: n01, title: "Standup 4 March", text: "Team standup: Priya is blocked on the login bug, Tomas will pair with her after lunch. Release candidate cut moved to Friday." }
@@ -61,3 +61,33 @@
 - { id: n58, title: "Sleep log", text: "In bed by 22:30 all week, woke once in the night, felt rested. Cut caffeine after two in the afternoon." }
 - { id: n59, title: "Fundraiser bake sale", text: "Saturday at the school hall: lemon drizzle, brownies and flapjacks. We need volunteers for the tea table." }
 - { id: n60, title: "Laptop battery", text: "The battery drains in two hours. Check background apps, lower the screen brightness, consider a replacement." }
+# n61 to n88 (2026-11-08) are hard distractors: each is close in topic or wording to an earlier note or to a
+# query, and answers neither. A model that matches on topic alone ranks them above the real answer.
+- { id: n61, title: "Lentil salad", text: "Cook green lentils, let them cool, toss with feta, cucumber and mint. Served cold, so no stock and no simmering." }
+- { id: n62, title: "Banana smoothie", text: "One frozen banana, a cup of yoghurt, a handful of oats. Blend until smooth. Nothing to bake." }
+- { id: n63, title: "Carrot cake", text: "Grated carrot, walnuts and cinnamon. Bake at 180 degrees for 45 minutes, then cool before the cream cheese frosting." }
+- { id: n64, title: "Scrambled eggs", text: "Low heat, stir all the time, take the pan off while the eggs still look glossy. A little butter, no milk." }
+- { id: n65, title: "Tomato soup", text: "Roast tomatoes and garlic, blend with vegetable stock, finish with a splash of cream." }
+- { id: n66, title: "Madrid trip", text: "Flight leaves Heathrow at 7:15 on Thursday and lands at 10:40. Hotel near Retiro Park, tapas on the first night." }
+- { id: n67, title: "Train to Manchester", text: "Leaves Euston at 9:10, arrives 11:15. The return ticket is open, so no need to book the way back." }
+- { id: n68, title: "Airport bus", text: "Bus 7 runs every twenty minutes from the station and takes thirty-five minutes. Buy the ticket on the app." }
+- { id: n69, title: "Porto weekend idea", text: "Maybe Porto in the spring: port cellars, the river, a fado evening. Flights not looked at yet." }
+- { id: n70, title: "Car service", text: "Service and MOT booked for the 3rd. Leave the car at the garage by 8 and ask them about the squeaky brakes." }
+- { id: n71, title: "Car insurance renewal", text: "The renewal quote is 15 percent higher than last year. Compare three sites and ring the insurer before the 20th." }
+- { id: n72, title: "Arm day", text: "Dumbbell curls 3x12, tricep dips, cable rows, lateral raises. No barbell this week, shoulders still sore." }
+- { id: n73, title: "Trail run", text: "Slow ten kilometres on soft ground, heart rate low the whole way, no intervals and no watch." }
+- { id: n74, title: "Pool kit", text: "New goggles and a swimming cap needed before the membership starts. Check the locker size." }
+- { id: n75, title: "Marathon registration", text: "Registration for the autumn marathon opens on the first of next month. The fee is 60 pounds and places go quickly." }
+- { id: n76, title: "Eye test", text: "Optician on Friday at 11. Bring the current glasses and the list of the screen hours at work." }
+- { id: n77, title: "Garden tap", text: "Fit a hose connector to the outside tap before the weekend. The tap itself is fine, no dripping." }
+- { id: n78, title: "Plumber receipt", text: "Paid the plumber 85 pounds in cash. Keep the receipt to show the landlord." }
+- { id: n79, title: "Pet travel", text: "The vet signs the pet travel certificate no more than ten days before the ferry. Microchip number is in the folder." }
+- { id: n80, title: "Mum's birthday dinner", text: "Table for six booked at the Italian place on the 12th at 7:30. Ask for the one by the window." }
+- { id: n81, title: "Reading notes: Deep Work", text: "Schedule long blocks of focus, shut the door, keep email for the afternoon. Shallow tasks go at the end of the day." }
+- { id: n82, title: "Plant sale", text: "The garden centre sale is on Saturday. Buy compost and one large pot; no new plants until the shelf is cleared." }
+- { id: n83, title: "Mesh wifi kit", text: "Compare two mesh kits, budget 150 pounds. Check that it works with the current modem." }
+- { id: n84, title: "Bike security", text: "Write down the frame serial number and register it with the police and the insurer. Lock through the frame, not the wheel." }
+- { id: n85, title: "Interview schedule", text: "Monday: Sam at 10:00, Priyanka at 11:30, Marco at 14:00. Meeting room two is booked; print the CVs." }
+- { id: n86, title: "Pager app", text: "The old pager app is being retired. Install the new one by Friday and test an alert on your own phone." }
+- { id: n87, title: "Cloud certificate", text: "Study guide chapters one to four, practice exam on Sunday, real exam on the 12th of December." }
+- { id: n88, title: "Evening wind-down", text: "Warm shower, ten minutes of reading, phone in the other room by 22:00. Lights low from nine." }

@@ -9,7 +9,9 @@
 //     kept: ["Are there two dogs?"]           # must still be YES
 //     region: [0.2, 0.1, 0.8, 0.6]            # optional: [x0, y0, x1, y1] as
 //                                             # fractions of the image; the only
-//                                             # area the edit may change
+//                                             # area the edit may change;
+//                                             # [0, 0, 0, 0] allows no change
+//                                             # at all (a "change nothing" control)
 //
 // Judge: an Ollama vision model is asked each question about the edited image
 // and must answer {"answer": "yes"|"no"} (JSON schema, temperature 0, thinking
@@ -23,6 +25,8 @@
 // The editor regenerates the whole image through a VAE, so even a perfect
 // local edit drifts a little everywhere; the limit sits above that drift and
 // below what a changed scene does (see PRESERVED_MAX for the measurement).
+// `changed` may be empty: the no-op control only asks that what was there
+// stays there.
 //
 // Score: the mean of the changed hits, the kept hits and, when there is a
 // region, preservation (1 or 0). Passes only when every changed and kept
@@ -38,15 +42,30 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 export const DEFAULT_JUDGE = 'qwen3.5:4b'
 /**
  * Largest mean absolute difference (0-255) outside the edit region that still
- * counts as preserved. Measured on 2026-11-02 against FLUX.2 klein 4B q4
- * edits: 5.2 for the bowl removal on oi-objects-25d107f1590c1772 and 3.2 for
- * the settings-panel text edit, so real local edits drift 3-5. Whole-image
- * changes on the same photo score far above that: a 5% crop shift 20.7, a
- * 40% darkening 36.4, a hue rotation 35.1, greyscale 27.8, a different photo
- * 81.9; JPEG re-encoding alone 0.7. 12 is a little over twice the observed
- * drift and well below the smallest global change.
+ * counts as preserved: 15, set from the edits FLUX.2 klein 4B q4 actually made
+ * (2026-11-08, 20 cases, seed 42; the run is deterministic: the 10 cases of
+ * 2026-11-02 reproduced their diffs to the hundredth).
+ *
+ * Basis. The preservation diffs of the edits that passed every judge question
+ * (12 of the 20 edits have a region; these are the 9 that passed): 2.72, 3.12, 3.19, 4.00, 4.60, 6.30, 6.77, 7.67,
+ * 11.72. Median 4.6, mean 5.6, largest 11.72 (the armchair recolour, whose
+ * region covers 82% of the frame, so the outside strip is mostly its edge).
+ * One of them, the 6.30, is the "change nothing" control (edit-noop-lake), the
+ * editor's drift on an untouched, detailed photo; the three edits the judge
+ * failed drifted 5.16, 6.78 and 9.38, inside the same range, so drift does not
+ * separate good edits from bad ones: the limit is only there to catch an edit
+ * that rewrote the scene.
+ * Ceiling. Whole-image changes on one photo (2026-11-02, oi-objects-25d107f1...,
+ * region-less): a 5% crop shift 20.7, a 40% darkening 36.4, a hue rotation
+ * 35.1, greyscale 27.8, a different photo 81.9; JPEG re-encoding alone 0.7.
+ * Rule. The largest passing diff plus a quarter (11.72 x 1.25 = 14.65), rounded
+ * up to 15, which must stay under three quarters of the smallest whole-image
+ * change (0.75 x 20.7 = 15.5): it does. The previous hand-set 12 had under 3%
+ * of room above the armchair; no outcome changed when it moved to 15 (no failed
+ * case lies between 12 and 15). Re-derive it when the edit set grows: the rule
+ * is the largest passing diff x 1.25, never above 0.75 x 20.7.
  */
-export const PRESERVED_MAX = 12
+export const PRESERVED_MAX = 15
 const COMPARE_SIZE = 256
 
 export type Region = [number, number, number, number]

@@ -1,0 +1,8 @@
+description: "search text: roasted chicken breast with the skin (1 relevant of 7793)"
+metadata: { id: text-food-chicken-breast-skin, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "roasted chicken breast with the skin"
+  relevant: ["f171075"]
+  how: "rule on the name: chicken, broilers or fryers, breast, meat and skin, cooked, roasted"

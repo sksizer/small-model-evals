@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Example launchd agent that keeps a queue worker (bun scripts/queue.ts work) running for one user, so queued runs
+  fill in whenever the machine is quiet. NOT installed by anything in this repo. To use it:
+
+    1. Copy it to ~/Library/LaunchAgents/dev.small-model-evals.queue.plist and edit the three paths below
+       (bun, the repo, and the PATH that holds node/npx: promptfoo runs through npx).
+    2. launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/dev.small-model-evals.queue.plist
+    3. Stop it with: launchctl bootout gui/$(id -u)/dev.small-model-evals.queue
+
+  --watch keeps the worker polling when the queue is empty. A job's own `needs` (load, free memory, quiet minutes,
+  AC power) decide when it really runs; ThrottleInterval only stops a crash loop. Killing the worker is safe: a job
+  resumes from the evals not yet recorded as done. Ollama must be running (it is a separate login item).
+-->
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>dev.small-model-evals.queue</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/YOU/.bun/bin/bun</string>
+      <string>scripts/queue.ts</string>
+      <string>work</string>
+      <string>--watch</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/YOU/Developer/small-model-evals</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>PATH</key>
+      <string>/Users/YOU/.tools/proto/tools/node/24.13.0/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>LowPriorityBackgroundIO</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/YOU/Library/Logs/small-model-evals-queue.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/YOU/Library/Logs/small-model-evals-queue.log</string>
+  </dict>
+</plist>

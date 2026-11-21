@@ -1,0 +1,705 @@
+{
+  "suite": "regions-find",
+  "fingerprint": "07c839aac1c0",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:fbf7ea45a9b87b74a24175d5dfde31ab6b2fb25f0d8b1f9e9413c5f07c179fc9"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      }
+    },
+    "description": "regions-find — box one named thing",
+    "prompts": [
+      "{{ find }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/owlv2-base-patch16-ensemble-ONNX",
+          "revision": "180d6ef7599bd69bb48db5c72bd49ad03ddfab80",
+          "task": "zero-shot-object-detection",
+          "threshold": 0.2
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "owlv2-base-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "join_phrases": true,
+          "model": "onnx-community/grounding-dino-tiny-ONNX",
+          "revision": "ff690b0a8050566c290287545bd059350f3e9096",
+          "task": "zero-shot-object-detection",
+          "threshold": 0.3
+        },
+        "id": "sha256:20b52284e631922627b37c11331345bdeb7fa12f0fb7b3bd12723d63f3590c40",
+        "label": "grounding-dino-tiny-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "model": "onnx-community/Florence-2-base",
+          "revision": "d59e079711c57174f29265539fb4cc9f0f335916",
+          "task": "grounding"
+        },
+        "id": "sha256:30f819e7bb93fa05e1137015480b04a7821d38918f91f3388216c9f74e1d6261",
+        "label": "florence2-base-ground-q8"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:4b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:9b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "model": "gemma4:e4b",
+          "order": "yxyx",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "model": "lfm3-vl:2b",
+          "think": false
+        },
+        "id": "sha256:f8e658884b8011a61f268cc0c7610f75835522b28c2264f10701353aad98b95e",
+        "label": "lfm3-vl:2b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "bed813328b89",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/search.ts": "9502e3f85933",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/search.ts": "730d7829fa38",
+    "providers/sensitive-composite.ts": "78b6be0406c7",
+    "providers/similarity-search.ts": "7a69269b6c84",
+    "providers/zero-shot.ts": "5593d1a832c8"
+  },
+  "setup_hash": "22db86c6fbce",
+  "cases": {
+    "oi-find-01d3fdb0f6383edb": {
+      "hash": "3343d6133bb6",
+      "def": {
+        "description": "find: traffic sign (Open Images 01d3fdb0f6383edb)",
+        "metadata": {
+          "id": "oi-find-01d3fdb0f6383edb"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-01d3fdb0f6383edb.jpg",
+          "find": [
+            "traffic sign"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "traffic sign",
+                  "road sign",
+                  "sign"
+                ],
+                "box": [
+                  0,
+                  0,
+                  0.87,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-030c5a10124e6252": {
+      "hash": "0762dc1346bd",
+      "def": {
+        "description": "find: sunglasses (Open Images 030c5a10124e6252)",
+        "metadata": {
+          "id": "oi-find-030c5a10124e6252"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-030c5a10124e6252.jpg",
+          "find": [
+            "sunglasses"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "sunglasses"
+                ],
+                "box": [
+                  0.1383,
+                  0.1807,
+                  0.655,
+                  0.4271
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-07caab7b663b7e86": {
+      "hash": "a4a6a6068f71",
+      "def": {
+        "description": "find: pen (Open Images 07caab7b663b7e86)",
+        "metadata": {
+          "id": "oi-find-07caab7b663b7e86"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-07caab7b663b7e86.jpg",
+          "find": [
+            "pen"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "pen"
+                ],
+                "box": [
+                  0.4131,
+                  0.3875,
+                  1,
+                  0.5521
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-0f730eda466be34c": {
+      "hash": "df1eb7bffbb0",
+      "def": {
+        "description": "find: envelope (Open Images 0f730eda466be34c)",
+        "metadata": {
+          "id": "oi-find-0f730eda466be34c"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-0f730eda466be34c.jpg",
+          "find": [
+            "envelope"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "envelope"
+                ],
+                "box": [
+                  0.0312,
+                  0.0535,
+                  0.9532,
+                  0.9649
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-149a74e86e8161a5": {
+      "hash": "e0adb3adc66e",
+      "def": {
+        "description": "find: watch (Open Images 149a74e86e8161a5)",
+        "metadata": {
+          "id": "oi-find-149a74e86e8161a5"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-149a74e86e8161a5.jpg",
+          "find": [
+            "watch"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "watch",
+                  "wristwatch"
+                ],
+                "box": [
+                  0.155,
+                  0,
+                  0.7969,
+                  0.9955
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-29de4e35add89b69": {
+      "hash": "3db9b2c5af33",
+      "def": {
+        "description": "find: guitar (Open Images 29de4e35add89b69)",
+        "metadata": {
+          "id": "oi-find-29de4e35add89b69"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-29de4e35add89b69.jpg",
+          "find": [
+            "guitar"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "guitar"
+                ],
+                "box": [
+                  0.2425,
+                  0.0339,
+                  0.7691,
+                  0.9661
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-2dcab96f79ef52c4": {
+      "hash": "5e60364400de",
+      "def": {
+        "description": "find: pen (Open Images 2dcab96f79ef52c4)",
+        "metadata": {
+          "id": "oi-find-2dcab96f79ef52c4"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-2dcab96f79ef52c4.jpg",
+          "find": [
+            "pen"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "pen"
+                ],
+                "box": [
+                  0.0929,
+                  0.4447,
+                  0.913,
+                  0.5465
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-489076e07c213206": {
+      "hash": "5bfb0ea83fc1",
+      "def": {
+        "description": "find: mirror (Open Images 489076e07c213206)",
+        "metadata": {
+          "id": "oi-find-489076e07c213206"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-489076e07c213206.jpg",
+          "find": [
+            "mirror"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "mirror"
+                ],
+                "box": [
+                  0.4917,
+                  0,
+                  0.6958,
+                  0.25
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-6022a450df278025": {
+      "hash": "03cf6c3ef235",
+      "def": {
+        "description": "find: bicycle helmet (Open Images 6022a450df278025)",
+        "metadata": {
+          "id": "oi-find-6022a450df278025"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-6022a450df278025.jpg",
+          "find": [
+            "bicycle helmet"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "bicycle helmet",
+                  "helmet"
+                ],
+                "box": [
+                  0.4499,
+                  0.1128,
+                  0.5767,
+                  0.3341
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-66a342dcdafc7607": {
+      "hash": "95b6da646a39",
+      "def": {
+        "description": "find: watch (Open Images 66a342dcdafc7607)",
+        "metadata": {
+          "id": "oi-find-66a342dcdafc7607"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-66a342dcdafc7607.jpg",
+          "find": [
+            "watch"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "watch",
+                  "wristwatch"
+                ],
+                "box": [
+                  0.1429,
+                  0.2395,
+                  0.7128,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-743dbcab02a9971e": {
+      "hash": "32dca60c65c0",
+      "def": {
+        "description": "find: lamp (Open Images 743dbcab02a9971e)",
+        "metadata": {
+          "id": "oi-find-743dbcab02a9971e"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-743dbcab02a9971e.jpg",
+          "find": [
+            "lamp"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "lamp"
+                ],
+                "box": [
+                  0.2043,
+                  0.321,
+                  0.4817,
+                  0.6177
+                ]
+              },
+              {
+                "label": [
+                  "lamp"
+                ],
+                "box": [
+                  0.3376,
+                  0.4548,
+                  0.6215,
+                  0.7629
+                ]
+              },
+              {
+                "label": [
+                  "lamp"
+                ],
+                "box": [
+                  0.486,
+                  0.729,
+                  0.7054,
+                  0.9484
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-864e6f2e549e9542": {
+      "hash": "d4c2fa1d1e93",
+      "def": {
+        "description": "find: sunglasses (Open Images 864e6f2e549e9542)",
+        "metadata": {
+          "id": "oi-find-864e6f2e549e9542"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-864e6f2e549e9542.jpg",
+          "find": [
+            "sunglasses"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "sunglasses"
+                ],
+                "box": [
+                  0.1965,
+                  0.404,
+                  0.5894,
+                  0.5828
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-8f08cb18c27fbaa7": {
+      "hash": "da0a78b964cb",
+      "def": {
+        "description": "find: bicycle helmet (Open Images 8f08cb18c27fbaa7)",
+        "metadata": {
+          "id": "oi-find-8f08cb18c27fbaa7"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-8f08cb18c27fbaa7.jpg",
+          "find": [
+            "bicycle helmet"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "bicycle helmet",
+                  "helmet"
+                ],
+                "box": [
+                  0.5,
+                  0.0907,
+                  0.5855,
+                  0.1792
+                ]
+              },
+              {
+                "label": [
+                  "bicycle helmet",
+                  "helmet"
+                ],
+                "box": [
+                  0.736,
+                  0.1128,
+                  0.8702,
+                  0.3009
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-a1b604b5548bfc1f": {
+      "hash": "236fc2c7931f",
+      "def": {
+        "description": "find: whiteboard (Open Images a1b604b5548bfc1f)",
+        "metadata": {
+          "id": "oi-find-a1b604b5548bfc1f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-a1b604b5548bfc1f.jpg",
+          "find": [
+            "whiteboard"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "whiteboard"
+                ],
+                "box": [
+                  0,
+                  0,
+                  0.9984,
+                  0.9979
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-a90c22661fe961ff": {
+      "hash": "f0a80c0e3589",
+      "def": {
+        "description": "find: lamp (Open Images a90c22661fe961ff)",
+        "metadata": {
+          "id": "oi-find-a90c22661fe961ff"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-a90c22661fe961ff.jpg",
+          "find": [
+            "lamp"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "lamp"
+                ],
+                "box": [
+                  0.2714,
+                  0.0951,
+                  0.7065,
+                  0.9358
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-c4d62e55691ed1e4": {
+      "hash": "d21613b65ecf",
+      "def": {
+        "description": "find: guitar (Open Images c4d62e55691ed1e4)",
+        "metadata": {
+          "id": "oi-find-c4d62e55691ed1e4"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-c4d62e55691ed1e4.jpg",
+          "find": [
+            "guitar"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "guitar"
+                ],
+                "box": [
+                  0,
+                  0.0642,
+                  0.9102,
+                  0.9115
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-e916dd0b766b2f40": {
+      "hash": "f5c379e704aa",
+      "def": {
+        "description": "find: lamp (Open Images e916dd0b766b2f40)",
+        "metadata": {
+          "id": "oi-find-e916dd0b766b2f40"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-e916dd0b766b2f40.jpg",
+          "find": [
+            "lamp"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "lamp"
+                ],
+                "box": [
+                  0.6094,
+                  0.0667,
+                  0.7703,
+                  0.7438
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oi-find-fad0f797e6985f7f": {
+      "hash": "7e3870264279",
+      "def": {
+        "description": "find: poster (Open Images fad0f797e6985f7f)",
+        "metadata": {
+          "id": "oi-find-fad0f797e6985f7f"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/oi-find-fad0f797e6985f7f.jpg",
+          "find": [
+            "poster"
+          ],
+          "expected": {
+            "boxes": [
+              {
+                "label": [
+                  "poster"
+                ],
+                "box": [
+                  0,
+                  0,
+                  0.9964,
+                  0.9982
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

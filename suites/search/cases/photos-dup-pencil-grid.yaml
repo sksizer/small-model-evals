@@ -1,0 +1,8 @@
+description: "search photos: a mechanical pencil on grid paper (1 relevant of 132)"
+metadata: { id: photos-dup-pencil-grid, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a mechanical pencil on grid paper"
+  relevant: ["oi-find-07caab7b663b7e86"]
+  how: "judged by eye; copies of a relevant photo count"

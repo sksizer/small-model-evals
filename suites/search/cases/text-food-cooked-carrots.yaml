@@ -1,0 +1,8 @@
+description: "search text: cooked carrots (4 relevant of 7793)"
+metadata: { id: text-food-cooked-carrots, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "cooked carrots"
+  relevant: ["f168519","f169339","f169984","f170394"]
+  how: "rule on the name: Carrots, (frozen,) cooked, boiled, drained"

@@ -1,0 +1,8 @@
+description: "search photos: snow on the ground (2 relevant of 132)"
+metadata: { id: photos-dup-snow-ground, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "snow on the ground"
+  relevant: ["diner-snow-night","snow-forest-trail"]
+  how: "judged by eye; copies of a relevant photo count"

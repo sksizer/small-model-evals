@@ -1,0 +1,8 @@
+description: "search text: skim milk (4 relevant of 1500)"
+metadata: { id: text-skim-milk, kind: text, retired: "2026-11-08: ran over a 1500-food subset; superseded by text-food-skim-milk over all 7793 foods" }
+vars:
+  kind: text
+  corpus: foods
+  query: "skim milk"
+  relevant: ["f171269","f171270","f171271","f173432"]
+  how: "rule on the name: Milk, nonfat, fluid (fat free or skim)"

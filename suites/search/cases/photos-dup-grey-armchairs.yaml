@@ -1,0 +1,8 @@
+description: "search photos: two grey armchairs in a living room (1 relevant of 132)"
+metadata: { id: photos-dup-grey-armchairs, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "two grey armchairs in a living room"
+  relevant: ["oi-objects-5ea13fbbd1a1474f"]
+  how: "judged by eye; copies of a relevant photo count"

@@ -1,0 +1,8 @@
+description: "search photos: a chair (5 relevant of 132)"
+metadata: { id: photos-dup-chair, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a chair"
+  relevant: ["copy-crop10-oi-objects-ee47ccab89a75d0d","copy-resize-oi-objects-ee47ccab89a75d0d","oi-objects-2b2c4fe6d63a13e4","oi-objects-5ea13fbbd1a1474f","oi-objects-ee47ccab89a75d0d"]
+  how: "Open Images: Chair; copies of a relevant photo count"

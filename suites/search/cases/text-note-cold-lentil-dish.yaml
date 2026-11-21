@@ -1,0 +1,8 @@
+description: "search text: a cold lentil dish, not a soup (1 relevant of 88)"
+metadata: { id: text-note-cold-lentil-dish, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "a cold lentil dish, not a soup"
+  relevant: ["n61"]
+  how: "judged by reading"

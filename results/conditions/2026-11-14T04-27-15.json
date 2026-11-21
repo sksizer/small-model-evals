@@ -1,0 +1,724 @@
+{
+  "run": "2026-11-14T04-27-15",
+  "evals": [
+    {
+      "model": "qwen3.5:0.8b",
+      "suite": "classify",
+      "kind": null,
+      "start": {
+        "load_1m": 5.45,
+        "load_per_core": 0.54,
+        "mem_available_gib": 2.6,
+        "mem_free_pct": 33,
+        "swap_used_gib": 13.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 316
+          },
+          {
+            "name": "syspolicyd",
+            "cpu_pct": 60
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 5.99,
+        "load_per_core": 0.6,
+        "mem_available_gib": 2.2,
+        "mem_free_pct": 27,
+        "swap_used_gib": 14.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 339
+          }
+        ]
+      },
+      "flags": [
+        "load 5.45 on the cores (0.54/core): something is working; wait for it or close it",
+        "little free memory (2.6 GiB available, 33% free): close browsers, editors and VMs",
+        "13.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 316% of a core: close it if you can",
+        "syspolicyd is using 60% of a core: close it if you can",
+        "little free memory (2.2 GiB available, 27% free): close browsers, editors and VMs",
+        "14.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 339% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "qwen3.5:0.8b",
+      "suite": "extract",
+      "kind": null,
+      "start": {
+        "load_1m": 5.99,
+        "load_per_core": 0.6,
+        "mem_available_gib": 2.3,
+        "mem_free_pct": 30,
+        "swap_used_gib": 14.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 336
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 5.73,
+        "load_per_core": 0.57,
+        "mem_available_gib": 2.7,
+        "mem_free_pct": 33,
+        "swap_used_gib": 14.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 240
+          },
+          {
+            "name": "Orca Helper (Renderer)",
+            "cpu_pct": 126
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.3 GiB available, 30% free): close browsers, editors and VMs",
+        "14.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 336% of a core: close it if you can",
+        "little free memory (2.7 GiB available, 33% free): close browsers, editors and VMs",
+        "14.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 240% of a core: close it if you can",
+        "Orca Helper (Renderer) is using 126% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "qwen3.5:0.8b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 5.73,
+        "load_per_core": 0.57,
+        "mem_available_gib": 2.2,
+        "mem_free_pct": 31,
+        "swap_used_gib": 14.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 244
+          },
+          {
+            "name": "Orca Helper (Renderer)",
+            "cpu_pct": 129
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 7.4,
+        "load_per_core": 0.74,
+        "mem_available_gib": 3,
+        "mem_free_pct": 36,
+        "swap_used_gib": 20.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 351
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.2 GiB available, 31% free): close browsers, editors and VMs",
+        "14.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 244% of a core: close it if you can",
+        "Orca Helper (Renderer) is using 129% of a core: close it if you can",
+        "20.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 351% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "qwen3.5:0.8b",
+      "suite": "orchestrate",
+      "kind": null,
+      "start": {
+        "load_1m": 7.4,
+        "load_per_core": 0.74,
+        "mem_available_gib": 3,
+        "mem_free_pct": 39,
+        "swap_used_gib": 20.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 344
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 7.25,
+        "load_per_core": 0.72,
+        "mem_available_gib": 2.5,
+        "mem_free_pct": 31,
+        "swap_used_gib": 15,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 347
+          }
+        ]
+      },
+      "flags": [
+        "20.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 344% of a core: close it if you can",
+        "little free memory (2.5 GiB available, 31% free): close browsers, editors and VMs",
+        "15 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 347% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "qwen3.5:0.8b",
+      "suite": "perf",
+      "kind": null,
+      "start": {
+        "load_1m": 7.25,
+        "load_per_core": 0.72,
+        "mem_available_gib": 2.5,
+        "mem_free_pct": 33,
+        "swap_used_gib": 15,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 343
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 8.05,
+        "load_per_core": 0.8,
+        "mem_available_gib": 2.1,
+        "mem_free_pct": 26,
+        "swap_used_gib": 14.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 257
+          },
+          {
+            "name": "WindowServer",
+            "cpu_pct": 50
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.5 GiB available, 33% free): close browsers, editors and VMs",
+        "15 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 343% of a core: close it if you can",
+        "little free memory (2.1 GiB available, 26% free): close browsers, editors and VMs",
+        "14.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 257% of a core: close it if you can",
+        "WindowServer is using 50% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "qwen3.5:0.8b",
+      "suite": "route",
+      "kind": null,
+      "start": {
+        "load_1m": 8.05,
+        "load_per_core": 0.8,
+        "mem_available_gib": 2.1,
+        "mem_free_pct": 30,
+        "swap_used_gib": 14.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 281
+          },
+          {
+            "name": "WindowServer",
+            "cpu_pct": 46
+          },
+          {
+            "name": "(git)",
+            "cpu_pct": 41
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 7.35,
+        "load_per_core": 0.74,
+        "mem_available_gib": 2.2,
+        "mem_free_pct": 26,
+        "swap_used_gib": 15.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "little free memory (2.1 GiB available, 30% free): close browsers, editors and VMs",
+        "14.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 281% of a core: close it if you can",
+        "WindowServer is using 46% of a core: close it if you can",
+        "(git) is using 41% of a core: close it if you can",
+        "little free memory (2.2 GiB available, 26% free): close browsers, editors and VMs",
+        "15.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "qwen3.5:0.8b",
+      "suite": "workout",
+      "kind": null,
+      "start": {
+        "load_1m": 7.35,
+        "load_per_core": 0.74,
+        "mem_available_gib": 2.1,
+        "mem_free_pct": 26,
+        "swap_used_gib": 15.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 6.21,
+        "load_per_core": 0.62,
+        "mem_available_gib": 2.8,
+        "mem_free_pct": 35,
+        "swap_used_gib": 14.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 334
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.1 GiB available, 26% free): close browsers, editors and VMs",
+        "15.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "little free memory (2.8 GiB available, 35% free): close browsers, editors and VMs",
+        "14.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 334% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b",
+      "suite": "classify",
+      "kind": null,
+      "start": {
+        "load_1m": 6.21,
+        "load_per_core": 0.62,
+        "mem_available_gib": 2.8,
+        "mem_free_pct": 36,
+        "swap_used_gib": 14.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 300
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 5.8,
+        "load_per_core": 0.58,
+        "mem_available_gib": 2.4,
+        "mem_free_pct": 30,
+        "swap_used_gib": 14.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 176
+          },
+          {
+            "name": "llama-server",
+            "cpu_pct": 83
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.8 GiB available, 36% free): close browsers, editors and VMs",
+        "14.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 300% of a core: close it if you can",
+        "little free memory (2.4 GiB available, 30% free): close browsers, editors and VMs",
+        "14.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 176% of a core: close it if you can",
+        "llama-server is using 83% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b",
+      "suite": "extract",
+      "kind": null,
+      "start": {
+        "load_1m": 5.8,
+        "load_per_core": 0.58,
+        "mem_available_gib": 2.5,
+        "mem_free_pct": 34,
+        "swap_used_gib": 14.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 243
+          },
+          {
+            "name": "WindowServer",
+            "cpu_pct": 41
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 41
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 6.33,
+        "load_per_core": 0.63,
+        "mem_available_gib": 3.1,
+        "mem_free_pct": 37,
+        "swap_used_gib": 14.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 224
+          },
+          {
+            "name": "llama-server",
+            "cpu_pct": 132
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.5 GiB available, 34% free): close browsers, editors and VMs",
+        "14.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 243% of a core: close it if you can",
+        "WindowServer is using 41% of a core: close it if you can",
+        "Storage is using 41% of a core: close it if you can",
+        "14.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 224% of a core: close it if you can",
+        "llama-server is using 132% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b",
+      "suite": "food-lookup",
+      "kind": null,
+      "start": {
+        "load_1m": 6.33,
+        "load_per_core": 0.63,
+        "mem_available_gib": 3.1,
+        "mem_free_pct": 38,
+        "swap_used_gib": 14.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 148
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 11.81,
+        "load_per_core": 1.18,
+        "mem_available_gib": 2,
+        "mem_free_pct": 25,
+        "swap_used_gib": 18.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 265
+          },
+          {
+            "name": "Orca Helper (Renderer)",
+            "cpu_pct": 73
+          },
+          {
+            "name": "claude.exe",
+            "cpu_pct": 56
+          }
+        ]
+      },
+      "flags": [
+        "14.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 148% of a core: close it if you can",
+        "little free memory (2 GiB available, 25% free): close browsers, editors and VMs",
+        "18.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 265% of a core: close it if you can",
+        "Orca Helper (Renderer) is using 73% of a core: close it if you can",
+        "claude.exe is using 56% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b",
+      "suite": "orchestrate",
+      "kind": null,
+      "start": {
+        "load_1m": 11.81,
+        "load_per_core": 1.18,
+        "mem_available_gib": 2,
+        "mem_free_pct": 30,
+        "swap_used_gib": 18.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 278
+          },
+          {
+            "name": "Orca Helper (Renderer)",
+            "cpu_pct": 57
+          },
+          {
+            "name": "claude.exe",
+            "cpu_pct": 48
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 11.35,
+        "load_per_core": 1.13,
+        "mem_available_gib": 2.3,
+        "mem_free_pct": 29,
+        "swap_used_gib": 18.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 337
+          },
+          {
+            "name": "llama-server",
+            "cpu_pct": 78
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2 GiB available, 30% free): close browsers, editors and VMs",
+        "18.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 278% of a core: close it if you can",
+        "Orca Helper (Renderer) is using 57% of a core: close it if you can",
+        "claude.exe is using 48% of a core: close it if you can",
+        "little free memory (2.3 GiB available, 29% free): close browsers, editors and VMs",
+        "18.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 337% of a core: close it if you can",
+        "llama-server is using 78% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b",
+      "suite": "perf",
+      "kind": null,
+      "start": {
+        "load_1m": 11.35,
+        "load_per_core": 1.13,
+        "mem_available_gib": 2.3,
+        "mem_free_pct": 29,
+        "swap_used_gib": 18.3,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 337
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 10.34,
+        "load_per_core": 1.03,
+        "mem_available_gib": 2.3,
+        "mem_free_pct": 29,
+        "swap_used_gib": 15,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 290
+          },
+          {
+            "name": "llama-server",
+            "cpu_pct": 51
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.3 GiB available, 29% free): close browsers, editors and VMs",
+        "18.3 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 337% of a core: close it if you can",
+        "15 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 290% of a core: close it if you can",
+        "llama-server is using 51% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b",
+      "suite": "route",
+      "kind": null,
+      "start": {
+        "load_1m": 10.34,
+        "load_per_core": 1.03,
+        "mem_available_gib": 2.4,
+        "mem_free_pct": 30,
+        "swap_used_gib": 15,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 301
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 9.91,
+        "load_per_core": 0.99,
+        "mem_available_gib": 2.5,
+        "mem_free_pct": 30,
+        "swap_used_gib": 14.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 101
+          },
+          {
+            "name": "llama-server",
+            "cpu_pct": 93
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 74
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.4 GiB available, 30% free): close browsers, editors and VMs",
+        "15 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 301% of a core: close it if you can",
+        "little free memory (2.5 GiB available, 30% free): close browsers, editors and VMs",
+        "14.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 101% of a core: close it if you can",
+        "llama-server is using 93% of a core: close it if you can",
+        "Storage is using 74% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "botpsy-0.8b",
+      "suite": "workout",
+      "kind": null,
+      "start": {
+        "load_1m": 9.91,
+        "load_per_core": 0.99,
+        "mem_available_gib": 2.5,
+        "mem_free_pct": 31,
+        "swap_used_gib": 14.7,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "Storage",
+            "cpu_pct": 74
+          },
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 64
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 9.72,
+        "load_per_core": 0.97,
+        "mem_available_gib": 2.3,
+        "mem_free_pct": 27,
+        "swap_used_gib": 15.1,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "com.apple.Virtualization.VirtualMachine",
+            "cpu_pct": 97
+          },
+          {
+            "name": "llama-server",
+            "cpu_pct": 69
+          },
+          {
+            "name": "Storage",
+            "cpu_pct": 62
+          }
+        ]
+      },
+      "flags": [
+        "little free memory (2.5 GiB available, 31% free): close browsers, editors and VMs",
+        "14.7 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "Storage is using 74% of a core: close it if you can",
+        "com.apple.Virtualization.VirtualMachine is using 64% of a core: close it if you can",
+        "little free memory (2.3 GiB available, 27% free): close browsers, editors and VMs",
+        "15.1 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "com.apple.Virtualization.VirtualMachine is using 97% of a core: close it if you can",
+        "llama-server is using 69% of a core: close it if you can",
+        "Storage is using 62% of a core: close it if you can"
+      ]
+    }
+  ]
+}

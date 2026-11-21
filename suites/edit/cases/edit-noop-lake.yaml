@@ -1,0 +1,9 @@
+description: "control: change nothing (Commons lake-salagou); the whole image is outside the region, so this measures the editor's drift alone"
+metadata: { id: edit-noop-lake }
+vars:
+  image: file://../../corpus/images/lake-salagou.jpg
+  instruction: "Do not change anything. Return the image exactly as it is."
+  expected:
+    changed: []
+    kept: ["Are there clouds in the sky?", "Is this a photograph?"]
+    region: [0, 0, 0, 0]

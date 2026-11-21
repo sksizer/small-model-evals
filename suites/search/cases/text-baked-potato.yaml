@@ -1,8 +1,0 @@
-description: "search text: baked potato (6 relevant of 1500)"
-metadata: { id: text-baked-potato, kind: text }
-vars:
-  kind: text
-  corpus: foods
-  query: "baked potato"
-  relevant: ["f170033","f170034","f170093","f170111","f170112","f170113"]
-  how: "rule on the name: Potatoes, baked"

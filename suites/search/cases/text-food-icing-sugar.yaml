@@ -1,0 +1,8 @@
+description: "search text: icing sugar (1 relevant of 7793)"
+metadata: { id: text-food-icing-sugar, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "icing sugar"
+  relevant: ["f169656"]
+  how: "rule on the name: Sugars, powdered"

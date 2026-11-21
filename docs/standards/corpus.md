@@ -107,7 +107,7 @@ Status: in force from 2026-11-06. It applies to every sound, speech and video cl
 
 ## Changing this standard
 
-Changing a rule is the owner's decision. Record the change and its date here.
+Changing a rule is the maintainers' decision. Record the change and its date here.
 
 - 2026-11-06: added the "Audio and video" section: LibriVox (public-domain readings) and Freesound (CC0 only) as
   sources beside Commons, the exclusions, the content rules for speech, and the stored formats (Opus in Ogg,

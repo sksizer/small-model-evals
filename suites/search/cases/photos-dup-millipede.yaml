@@ -1,0 +1,8 @@
+description: "search photos: a millipede on mossy rocks (3 relevant of 132)"
+metadata: { id: photos-dup-millipede, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "a millipede on mossy rocks"
+  relevant: ["copy-crop10-millipede-moss","copy-resize-millipede-moss","millipede-moss"]
+  how: "judged by eye; copies of a relevant photo count"

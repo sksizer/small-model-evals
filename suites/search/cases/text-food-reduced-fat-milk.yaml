@@ -1,0 +1,8 @@
+description: "search text: two percent reduced fat milk (5 relevant of 7793)"
+metadata: { id: text-food-reduced-fat-milk, kind: text }
+vars:
+  kind: text
+  corpus: foods
+  query: "two percent reduced fat milk"
+  relevant: ["f170870","f170871","f171267","f172193","f172205"]
+  how: "rule on the name: Milk, reduced fat, fluid, 2% milkfat"

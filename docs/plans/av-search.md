@@ -1,6 +1,6 @@
 # Plan: audio and video search
 
-Status: approved (2026-11-06). The owner's answers are under "Decisions" at the end.
+Status: approved (2026-11-06). Stage 1 (corpus and contact sheet) approved by the owner on 2026-11-20; stage 2 (cases, providers, runs) in progress. The owner's answers are under "Decisions" at the end.
 
 ## Goal
 

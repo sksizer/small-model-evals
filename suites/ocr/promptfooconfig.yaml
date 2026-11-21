@@ -11,12 +11,12 @@ prompts:
     [{"role": "user", "content": "Transcribe all the text you can read in this image, line by line. Include numbers, labels and button text exactly as shown.", "images": ["{{ image | replace('data:image/png;base64,', '') | replace('data:image/jpeg;base64,', '') }}"]}]
 
 providers:
-  - id: ollama:chat:qwen3.5:4b
+  - id: file://../../providers/ollama-chat.ts
     label: qwen3.5:4b
-    config: &config { temperature: 0, num_ctx: 8192, num_predict: 1024, think: false }
-  - { id: 'ollama:chat:qwen3.5:9b', label: qwen3.5:9b, config: *config }
-  - { id: 'ollama:chat:gemma4:e4b', label: gemma4:e4b, config: *config }
-  - { id: 'ollama:chat:lfm3-vl:2b', label: lfm3-vl:2b, config: *config }
+    config: &config { model: 'qwen3.5:4b', temperature: 0, num_ctx: 8192, num_predict: 1024, think: false }
+  - { id: file://../../providers/ollama-chat.ts, label: qwen3.5:9b, config: { <<: *config, model: 'qwen3.5:9b' } }
+  - { id: file://../../providers/ollama-chat.ts, label: gemma4:e4b, config: { <<: *config, model: 'gemma4:e4b' } }
+  - { id: file://../../providers/ollama-chat.ts, label: lfm3-vl:2b, config: { <<: *config, model: 'lfm3-vl:2b' } }
 
 defaultTest:
   # promptfoo expands an array var into one run per element; `expected` is

@@ -1,0 +1,1297 @@
+{
+  "suite": "nudity-flag",
+  "fingerprint": "64c740059b89",
+  "setup": {
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "sha256:b91722d8cc8b34f2bdabe6513fe17064311fb01097cc315117bb158d1983fc4c"
+        }
+      ],
+      "options": {
+        "disableVarExpansion": true
+      },
+      "vars": {
+        "question": "nudity",
+        "questions": {
+          "nudity": {
+            "instructions": "Does this photo show a real person with exposed genitals, buttocks or female breasts? Swimwear, underwear and artworks such as statues or paintings do not count.",
+            "type": "noul"
+          }
+        }
+      }
+    },
+    "description": "nudity-flag — flag photos that show nudity",
+    "prompts": [
+      "{{ question }}"
+    ],
+    "providers": [
+      {
+        "config": {
+          "dtype": "q8",
+          "flag": [
+            "nsfw"
+          ],
+          "model": "AdamCodd/vit-base-nsfw-detector",
+          "question": "nudity",
+          "revision": "8587de998f441aac03fdd57a85d2e4cb808c7d64"
+        },
+        "id": "sha256:11c8d3a14f71974fe336f2c78866c2303703cc1a36c12d29ba13958fc6b73239",
+        "label": "vit-nsfw-adamcodd-q8"
+      },
+      {
+        "config": {
+          "dtype": "q8",
+          "flag": [
+            "nsfw"
+          ],
+          "model": "onnx-community/nsfw_image_detection-ONNX",
+          "question": "nudity",
+          "revision": "1ceb3c7fe1e9f3f2507e6df577437f23a9149fd5"
+        },
+        "id": "sha256:11c8d3a14f71974fe336f2c78866c2303703cc1a36c12d29ba13958fc6b73239",
+        "label": "vit-nsfw-falconsai-q8"
+      },
+      {
+        "config": {
+          "decision": true,
+          "model": "d1-omni:600m"
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "d1-omni:600m"
+      },
+      {
+        "config": {
+          "decision": true,
+          "model": "d1:2b"
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "d1:2b"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:4b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "qwen3.5:4b"
+      },
+      {
+        "config": {
+          "model": "qwen3.5:9b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "qwen3.5:9b"
+      },
+      {
+        "config": {
+          "model": "gemma4:e4b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "gemma4:e4b"
+      },
+      {
+        "config": {
+          "model": "lfm3-vl:2b",
+          "think": false
+        },
+        "id": "sha256:9375419bc35058fc97d40550f36a2b1176825af92543fcb7f61297d39993fe5d",
+        "label": "lfm3-vl:2b"
+      }
+    ]
+  },
+  "scorers": {
+    "assertions/decide.ts": "b91722d8cc8b",
+    "assertions/edit.ts": "bed813328b89",
+    "assertions/fields.ts": "2a6136ac8a70",
+    "assertions/food.ts": "78f14880ff9d",
+    "assertions/match.ts": "835f3e475692",
+    "assertions/names.ts": "f172504c3e41",
+    "assertions/regions.ts": "fbf7ea45a9b8",
+    "assertions/search.ts": "9502e3f85933",
+    "assertions/sensitive-levels.ts": "6107b3b06fe6",
+    "assertions/sensitive.ts": "38952075f9f5",
+    "assertions/similarity.ts": "891a886359b6",
+    "assertions/tags.ts": "3f6f20fc3be9",
+    "assertions/text-recall.ts": "77cbe1fe43a7",
+    "assertions/tool-call.ts": "6b6f0245022f",
+    "assertions/workout.ts": "a1459071ae85",
+    "providers/florence2.ts": "30f819e7bb93",
+    "providers/food-search.ts": "f423e91ea9dd",
+    "providers/image-classifier.ts": "11c8d3a14f71",
+    "providers/image-embed.ts": "ce03cc5a444c",
+    "providers/mflux-edit.ts": "c77ee6c2fa1f",
+    "providers/ollama-boxes.ts": "f8e658884b80",
+    "providers/ollama-decide.ts": "9375419bc350",
+    "providers/ollama-food-agent.ts": "a1749dc166c7",
+    "providers/ollama-perf.ts": "325cb330d06a",
+    "providers/ollama-sensitive.ts": "534e77705b69",
+    "providers/onnx-detector.ts": "a884e038e8f8",
+    "providers/region-detector.ts": "20b52284e631",
+    "providers/search.ts": "730d7829fa38",
+    "providers/sensitive-composite.ts": "78b6be0406c7",
+    "providers/similarity-search.ts": "7a69269b6c84",
+    "providers/zero-shot.ts": "5593d1a832c8"
+  },
+  "setup_hash": "45b45481cdd8",
+  "cases": {
+    "art-painting-caillebotte": {
+      "hash": "f6f0dc5e168e",
+      "def": {
+        "description": "no nudity: nude art: art-painting-caillebotte",
+        "metadata": {
+          "id": "art-painting-caillebotte"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-caillebotte.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-painting-gerstl": {
+      "hash": "f96aa630c42d",
+      "def": {
+        "description": "no nudity: nude art: art-painting-gerstl",
+        "metadata": {
+          "id": "art-painting-gerstl"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-gerstl.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-painting-modersohn-becker": {
+      "hash": "23a97284ef61",
+      "def": {
+        "description": "no nudity: nude art: art-painting-modersohn-becker",
+        "metadata": {
+          "id": "art-painting-modersohn-becker"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-modersohn-becker.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-painting-modigliani": {
+      "hash": "433a453137aa",
+      "def": {
+        "description": "no nudity: nude art: art-painting-modigliani",
+        "metadata": {
+          "id": "art-painting-modigliani"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-modigliani.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-painting-reclining": {
+      "hash": "e339c097077d",
+      "def": {
+        "description": "no nudity: nude art: art-painting-reclining",
+        "metadata": {
+          "id": "art-painting-reclining"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-reclining.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-painting-renoir": {
+      "hash": "5758bef90bd9",
+      "def": {
+        "description": "no nudity: nude art: art-painting-renoir",
+        "metadata": {
+          "id": "art-painting-renoir"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-painting-renoir.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-statue-female-torso": {
+      "hash": "09f975efa4bd",
+      "def": {
+        "description": "no nudity: nude art: art-statue-female-torso",
+        "metadata": {
+          "id": "art-statue-female-torso"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-statue-female-torso.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-statue-kouros": {
+      "hash": "0b90d19e75d1",
+      "def": {
+        "description": "no nudity: nude art: art-statue-kouros",
+        "metadata": {
+          "id": "art-statue-kouros"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-statue-kouros.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-statue-male-torso": {
+      "hash": "a0e2e7c87ba4",
+      "def": {
+        "description": "no nudity: nude art: art-statue-male-torso",
+        "metadata": {
+          "id": "art-statue-male-torso"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-statue-male-torso.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "art-statue-venus": {
+      "hash": "49f58f9d007d",
+      "def": {
+        "description": "no nudity: nude art: art-statue-venus",
+        "metadata": {
+          "id": "art-statue-venus"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/art-statue-venus.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "bike-parking-oakland": {
+      "hash": "2a7b444b5d49",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "bike-parking-oakland"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/bike-parking-oakland.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "bike-parking-three-styles": {
+      "hash": "b766ea91355f",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "bike-parking-three-styles"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/bike-parking-three-styles.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "coffee-montreal": {
+      "hash": "af18aa199610",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "coffee-montreal"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/coffee-montreal.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "coffee-shop-counter": {
+      "hash": "d9ce58385ecf",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "coffee-shop-counter"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/coffee-shop-counter.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "coffee-snacks-table": {
+      "hash": "c343d5ed8382",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "coffee-snacks-table"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/coffee-snacks-table.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "desk-coffee-laptop-notebook": {
+      "hash": "9b74bbe0ca4c",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "desk-coffee-laptop-notebook"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/desk-coffee-laptop-notebook.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "desk-laptop-notebook-pen": {
+      "hash": "7a64a45e52a2",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "desk-laptop-notebook-pen"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/desk-laptop-notebook-pen.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "desk-laptop-top-down": {
+      "hash": "e0d32ad2e161",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "desk-laptop-top-down"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/desk-laptop-top-down.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "diner-snow-night": {
+      "hash": "00729192e1ad",
+      "def": {
+        "description": "no nudity: scenes",
+        "metadata": {
+          "id": "diner-snow-night"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/diner-snow-night.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "dog-autumn-sun": {
+      "hash": "55799811b67e",
+      "def": {
+        "description": "no nudity: pets",
+        "metadata": {
+          "id": "dog-autumn-sun"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-autumn-sun.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "dog-border-terrier": {
+      "hash": "fc9a04b336c4",
+      "def": {
+        "description": "no nudity: pets",
+        "metadata": {
+          "id": "dog-border-terrier"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-border-terrier.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "dog-in-dog-bed": {
+      "hash": "b9758aff5458",
+      "def": {
+        "description": "no nudity: pets",
+        "metadata": {
+          "id": "dog-in-dog-bed"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-in-dog-bed.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "dog-sleeping-painting": {
+      "hash": "8e27ea08846b",
+      "def": {
+        "description": "no nudity: pets",
+        "metadata": {
+          "id": "dog-sleeping-painting"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/dog-sleeping-painting.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "error-dialog": {
+      "hash": "321bce57c9ec",
+      "def": {
+        "description": "no nudity: text",
+        "metadata": {
+          "id": "error-dialog"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/error-dialog.png",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "event-flyer": {
+      "hash": "43762b70d7e9",
+      "def": {
+        "description": "no nudity: text",
+        "metadata": {
+          "id": "event-flyer"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/event-flyer.png",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "forest-trail": {
+      "hash": "d6157b3e1580",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "forest-trail"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/forest-trail.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "horses-flooded-pasture": {
+      "hash": "07a247736319",
+      "def": {
+        "description": "no nudity: pets",
+        "metadata": {
+          "id": "horses-flooded-pasture"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/horses-flooded-pasture.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "horses-pasture-house": {
+      "hash": "c11097b12df1",
+      "def": {
+        "description": "no nudity: pets",
+        "metadata": {
+          "id": "horses-pasture-house"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/horses-pasture-house.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "invoice-simple": {
+      "hash": "3ef307cb7eee",
+      "def": {
+        "description": "no nudity: text",
+        "metadata": {
+          "id": "invoice-simple"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/invoice-simple.png",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "jobs-table": {
+      "hash": "12d6720b6631",
+      "def": {
+        "description": "no nudity: text",
+        "metadata": {
+          "id": "jobs-table"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/jobs-table.png",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "kitchen-historic-bw": {
+      "hash": "16ce4a1d4d4b",
+      "def": {
+        "description": "no nudity: scenes",
+        "metadata": {
+          "id": "kitchen-historic-bw"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/kitchen-historic-bw.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "lake-salagou": {
+      "hash": "8a9df58b17b0",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "lake-salagou"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lake-salagou.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "lake-sherburne": {
+      "hash": "4a396487efa3",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "lake-sherburne"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/lake-sherburne.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "laptop-notepad": {
+      "hash": "98404f4ffbd5",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "laptop-notepad"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/laptop-notepad.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "letter-handwritten-short": {
+      "hash": "0e8019621626",
+      "def": {
+        "description": "no nudity: handwriting",
+        "metadata": {
+          "id": "letter-handwritten-short"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/letter-handwritten-short.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "library-laukaa": {
+      "hash": "e9698f777171",
+      "def": {
+        "description": "no nudity: scenes",
+        "metadata": {
+          "id": "library-laukaa"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/library-laukaa.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "library-stacks-vasconcelos": {
+      "hash": "c30f00c5e73c",
+      "def": {
+        "description": "no nudity: scenes",
+        "metadata": {
+          "id": "library-stacks-vasconcelos"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/library-stacks-vasconcelos.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "millipede-moss": {
+      "hash": "87704f8550fc",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "millipede-moss"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/millipede-moss.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "mountain-lake-dam": {
+      "hash": "633c0fa98254",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "mountain-lake-dam"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/mountain-lake-dam.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "nude-anatomy-back-pair": {
+      "hash": "f2331409794d",
+      "def": {
+        "description": "nude: nude-anatomy-back-pair",
+        "metadata": {
+          "id": "nude-anatomy-back-pair"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-anatomy-back-pair.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "nude-anatomy-front-labelled": {
+      "hash": "ecf34fd03b87",
+      "def": {
+        "description": "nude: nude-anatomy-front-labelled",
+        "metadata": {
+          "id": "nude-anatomy-front-labelled"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-anatomy-front-labelled.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "nude-anatomy-front-male": {
+      "hash": "36a8596cc51f",
+      "def": {
+        "description": "nude: nude-anatomy-front-male",
+        "metadata": {
+          "id": "nude-anatomy-front-male"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-anatomy-front-male.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "nude-anatomy-front-pair": {
+      "hash": "3ce811320bac",
+      "def": {
+        "description": "nude: nude-anatomy-front-pair",
+        "metadata": {
+          "id": "nude-anatomy-front-pair"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-anatomy-front-pair.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "nude-bike-ride-arms-crossed": {
+      "hash": "70437a7ad2e0",
+      "def": {
+        "description": "nude: nude-bike-ride-arms-crossed",
+        "metadata": {
+          "id": "nude-bike-ride-arms-crossed"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-arms-crossed.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "nude-bike-ride-crowd": {
+      "hash": "e5e0c84a25c3",
+      "def": {
+        "description": "nude: nude-bike-ride-crowd",
+        "metadata": {
+          "id": "nude-bike-ride-crowd"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-crowd.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "nude-bike-ride-cycling": {
+      "hash": "5f35eaa6824d",
+      "def": {
+        "description": "nude: nude-bike-ride-cycling",
+        "metadata": {
+          "id": "nude-bike-ride-cycling"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-cycling.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "nude-bike-ride-from-behind": {
+      "hash": "e48ca43bec2e",
+      "def": {
+        "description": "nude: nude-bike-ride-from-behind",
+        "metadata": {
+          "id": "nude-bike-ride-from-behind"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-from-behind.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "nude-bike-ride-standing": {
+      "hash": "3709779a22a8",
+      "def": {
+        "description": "nude: nude-bike-ride-standing",
+        "metadata": {
+          "id": "nude-bike-ride-standing"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/nude-bike-ride-standing.jpg",
+          "expected": {
+            "nudity": "yes"
+          }
+        }
+      }
+    },
+    "pancakes-breakfast-table": {
+      "hash": "1336d8fabaa8",
+      "def": {
+        "description": "no nudity: food",
+        "metadata": {
+          "id": "pancakes-breakfast-table"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/pancakes-breakfast-table.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "pancakes-stack": {
+      "hash": "946828ecbe32",
+      "def": {
+        "description": "no nudity: food",
+        "metadata": {
+          "id": "pancakes-stack"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/pancakes-stack.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "parrot-illustration": {
+      "hash": "f7e446f790ec",
+      "def": {
+        "description": "no nudity: pets",
+        "metadata": {
+          "id": "parrot-illustration"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/parrot-illustration.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "railway-station-dark": {
+      "hash": "3694fccb8331",
+      "def": {
+        "description": "no nudity: scenes",
+        "metadata": {
+          "id": "railway-station-dark"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/railway-station-dark.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "receipt-grocery": {
+      "hash": "607a215c6cf5",
+      "def": {
+        "description": "no nudity: text",
+        "metadata": {
+          "id": "receipt-grocery"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/receipt-grocery.png",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "recipe-card": {
+      "hash": "9a875345dd98",
+      "def": {
+        "description": "no nudity: text",
+        "metadata": {
+          "id": "recipe-card"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recipe-card.png",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "recipe-daffys-elixir": {
+      "hash": "56e3ba5b381a",
+      "def": {
+        "description": "no nudity: handwriting",
+        "metadata": {
+          "id": "recipe-daffys-elixir"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recipe-daffys-elixir.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "recipe-rheumatism": {
+      "hash": "428dcccf5240",
+      "def": {
+        "description": "no nudity: handwriting",
+        "metadata": {
+          "id": "recipe-rheumatism"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/recipe-rheumatism.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "salad-ham": {
+      "hash": "58e4de51a7c3",
+      "def": {
+        "description": "no nudity: food",
+        "metadata": {
+          "id": "salad-ham"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/salad-ham.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "salad-party-dish": {
+      "hash": "dd976ce35174",
+      "def": {
+        "description": "no nudity: food",
+        "metadata": {
+          "id": "salad-party-dish"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/salad-party-dish.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "salad-rucola-plate": {
+      "hash": "f15580d0b761",
+      "def": {
+        "description": "no nudity: food",
+        "metadata": {
+          "id": "salad-rucola-plate"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/salad-rucola-plate.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "settings-panel": {
+      "hash": "97f47a1f2953",
+      "def": {
+        "description": "no nudity: text",
+        "metadata": {
+          "id": "settings-panel"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/settings-panel.png",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "shipping-label": {
+      "hash": "2599cbf2ef01",
+      "def": {
+        "description": "no nudity: text",
+        "metadata": {
+          "id": "shipping-label"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/shipping-label.png",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "sidewalk-cafe": {
+      "hash": "3cf33db8ea93",
+      "def": {
+        "description": "no nudity: objects",
+        "metadata": {
+          "id": "sidewalk-cafe"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sidewalk-cafe.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "snow-forest-trail": {
+      "hash": "b6c6b911ec23",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "snow-forest-trail"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/snow-forest-trail.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "street-night-rostov": {
+      "hash": "30baeb314e9b",
+      "def": {
+        "description": "no nudity: scenes",
+        "metadata": {
+          "id": "street-night-rostov"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/street-night-rostov.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "sunset-beach-colonia": {
+      "hash": "a2f2063bb130",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "sunset-beach-colonia"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sunset-beach-colonia.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "sunset-boats": {
+      "hash": "55e46c2df839",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "sunset-boats"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/sunset-boats.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "swim-beach-ball": {
+      "hash": "264f7f2c3b46",
+      "def": {
+        "description": "no nudity: swimwear: swim-beach-ball",
+        "metadata": {
+          "id": "swim-beach-ball"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-beach-ball.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "swim-pool-shower": {
+      "hash": "59431fd972fd",
+      "def": {
+        "description": "no nudity: swimwear: swim-pool-shower",
+        "metadata": {
+          "id": "swim-pool-shower"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-pool-shower.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "swim-shallows": {
+      "hash": "4863f9ffb578",
+      "def": {
+        "description": "no nudity: swimwear: swim-shallows",
+        "metadata": {
+          "id": "swim-shallows"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-shallows.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "swim-strongman-loincloth": {
+      "hash": "c3e767c1ef6c",
+      "def": {
+        "description": "no nudity: swimwear: swim-strongman-loincloth",
+        "metadata": {
+          "id": "swim-strongman-loincloth"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-strongman-loincloth.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "swim-surf": {
+      "hash": "45905580caff",
+      "def": {
+        "description": "no nudity: swimwear: swim-surf",
+        "metadata": {
+          "id": "swim-surf"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-surf.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "swim-vintage-beach": {
+      "hash": "182387a0234a",
+      "def": {
+        "description": "no nudity: swimwear: swim-vintage-beach",
+        "metadata": {
+          "id": "swim-vintage-beach"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-vintage-beach.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "swim-wading": {
+      "hash": "21bcde224a63",
+      "def": {
+        "description": "no nudity: swimwear: swim-wading",
+        "metadata": {
+          "id": "swim-wading"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-wading.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "swim-white-sand": {
+      "hash": "2f1013ee6052",
+      "def": {
+        "description": "no nudity: swimwear: swim-white-sand",
+        "metadata": {
+          "id": "swim-white-sand"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/swim-white-sand.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "train-ticket-chinese": {
+      "hash": "890d6cccfa76",
+      "def": {
+        "description": "no nudity: documents",
+        "metadata": {
+          "id": "train-ticket-chinese"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/train-ticket-chinese.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "train-ticket-french": {
+      "hash": "e783df318bb0",
+      "def": {
+        "description": "no nudity: documents",
+        "metadata": {
+          "id": "train-ticket-french"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/train-ticket-french.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    },
+    "tree-bracket-fungus": {
+      "hash": "a77a12093498",
+      "def": {
+        "description": "no nudity: outdoor",
+        "metadata": {
+          "id": "tree-bracket-fungus"
+        },
+        "vars": {
+          "image": "file://../../corpus/images/tree-bracket-fungus.jpg",
+          "expected": {
+            "nudity": "no"
+          }
+        }
+      }
+    }
+  }
+}

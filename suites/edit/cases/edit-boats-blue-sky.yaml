@@ -1,0 +1,8 @@
+description: "background swap: sunset sky to blue midday sky (Commons sunset-boats)"
+metadata: { id: edit-boats-blue-sky }
+vars:
+  image: file://../../corpus/images/sunset-boats.jpg
+  instruction: "Replace the sunset sky with a clear blue midday sky. Keep the boats and the sea the same."
+  expected:
+    changed: ["Is the sky blue?"]
+    kept: ["Are there boats on the water?", "Is this a photograph?"]

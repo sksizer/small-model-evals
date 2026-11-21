@@ -1,0 +1,8 @@
+description: "search photos: snowy peaks reflected in a still lake (3 relevant of 132)"
+metadata: { id: photos-dup-mirror-lake, kind: photos }
+vars:
+  kind: photos
+  corpus: photos-dup
+  query: "snowy peaks reflected in a still lake"
+  relevant: ["copy-bright-lake-sherburne","copy-crop10-lake-sherburne","lake-sherburne"]
+  how: "judged by eye; copies of a relevant photo count"

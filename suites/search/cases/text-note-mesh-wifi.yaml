@@ -1,0 +1,8 @@
+description: "search text: buying a mesh wifi system (1 relevant of 88)"
+metadata: { id: text-note-mesh-wifi, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "buying a mesh wifi system"
+  relevant: ["n83"]
+  how: "judged by reading"

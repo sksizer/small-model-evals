@@ -1,0 +1,58 @@
+{
+  "run": "2026-11-07T23-27-16",
+  "evals": [
+    {
+      "model": "composite-qwen3.5-4b",
+      "suite": "sensitive",
+      "kind": null,
+      "start": {
+        "load_1m": 3.44,
+        "load_per_core": 0.34,
+        "mem_available_gib": 6,
+        "mem_free_pct": 72,
+        "swap_used_gib": 10.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "(bun)",
+            "cpu_pct": 43
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 12.54,
+        "load_per_core": 1.25,
+        "mem_available_gib": 3,
+        "mem_free_pct": 32,
+        "swap_used_gib": 20.6,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "rustc",
+            "cpu_pct": 195
+          },
+          {
+            "name": "rm",
+            "cpu_pct": 53
+          },
+          {
+            "name": "fseventsd",
+            "cpu_pct": 42
+          }
+        ]
+      },
+      "flags": [
+        "10.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "(bun) is using 43% of a core: close it if you can",
+        "20.6 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "rustc is using 195% of a core: close it if you can",
+        "rm is using 53% of a core: close it if you can",
+        "fseventsd is using 42% of a core: close it if you can"
+      ]
+    }
+  ]
+}

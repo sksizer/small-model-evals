@@ -2,18 +2,96 @@
 import Base from '../layouts/Base.astro'
 import { data, fmt, fmtTime, href, modelLabels, modelSlug } from '../lib/data'
 
+const timing = [...data.timing].sort((a, b) => a.model.localeCompare(b.model) || a.suite.localeCompare(b.suite))
+const timingSuites = [...new Set(timing.map((r) => r.suite))]
+const timingModels = [...new Set(timing.map((r) => r.model))]
+const spread = (s: { p25: number; p75: number } | null, f: (n: number) => string) => (s ? `${f(s.p25)} to ${f(s.p75)}` : undefined)
+const anyBusy = data.timing.some((t) => t.busy.length > 0) || data.perf.some((p) => p.busy.length > 0) || data.inproc.some((p) => p.busy.length > 0)
+
 const rows = [...data.perf].sort((a, b) => a.model.localeCompare(b.model) || a.case.localeCompare(b.case))
 const inproc = [...data.inproc].sort((a, b) => a.model.localeCompare(b.model) || a.suite.localeCompare(b.suite))
 const inprocSuites = [...new Set(inproc.map((r) => r.suite))]
 const inprocModels = [...new Set(inproc.map((r) => r.model))]
 const machineName = (key: string) => data.machines.find((m) => m.key === key)?.chip ?? key
+const classOf = (key: string) => data.machines.find((m) => m.key === key)?.class ?? ''
 const cases = [...new Set(rows.map((r) => r.case))]
 ---
 
 <Base
   title="Speed & memory"
-  description="Each model freshly loaded, three runs per case. Load time and prompt speed come from the cold run; output speed is the median."
+  description="Each model freshly loaded, three runs per case. Load time and prompt speed come from the cold run; output speed is the median. Shown for the machine picked above; machines are never pooled."
 >
+  <div class="controls">
+    <label title="Hide every timing taken while the machine was busy (the run's conditions flagged it), in all the tables below">
+      <input type="checkbox" data-clean />Exclude timings taken under load
+    </label>
+    {!anyBusy && <span class="muted">No run in the ledger was flagged as busy.</span>}
+  </div>
+  <h2>Timing by suite</h2>
+  <p class="lede">
+    What a model costs on the real work of each suite, from the Ollama chat providers (they stream the reply and read
+    Ollama's own timers). <strong>First token</strong> is the wait from sending the request to the first content or tool-call
+    token, so it includes loading the model when it was not loaded and processing the prompt. Numbers are medians over every
+    call; a job queued with <code>repeat</code> shows the spread (25th to 75th percentile) on hover. Results from before these
+    providers have no timing and are not listed.
+  </p>
+  <div class="controls">
+    <select data-facet="timing" name="suite" aria-label="Suite">
+      <option value="">All suites</option>
+      {timingSuites.map((c) => <option value={c}>{c}</option>)}
+    </select>
+    <select data-facet="timing" name="model" aria-label="Model">
+      <option value="">All models</option>
+      {timingModels.map((m) => <option value={m}>{m}</option>)}
+    </select>
+    <span class="count" data-count="timing"></span>
+  </div>
+  {
+    timing.length === 0 ? (
+      <p class="muted">No timing recorded yet. The queued runs (see the Queue page) will add it.</p>
+    ) : (
+      <div class="scroll">
+        <table data-table id="timing">
+          <thead>
+            <tr>
+              <th data-sort="text">Model</th>
+              <th data-sort="text">Suite</th>
+              <th data-sort="num" class="num" title="Request sent to first content or tool-call token">First token</th>
+              <th data-sort="num" class="num">Decode tok/s</th>
+              <th data-sort="num" class="num">Output tokens</th>
+              <th data-sort="num" class="num">Prompt tok/s</th>
+              <th data-sort="num" class="num" title="The first call's model load; later calls find it loaded">Load</th>
+              <th data-sort="num" class="num" title="Thinking models only. Approximate: Ollama does not count thinking tokens, so this counts streamed thinking chunks.">Thinking tokens</th>
+              <th data-sort="num" class="num" title="Calls timed; each case ran this many times">Calls</th>
+              <th data-sort="text">Machine</th>
+              <th data-sort="text">Run</th>
+            </tr>
+          </thead>
+          <tbody>
+            {timing.map((r) => (
+              <tr data-suite={r.suite} data-model={r.model} data-machine={r.machine} data-busy={r.busy.length > 0 ? '1' : '0'}>
+                <td><a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a></td>
+                <td><code>{r.suite}</code></td>
+                <td class="num" data-value={r.ttft_ms ?? -1} title={spread(r.ttft_spread, (n) => fmtTime(n))}>{fmtTime(r.ttft_ms)}</td>
+                <td class="num" data-value={r.decode_tps ?? -1} title={spread(r.decode_spread, (n) => n.toFixed(1))}>{fmt(r.decode_tps)}</td>
+                <td class="num" data-value={r.output_tokens ?? -1}>{fmt(r.output_tokens, 0)}</td>
+                <td class="num" data-value={r.prompt_tps ?? -1}>{fmt(r.prompt_tps, 0)}</td>
+                <td class="num" data-value={r.load_ms ?? -1}>{fmtTime(r.load_ms)}</td>
+                <td class="num" data-value={r.think_tokens ?? -1}>{r.think_tokens === null ? '—' : `~${fmt(r.think_tokens, 0)}`}</td>
+                <td class="num" data-value={r.samples}>{r.samples}{r.repeats > 1 ? <span class="muted"> ({r.repeats}×)</span> : ''}</td>
+                <td class="muted">{machineName(r.machine)} <span class="pill class">{classOf(r.machine)}</span></td>
+                <td class="muted">
+                  {r.run.slice(0, 10)}
+                  {r.stale && <span class="pill stale">stale</span>}
+                  {r.busy.length > 0 && <span class="pill busy" title={r.busy.join('; ')}>taken under load</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
   <h2>Ollama models</h2>
   <div class="controls">
     <select data-facet="speed" name="case" aria-label="Case">
@@ -38,13 +116,14 @@ const cases = [...new Set(rows.map((r) => r.case))]
           <th data-sort="num" class="num">Loaded GB</th>
           <th data-sort="num" class="num">GPU</th>
           <th data-sort="num" class="num">Cold load s</th>
+          <th data-sort="text">Machine</th>
           <th data-sort="text">Run</th>
         </tr>
       </thead>
       <tbody>
         {
           rows.map((r) => (
-            <tr data-case={r.case} data-model={r.model}>
+            <tr data-case={r.case} data-model={r.model} data-machine={r.machine} data-busy={r.busy.length > 0 ? '1' : '0'}>
               <td>
                 <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
               </td>
@@ -59,9 +138,11 @@ const cases = [...new Set(rows.map((r) => r.case))]
               <td class="num" data-value={r.loaded_gb ?? -1}>{fmt(r.loaded_gb, 2)}</td>
               <td class="num" data-value={r.gpu_pct ?? -1}>{r.gpu_pct === null ? '—' : `${Math.round(r.gpu_pct)}%`}</td>
               <td class="num" data-value={r.load_s ?? -1}>{fmt(r.load_s)}</td>
+              <td class="muted">{machineName(r.machine)} <span class="pill class">{classOf(r.machine)}</span></td>
               <td class="muted">
                 {r.run.slice(0, 10)}
                 {r.stale && <span class="pill stale">stale</span>}
+                {r.busy.length > 0 && <span class="pill busy" title={r.busy.join('; ')}>taken under load</span>}
               </td>
             </tr>
           ))
@@ -105,7 +186,7 @@ const cases = [...new Set(rows.map((r) => r.case))]
       <tbody>
         {
           inproc.map((r) => (
-            <tr data-suite={r.suite} data-model={r.model}>
+            <tr data-suite={r.suite} data-model={r.model} data-machine={r.machine} data-busy={r.busy.length > 0 ? '1' : '0'}>
               <td>
                 <a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a>
               </td>
@@ -117,10 +198,11 @@ const cases = [...new Set(rows.map((r) => r.case))]
               <td class="num" data-value={r.mem_mb ?? -1}>
                 {r.mem_mb === null ? '—' : `${Math.round(r.mem_mb).toLocaleString('en-US')} MB`} <span class="muted">{r.mem_kind}</span>
               </td>
-              <td class="muted">{machineName(r.machine)}</td>
+              <td class="muted">{machineName(r.machine)} <span class="pill class">{classOf(r.machine)}</span></td>
               <td class="muted">
                 {r.run.slice(0, 10)}
                 {r.stale && <span class="pill stale">stale</span>}
+                {r.busy.length > 0 && <span class="pill busy" title={r.busy.join('; ')}>taken under load</span>}
               </td>
             </tr>
           ))

@@ -1,0 +1,8 @@
+description: "search text: a book about focus and avoiding distractions (1 relevant of 88)"
+metadata: { id: text-note-focus-book, kind: text }
+vars:
+  kind: text
+  corpus: notes
+  query: "a book about focus and avoiding distractions"
+  relevant: ["n81"]
+  how: "judged by reading"
