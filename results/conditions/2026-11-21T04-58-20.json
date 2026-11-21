@@ -1,0 +1,41 @@
+{
+  "run": "2026-11-21T04-58-20",
+  "evals": [
+    {
+      "model": "audio-fingerprint",
+      "suite": "search",
+      "kind": "sound-to-sound",
+      "start": {
+        "load_1m": 2.85,
+        "load_per_core": 0.29,
+        "mem_available_gib": 5.6,
+        "mem_free_pct": 69,
+        "swap_used_gib": 8.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "syspolicyd",
+            "cpu_pct": 55
+          }
+        ]
+      },
+      "end": {
+        "load_1m": 3.18,
+        "load_per_core": 0.32,
+        "mem_available_gib": 5.7,
+        "mem_free_pct": 69,
+        "swap_used_gib": 8.8,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "8.8 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "syspolicyd is using 55% of a core: close it if you can"
+      ]
+    }
+  ]
+}

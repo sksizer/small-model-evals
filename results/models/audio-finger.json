@@ -1,0 +1,18 @@
+{
+  "tag": "audio-fingerprint",
+  "digest": "audio-finger",
+  "engine": "sharp (libvips), no weights",
+  "format": "none",
+  "family": "",
+  "quantization": "",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "audio-fingerprint"
+  ],
+  "default_parameters": {
+    "version": "audio-fingerprint-v1"
+  },
+  "template_hash": ""
+}
