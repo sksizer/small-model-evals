@@ -300,7 +300,7 @@ export interface ScreeningModel {
   total: number
   errors: number
   exact: number
-  /** Private images called public: the owner's pass mark is zero. */
+  /** Private images called public: the suite's pass mark is zero. */
   leaks: number
   private_cases: number
   /** Images called a lower level than they are. */

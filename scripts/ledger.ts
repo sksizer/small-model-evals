@@ -26,8 +26,8 @@ import { describe, type Machine, type MachineInfo } from './machine.ts'
 export const ROOT = join(import.meta.dir, '..')
 /**
  * `EVALS_SCOPE=private` runs the suites under private/ (gitignored) and keeps
- * their snapshots, ledger and raw output under private/results/, for cases
- * built from your own notes or photos. Environments and model builds stay
+ * their snapshots, ledger and raw output under private/results/, for a
+ * private collection of cases and images that must not be published. Environments and model builds stay
  * shared: they describe the machine and the model, not the data.
  */
 export const SCOPE: 'public' | 'private' = process.env['EVALS_SCOPE'] === 'private' ? 'private' : 'public'

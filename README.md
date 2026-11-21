@@ -171,17 +171,31 @@ region, the mean per-pixel difference from the original outside it must be at mo
 mean of the answers and the preservation check; a case passes only when every question is yes and the image is
 preserved. Time and peak memory of each edit are recorded as `edit_ms` and `peak_mb`.
 
-All cases are synthetic or from public-licence images. Cases built from your own notes or photos
-go in `private/`, which git ignores:
+All cases here are synthetic or from public-licence images.
+
+## Private collections
+
+A private collection is a set of cases and images that must not be published: personal photos,
+screenshots of unreleased software, internal documents. It lives in `private/`, which git ignores,
+and runs on the same models, scorers and machine checks as the public suites.
 
 ```sh
-bun scripts/init-private.ts nudity-flag              # private/suites/nudity-flag with the public config
+bun scripts/init-private.ts nudity-flag                  # a private copy of a public suite
+bun scripts/init-private.ts screens --from tag-image     # a private-only suite, from a public suite's config
 EVALS_SCOPE=private bun run eval --suites nudity-flag
 ```
 
+`init-private.ts` writes `private/suites/<suite>/` with the config (file paths adjusted to the deeper
+folder), an empty `cases/`, a template case and, with `--from`, a `suite.yaml` naming the suite's
+categories and cost. A private-only suite without `suite.yaml` runs whatever categories a machine
+profile selects. Images go in `private/images/`, referenced from a case as
+`file://../../../images/<file>`.
+
 With `EVALS_SCOPE=private`, snapshots, the ledger, raw output and the summary go to
-`private/results/`. The site export refuses that scope, so private images and replies never reach
-the published site.
+`private/results/`, and the rules for cases are the same: once a run uses a case it never changes.
+The site export refuses that scope, so private images and replies never reach the published site;
+`bun run site:private` shows them locally (see Results site). Private images follow only the "Content" rules
+of `docs/standards/corpus.md`, not its licence rules.
 
 ## Image corpus
 
@@ -372,7 +386,7 @@ public export writes `site/src/data/evals.json` from the ledger and copies the c
 `site/public/`. The site reads only that file.
 
 The private build shows everything at once: every public suite plus the suites under `private/`
-(your own notes and photos, the private nudity set), listed as `private-<suite>`. Its data, images
+(the private collection), listed as `private-<suite>`. Its data, images
 and build all go under `private/site/`, which is gitignored, so nothing private reaches `site/` or
 GitHub Pages. Its header says "private · local only", and `--serve` binds to localhost, never the
 network.

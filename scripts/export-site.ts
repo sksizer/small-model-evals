@@ -682,7 +682,7 @@ function memoryOf(
 }
 
 /**
- * The sensitive suite's summary per model (docs/plans/sensitive.md): the owner's
+ * The sensitive suite's summary per model (docs/plans/sensitive.md): the suite's
  * pass mark (no private image called public), false alarms, per-category
  * precision and recall, and a leak-versus-false-alarm curve as the risk cut
  * moves. Computed here from each case's reply; the site only draws it.
