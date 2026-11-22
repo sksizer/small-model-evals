@@ -1,0 +1,6 @@
+description: a plain count of eggs
+metadata: { id: count-three-eggs }
+vars:
+  note: "three eggs"
+  expected:
+    - { text: [egg], food: [egg], kcal_100g: 149, grams: { approx: 150, tol: 35 } }

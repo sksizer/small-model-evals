@@ -7,6 +7,7 @@
 | [sensitive](sensitive.md) | Built | — |
 | [search](search.md) | Built | — |
 | [av-search](av-search.md) | Stage 1 corpus on branch `suite/av-search` (118 clips) | Owner approves `results/contact/av-corpus.html`, then cases, providers and runs |
+| [food-shaping](food-shaping.md) | Built; full run queued (`queue/`) | Run the job, then write the recommendation note |
 | [extraction](extraction.md) | Proposed | Owner answers Q1–Q5 |
 | [image-gen](image-gen.md) | Proposed | Owner answers Q1–Q4 |
 

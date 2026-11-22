@@ -1,0 +1,6 @@
+description: a drink counted in cups
+metadata: { id: household-orange-juice-cup }
+vars:
+  note: "a cup of orange juice"
+  expected:
+    - { text: [orange juice, juice], food: [orange juice], kcal_100g: 49, grams: { approx: 249, tol: 25 } }

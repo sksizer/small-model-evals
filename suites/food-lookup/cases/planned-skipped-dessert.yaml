@@ -1,0 +1,6 @@
+description: one food eaten, one wanted and skipped
+metadata: { id: planned-skipped-dessert }
+vars:
+  note: "dinner was 150 g grilled chicken breast. wanted ice cream after but skipped it"
+  expected:
+    - { text: [chicken], food: [chicken], kcal_100g: 165, grams: { approx: 150, tol: 3 } }

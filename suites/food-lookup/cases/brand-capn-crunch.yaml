@@ -1,0 +1,6 @@
+description: a branded cereal measured in cups
+metadata: { id: brand-capn-crunch }
+vars:
+  note: "a cup of Cap'n Crunch cereal for breakfast"
+  expected:
+    - { text: [crunch, cereal], food: [crunch], kcal_100g: 398, grams: { approx: 36, tol: 8 } }

@@ -1,0 +1,6 @@
+description: a branded canned soup by the cup
+metadata: { id: brand-campbells-soup }
+vars:
+  note: "a cup of Campbell's Chunky chicken noodle soup"
+  expected:
+    - { text: [soup, chicken noodle], food: [chicken noodle], kcal_100g: 47, grams: { approx: 243, tol: 40 } }

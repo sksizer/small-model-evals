@@ -1,0 +1,7 @@
+description: misspelt oatmeal and blueberries
+metadata: { id: typo-oatmeal-blueberries }
+vars:
+  note: "a cup of oatmeel with half a cup of blubbries"
+  expected:
+    - { text: [oatmeal, oatmeel, oat], food: [oat], kcal_100g: 70, grams: { approx: 234, tol: 40 } }
+    - { text: [blueberries, blueberry, blubbries], food: [blueberries], kcal_100g: 57, grams: { approx: 74, tol: 15 } }

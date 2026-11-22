@@ -1,0 +1,6 @@
+description: a day with one drink, and a plan for tomorrow
+metadata: { id: planned-tomorrow }
+vars:
+  note: "no breakfast today, just a black coffee. tomorrow I'll have oatmeal and eggs"
+  expected:
+    - { text: [coffee], food: [coffee], kcal_100g: 1, grams: { approx: 237, tol: 60 } }

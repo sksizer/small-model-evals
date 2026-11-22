@@ -1,0 +1,7 @@
+description: a drink the database lacks beside a fruit it has
+metadata: { id: missing-matcha-latte }
+vars:
+  note: "a matcha latte and a banana"
+  expected:
+    - { text: [matcha, latte], fdc_id: null }
+    - { text: [banana], food: [banana], kcal_100g: 89, grams: { approx: 118, tol: 25 } }

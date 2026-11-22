@@ -1,0 +1,6 @@
+description: a glass of wine
+metadata: { id: drink-white-wine-glass }
+vars:
+  note: "a glass of white wine with dinner"
+  expected:
+    - { text: [wine], food: [wine], kcal_100g: 82, grams: { approx: 147, tol: 30 } }

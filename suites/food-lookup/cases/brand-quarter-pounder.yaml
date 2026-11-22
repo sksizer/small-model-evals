@@ -1,0 +1,6 @@
+description: a fast-food burger with its brand
+metadata: { id: brand-quarter-pounder }
+vars:
+  note: "McDonald's Quarter Pounder on the drive home"
+  expected:
+    - { text: [quarter pounder, burger, mcdonald], food: [quarter pounder], kcal_100g: 244, grams: { approx: 171, tol: 30 } }

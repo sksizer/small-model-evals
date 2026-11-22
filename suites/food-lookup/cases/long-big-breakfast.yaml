@@ -1,0 +1,10 @@
+description: six items in one breakfast note
+metadata: { id: long-big-breakfast }
+vars:
+  note: "big breakfast: 3 pancakes with 2 tbsp of maple syrup, 2 slices of bacon, a cup of orange juice and a cup of black coffee"
+  expected:
+    - { text: [pancake], food: [pancake], kcal_100g: 233, grams: { approx: 125, tol: 50 } }
+    - { text: [maple syrup, syrup], food: [maple], kcal_100g: 260, grams: { approx: 40, tol: 8 } }
+    - { text: [bacon], food: [bacon], kcal_100g: 541, grams: { approx: 16, tol: 6 } }
+    - { text: [orange juice, juice], food: [orange juice], kcal_100g: 49, grams: { approx: 249, tol: 25 } }
+    - { text: [coffee], food: [coffee], kcal_100g: 1, grams: { approx: 237, tol: 60 } }

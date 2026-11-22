@@ -1,0 +1,7 @@
+description: a dessert the database lacks, a drink it has
+metadata: { id: missing-tiramisu-coffee }
+vars:
+  note: "a slice of tiramisu and a black coffee"
+  expected:
+    - { text: [tiramisu], fdc_id: null }
+    - { text: [coffee], food: [coffee], kcal_100g: 1, grams: { approx: 237, tol: 60 } }

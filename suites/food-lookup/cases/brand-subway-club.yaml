@@ -1,0 +1,6 @@
+description: a chain restaurant sandwich by size
+metadata: { id: brand-subway-club }
+vars:
+  note: "had a six inch Subway club sub for lunch"
+  expected:
+    - { text: [sub, subway, club], food: [club], kcal_100g: 146, grams: { approx: 207, tol: 35 } }

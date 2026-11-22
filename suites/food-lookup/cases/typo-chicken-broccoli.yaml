@@ -1,0 +1,7 @@
+description: misspelt chicken breast and broccoli in grams
+metadata: { id: typo-chicken-broccoli }
+vars:
+  note: "chiken brest 150g and brocoli 100 g"
+  expected:
+    - { text: [chicken, chiken], food: [chicken], kcal_100g: 165, grams: { approx: 150, tol: 3 } }
+    - { text: [broccoli, brocoli], food: [broccoli], kcal_100g: 35, grams: { approx: 100, tol: 3 } }
