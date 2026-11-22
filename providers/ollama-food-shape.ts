@@ -21,9 +21,7 @@
 // `ratio` (hybrid only: top score over second score; 1 is `top`, a ratio no match can reach is `choose`). A ratio rather
 // than a score difference so it carries over to a search that scores on another scale; each item's top and second scores
 // are recorded (`decided`) to re-derive it for one.
-import { createHash } from 'node:crypto'
-import { readFileSync } from 'node:fs'
-import { DEFAULT_DB, searchScored, toHit, type Scored } from './food-search.ts'
+import { assertDb, searchScored, toHit, type Scored } from './food-search.ts'
 import { leads, toGrams } from './food-shape.ts'
 import { BASE, streamChat, sumTimings, type Timings } from './ollama-stream.ts'
 
@@ -92,8 +90,6 @@ const CHOOSE_SCHEMA = {
 const CHOOSE_SYSTEM =
   'You match items from a food note to the USDA food database. For each numbered item you get the candidate foods, best search match first, each with its id, energy and portions in grams. For each item give: item, its number; fdc_id, the id of the candidate that is the same food as the item (prefer the plain, common form, and the cooking method the note names), or null when none of the candidates is that food; grams, the amount eaten in grams, converted with that food\'s portions, or estimated from a typical portion when the item gives a count or no amount.'
 
-let checkedDb = ''
-
 export default class OllamaFoodShape {
   private readonly config: Config
 
@@ -120,11 +116,7 @@ export default class OllamaFoodShape {
   async callApi(prompt: string) {
     try {
       const { variant, ratio = 1 } = this.config
-      if (checkedDb !== this.config.db_sha256) {
-        const got = createHash('sha256').update(readFileSync(DEFAULT_DB)).digest('hex')
-        if (got !== this.config.db_sha256) throw new Error(`foods.jsonl sha256 ${got} is not the configured ${this.config.db_sha256}`)
-        checkedDb = got
-      }
+      assertDb(this.config.db_sha256)
       const messages = JSON.parse(prompt) as Message[]
       const note = [...messages].reverse().find((m) => m.role === 'user')?.content ?? ''
       const timings: Timings[] = []
@@ -154,7 +146,7 @@ export default class OllamaFoodShape {
 
       const choices = new Map<number, { fdc_id: number | null; grams: number | null }>()
       if (byModel.some(Boolean)) {
-        const asked = shaped.flatMap((s, i) => (byModel[i] ? [i] : []))
+        const asked = byModel.flatMap((m, i) => (m ? [i] : []))
         const lines = asked.map((i) => {
           const s = shaped[i]!
           const amount = s.quantity === null || s.quantity === undefined ? 'no amount given' : `${s.quantity} ${s.unit}`.trim()

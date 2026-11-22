@@ -62,7 +62,7 @@ function gramsPerUnit(portions: Portion[], unit: string, anywhere: boolean): num
   return null
 }
 
-const isMeasureUnit = (rest: string) => Object.keys({ ...G_PER, ...ML_PER }).some((u) => leadsWith(rest, u)) || /^(cups?|tbsp|tsp|fl oz|oz|lb)\b/.test(rest)
+const isMeasureUnit = (rest: string) => Object.keys({ ...G_PER, ...ML_PER }).some((u) => leadsWith(rest, u))
 
 /**
  * What one usual portion of the food weighs: the first count portion that says "medium" (a banana, an apple), else

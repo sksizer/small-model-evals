@@ -10,6 +10,7 @@
 // plural `s`/`es` is dropped.
 //
 //   bun providers/food-search.ts "whole milk"     # try a query
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -86,6 +87,16 @@ export const toHit = (food: Food): Hit => ({
   kcal_per_100g: food.kcal_100g,
   portions: food.portions.slice(0, PORTIONS).map((p) => `${p.measure} = ${p.grams} g`),
 })
+
+let checkedDb = ''
+
+/** Throws unless the database file's sha256 is `expected`; checked once per hash, so a changed database cannot pass for the one a snapshot names. */
+export function assertDb(expected: string): void {
+  if (checkedDb === expected) return
+  const got = createHash('sha256').update(readFileSync(DEFAULT_DB)).digest('hex')
+  if (got !== expected) throw new Error(`foods.jsonl sha256 ${got} is not the configured ${expected}`)
+  checkedDb = got
+}
 
 export function searchFoods(query: string, db = DEFAULT_DB): Hit[] {
   return searchScored(query, db).map((s) => toHit(s.food))
