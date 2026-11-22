@@ -55,6 +55,9 @@ describe('toGrams', () => {
     expect(toGrams(banana, 2, '')).toEqual({ grams: 236, basis: 'usual-portion' })
     expect(toGrams({ portions: [{ measure: '1 cup', grams: 244 }] }, 1, '')).toEqual({ grams: 244, basis: 'usual-portion' })
   })
+  test('a unit that is an object property name is a count unit', () => {
+    expect(toGrams(egg, 1, 'constructor').basis).toBe('usual-portion')
+  })
   test('no quantity means one, and no portions fall back to 100 g', () => {
     expect(toGrams(bread, null, 'slice').grams).toBe(28)
     expect(toGrams({ portions: [] }, 2, '')).toEqual({ grams: 200, basis: 'default' })

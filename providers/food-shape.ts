@@ -24,7 +24,7 @@ const FALLBACK_GRAMS = 100
 /** Lower-cases a unit and folds plurals and spellings ("Cups" and "tbsps" to cup and tbsp). */
 export function normaliseUnit(unit: string | null | undefined): string {
   const u = (unit ?? '').trim().toLowerCase().replace(/\.$/, '')
-  return UNIT_ALIAS[u] ?? stem(u)
+  return Object.hasOwn(UNIT_ALIAS, u) ? UNIT_ALIAS[u]! : stem(u)
 }
 
 function stem(w: string): string {
@@ -87,9 +87,9 @@ export function toGrams(food: Pick<Food, 'portions'>, quantity: number | null | 
   const q = typeof quantity === 'number' && Number.isFinite(quantity) && quantity > 0 ? quantity : 1
   const u = normaliseUnit(unit)
   const portions = food.portions
-  const w = G_PER[u]
+  const w = Object.hasOwn(G_PER, u) ? G_PER[u] : undefined
   if (w !== undefined) return { grams: q * w, basis: 'weight' }
-  const ml = ML_PER[u]
+  const ml = Object.hasOwn(ML_PER, u) ? ML_PER[u] : undefined
   if (ml !== undefined) {
     const own = gramsPerUnit(portions, u, false)
     if (own !== null) return { grams: q * own, basis: 'volume-portion' }
