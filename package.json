@@ -13,6 +13,7 @@
   "scripts": {
     "eval": "bun scripts/run.ts",
     "check:evals": "bun scripts/check.ts",
+    "test": "bun test providers",
     "summarize": "bun scripts/summarize.ts",
     "import": "bun scripts/import.ts",
     "corpus": "bun scripts/fetch-corpus.ts",
