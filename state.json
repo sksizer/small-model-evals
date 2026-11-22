@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "pr": 16,
-  "head": null,
-  "base": null,
-  "round": 0,
+  "head": "8f961fc82b6c086830eed9f9d5694f3d9f3da95a",
+  "base": "3d4c4e9fee760323624e475b004b5d1169d3cde0",
+  "round": 1,
   "claim": {
     "owner": "macminim4:claude-k3x9qa",
     "at": "2026-11-22T02:36:54.536Z"
