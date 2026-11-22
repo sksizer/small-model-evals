@@ -13,7 +13,7 @@
 //
 // Output is the loop's JSON, `{"answer": {"items": [{text, fdc_id, grams}]}, "searches": [queries]}`, so
 // assertions/food.ts scores it unchanged, plus `shaped` (the first call's items) and `decided` (per item: who
-// picked, the lead, how the grams were reached).
+// picked, the top and second search scores, how the grams were reached).
 // Metadata (ledger metrics): searches, model_calls, items, code_decided, model_decided, and the timing of every
 // call summed (providers/ollama-stream.ts).
 //
