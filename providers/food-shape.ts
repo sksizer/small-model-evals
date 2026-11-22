@@ -107,9 +107,14 @@ export function toGrams(food: Pick<Food, 'portions'>, quantity: number | null | 
   return usual === null ? { grams: q * FALLBACK_GRAMS, basis: 'default' } : { grams: q * usual, basis: 'usual-portion' }
 }
 
-/** True when the top match leads the second by at least `margin` ranking points (compared in hundredths, so 2.8 against 2.7 is a lead of 0.1); a lone match always leads. */
-export function leads(scores: number[], margin: number): boolean {
+/**
+ * True when the top match's score is at least `ratio` times the second's; a lone match always leads. A ratio, not a
+ * difference, so it does not depend on the scale a search scores on. A second score at or below zero (the ranking
+ * subtracts for long names) is a lead whenever the top is above it.
+ */
+export function leads(scores: number[], ratio: number): boolean {
   if (scores.length === 0) return false
   if (scores.length === 1) return true
-  return Math.round((scores[0]! - scores[1]!) * 100) >= Math.round(margin * 100)
+  const [top, second] = [scores[0]!, scores[1]!]
+  return second <= 0 ? top > second : Math.round((top / second) * 1000) >= Math.round(ratio * 1000)
 }

@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
-# food-shape-hybrid-m03: shape, code takes the top match when it leads by 0.3 ranking points, else one call picks
+# food-shape-hybrid-r105: shape, code takes the top match when it leads the second by a factor of 1.05, else one call picks
 # Same cases (cases/ is a link to ../food-lookup/cases), same database and same scoring as food-lookup, but the
 # model is not given a tool: providers/ollama-food-shape.ts shapes the note in one constrained call, code
 # searches and converts to grams, and the variant decides who picks the food (plan: docs/plans/food-shaping.md).
-description: food-shape-hybrid-m03 — shape, code takes the top match when it leads by 0.3 ranking points, else one call picks
+description: food-shape-hybrid-r105 — shape, code takes the top match when it leads the second by a factor of 1.05, else one call picks
 
 prompts:
   - |-
@@ -13,9 +13,9 @@ prompts:
 providers:
   - id: file://../../providers/ollama-food-shape.ts
     label: gemma4:e4b
-    config: { model: 'gemma4:e4b', think: false, db_sha256: &db 54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d, variant: hybrid, margin: 0.3 }
-  - { id: file://../../providers/ollama-food-shape.ts, label: qwen3.5:4b, config: { model: 'qwen3.5:4b', think: false, db_sha256: *db, variant: hybrid, margin: 0.3 } }
-  - { id: file://../../providers/ollama-food-shape.ts, label: qwen3.5:9b, config: { model: 'qwen3.5:9b', think: false, db_sha256: *db, variant: hybrid, margin: 0.3 } }
+    config: { model: 'gemma4:e4b', think: false, db_sha256: &db 54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d, variant: hybrid, ratio: 1.05 }
+  - { id: file://../../providers/ollama-food-shape.ts, label: qwen3.5:4b, config: { model: 'qwen3.5:4b', think: false, db_sha256: *db, variant: hybrid, ratio: 1.05 } }
+  - { id: file://../../providers/ollama-food-shape.ts, label: qwen3.5:9b, config: { model: 'qwen3.5:9b', think: false, db_sha256: *db, variant: hybrid, ratio: 1.05 } }
 
 defaultTest:
   options: { disableVarExpansion: true }

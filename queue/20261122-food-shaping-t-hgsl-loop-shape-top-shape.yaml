@@ -1,0 +1,25 @@
+id: 20261122-food-shaping-t-hgsl-loop-shape-top-shape
+created: 2026-11-22T02:34:36Z
+reason: "food shaping (T-HGSL): loop, shape-top, shape-choose, shape-hybrid at three lead ratios, 40 cases"
+models:
+  - gemma4:e4b
+  - qwen3.5:4b
+  - qwen3.5:9b
+suites:
+  - food-lookup
+  - food-shape-top
+  - food-shape-choose
+  - food-shape-hybrid-r105
+  - food-shape-hybrid-r115
+  - food-shape-hybrid-r150
+priority: 8
+needs:
+  max_load_per_core: 0.3
+  min_free_gib: 4
+  quiet_minutes: 10
+  ac_power: true
+  class: apple-16g
+status: pending
+run_ids: []
+done: []
+notes: ""

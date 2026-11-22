@@ -62,15 +62,22 @@ describe('toGrams', () => {
 })
 
 describe('leads', () => {
-  test('the margin is a gap in ranking points, inclusive', () => {
-    expect(leads([3, 2.5], 0.5)).toBe(true)
-    expect(leads([3, 2.6], 0.5)).toBe(false)
-    expect(leads([2.8, 2.7], 0.1)).toBe(true)
+  test('the ratio is top over second, inclusive', () => {
+    expect(leads([3, 2], 1.5)).toBe(true)
+    expect(leads([3, 2.1], 1.5)).toBe(false)
+    expect(leads([2.8, 2.7], 1.03)).toBe(true)
     expect(leads([3], 5)).toBe(true)
-    expect(leads([], 0)).toBe(false)
+    expect(leads([], 1)).toBe(false)
   })
-  test('margin 0 always trusts the top match, a huge margin never does', () => {
-    expect(leads([2, 2], 0)).toBe(true)
+  test('ratio 1 always trusts the top match, a huge ratio never does', () => {
+    expect(leads([2, 2], 1)).toBe(true)
     expect(leads([9, 1], 1000)).toBe(false)
+  })
+  test('a second score at or below zero is led by any higher top', () => {
+    expect(leads([0.4, -0.2], 5)).toBe(true)
+    expect(leads([0.4, 0], 5)).toBe(true)
+  })
+  test('the same ratio holds on a rescaled search', () => {
+    expect(leads([30, 20], 1.5)).toBe(leads([3, 2], 1.5))
   })
 })

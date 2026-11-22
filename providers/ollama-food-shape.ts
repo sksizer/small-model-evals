@@ -7,7 +7,7 @@
 //   3. Pick, by `variant`:
 //        top     code takes the top match.
 //        choose  one more constrained call sees each item's top five and returns id and grams.
-//        hybrid  code takes the top match when it leads the second by `margin` ranking points (`leads`), else that
+//        hybrid  code takes the top match when its score is at least `ratio` times the second's (`leads`), else that
 //                item goes to the same choose call; no call at all when every item is decided by code.
 //   4. Grams from code (`toGrams`, the food's portions) for every item code picked.
 //
@@ -18,7 +18,9 @@
 // call summed (providers/ollama-stream.ts).
 //
 // Config: `model`, `think`, `num_ctx`, `num_predict`, `db_sha256` as the loop's; `variant` (top | choose | hybrid);
-// `margin` (hybrid only: ranking points, see food-search.ts; 0 is `top`, a margin no match can reach is `choose`).
+// `ratio` (hybrid only: top score over second score; 1 is `top`, a ratio no match can reach is `choose`). A ratio rather
+// than a score difference so it carries over to a search that scores on another scale; each item's top and second scores
+// are recorded (`decided`) to re-derive it for one.
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { DEFAULT_DB, searchScored, toHit, type Scored } from './food-search.ts'
@@ -36,7 +38,8 @@ interface Config {
   num_predict?: number
   db_sha256: string
   variant: Variant
-  margin?: number
+  /** hybrid only: the top score must be at least `ratio` times the second (see `leads`). */
+  ratio?: number
 }
 
 interface Shaped {
@@ -100,7 +103,7 @@ export default class OllamaFoodShape {
 
   id(): string {
     const c = this.config
-    return `ollama-food-shape:${c.model}:${c.variant}${c.variant === 'hybrid' ? `:${c.margin}` : ''}`
+    return `ollama-food-shape:${c.model}:${c.variant}${c.variant === 'hybrid' ? `:${c.ratio}` : ''}`
   }
 
   private async chat(messages: Message[], format: object) {
@@ -116,7 +119,7 @@ export default class OllamaFoodShape {
 
   async callApi(prompt: string) {
     try {
-      const { variant, margin = 0 } = this.config
+      const { variant, ratio = 1 } = this.config
       if (checkedDb !== this.config.db_sha256) {
         const got = createHash('sha256').update(readFileSync(DEFAULT_DB)).digest('hex')
         if (got !== this.config.db_sha256) throw new Error(`foods.jsonl sha256 ${got} is not the configured ${this.config.db_sha256}`)
@@ -147,7 +150,7 @@ export default class OllamaFoodShape {
 
       const searches = shaped.map((s) => String(s.query ?? ''))
       const found: Scored[][] = searches.map((q) => searchScored(q).slice(0, CANDIDATES))
-      const byModel = shaped.map((_, i) => variant === 'choose' ? found[i]!.length > 0 : variant === 'hybrid' && found[i]!.length > 0 && !leads(found[i]!.map((x) => x.score), margin))
+      const byModel = shaped.map((_, i) => variant === 'choose' ? found[i]!.length > 0 : variant === 'hybrid' && found[i]!.length > 0 && !leads(found[i]!.map((x) => x.score), ratio))
 
       const choices = new Map<number, { fdc_id: number | null; grams: number | null }>()
       if (byModel.some(Boolean)) {
@@ -182,18 +185,18 @@ export default class OllamaFoodShape {
       const items = shaped.map((s, i) => {
         const cands = found[i]!
         const top = cands[0]
-        const gap = cands.length > 1 ? Math.round((cands[0]!.score - cands[1]!.score) * 100) / 100 : null
+        const gap = { top: top?.score ?? null, second: cands[1]?.score ?? null }
         if (!top) {
-          decided.push({ text: s.text, by: 'none', gap })
+          decided.push({ text: s.text, by: 'none', ...gap })
           return { text: s.text, fdc_id: null, grams: null }
         }
         const chosen = byModel[i] ? choices.get(i) : undefined
         if (chosen && (chosen.fdc_id === null || cands.some((c) => c.food.id === chosen.fdc_id))) {
-          decided.push({ text: s.text, by: 'model', gap })
+          decided.push({ text: s.text, by: 'model', ...gap })
           return { text: s.text, fdc_id: chosen.fdc_id, grams: chosen.grams }
         }
         const amount = toGrams(top.food, s.quantity, s.unit)
-        decided.push({ text: s.text, by: byModel[i] ? 'code-fallback' : 'code', gap, basis: amount.basis })
+        decided.push({ text: s.text, by: byModel[i] ? 'code-fallback' : 'code', ...gap, basis: amount.basis })
         return { text: s.text, fdc_id: top.food.id, grams: Math.round(amount.grams * 10) / 10 }
       })
 

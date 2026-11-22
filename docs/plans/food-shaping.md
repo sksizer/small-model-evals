@@ -23,7 +23,7 @@ with 16 GB: gemma4:e4b 10/12 in 24.8 s, qwen3.5:4b 8/12 in 23.5 s, qwen3.5:9b 8/
 | --- | --- |
 | 28 new cases (40 in all), the 12 originals untouched | `suites/food-lookup/cases/` |
 | `loop` variant (today's, unchanged) | `suites/food-lookup/` |
-| `shape-top`, `shape-choose`, `shape-hybrid` at margins 0.1, 0.3, 1.0 | `suites/food-shape-*/`, `providers/ollama-food-shape.ts` |
+| `shape-top`, `shape-choose`, `shape-hybrid` at lead ratios 1.05, 1.15, 1.5 | `suites/food-shape-*/`, `providers/ollama-food-shape.ts` |
 | Grams conversion and the margin rule, as plain functions with `bun test` | `providers/food-shape.ts`, `providers/food-shape.test.ts` |
 | The search with scores, for the margin | `providers/food-search.ts` (`searchScored`; `searchFoods` is unchanged in behaviour) |
 | Endpoint check | `scripts/endpoint-check.ts`, result in `results/notes/` |
@@ -40,29 +40,42 @@ labels in it, which makes the ledger, the summary and the site tell them apart w
 | `food-lookup` | `loop` |
 | `food-shape-top` | `shape-top` |
 | `food-shape-choose` | `shape-choose` |
-| `food-shape-hybrid-m01`, `-m03`, `-m10` | `shape-hybrid` at margin 0.1, 0.3, 1.0 ranking points |
+| `food-shape-hybrid-r105`, `-r115`, `-r150` | `shape-hybrid` at a lead ratio of 1.05, 1.15, 1.5 |
 
 The shaped suites' `cases/` is a link to `food-lookup/cases/`, so every variant is scored on the same case files
-with the same scorer (`assertions/food.ts`, unchanged) and the same database hash check. A suite's `variant` and
-`margin` are provider config values (`providers/ollama-food-shape.ts`). The alternative, adding a model label per
+with the same scorer (`assertions/food.ts`, unchanged) and the same database hash check. A suite's `variant` and `ratio` are provider config values (`providers/ollama-food-shape.ts`). The alternative, adding a model label per
 variant and model (15 more entries in `scripts/models.ts` and `scripts/catalog.ts`), would have listed variants
 as models on the site.
 
 ### The margin
 
-The search ranks foods by a score (`providers/food-search.ts`: points for query words in the name, a tenth off per
-extra name word). The margin is the gap, in those points, between the top match and the second. Margin 0 is
-`shape-top`; a margin no match can reach is `shape-choose`. The values 0.1, 0.3 and 1.0 come from the smoke run: the first sweep (0.2, 0.5, 1.0) never let code decide on
-gemma4:e4b, because the gaps between the first two matches for plain foods are 0 to 0.2 points (chicken breast 0,
-white rice 0.1, ranch dressing 0.1, red wine 0.2, egg 0). Branded and specific queries lead by 1 or more. Gaps are
-compared in hundredths. The sweep is a first guess: if the best margin sits at an end of it, extend it.
+The margin is a relative lead: the top match's score divided by the second's, and code takes the top match when
+the ratio is at least the configured `ratio` (1.5 means top >= 1.5 x second). It is a ratio, not a score
+difference, because the dashboard's meal handler will search with its own scorer on another scale, and a ratio
+carries over where an absolute gap does not. A second score at or below zero counts as a lead (the ranking here
+subtracts a tenth per extra name word, so scores can fall to zero). Ratio 1 is `shape-top`; a ratio no match can
+reach is `shape-choose`.
+
+Scorer the margin is measured with: `searchScored` in `providers/food-search.ts` (USDA SR Legacy, 7,793 foods;
+2 points per query word in the name's first segment, 1 per word elsewhere, plus 1 when the name starts with a
+query word, minus 0.1 per name word the query lacks; ties to the lower id). Every shaped result keeps, per item,
+the top and second score (`decided[].top`, `decided[].second`) and who picked, so a ratio can be re-derived for
+another scorer, or replayed on these results, without rerunning a model (the model's choices on the items that
+went to it are in the reply too, so accuracy at a higher ratio can be recomputed; at a lower ratio only for items
+code already decided).
+
+The values 1.05, 1.15 and 1.5 come from the smoke run: gaps between the first two matches for plain foods are 0
+to 0.2 points on scores of 2 to 6 (chicken breast 5.8 against 5.6, white rice 4.8 against 4.7, red wine 1.7
+against 1.6, egg 2.8 against 2.8), so ratios near 1.05 to 1.1; branded and specific queries lead by 1 or more
+points. A first sweep with absolute gaps of 0.2, 0.5 and 1.0 never let code decide on gemma4:e4b, which is why the
+sweep is low. If the best ratio sits at an end of the sweep, extend it.
 
 ### What is recorded
 
 Every shaped result carries, as ledger metrics: `searches`, `model_calls`, `items`, `code_decided`,
 `model_decided`, and the timings of all calls summed (`turns` is the same as `model_calls`; `turn_ms` and
 `total_ms` the wall clock of the model calls). The reply also keeps `shaped` (the first call's items) and
-`decided` (per item: who picked, the lead, how the grams were reached) for reading a failure.
+`decided` (per item: who picked, the top and second search scores, how the grams were reached) for reading a failure.
 
 ## Prior art checked
 
