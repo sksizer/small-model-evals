@@ -232,7 +232,7 @@ const suites = readdirSync(SUITES_DIR).sort()
  * family claims lands in `other`.
  */
 const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string) => boolean }[] = [
-  { id: 'text', title: 'Text', blurb: 'Notes and logs in, a label, fields or a tool choice out.', has: (s) => ['classify', 'extract', 'food-lookup', 'orchestrate', 'route', 'workout'].includes(s) },
+  { id: 'text', title: 'Text', blurb: 'Notes and logs in, a label, fields or a tool choice out.', has: (s) => ['classify', 'extract', 'food-lookup', 'orchestrate', 'route', 'workout'].includes(s) || s.startsWith('food-shape-') },
   { id: 'vision', title: 'Vision understanding', blurb: 'A photo in, text or a flag out.', has: (s) => ['ocr', 'tag-image', 'nudity-flag', 'sensitive'].includes(s) },
   { id: 'regions', title: 'Regions', blurb: 'A photo in, boxes around things out.', has: (s) => s.startsWith('regions-') },
   { id: 'image', title: 'Image', blurb: 'Edit an image as told, or tell which images are alike.', has: (s) => ['edit', 'similarity'].includes(s) },
@@ -248,6 +248,11 @@ const TASKS: Record<string, { label: string; about: string }> = {
   classify: { label: 'Text classification', about: 'Sort a short note into the right inbox label.' },
   extract: { label: 'Data extraction', about: 'Turn a quick-capture note into JSON fields.' },
   'food-lookup': { label: 'Lookup with tools', about: 'Turn a food note into database foods and grams by calling a lookup tool.' },
+  'food-shape-top': { label: 'Food lookup: shape, top match', about: 'Shape the note in one call; code takes the top search match and converts to grams.' },
+  'food-shape-choose': { label: 'Food lookup: shape, model picks', about: 'Shape the note in one call; a second call picks each food from its top five.' },
+  'food-shape-hybrid-m02': { label: 'Food lookup: hybrid, margin 0.2', about: 'Code takes the top match when it leads by 0.2 points, else a call picks.' },
+  'food-shape-hybrid-m05': { label: 'Food lookup: hybrid, margin 0.5', about: 'Code takes the top match when it leads by 0.5 points, else a call picks.' },
+  'food-shape-hybrid-m10': { label: 'Food lookup: hybrid, margin 1.0', about: 'Code takes the top match when it leads by 1.0 points, else a call picks.' },
   orchestrate: { label: 'Tool use / orchestration', about: 'Choose the right tool for a request in one turn.' },
   route: { label: 'Routing decisions', about: 'Pick the handler and the model size a request needs.' },
   workout: { label: 'Workout parsing', about: 'Turn a free-form workout log into structured sets.' },

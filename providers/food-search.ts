@@ -58,7 +58,13 @@ function index(path: string) {
 
 export const DEFAULT_DB = join(import.meta.dirname, '..', 'suites', 'food-lookup', 'foods.jsonl')
 
-export function searchFoods(query: string, db = DEFAULT_DB): Hit[] {
+/** A search hit with the ranking score and the whole food (all portions), for callers that convert amounts or judge the lead. */
+export interface Scored {
+  score: number
+  food: Food
+}
+
+export function searchScored(query: string, db = DEFAULT_DB): Scored[] {
   const q = [...new Set(words(query))]
   if (q.length === 0) return []
   return index(db)
@@ -70,12 +76,19 @@ export function searchFoods(query: string, db = DEFAULT_DB): Hit[] {
     .filter((x) => x.hits > 0)
     .sort((a, b) => b.score - a.score || a.f.food.id - b.f.food.id)
     .slice(0, RESULTS)
-    .map(({ f }) => ({
-      fdc_id: f.food.id,
-      name: f.food.name,
-      kcal_per_100g: f.food.kcal_100g,
-      portions: f.food.portions.slice(0, PORTIONS).map((p) => `${p.measure} = ${p.grams} g`),
-    }))
+    .map(({ f, score }) => ({ score, food: f.food }))
+}
+
+/** The tool-shaped view of a food: the id, name, energy and the first portions as text. */
+export const toHit = (food: Food): Hit => ({
+  fdc_id: food.id,
+  name: food.name,
+  kcal_per_100g: food.kcal_100g,
+  portions: food.portions.slice(0, PORTIONS).map((p) => `${p.measure} = ${p.grams} g`),
+})
+
+export function searchFoods(query: string, db = DEFAULT_DB): Hit[] {
+  return searchScored(query, db).map((s) => toHit(s.food))
 }
 
 if (import.meta.main) {

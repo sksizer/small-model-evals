@@ -1,0 +1,70 @@
+import { describe, expect, test } from 'bun:test'
+import { leads, normaliseUnit, parseMeasure, toGrams } from './food-shape.ts'
+
+const milk = { portions: [{ measure: '1 cup', grams: 244 }, { measure: '1 fl oz', grams: 30.5 }] }
+const egg = { portions: [{ measure: '1 large', grams: 50 }, { measure: '1 medium', grams: 44 }] }
+const bread = { portions: [{ measure: '1 slice', grams: 28 }, { measure: '1 cup, cubes', grams: 30 }] }
+const cola = { portions: [{ measure: '1 can (12 fl oz)', grams: 370 }, { measure: '1 fl oz', grams: 30.9 }] }
+const flour = { portions: [{ measure: '1 cup', grams: 125 }] }
+const peas = { portions: [{ measure: '1/2 cup', grams: 80 }] }
+
+describe('parseMeasure', () => {
+  test('whole, decimal and fraction counts', () => {
+    expect(parseMeasure('1 cup, sliced')).toEqual({ count: 1, rest: 'cup, sliced' })
+    expect(parseMeasure('0.25 cup')).toEqual({ count: 0.25, rest: 'cup' })
+    expect(parseMeasure('1/2 cup')).toEqual({ count: 0.5, rest: 'cup' })
+    expect(parseMeasure('1 1/2 cup')).toEqual({ count: 1.5, rest: 'cup' })
+    expect(parseMeasure('cup')).toBeNull()
+  })
+})
+
+describe('normaliseUnit', () => {
+  test('plurals and spellings', () => {
+    expect(normaliseUnit('Cups')).toBe('cup')
+    expect(normaliseUnit('tbsps')).toBe('tbsp')
+    expect(normaliseUnit('slices')).toBe('slice')
+    expect(normaliseUnit(null)).toBe('')
+  })
+})
+
+describe('toGrams', () => {
+  test('weights convert directly', () => {
+    expect(toGrams(milk, 150, 'g')).toEqual({ grams: 150, basis: 'weight' })
+    expect(toGrams(milk, 6, 'oz').grams).toBeCloseTo(170.1, 1)
+    expect(toGrams(milk, 1, 'lb').grams).toBeCloseTo(453.6, 1)
+  })
+  test('a volume uses the food portion in that unit', () => {
+    expect(toGrams(milk, 2, 'cups')).toEqual({ grams: 488, basis: 'volume-portion' })
+    expect(toGrams(peas, 1, 'cup').grams).toBe(160)
+  })
+  test('a volume without its own portion goes through another volume portion', () => {
+    expect(toGrams(flour, 2, 'tbsp').grams).toBeCloseTo((2 * 14.79 * 125) / 236.6, 3)
+    expect(toGrams(milk, 250, 'ml').grams).toBeCloseTo((250 * 244) / 236.6, 3)
+  })
+  test('a volume with no volume portion is 1 g per ml', () => {
+    expect(toGrams(egg, 100, 'ml')).toEqual({ grams: 100, basis: 'volume-ml' })
+  })
+  test('a count uses the portion that names it, else the usual portion', () => {
+    expect(toGrams(bread, 2, 'slice')).toEqual({ grams: 56, basis: 'portion' })
+    expect(toGrams(cola, 2, 'can')).toEqual({ grams: 740, basis: 'portion' })
+    expect(toGrams(egg, 3, '')).toEqual({ grams: 150, basis: 'usual-portion' })
+    expect(toGrams(egg, 2, 'egg')).toEqual({ grams: 100, basis: 'usual-portion' })
+  })
+  test('no quantity means one, and no portions fall back to 100 g', () => {
+    expect(toGrams(bread, null, 'slice').grams).toBe(28)
+    expect(toGrams({ portions: [] }, 2, '')).toEqual({ grams: 200, basis: 'default' })
+  })
+})
+
+describe('leads', () => {
+  test('the margin is a gap in ranking points, inclusive', () => {
+    expect(leads([3, 2.5], 0.5)).toBe(true)
+    expect(leads([3, 2.6], 0.5)).toBe(false)
+    expect(leads([3], 5)).toBe(true)
+    expect(leads([], 0)).toBe(false)
+  })
+  test('margin 0 always trusts the top match, a huge margin never does', () => {
+    expect(leads([2, 2], 0)).toBe(true)
+    expect(leads([9, 1], 1000)).toBe(false)
+  })
+})
