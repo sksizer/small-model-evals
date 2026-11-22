@@ -14,7 +14,8 @@
 // Output is the loop's JSON, `{"answer": {"items": [{text, fdc_id, grams}]}, "searches": [queries]}`, so
 // assertions/food.ts scores it unchanged, plus `shaped` (the first call's items) and `decided` (per item: who
 // picked, the top and second search scores, how the grams were reached).
-// Metadata (ledger metrics): searches, model_calls, items, code_decided, model_decided, and the timing of every
+// Metadata (ledger metrics): searches, model_calls, items, code_decided, model_decided, fallback_decided (sent to the
+// model but taken from the top match because its reply was unusable), and the timing of every
 // call summed (providers/ollama-stream.ts).
 //
 // Config: `model`, `think`, `num_ctx`, `num_predict`, `db_sha256` as the loop's; `variant` (top | choose | hybrid);
@@ -130,11 +131,12 @@ export default class OllamaFoodShape {
       count(shapeReply)
       let shaped: Shaped[]
       try {
-        shaped = (JSON.parse(shapeReply.content) as { items: Shaped[] }).items
-        if (!Array.isArray(shaped)) throw new Error('no items')
+        const items = (JSON.parse(shapeReply.content) as { items: unknown }).items
+        if (!Array.isArray(items)) throw new Error('no items')
+        shaped = items.filter((s): s is Shaped => typeof s === 'object' && s !== null)
       } catch {
         return {
-          output: JSON.stringify({ answer: shapeReply.content, searches: [] }),
+          output: JSON.stringify({ answer: { items: [] }, searches: [], raw: shapeReply.content }),
           tokenUsage: { prompt: tokens.prompt, completion: tokens.completion, total: tokens.prompt + tokens.completion },
           metadata: { ...sumTimings(timings), searches: 0, model_calls: 1, items: 0, code_decided: 0, model_decided: 0 },
         }
@@ -184,8 +186,11 @@ export default class OllamaFoodShape {
         }
         const chosen = byModel[i] ? choices.get(i) : undefined
         if (chosen && (chosen.fdc_id === null || cands.some((c) => c.food.id === chosen.fdc_id))) {
-          decided.push({ text: s.text, by: 'model', ...gap })
-          return { text: s.text, fdc_id: chosen.fdc_id, grams: chosen.grams }
+          const picked = cands.find((c) => c.food.id === chosen.fdc_id)
+          const modelGrams = typeof chosen.grams === 'number' && Number.isFinite(chosen.grams)
+          const amount = picked && !modelGrams ? toGrams(picked.food, s.quantity, s.unit) : null
+          decided.push({ text: s.text, by: 'model', ...gap, ...(amount ? { basis: amount.basis } : {}) })
+          return { text: s.text, fdc_id: chosen.fdc_id, grams: amount ? Math.round(amount.grams * 10) / 10 : chosen.grams }
         }
         const amount = toGrams(top.food, s.quantity, s.unit)
         decided.push({ text: s.text, by: byModel[i] ? 'code-fallback' : 'code', ...gap, basis: amount.basis })
@@ -202,6 +207,7 @@ export default class OllamaFoodShape {
           items: items.length,
           code_decided: decided.filter((d) => d['by'] === 'code').length,
           model_decided: decided.filter((d) => d['by'] === 'model').length,
+          fallback_decided: decided.filter((d) => d['by'] === 'code-fallback').length,
         },
       }
     } catch (err) {

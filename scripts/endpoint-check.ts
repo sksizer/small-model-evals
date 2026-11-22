@@ -36,8 +36,11 @@ const TOOL = {
   },
 }
 
+/** A request that takes longer than this fails the check (a thinking model can run past it). */
+const TIMEOUT_MS = 300_000
+
 const post = (body: Record<string, unknown>) =>
-  fetch(`${BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+  fetch(`${BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(TIMEOUT_MS) })
 
 async function constrained(model: string): Promise<{ ok: boolean; detail: string }> {
   const bad: string[] = []

@@ -23,6 +23,7 @@ describe('normaliseUnit', () => {
     expect(normaliseUnit('Cups')).toBe('cup')
     expect(normaliseUnit('tbsps')).toBe('tbsp')
     expect(normaliseUnit('slices')).toBe('slice')
+    expect(normaliseUnit('glasses')).toBe('glass')
     expect(normaliseUnit(null)).toBe('')
   })
 })
@@ -54,6 +55,10 @@ describe('toGrams', () => {
     const banana = { portions: [{ measure: '1 cup, mashed', grams: 225 }, { measure: '1 small', grams: 101 }, { measure: '1 medium (7" to 7-7/8" long)', grams: 118 }] }
     expect(toGrams(banana, 2, '')).toEqual({ grams: 236, basis: 'usual-portion' })
     expect(toGrams({ portions: [{ measure: '1 cup', grams: 244 }] }, 1, '')).toEqual({ grams: 244, basis: 'usual-portion' })
+  })
+  test('a unit with regex characters does not throw', () => {
+    expect(toGrams(bread, 1, 'pc(s)').basis).toBe('usual-portion')
+    expect(toGrams(bread, 1, '[slice').basis).toBe('usual-portion')
   })
   test('a unit that is an object property name is a count unit', () => {
     expect(toGrams(egg, 1, 'constructor').basis).toBe('usual-portion')

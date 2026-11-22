@@ -29,6 +29,7 @@ export function normaliseUnit(unit: string | null | undefined): string {
 
 function stem(w: string): string {
   if (w.length > 4 && w.endsWith('ies')) return `${w.slice(0, -3)}y`
+  if (w.length > 4 && /(ch|sh|ss|x|o)es$/.test(w)) return w.slice(0, -2)
   if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1)
   return w
 }
@@ -56,7 +57,7 @@ function gramsPerUnit(portions: Portion[], unit: string, anywhere: boolean): num
   for (const p of portions) {
     const parsed = parseMeasure(p.measure)
     if (!parsed) continue
-    const has = anywhere ? new RegExp(`\\b${unit}s?\\b`).test(parsed.rest) : leadsWith(parsed.rest, unit)
+    const has = anywhere ? parsed.rest.split(/[^a-z0-9]+/).some((w) => stem(w) === unit) : leadsWith(parsed.rest, unit)
     if (has) return p.grams / parsed.count
   }
   return null

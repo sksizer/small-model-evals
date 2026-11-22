@@ -24,7 +24,7 @@ client uses:
 | Model | Constrained JSON | Streamed tool calls whole |
 | --- | --- | --- |
 | gemma4:e4b | pass (3/3) | pass (2 calls, each whole) |
-| qwen3.5:4b | **FAIL**: the request timed out (the client's default timeout) in two separate runs | pass (2 calls, each whole) |
+| qwen3.5:4b | **FAIL**: the request timed out in two separate runs (the first with Bun's default fetch timeout of 5 minutes; the script now sets 5 minutes explicitly) | pass (2 calls, each whole) |
 | qwen3.5:9b | pass (3/3) | pass (2 calls, each whole) |
 
 ## Reading it
