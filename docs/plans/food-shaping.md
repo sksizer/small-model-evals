@@ -23,7 +23,7 @@ with 16 GB: gemma4:e4b 10/12 in 24.8 s, qwen3.5:4b 8/12 in 23.5 s, qwen3.5:9b 8/
 | --- | --- |
 | 28 new cases (40 in all), the 12 originals untouched | `suites/food-lookup/cases/` |
 | `loop` variant (today's, unchanged) | `suites/food-lookup/` |
-| `shape-top`, `shape-choose`, `shape-hybrid` at margins 0.2, 0.5, 1.0 | `suites/food-shape-*/`, `providers/ollama-food-shape.ts` |
+| `shape-top`, `shape-choose`, `shape-hybrid` at margins 0.1, 0.3, 1.0 | `suites/food-shape-*/`, `providers/ollama-food-shape.ts` |
 | Grams conversion and the margin rule, as plain functions with `bun test` | `providers/food-shape.ts`, `providers/food-shape.test.ts` |
 | The search with scores, for the margin | `providers/food-search.ts` (`searchScored`; `searchFoods` is unchanged in behaviour) |
 | Endpoint check | `scripts/endpoint-check.ts`, result in `results/notes/` |
@@ -40,7 +40,7 @@ labels in it, which makes the ledger, the summary and the site tell them apart w
 | `food-lookup` | `loop` |
 | `food-shape-top` | `shape-top` |
 | `food-shape-choose` | `shape-choose` |
-| `food-shape-hybrid-m02`, `-m05`, `-m10` | `shape-hybrid` at margin 0.2, 0.5, 1.0 ranking points |
+| `food-shape-hybrid-m01`, `-m03`, `-m10` | `shape-hybrid` at margin 0.1, 0.3, 1.0 ranking points |
 
 The shaped suites' `cases/` is a link to `food-lookup/cases/`, so every variant is scored on the same case files
 with the same scorer (`assertions/food.ts`, unchanged) and the same database hash check. A suite's `variant` and
@@ -52,9 +52,10 @@ as models on the site.
 
 The search ranks foods by a score (`providers/food-search.ts`: points for query words in the name, a tenth off per
 extra name word). The margin is the gap, in those points, between the top match and the second. Margin 0 is
-`shape-top`; a margin no match can reach is `shape-choose`. The values 0.2, 0.5 and 1.0 were picked by looking at
-the gaps for common queries (many plain foods tie within 0.1 on the first two, "egg" is 2.8 against 2.8; a branded
-or specific query leads by 1 or more). They are a first sweep: if the best margin is at an end of it, extend it.
+`shape-top`; a margin no match can reach is `shape-choose`. The values 0.1, 0.3 and 1.0 come from the smoke run: the first sweep (0.2, 0.5, 1.0) never let code decide on
+gemma4:e4b, because the gaps between the first two matches for plain foods are 0 to 0.2 points (chicken breast 0,
+white rice 0.1, ranch dressing 0.1, red wine 0.2, egg 0). Branded and specific queries lead by 1 or more. Gaps are
+compared in hundredths. The sweep is a first guess: if the best margin sits at an end of it, extend it.
 
 ### What is recorded
 

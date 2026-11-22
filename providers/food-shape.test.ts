@@ -47,8 +47,13 @@ describe('toGrams', () => {
   test('a count uses the portion that names it, else the usual portion', () => {
     expect(toGrams(bread, 2, 'slice')).toEqual({ grams: 56, basis: 'portion' })
     expect(toGrams(cola, 2, 'can')).toEqual({ grams: 740, basis: 'portion' })
-    expect(toGrams(egg, 3, '')).toEqual({ grams: 150, basis: 'usual-portion' })
-    expect(toGrams(egg, 2, 'egg')).toEqual({ grams: 100, basis: 'usual-portion' })
+    expect(toGrams(egg, 3, '')).toEqual({ grams: 132, basis: 'usual-portion' })
+    expect(toGrams(egg, 2, 'egg')).toEqual({ grams: 88, basis: 'usual-portion' })
+  })
+  test('the usual portion is a count portion, medium first, never a cup of mashed', () => {
+    const banana = { portions: [{ measure: '1 cup, mashed', grams: 225 }, { measure: '1 small', grams: 101 }, { measure: '1 medium (7" to 7-7/8" long)', grams: 118 }] }
+    expect(toGrams(banana, 2, '')).toEqual({ grams: 236, basis: 'usual-portion' })
+    expect(toGrams({ portions: [{ measure: '1 cup', grams: 244 }] }, 1, '')).toEqual({ grams: 244, basis: 'usual-portion' })
   })
   test('no quantity means one, and no portions fall back to 100 g', () => {
     expect(toGrams(bread, null, 'slice').grams).toBe(28)
@@ -60,6 +65,7 @@ describe('leads', () => {
   test('the margin is a gap in ranking points, inclusive', () => {
     expect(leads([3, 2.5], 0.5)).toBe(true)
     expect(leads([3, 2.6], 0.5)).toBe(false)
+    expect(leads([2.8, 2.7], 0.1)).toBe(true)
     expect(leads([3], 5)).toBe(true)
     expect(leads([], 0)).toBe(false)
   })

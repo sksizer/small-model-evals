@@ -62,12 +62,19 @@ function gramsPerUnit(portions: Portion[], unit: string, anywhere: boolean): num
   return null
 }
 
-/** What the food's first portion weighs for one of its own measure ("1 serving" or "1 slice"), or null when it has none. */
+const isMeasureUnit = (rest: string) => Object.keys({ ...G_PER, ...ML_PER }).some((u) => leadsWith(rest, u)) || /^(cups?|tbsp|tsp|fl oz|oz|lb)\b/.test(rest)
+
+/**
+ * What one usual portion of the food weighs: the first count portion that says "medium" (a banana, an apple), else
+ * the first count portion ("1 slice", "1 large"), else the first portion of any kind; null when it has none. A
+ * count portion is one not measured in weight or volume, so "1 cup, mashed" does not stand for a whole banana.
+ */
 function usualPortion(portions: Portion[]): number | null {
-  const first = portions[0]
-  if (!first) return null
-  const parsed = parseMeasure(first.measure)
-  return parsed ? first.grams / parsed.count : first.grams
+  const parsed = portions.map((p) => ({ p, m: parseMeasure(p.measure) }))
+  const counted = parsed.filter(({ m }) => m !== null && !isMeasureUnit(m.rest))
+  const pick = counted.find(({ m }) => m!.rest.includes('medium')) ?? counted[0] ?? parsed[0]
+  if (!pick) return null
+  return pick.m ? pick.p.grams / pick.m.count : pick.p.grams
 }
 
 /**
@@ -100,9 +107,9 @@ export function toGrams(food: Pick<Food, 'portions'>, quantity: number | null | 
   return usual === null ? { grams: q * FALLBACK_GRAMS, basis: 'default' } : { grams: q * usual, basis: 'usual-portion' }
 }
 
-/** True when the top match leads the second by at least `margin` ranking points; a lone match always leads. */
+/** True when the top match leads the second by at least `margin` ranking points (compared in hundredths, so 2.8 against 2.7 is a lead of 0.1); a lone match always leads. */
 export function leads(scores: number[], margin: number): boolean {
   if (scores.length === 0) return false
   if (scores.length === 1) return true
-  return scores[0]! - scores[1]! >= margin
+  return Math.round((scores[0]! - scores[1]!) * 100) >= Math.round(margin * 100)
 }
