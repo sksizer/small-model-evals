@@ -235,6 +235,7 @@ rebuilds it from the pinned download. The suite's provider (`providers/ollama-fo
 the file's sha256 against its config before every case, so the database cannot change under a
 snapshot. `providers/food-search.ts` is the search the model calls: keyword ranking, no model behind
 it. Try it with `bun providers/food-search.ts rice white cooked`.
+`bun scripts/endpoint-check.ts` checks, per model, that Ollama's OpenAI-compatible `/v1/chat/completions` constrains a reply with a JSON schema and streams tool calls whole (the dashboard's path); the shaped variants (`docs/plans/food-shaping.md`) have `bun test providers` for their grams conversion and margin rule.
 
 ## Cases are immutable
 
