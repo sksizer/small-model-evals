@@ -1,0 +1,10 @@
+description: five items mixing grams, ounces, cups and spoons
+metadata: { id: long-dinner-plate }
+vars:
+  note: "dinner: 6 oz roasted chicken breast, a cup of cooked white rice, 80 g steamed broccoli, 2 tbsp of ranch dressing and a glass of red wine"
+  expected:
+    - { text: [chicken], food: [chicken], kcal_100g: 165, grams: { approx: 170, tol: 10 } }
+    - { text: [rice], food: [rice], kcal_100g: 130, grams: { approx: 158, tol: 25 } }
+    - { text: [broccoli], food: [broccoli], kcal_100g: 35, grams: { approx: 80, tol: 3 } }
+    - { text: [ranch, dressing], food: [ranch], kcal_100g: 430, grams: { approx: 30, tol: 6 } }
+    - { text: [wine], food: [wine], kcal_100g: 85, grams: { approx: 147, tol: 30 } }

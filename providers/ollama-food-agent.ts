@@ -15,9 +15,7 @@
 // counts against it, and at 1024 botpsy-0.8b-think spent it all thinking and
 // answered nothing, 2026-11-14), and `db_sha256`: the database's hash, checked before
 // every case so a changed database cannot pass for the one a snapshot names.
-import { createHash } from 'node:crypto'
-import { readFileSync } from 'node:fs'
-import { DEFAULT_DB, searchFoods } from './food-search.ts'
+import { assertDb, searchFoods } from './food-search.ts'
 import { BASE, streamChat, sumTimings, type Timings } from './ollama-stream.ts'
 
 const MAX_TURNS = 8
@@ -74,8 +72,6 @@ const ANSWER_SCHEMA = {
 
 const FINAL = 'Now give the final answer as JSON: {"items": [{"text", "fdc_id", "grams"}]}, one item per food or drink consumed.'
 
-let checkedDb = ''
-
 export default class OllamaFoodAgent {
   private readonly config: Config
 
@@ -102,11 +98,7 @@ export default class OllamaFoodAgent {
 
   async callApi(prompt: string) {
     try {
-      if (checkedDb !== this.config.db_sha256) {
-        const got = createHash('sha256').update(readFileSync(DEFAULT_DB)).digest('hex')
-        if (got !== this.config.db_sha256) throw new Error(`foods.jsonl sha256 ${got} is not the configured ${this.config.db_sha256}`)
-        checkedDb = got
-      }
+      assertDb(this.config.db_sha256)
       const messages = JSON.parse(prompt) as Message[]
       const searches: string[] = []
       let tokens = { prompt: 0, completion: 0 }

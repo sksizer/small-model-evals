@@ -1,0 +1,6 @@
+description: a count of pizza slices
+metadata: { id: count-pizza-slices }
+vars:
+  note: "two slices of pizza"
+  expected:
+    - { text: [pizza], food: [pizza], kcal_100g: 270, grams: { approx: 190, tol: 80 } }

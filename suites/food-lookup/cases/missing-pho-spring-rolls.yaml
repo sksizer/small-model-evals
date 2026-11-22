@@ -1,0 +1,7 @@
+description: two dishes the database lacks
+metadata: { id: missing-pho-spring-rolls }
+vars:
+  note: "bowl of pho and two spring rolls for dinner"
+  expected:
+    - { text: [pho], fdc_id: null }
+    - { text: [spring roll], fdc_id: null }

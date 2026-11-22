@@ -1,0 +1,8 @@
+description: a teaspoon, a tablespoon and a cup
+metadata: { id: household-honey-sugar-tea }
+vars:
+  note: "a cup of black tea with a teaspoon of sugar and a tablespoon of honey"
+  expected:
+    - { text: [tea], food: [tea], kcal_100g: 1, grams: { approx: 237, tol: 60 } }
+    - { text: [sugar], food: [sugar], kcal_100g: 387, grams: { approx: 4.2, tol: 2 } }
+    - { text: [honey], food: [honey], kcal_100g: 304, grams: { approx: 21, tol: 5 } }

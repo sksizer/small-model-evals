@@ -1,0 +1,6 @@
+description: a fraction of cups of cooked grain
+metadata: { id: household-brown-rice-cups }
+vars:
+  note: "one and a half cups of cooked brown rice"
+  expected:
+    - { text: [rice], food: [brown], kcal_100g: 123, grams: { approx: 303, tol: 40 } }

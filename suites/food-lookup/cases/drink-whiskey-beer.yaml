@@ -1,0 +1,7 @@
+description: a shot and a bottle
+metadata: { id: drink-whiskey-beer }
+vars:
+  note: "a shot of whiskey and a bottle of beer"
+  expected:
+    - { text: [whiskey], food: [whiskey], kcal_100g: 263, grams: { approx: 42, tol: 8 } }
+    - { text: [beer], food: [beer], kcal_100g: 43, grams: { approx: 355, tol: 40 } }

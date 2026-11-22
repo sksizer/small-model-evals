@@ -1,0 +1,7 @@
+description: a cup of cooked pasta and two tablespoons of oil
+metadata: { id: household-pasta-olive-oil }
+vars:
+  note: "a cup of cooked pasta with 2 tablespoons of olive oil"
+  expected:
+    - { text: [pasta], food: [pasta], kcal_100g: 158, grams: { approx: 124, tol: 35 } }
+    - { text: [olive oil, oil], food: [olive], kcal_100g: 884, grams: { approx: 27, tol: 4 } }

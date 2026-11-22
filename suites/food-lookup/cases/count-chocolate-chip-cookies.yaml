@@ -1,0 +1,6 @@
+description: a count of cookies
+metadata: { id: count-chocolate-chip-cookies }
+vars:
+  note: "ate 4 chocolate chip cookies"
+  expected:
+    - { text: [cookie], food: [chocolate chip], kcal_100g: 451, grams: { approx: 50, tol: 25 } }

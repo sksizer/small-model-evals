@@ -1,0 +1,7 @@
+description: two glasses
+metadata: { id: drink-milk-and-juice }
+vars:
+  note: "a glass of whole milk and a glass of orange juice"
+  expected:
+    - { text: [milk], food: [milk], kcal_100g: 61, grams: { approx: 244, tol: 50 } }
+    - { text: [orange juice, juice], food: [orange juice], kcal_100g: 49, grams: { approx: 249, tol: 50 } }

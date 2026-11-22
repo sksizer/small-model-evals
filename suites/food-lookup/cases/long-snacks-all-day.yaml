@@ -1,0 +1,11 @@
+description: six snacks across a day
+metadata: { id: long-snacks-all-day }
+vars:
+  note: "snacks today: 15 almonds, a cup of blueberries, 1 oz of mozzarella, 2 tbsp of peanut butter, a cup of whole milk and a banana"
+  expected:
+    - { text: [almond], food: [almond], kcal_100g: 579, grams: { approx: 18, tol: 6 } }
+    - { text: [blueberries, blueberry], food: [blueberries], kcal_100g: 57, grams: { approx: 148, tol: 20 } }
+    - { text: [mozzarella, cheese], food: [mozzarella], kcal_100g: 299, grams: { approx: 28.35, tol: 3 } }
+    - { text: [peanut butter], food: [peanut butter], kcal_100g: 588, grams: { approx: 32, tol: 6 } }
+    - { text: [milk], food: [milk], kcal_100g: 61, grams: { approx: 244, tol: 30 } }
+    - { text: [banana], food: [banana], kcal_100g: 89, grams: { approx: 118, tol: 25 } }

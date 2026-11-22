@@ -1,0 +1,7 @@
+description: misspelt egg and banana
+metadata: { id: typo-eggs-banana }
+vars:
+  note: "2 scrambeled egs and a banan"
+  expected:
+    - { text: [egg], food: [egg], kcal_100g: 149, grams: { approx: 100, tol: 35 } }
+    - { text: [banana, banan], food: [banana], kcal_100g: 89, grams: { approx: 118, tol: 25 } }

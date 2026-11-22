@@ -1,5 +1,5 @@
 // A streamed Ollama /api/chat call with full timing, shared by the chat-style
-// providers (ollama-chat.ts, ollama-food-agent.ts, ollama-decide.ts, ollama-boxes.ts).
+// providers (ollama-chat.ts, ollama-food-agent.ts, ollama-food-shape.ts, ollama-decide.ts, ollama-boxes.ts).
 //
 // promptfoo's built-in `ollama:chat:` provider records only wall-clock latency.
 // Streaming lets this one also see when the first token arrives; Ollama's final

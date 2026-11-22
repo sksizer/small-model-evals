@@ -1,0 +1,7 @@
+description: counts of whole fruit
+metadata: { id: count-bananas-orange }
+vars:
+  note: "2 bananas and an orange"
+  expected:
+    - { text: [banana], food: [banana], kcal_100g: 89, grams: { approx: 236, tol: 45 } }
+    - { text: [orange], food: [orange], kcal_100g: 47, grams: { approx: 131, tol: 40 } }

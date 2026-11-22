@@ -1,0 +1,6 @@
+description: one food eaten, one planned
+metadata: { id: planned-burger-later }
+vars:
+  note: "had a banana for breakfast. thinking of getting a burger for lunch"
+  expected:
+    - { text: [banana], food: [banana], kcal_100g: 89, grams: { approx: 118, tol: 25 } }

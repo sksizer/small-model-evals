@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# food-shape-hybrid-r150: shape, code takes the top match when it leads the second by a factor of 1.5, else one call picks
+# Same cases (cases/ is a link to ../food-lookup/cases), same database and same scoring as food-lookup, but the
+# model is not given a tool: providers/ollama-food-shape.ts shapes the note in one constrained call, code
+# searches and converts to grams, and the variant decides who picks the food (plan: docs/plans/food-shaping.md).
+description: food-shape-hybrid-r150 — shape, code takes the top match when it leads the second by a factor of 1.5, else one call picks
+
+prompts:
+  - |-
+    [{"role": "system", "content": "You read a free-form note about food and drink and list what the person consumed. Today is Thursday 2026-10-29. For each food or drink actually consumed give: text, the note's words for it; query, 1 to 4 plain keywords for finding it in the USDA food database, the food first and then its form or cooking method (for example \"egg whole cooked\", \"rice white cooked\", \"cola\"); quantity, the number the note gives for it, or null when it gives none (for \"two slices\" use 2, for \"half an avocado\" use 0.5); unit, what the quantity counts: g, oz, lb, ml, cup, tbsp, tsp, or the thing counted (slice, can, egg, piece), or an empty string when there is no unit. Leave out food that was only planned, mentioned or wanted and not eaten. Give one item per food, including each part of a dish the note lists."},
+     {"role": "user", "content": {{ note | dump }}}]
+
+providers:
+  - id: file://../../providers/ollama-food-shape.ts
+    label: gemma4:e4b
+    config: { model: 'gemma4:e4b', think: false, db_sha256: &db 54b2eeb990b87239bb2f3fa777611ce9acdc5486d0b27ecb3f1ae93816bbf87d, variant: hybrid, ratio: 1.5 }
+  - { id: file://../../providers/ollama-food-shape.ts, label: qwen3.5:4b, config: { model: 'qwen3.5:4b', think: false, db_sha256: *db, variant: hybrid, ratio: 1.5 } }
+  - { id: file://../../providers/ollama-food-shape.ts, label: qwen3.5:9b, config: { model: 'qwen3.5:9b', think: false, db_sha256: *db, variant: hybrid, ratio: 1.5 } }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  assert:
+    - type: javascript
+      value: file://../../assertions/food.ts
+
+tests: file://cases/*.yaml

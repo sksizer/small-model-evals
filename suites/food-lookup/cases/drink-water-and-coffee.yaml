@@ -1,0 +1,7 @@
+description: a drink in millilitres and cups of coffee
+metadata: { id: drink-water-and-coffee }
+vars:
+  note: "500 ml of water and two cups of black coffee"
+  expected:
+    - { text: [water], food: [water], kcal_100g: 0, grams: { approx: 500, tol: 25 } }
+    - { text: [coffee], food: [coffee], kcal_100g: 1, grams: { approx: 474, tol: 60 } }
