@@ -1,0 +1,18 @@
+{
+  "tag": "Xenova/whisper-base.en",
+  "digest": "95bf40a50853",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "q8",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "speech-transcript-search"
+  ],
+  "default_parameters": {
+    "revision": "95bf40a508535962c6483ead40270b2e32267508"
+  },
+  "template_hash": ""
+}

@@ -1,0 +1,185 @@
+{
+  "run": "2026-11-21T09-05-57",
+  "evals": [
+    {
+      "model": "embeddinggemma2-audio",
+      "suite": "search",
+      "kind": "sounds",
+      "start": {
+        "load_1m": 1.62,
+        "load_per_core": 0.16,
+        "mem_available_gib": 4.7,
+        "mem_free_pct": 59,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 3.79,
+        "load_per_core": 0.38,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 56,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "7.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "embeddinggemma2-audio",
+      "suite": "search",
+      "kind": "speech",
+      "start": {
+        "load_1m": 3.79,
+        "load_per_core": 0.38,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 56,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 4.62,
+        "load_per_core": 0.46,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 56,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "7.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "embeddinggemma2-audio",
+      "suite": "search",
+      "kind": "sound-to-sound",
+      "start": {
+        "load_1m": 4.62,
+        "load_per_core": 0.46,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 56,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 5.84,
+        "load_per_core": 0.58,
+        "mem_available_gib": 5.5,
+        "mem_free_pct": 57,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "7.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "clap-htsat-unfused",
+      "suite": "search",
+      "kind": "sounds",
+      "start": {
+        "load_1m": 5.84,
+        "load_per_core": 0.58,
+        "mem_available_gib": 5.5,
+        "mem_free_pct": 57,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 5.3,
+        "load_per_core": 0.53,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 57,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "7.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "clap-htsat-unfused",
+      "suite": "search",
+      "kind": "sound-to-sound",
+      "start": {
+        "load_1m": 5.3,
+        "load_per_core": 0.53,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 57,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 5.26,
+        "load_per_core": 0.53,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 57,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "7.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "whisper-base-en-embeddinggemma2",
+      "suite": "search",
+      "kind": "speech",
+      "start": {
+        "load_1m": 5.26,
+        "load_per_core": 0.53,
+        "mem_available_gib": 5.4,
+        "mem_free_pct": 57,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 6.18,
+        "load_per_core": 0.62,
+        "mem_available_gib": 6.2,
+        "mem_free_pct": 50,
+        "swap_used_gib": 7.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "7.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    }
+  ]
+}

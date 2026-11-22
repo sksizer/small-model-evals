@@ -14,7 +14,12 @@ needs:
   max_load_per_core: 0.3
   min_free_gib: 4
   quiet_minutes: 10
-status: pending
-run_ids: []
-done: []
+status: done
+run_ids:
+  - 2026-11-21T16-36-05
+done:
+  - siglip2-base·search·videos
+  - siglip2-base·search·video-to-video
+  - embeddinggemma2·search·videos
+  - embeddinggemma2·search·video-to-video
 notes: ""

@@ -1,0 +1,18 @@
+{
+  "tag": "Xenova/clap-htsat-unfused",
+  "digest": "c28f2883575e",
+  "engine": "transformers.js (onnxruntime)",
+  "format": "onnx",
+  "family": "",
+  "quantization": "q8",
+  "parameter_size": "",
+  "parameter_count": null,
+  "context_length": null,
+  "capabilities": [
+    "embedding-text-audio"
+  ],
+  "default_parameters": {
+    "revision": "c28f2883575e590e04d3146ff0713c2448d691ba"
+  },
+  "template_hash": ""
+}

@@ -1,0 +1,132 @@
+{
+  "run": "2026-11-21T16-36-05",
+  "evals": [
+    {
+      "model": "siglip2-base",
+      "suite": "search",
+      "kind": "videos",
+      "start": {
+        "load_1m": 1.83,
+        "load_per_core": 0.18,
+        "mem_available_gib": 4.2,
+        "mem_free_pct": 52,
+        "swap_used_gib": 8.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 4.99,
+        "load_per_core": 0.5,
+        "mem_available_gib": 5.6,
+        "mem_free_pct": 49,
+        "swap_used_gib": 8.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": [
+          {
+            "name": "dashboard",
+            "cpu_pct": 56
+          }
+        ]
+      },
+      "flags": [
+        "8.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "dashboard is using 56% of a core: close it if you can"
+      ]
+    },
+    {
+      "model": "siglip2-base",
+      "suite": "search",
+      "kind": "video-to-video",
+      "start": {
+        "load_1m": 1.58,
+        "load_per_core": 0.16,
+        "mem_available_gib": 4.8,
+        "mem_free_pct": 60,
+        "swap_used_gib": 8.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 3.8,
+        "load_per_core": 0.38,
+        "mem_available_gib": 5.9,
+        "mem_free_pct": 54,
+        "swap_used_gib": 8.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "8.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "videos",
+      "start": {
+        "load_1m": 3.8,
+        "load_per_core": 0.38,
+        "mem_available_gib": 5.8,
+        "mem_free_pct": 54,
+        "swap_used_gib": 8.5,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 6.23,
+        "load_per_core": 0.62,
+        "mem_available_gib": 6.7,
+        "mem_free_pct": 53,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "8.5 GiB of swap in use: memory is already over-committed; restart apps that hold a lot",
+        "8.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    },
+    {
+      "model": "embeddinggemma2",
+      "suite": "search",
+      "kind": "video-to-video",
+      "start": {
+        "load_1m": 6.23,
+        "load_per_core": 0.62,
+        "mem_available_gib": 6.7,
+        "mem_free_pct": 53,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "end": {
+        "load_1m": 6.2,
+        "load_per_core": 0.62,
+        "mem_available_gib": 6.5,
+        "mem_free_pct": 53,
+        "swap_used_gib": 8.4,
+        "power": "ac",
+        "low_power_mode": false,
+        "thermal_limit_pct": null,
+        "busy": []
+      },
+      "flags": [
+        "8.4 GiB of swap in use: memory is already over-committed; restart apps that hold a lot"
+      ]
+    }
+  ]
+}

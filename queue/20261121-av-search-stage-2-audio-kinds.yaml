@@ -16,7 +16,14 @@ needs:
   max_load_per_core: 0.3
   min_free_gib: 4
   quiet_minutes: 10
-status: pending
-run_ids: []
-done: []
+status: done
+run_ids:
+  - 2026-11-21T09-05-57
+done:
+  - embeddinggemma2-audio·search·sounds
+  - embeddinggemma2-audio·search·speech
+  - embeddinggemma2-audio·search·sound-to-sound
+  - clap-htsat-unfused·search·sounds
+  - clap-htsat-unfused·search·sound-to-sound
+  - whisper-base-en-embeddinggemma2·search·speech
 notes: ""

@@ -15,6 +15,7 @@ Each cell: cases passed / total · mean score (partial credit) · median latency
 | audio-fingerprint | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 16/16 · 0.78 · 0.0 s · 2026-11-21 | n/a | n/a | n/a | n/a |
 | botpsy-0.8b | 4/20 · 0.20 · 0.2 s · 2026-11-14 **stale** | n/a | 6/15 · 0.73 · 0.9 s · 2026-11-14 **stale** | 0/12 · 0.20 · 14.6 s · 2026-11-15 **stale** | n/a | n/a | 15/15 · 1.00 · 0.8 s · 2026-11-14 **stale** | n/a | n/a | n/a | n/a | 11/18 · 0.72 · 0.5 s · 2026-11-14 **stale** | n/a | n/a | n/a | n/a | 2/16 · 0.49 · 3.3 s · 2026-11-14 **stale** |
 | botpsy-0.8b-think | n/a | n/a | n/a | 1/12 · 0.31 · 59.7 s · 2026-11-15 **stale** | n/a | n/a | 14/15 · 0.99 · 2.0 s · 2026-11-14 **stale** | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
+| clap-htsat-unfused | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 49/54 · 0.92 · 0.0 s · 2026-11-21 | n/a | n/a | n/a | n/a |
 | clip-vit-b16 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 122/140 · 0.91 · 0.0 s · 2026-11-08 **stale** | n/a | 29/29 · 0.98 · 0.0 s · 2026-11-03 | n/a | n/a |
 | clip-vit-b16-zs | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 45/108 · 0.43 · 0.0 s · 2026-11-07 | n/a | n/a | n/a |
 | clip-vit-b32 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 28/29 · 0.97 · 0.0 s · 2026-11-03 | n/a | n/a |
@@ -28,7 +29,8 @@ Each cell: cases passed / total · mean score (partial credit) · median latency
 | dinov2-base | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 26/29 · 0.94 · 0.0 s · 2026-11-03 | n/a | n/a |
 | dinov2-small | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 25/29 · 0.94 · 0.0 s · 2026-11-03 | n/a | n/a |
 | dinov3-vits16 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 28/29 · 0.97 · 0.0 s · 2026-11-03 | n/a | n/a |
-| embeddinggemma2 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 206/231 · 0.94 · 0.1 s · 2026-11-08 **stale** · 39 not run | n/a | 29/29 · 1.00 · 0.0 s · 2026-11-05 **stale** | n/a | n/a |
+| embeddinggemma2 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 243/270 · 0.94 · 0.1 s · 2026-11-21 **stale** | n/a | 29/29 · 1.00 · 0.0 s · 2026-11-05 **stale** | n/a | n/a |
+| embeddinggemma2-audio | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 47/78 · 0.74 · 0.0 s · 2026-11-21 | n/a | n/a | n/a | n/a |
 | embeddinggemma2-text | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 74/91 · 0.90 · 0.1 s · 2026-11-08 **stale** | n/a | n/a | n/a | n/a |
 | embeddinggemma:300m | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 74/91 · 0.89 · 0.0 s · 2026-11-08 **stale** | n/a | n/a | n/a | n/a |
 | florence2-base-ground-q8 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 5/15 · 0.58 · 0.8 s · 2026-11-07 | 14/18 · 0.89 · 0.8 s · 2026-11-07 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
@@ -55,10 +57,11 @@ Each cell: cases passed / total · mean score (partial credit) · median latency
 | qwen3.5:9b | 20/20 · 1.00 · 0.5 s · 2026-11-01 **stale** | n/a | 11/15 · 0.93 · 2.4 s · 2026-11-01 **stale** | 8/12 · 0.85 · 30.2 s · 2026-11-15 **stale** | 75/77 · 0.97 · 5.0 s · 2026-11-07 **stale** | 10/10 · 1.00 · 6.1 s · 2026-11-01 **stale** | 15/15 · 1.00 · 1.5 s · 2026-11-01 **stale** | 12/15 · 0.80 · 5.4 s · 2026-11-01 **stale** | 18/18 · 1.00 · 4.7 s · 2026-11-01 **stale** | 11/14 · 0.88 · 5.5 s · 2026-11-01 **stale** | 0/8 · 0.19 · 17.9 s · 2026-11-07 **stale** | 16/18 · 0.94 · 0.9 s · 2026-11-01 **stale** | n/a | 89/108 · 0.88 · 10.5 s · 2026-11-04 | n/a | 41/42 · 0.89 · 6.9 s · 2026-11-01 **stale** | 4/16 · 0.74 · 6.6 s · 2026-11-01 **stale** |
 | qwen3:4b | 15/20 · 0.75 · 0.4 s · 2026-11-01 **stale** | n/a | 8/15 · 0.85 · 1.6 s · 2026-11-01 **stale** | 9/12 · 0.89 · 172.1 s · 2026-11-15 **stale** | n/a | n/a | 15/15 · 1.00 · 7.8 s · 2026-11-01 **stale** | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 6/16 · 0.76 · 6.4 s · 2026-11-01 **stale** |
 | rtdetr-r18 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 6/14 · 0.64 · 0.1 s · 2026-11-01 | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
-| siglip2-base | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 134/140 · 0.96 · 0.0 s · 2026-11-08 **stale** · 39 not run | n/a | 29/29 · 0.98 · 0.0 s · 2026-11-03 | n/a | n/a |
+| siglip2-base | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 172/179 · 0.96 · 0.0 s · 2026-11-21 **stale** | n/a | 29/29 · 0.98 · 0.0 s · 2026-11-03 | n/a | n/a |
 | siglip2-base-zs | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 48/108 · 0.45 · 0.1 s · 2026-11-07 | n/a | n/a | n/a |
 | vit-nsfw-adamcodd-q8 | n/a | n/a | n/a | n/a | 67/77 · 0.87 · 0.1 s · 2026-11-07 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 | vit-nsfw-falconsai-q8 | n/a | n/a | n/a | n/a | 70/77 · 0.91 · 0.1 s · 2026-11-07 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
+| whisper-base-en-embeddinggemma2 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 23/24 · 0.97 · 0.1 s · 2026-11-21 | n/a | n/a | n/a | n/a |
 | yunet-2023mar | n/a | n/a | n/a | n/a | n/a | n/a | n/a | 13/15 · 0.87 · 0.0 s · 2026-11-07 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 
 ### Speed and memory
