@@ -1,6 +1,6 @@
 # Plan: speech to text (transcription)
 
-Status: approved (2026-11-23); the owner's answers are under "Decisions" at the end. Stage 1 next.
+Status: approved (2026-11-23); the owner's answers are under "Decisions" at the end. Stage 1 built (66 clips, contact sheet `results/contact/av-corpus.html`, `bun scripts/build-av-contact.ts`) and waiting on the owner's listen-through; stage 2 built (scorer, provider, 8 pinned models, 66 cases, site) but never run. Next: owner approves the clips, queue the 8 models for a quiet period, then stage 3 (`brew install whisper-cpp`, Apple Swift CLI), the private suite (Q3), review, PR. This branch sits on `suite/av-search`; open its PR after that one merges.
 
 ## Goal
 

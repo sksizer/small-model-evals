@@ -9,7 +9,7 @@
 | [av-search](av-search.md) | Runs done (2026-11-21) | EmbeddingGemma 2 `sounds` query check, unsure cases, review, PR |
 | [extraction](extraction.md) | Proposed | Owner answers Q1–Q5 |
 | [image-gen](image-gen.md) | Proposed | Owner answers Q1–Q4 |
-| [transcribe](transcribe.md) | Approved | Corpus (stage 1) |
+| [transcribe](transcribe.md) | Corpus, cases and tooling built; not run | Owner listens to the clips; runs; stage 3 |
 
 ## Queued runs
 
