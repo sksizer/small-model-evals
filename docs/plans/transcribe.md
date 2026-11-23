@@ -1,6 +1,6 @@
 # Plan: speech to text (transcription)
 
-Status: proposed (2026-11-22). Waiting on the owner's answers to the questions at the end.
+Status: approved (2026-11-23); the owner's answers are under "Decisions" at the end. Stage 1 next.
 
 ## Goal
 
@@ -26,8 +26,7 @@ vars:
 
 **Scoring.** Word error rate (WER): (substitutions + deletions + insertions) / reference words, after both
 texts are normalised the usual way (lowercase, punctuation dropped, numbers and spellings put in one form, as
-Whisper's English normaliser and the Open ASR Leaderboard do). Character error rate for languages written
-without spaces. A case passes at WER ≤ 10% for clean read speech and ≤ 20% for harder kinds (set per kind).
+Whisper's English normaliser and the Open ASR Leaderboard do). A case passes at WER ≤ 10% for clean read speech and ≤ 20% for harder kinds (set per kind).
 The site shows WER, the reference and the hypothesis with the differences marked, and speed as the
 real-time factor (seconds of audio per second of compute).
 
@@ -39,10 +38,9 @@ real-time factor (seconds of audio per second of compute).
 | `read-hard` | Accented, noisy or poorly recorded read speech | LibriSpeech test-other; Common Voice (CC0) |
 | `long` | 1–2 minute readings: tests chunking, the first 30 s isn't everything | Our LibriVox clips, transcripts corrected by hand against the audio |
 | `noisy` | Clean clips mixed with corpus sounds (rain, traffic, cafe) at set loudness | Made here, from `read` clips and corpus sounds |
-| `languages` | French, German, Spanish, Japanese, … (Q2) | FLEURS (CC BY 4.0) or Common Voice |
 | `conversation` | Meetings, several speakers, overlap (Q1) | AMI (CC BY 4.0, to verify); needs a standard change |
 
-About 60 English clips plus 10 per extra language, 5–30 s each except `long`. Every source's licence is
+About 60 English clips, 5–30 s each except `long` (English only, Q2). Every source's licence is
 checked at the source before anything is fetched.
 
 **Contamination.** LibriSpeech, Common Voice and FLEURS are in many models' training data and every model
@@ -54,12 +52,11 @@ model that does far better on LibriSpeech than on those is remembering, not list
 | Model | Size | Licence | Runs as | Note |
 | --- | --- | --- | --- | --- |
 | Whisper tiny.en, base.en, small.en | 39M–244M | MIT | transformers.js (ONNX), as `search` | The baseline everyone knows |
-| Whisper large-v3-turbo | 809M | MIT | transformers.js or whisper.cpp (Q4) | The usual "good enough" ceiling |
+| Whisper large-v3-turbo | 809M | MIT | transformers.js and whisper.cpp | The usual "good enough" ceiling |
 | Distil-Whisper (distil-small.en, distil-large-v3.5) | 166M, 756M | MIT | transformers.js | Faster Whisper students |
 | Moonshine (v1 tiny/base; v2 streaming small) | 27M–123M | MIT (to confirm) | transformers.js (v1); v2 ONNX to confirm | Built for small devices |
 | Parakeet TDT 0.6B v3 | 0.6B | CC BY 4.0 (to confirm: NVIDIA lists two licences) | ONNX (community export) | Near the top of the Open ASR Leaderboard |
-| Granite Speech 4.1 2B | 2B | Apache-2.0 (to confirm) | Mac runtime to find | Reported top of the leaderboard under 3B |
-| Gemma 4 E4B / E2B, audio in | ~2–4B effective | Gemma | Not Ollama (no audio input there yet); mlx-vlm or llama.cpp (Q4) | The general model you already run, listening |
+| Granite Speech 4.1 2B | 2B | Apache-2.0 (to confirm) | Only if transformers.js or whisper.cpp runs it | Reported top of the leaderboard under 3B |
 | Apple SpeechTranscriber | OS | macOS | A small Swift CLI over the Speech framework (Q4) | Built into macOS 26, nothing to download |
 
 Every model is pinned to a revision, as elsewhere. The 12-month rule applies; Whisper and Moonshine v1 are
@@ -67,8 +64,9 @@ baselines. Anything unconfirmed above is checked before it is pinned and dropped
 
 ## Tooling
 
-- `providers/transcribe.ts`: one promptfoo provider, `family` per runtime (`transformers`, and the ones Q4
-  allows). It decodes through `providers/media.ts` (16 kHz mono) and returns the text plus timing.
+- `providers/transcribe.ts`: one promptfoo provider, `family` per runtime: `transformers`, `whisper-cpp`
+  (the `whisper-cli` binary from brew, ggml models pinned by sha256) and `apple` (a small Swift CLI over
+  `SpeechTranscriber`, built by `scripts/setup.ts`, like `scripts/metal-working-set.swift`). It decodes through `providers/media.ts` (16 kHz mono) and returns the text plus timing.
 - `assertions/wer.ts`: the normaliser and WER/CER, with tests. A small hand-written implementation; no new
   dependency unless an existing one covers the normaliser.
 - `scripts/fetch-av.ts` grows the new sources; `scripts/av-recipes.ts` makes the `noisy` mixes.
@@ -80,7 +78,7 @@ baselines. Anything unconfirmed above is checked before it is pinned and dropped
 
 1. Corpus: fetch, convert, correct the `long` transcripts, contact sheet with players for the owner's check.
 2. Scorer, provider (transformers.js models first), cases, smoke test, runs, site.
-3. The other runtimes Q4 allows, one at a time.
+3. whisper.cpp and Apple SpeechTranscriber, one at a time.
 
 ## Questions for the owner
 
@@ -95,3 +93,12 @@ baselines. Anything unconfirmed above is checked before it is pinned and dropped
 - **Q4. Runtimes.** transformers.js covers most models in-process. The others each add a tool to install:
   whisper.cpp (brew), mlx-vlm (Python, for Gemma 4 audio and maybe Granite), and a Swift CLI for Apple's API.
   Recommended: all three, in stage 3, each dropped if it can't be pinned.
+
+## Decisions (owner, 2026-11-23)
+
+- **Q1:** yes. `conversation` from AMI, with the corpus standard changed to allow speech corpora recorded with
+  the speakers' consent for research, under the usual licence rules.
+- **Q2:** English only. The `languages` kind is dropped; `.en` model variants are fair game.
+- **Q3:** yes. A private suite for the owner's own recordings, set up with `init-private.ts`.
+- **Q4:** whisper.cpp and Apple SpeechTranscriber. No Python runtime, so Gemma 4 audio waits until Ollama or
+  transformers.js takes audio for it.

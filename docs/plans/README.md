@@ -9,7 +9,7 @@
 | [av-search](av-search.md) | Cases and providers built; smoke tests and runs pending | Runs, X-CLIP export (stage 2) |
 | [extraction](extraction.md) | Proposed | Owner answers Q1–Q5 |
 | [image-gen](image-gen.md) | Proposed | Owner answers Q1–Q4 |
-| [transcribe](transcribe.md) | Proposed | Owner answers Q1–Q4 |
+| [transcribe](transcribe.md) | Approved | Corpus (stage 1) |
 
 ## Queued runs
 
