@@ -78,21 +78,36 @@ Status: in force from 2026-11-06. It applies to every sound, speech and video cl
     but each one is checked: the archive.org item must be in the `librivoxaudio` collection and its metadata
     must state a public-domain or CC0 `licenseurl`. An item that states nothing is refused, whatever LibriVox
     says in general.
+  - **LibriSpeech** (openslr.org/12): read speech cut from LibriVox recordings, released under CC BY 4.0. The
+    page's licence line is read before the archive is downloaded, and clips are credited to the corpus and to
+    LibriVox.
+  - **Speech corpora recorded with the speakers' consent for research**, today the AMI Meeting Corpus
+    (groups.inf.ed.ac.uk/ami, CC BY 4.0, adult participants who signed consent forms). The same licence rules
+    apply: the corpus's licence page must say CC BY 4.0 (or CC0, or public domain) before anything is
+    fetched. A corpus whose licence is non-commercial, share-alike, no-derivatives, or unstated is refused,
+    however well documented its consent.
   - **Freesound, CC0 filter only.** Never a CC BY, CC BY-NC or "sampling" file from it. Freesound's API needs
     a key, so `scripts/fetch-av.ts` does not fetch from it; Freesound recordings that Commons hosts under CC0
     come in as Commons files.
   - **Made here**: derived copies of corpus clips (trimmed, recompressed, volume-shifted), and tones or noise
     from code. These keep their parent's licence and credit; the made-from-code ones are CC0.
 - **Excluded.** AudioSet and anything else from YouTube, ESC-50 (CC BY-NC), xeno-canto (mostly NC), and any
-  scraped set, for the reason given under "Sources" above.
+  scraped set, for the reason given under "Sources" above. Common Voice is allowed in principle (CC0) but is
+  not in the corpus: its release needs an account to download.
 - **Content.** No children (voices or pictures), nothing intimate, and no identifiable private person speaking
-  or shown as the focus. Speech comes only from public-domain readings (LibriVox), never from conversations,
-  calls or interviews. Videos are scenes, machines and animals; a person may pass through a public scene.
+  or shown as the focus. Speech comes from public-domain readings (LibriVox), from
+  LibriSpeech, and from research corpora recorded with the speakers' consent (AMI); never from scraped
+  conversations, calls or interviews, and never from children. Videos are scenes, machines and animals; a person may pass through a public scene.
 - **Stored audio.** 16 kHz mono Opus in an Ogg file (`.ogg`), about 24 kbps for sounds and 16 kbps for speech.
   Sounds run 5 to 30 s, speech 60 to 120 s. Opus is chosen over FLAC because the clips stay small (about 3 KB
   per second against about 15 KB for FLAC), which keeps the committed corpus within the size the plan
   allows; 16 kHz mono is the input EmbeddingGemma 2's audio encoder takes. Ogg Opus plays in current Chrome,
   Firefox and Safari, and ffmpeg reads it.
+- **Speech for transcription.** Clips whose words are scored (kind `transcribe`) are stored at 24 kbps instead
+  of 16: compression artefacts would cost every model words, and the score would measure the codec as well as
+  the model. They run 5 to 120 s, and carry the exact words said as `reference` and what the clip is as
+  `asr_kind`. A `noisy` clip is a derived copy of a read clip with a corpus sound mixed under it at a set
+  loudness; it credits both.
 - **Stored video.** 360p H.264 in MP4 (`.mp4`), 15 frames per second, 5 to 15 s, with **no sound track**. MP4
   with H.264 is the one format every browser and ffmpeg handle without a codec build. Any sound the video had
   is not kept; the sound track is a separate audio clip only if it is licensed and picked as one.
@@ -101,6 +116,9 @@ Status: in force from 2026-11-06. It applies to every sound, speech and video cl
   goes in `corpus/av-manifest.json`; like images, clips are immutable, and a changed clip gets a new id.
 - **Credits.** `corpus/ATTRIBUTIONS.md` lists every clip, generated from the manifest. Speech clips also
   name the book's author and "LibriVox volunteers" as the readers.
+- **References.** A `transcribe` clip's `reference` is exact, not approximate: LibriSpeech's own transcript
+  (or consecutive transcripts joined with spaces), or for AMI the manual word-level transcript of the window,
+  all speakers' words in time order. A reference is part of the clip: a change gets a new id.
 - **Transcripts.** A speech clip carries a one-line `summary` and, where the book's text could be matched, an
   approximate `transcript` (the text of the chapter's opening). Both are display and judging aids, not part of
   the clip, and may be corrected without a new id.
@@ -112,3 +130,6 @@ Changing a rule is the maintainers' decision. Record the change and its date her
 - 2026-11-06: added the "Audio and video" section: LibriVox (public-domain readings) and Freesound (CC0 only) as
   sources beside Commons, the exclusions, the content rules for speech, and the stored formats (Opus in Ogg,
   H.264 in MP4 without sound).
+- 2026-11-23: allowed LibriSpeech and speech corpora recorded with the speakers' consent for research (AMI),
+  both CC BY 4.0 and under the licence rules above; added the 24 kbps speech-for-transcription format and the
+  exact-reference rule. Still no children, no NC/SA/ND and no scraped sets.

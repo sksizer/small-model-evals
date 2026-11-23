@@ -36,7 +36,7 @@ real-time factor (seconds of audio per second of compute).
 | --- | --- | --- |
 | `read` | Clean read speech, one speaker | LibriSpeech test-clean (CC BY 4.0) |
 | `read-hard` | Accented, noisy or poorly recorded read speech | LibriSpeech test-other; Common Voice (CC0) |
-| `long` | 1–2 minute readings: tests chunking, the first 30 s isn't everything | Our LibriVox clips, transcripts corrected by hand against the audio |
+| `long` | 1–2 minute readings: tests chunking, the first 30 s isn't everything | Consecutive LibriSpeech test-clean utterances of one chapter joined into one clip; the reference is their transcripts joined, so it is exact |
 | `noisy` | Clean clips mixed with corpus sounds (rain, traffic, cafe) at set loudness | Made here, from `read` clips and corpus sounds |
 | `conversation` | Meetings, several speakers, overlap (Q1) | AMI (CC BY 4.0, to verify); needs a standard change |
 
@@ -44,7 +44,7 @@ About 60 English clips, 5–30 s each except `long` (English only, Q2). Every so
 checked at the source before anything is fetched.
 
 **Contamination.** LibriSpeech, Common Voice and FLEURS are in many models' training data and every model
-reports its LibriSpeech score. The hand-corrected LibriVox readings and the `noisy` mixes are the guard: a
+reports its LibriSpeech score. The `long` joins and the `noisy` mixes are the guard: a
 model that does far better on LibriSpeech than on those is remembering, not listening.
 
 ## Models
@@ -76,7 +76,7 @@ baselines. Anything unconfirmed above is checked before it is pinned and dropped
 
 ## Stages
 
-1. Corpus: fetch, convert, correct the `long` transcripts, contact sheet with players for the owner's check.
+1. Corpus: fetch, convert, contact sheet with players for the owner's check.
 2. Scorer, provider (transformers.js models first), cases, smoke test, runs, site.
 3. whisper.cpp and Apple SpeechTranscriber, one at a time.
 
