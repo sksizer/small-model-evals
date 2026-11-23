@@ -6,7 +6,7 @@
 | [similarity](similarity.md) | Built | — |
 | [sensitive](sensitive.md) | Built | — |
 | [search](search.md) | Built | — |
-| [av-search](av-search.md) | Cases and providers built; smoke tests and runs pending | Runs, X-CLIP export (stage 2) |
+| [av-search](av-search.md) | Runs done (2026-11-21) | EmbeddingGemma 2 `sounds` query check, unsure cases, review, PR |
 | [extraction](extraction.md) | Proposed | Owner answers Q1–Q5 |
 | [image-gen](image-gen.md) | Proposed | Owner answers Q1–Q4 |
 | [transcribe](transcribe.md) | Approved | Corpus (stage 1) |

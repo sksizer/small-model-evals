@@ -1,6 +1,6 @@
 # Plan: audio and video search
 
-Status: approved (2026-11-06). Stage 1 (corpus and contact sheet) approved by the owner on 2026-11-20; stage 2: cases, providers, site players and finder tasks are built (2026-11-20); smoke tests, runs and notes are pending, and X-CLIP is pending (below). The owner's answers are under "Decisions" at the end.
+Status: approved (2026-11-06). Stage 1 (corpus and contact sheet) approved by the owner on 2026-11-20; stage 2: cases, providers, site players and finder tasks are built (2026-11-20); all runs done (2026-11-21, results committed); next: check EmbeddingGemma 2's query format on `sounds` (9/38), spot-check or drop the builder's unsure cases, review, PR with screenshots. X-CLIP is pending (below). The owner's answers are under "Decisions" at the end.
 
 ## Goal
 
