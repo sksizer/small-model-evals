@@ -18,7 +18,8 @@
 //
 // - a corpus audio or video clip (corpus/av-manifest.json) is missing, differs from its
 //   sha256, is outside the length its kind allows, or has a licence the standard does not allow;
-// - a derived audio or video copy has no parent of its kind in the manifest, or an unknown recipe;
+// - a derived audio or video copy has no parent of its kind in the manifest, or an unknown recipe; a mixed-in sound
+//   is missing or unlicensed; a transcribe clip lacks its asr_kind or reference, or a mix differs from its parent;
 // - a search corpus names a clip that is not in the audio and video manifest; a clip-query case's
 //   query_item is not in its corpus, or its levels name a clip that is not in `relevant`;
 // - a suite has no entry in SUITE_META (scripts/plan.ts) or an entry names a suite that is gone;
@@ -36,7 +37,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { spawnRunner } from '@osdlc/command-seam'
 import type { CorpusImage } from './fetch-corpus.ts'
-import { AUDIO_RECIPES, VIDEO_RECIPES } from './av-recipes.ts'
+import { AUDIO_RECIPES, NOISE_RECIPES, VIDEO_RECIPES } from './av-recipes.ts'
 import { LENGTH, type CorpusMedia } from './fetch-av.ts'
 import { CATALOG } from './catalog.ts'
 import { ENV_DIR, MODEL_DIR } from './env.ts'
@@ -135,7 +136,17 @@ for (const m of media) {
   if (!m.derived_from) continue
   const parent = mediaById.get(m.derived_from)
   if (parent && parent.kind !== m.kind) problems.push(`corpus: ${m.id}: a ${m.kind} copy of a ${parent.kind} clip`)
-  if (!m.recipe || !(m.recipe in (m.kind === 'video' ? VIDEO_RECIPES : AUDIO_RECIPES))) problems.push(`corpus: ${m.id}: unknown ${m.kind} recipe ${m.recipe}`)
+  if (!m.recipe || !(m.recipe in (m.kind === 'video' ? VIDEO_RECIPES : m.kind === 'transcribe' ? NOISE_RECIPES : AUDIO_RECIPES))) problems.push(`corpus: ${m.id}: unknown ${m.kind} recipe ${m.recipe}`)
+  const noise = m.mixed_with ? mediaById.get(m.mixed_with) : undefined
+  if (m.recipe && m.recipe in NOISE_RECIPES && !noise) problems.push(`corpus: ${m.id}: mixed_with ${m.mixed_with} is not in the manifest`)
+  if (noise && licenceProblem(noise, mediaById)) problems.push(`corpus: ${m.id}: ${licenceProblem(noise, mediaById)}`)
+}
+// A transcribe clip is scored against its reference: the words must be there, and a mix must keep its parent's.
+for (const m of media) {
+  if (m.kind !== 'transcribe') continue
+  if (!m.asr_kind || !m.reference?.trim()) problems.push(`corpus: ${m.id}: a transcribe clip needs asr_kind and a reference`)
+  const parent = m.derived_from ? mediaById.get(m.derived_from) : undefined
+  if (parent && m.reference !== parent.reference) problems.push(`corpus: ${m.id}: reference differs from its parent ${parent.id}`)
 }
 const mediaFiles = new Set(media.map((m) => m.file))
 const listed = new Set(manifest.map((m) => m.file))

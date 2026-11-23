@@ -9,6 +9,9 @@ export const ALLOWED = /^(CC0( 1\.0)?|Public domain|PD\b.*|CC BY \d(\.\d)?)$/i
 /** The licences a LibriVox recording may have: the archive.org item's licence URL says public domain or CC0. */
 export const LIBRIVOX_LICENCE = /^(Public domain|CC0)$/
 
+/** The only licence a LibriSpeech or AMI clip may have: both corpora state CC BY 4.0 (fetch-av.ts reads it off their pages). */
+export const SPEECH_CORPUS_LICENCE = 'CC BY 4.0'
+
 /** The only licence an Open Images V7 photo may have (its image list names it; fetch-corpus.ts checks the URL). */
 export const OI_LICENCE_NAME = 'CC BY 2.0'
 
@@ -23,7 +26,7 @@ export interface Licensed {
 /**
  * Why a manifest entry's licence breaks the corpus standard, or null when it
  * is fine. An Open Images photo must be exactly CC BY 2.0, a synthetic page
- * CC0, a LibriVox recording public domain or CC0, a derived copy must match
+ * CC0, a LibriVox recording public domain or CC0, a LibriSpeech or AMI clip CC BY 4.0, a derived copy must match
  * its parent, and a Commons file (image, sound or video) must be on ALLOWED.
  */
 export function licenceProblem(m: Licensed, byId: Map<string, Licensed>): string | null {
@@ -35,6 +38,7 @@ export function licenceProblem(m: Licensed, byId: Map<string, Licensed>): string
   }
   if (m.title.startsWith('Open Images ')) return m.licence === OI_LICENCE_NAME ? null : `${m.id}: Open Images photo has licence "${m.licence}", not ${OI_LICENCE_NAME}`
   if (m.title.startsWith('LibriVox ')) return LIBRIVOX_LICENCE.test(m.licence) ? null : `${m.id}: LibriVox recording has licence "${m.licence}", not public domain or CC0`
+  if (/^(LibriSpeech|AMI) /.test(m.title)) return m.licence === SPEECH_CORPUS_LICENCE ? null : `${m.id}: ${m.title.split(' ')[0]} clip has licence "${m.licence}", not ${SPEECH_CORPUS_LICENCE}`
   if (m.title.startsWith('synthetic/')) return m.licence === 'CC0' ? null : `${m.id}: synthetic page has licence "${m.licence}", not CC0`
   return ALLOWED.test(m.licence) ? null : `${m.id}: licence "${m.licence}" is not on the allow-list`
 }

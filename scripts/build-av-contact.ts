@@ -1,6 +1,7 @@
 // Writes the contact sheet of the audio and video corpus: one static HTML page that
 // lists every clip with its id, kind, title, source link, licence, length, size and an
-// inline player (video clips also get a poster frame), for the owner to approve before
+// inline player (video clips also get a poster frame; transcribe clips the exact words they are
+// scored against, grouped by asr_kind), for the owner to approve before
 // cases are written. The page links the clips where they sit under corpus/, so open it
 // from the repo (or serve the repo root); posters are made into results/contact/posters/.
 //
@@ -13,13 +14,15 @@ import { ROOT } from './ledger.ts'
 
 const OUT = join(ROOT, 'results', 'contact')
 // The derived copies (scripts/av-recipes.ts) are not on the sheet: it is for approving the clips they come from.
-const media = (JSON.parse(readFileSync(join(ROOT, 'corpus', 'av-manifest.json'), 'utf8')) as CorpusMedia[]).filter((m) => !m.derived_from)
+// The transcribe clips are all on it, the noisy mixes too: each is listened to beside its reference.
+const media = (JSON.parse(readFileSync(join(ROOT, 'corpus', 'av-manifest.json'), 'utf8')) as CorpusMedia[]).filter((m) => !m.derived_from || m.kind === 'transcribe')
 mkdirSync(join(OUT, 'posters'), { recursive: true })
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const mb = (b: number) => (b / 2 ** 20).toFixed(2)
 const total = media.reduce((t, m) => t + m.bytes, 0)
-const kinds = ['sound', 'speech', 'video'] as const
+const kinds = ['sound', 'speech', 'video', 'transcribe'] as const
+const asrKinds = ['read', 'read-hard', 'long', 'noisy', 'conversation'] as const
 
 const card = (m: CorpusMedia): string => {
   const src = `../../corpus/${m.file}`
@@ -38,6 +41,8 @@ const card = (m: CorpusMedia): string => {
     <div class="meta">${lic} · ${esc(m.author)}</div>
     <div class="meta"><a href="${esc(m.page)}">Source</a> · ${m.duration.toFixed(1)} s · ${(m.bytes / 1024).toFixed(0)} KB${m.width ? ` · ${m.width}×${m.height}` : ''}</div>
     ${m.summary ? `<div class="meta">${esc(m.summary)}</div>` : ''}
+    ${m.reference ? `<p class="ref"><b>Reference</b> (${m.reference.split(' ').length} words): ${esc(m.reference)}</p>` : ''}
+    ${m.mixed_with ? `<div class="meta">Mixed with <code>${m.mixed_with}</code>, ${esc(m.recipe ?? '')}; speech from <code>${m.derived_from}</code></div>` : ''}
     ${m.transcript ? `<details><summary>Approximate transcript</summary><p>${esc(m.transcript)}</p></details>` : ''}
   </figcaption>
 </figure>`
@@ -46,7 +51,12 @@ const card = (m: CorpusMedia): string => {
 const sections = kinds
   .map((k) => {
     const of = media.filter((m) => m.kind === k)
-    return `<h2>${k} (${of.length}, ${mb(of.reduce((t, m) => t + m.bytes, 0))} MB)</h2><div class="grid">${of.map(card).join('\n')}</div>`
+    const head = `<h2>${k} (${of.length}, ${mb(of.reduce((t, m) => t + m.bytes, 0))} MB)</h2>`
+    // Transcribe clips are grouped by what they are, each group a grid: the reference is long, so the cards are wider.
+    if (k === 'transcribe') {
+      return `${head}${asrKinds.map((a) => ({ a, of: of.filter((m) => m.asr_kind === a) })).filter((g) => g.of.length > 0).map((g) => `<h3>${g.a} (${g.of.length})</h3><div class="grid wide">${g.of.map(card).join('\n')}</div>`).join('\n')}`
+    }
+    return `${head}<div class="grid">${of.map(card).join('\n')}</div>`
   })
   .join('\n')
 
@@ -57,8 +67,10 @@ const html = `<!doctype html>
 :root{color-scheme:light dark;--bg:#fff;--panel:#f6f6f6;--line:#ddd;--muted:#666}
 @media(prefers-color-scheme:dark){:root{--bg:#161616;--panel:#222;--line:#333;--muted:#aaa}}
 body{font:14px/1.4 system-ui,sans-serif;margin:16px;background:var(--bg);color:CanvasText}
-h1,h2{margin:.6em 0 .3em}
+h1,h2,h3{margin:.6em 0 .3em}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.grid.wide{grid-template-columns:repeat(auto-fill,minmax(480px,1fr))}
+.ref{margin:.4em 0 0;font-size:13px}
 .item{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px;overflow:hidden}
 audio{width:100%}video{width:100%;max-height:220px;background:#000}
 .tag{font-size:11px;padding:0 6px;border-radius:999px;background:var(--line)}

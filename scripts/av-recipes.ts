@@ -34,6 +34,22 @@ export const VIDEO_RECIPES = {
   cut: { about: 'Six seconds from the second second, re-encoded.', start: 2, length: 6, crf: 30 },
 } satisfies Record<string, VideoRecipe>
 
+/**
+ * The `noisy` clips of the transcription suite (docs/plans/transcribe.md): a read clip with a corpus sound mixed
+ * under it, the speech `snrDb` decibels louder than the sound. The entry names the sound (`noise`); the copy
+ * credits both. Unlike the copies above it keeps its parent's reference transcript.
+ */
+export interface NoiseRecipe {
+  about: string
+  snrDb: number
+}
+
+export const NOISE_RECIPES = {
+  snr10: { about: 'The clip mixed with a corpus sound 10 dB quieter than the speech: easy to hear through.', snrDb: 10 },
+  snr0: { about: 'The clip mixed with a corpus sound as loud as the speech.', snrDb: 0 },
+} satisfies Record<string, NoiseRecipe>
+
 export type AudioRecipeName = keyof typeof AUDIO_RECIPES
 export type VideoRecipeName = keyof typeof VIDEO_RECIPES
-export type AvRecipe = AudioRecipeName | VideoRecipeName
+export type NoiseRecipeName = keyof typeof NOISE_RECIPES
+export type AvRecipe = AudioRecipeName | VideoRecipeName | NoiseRecipeName

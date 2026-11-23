@@ -6,7 +6,7 @@ import { spawnRunner } from '@osdlc/command-seam'
 import { UA } from './commons.ts'
 import { ROOT } from './ledger.ts'
 
-/** The stored audio: 16 kHz mono Opus in an Ogg container, ~24 kbps for sound and ~16 kbps for speech. */
+/** The stored audio: 16 kHz mono Opus in an Ogg container, ~24 kbps for sound and for speech meant for transcription, ~16 kbps for the speech of the search suite. */
 export const AUDIO_EXT = 'ogg'
 /** The stored video: 360p H.264 in MP4, no sound track. */
 export const VIDEO_EXT = 'mp4'
@@ -57,6 +57,39 @@ export function reencodeAudio(src: string, out: string, start: number, duration:
   ffmpeg([
     ...seek(start, duration, src, false), '-vn', '-ac', '1', '-ar', '16000', ...(gainDb === 0 ? [] : ['-af', `volume=${gainDb}dB`]),
     '-c:a', 'libopus', '-b:a', `${kbps}k`, '-application', 'audio', ...CLEAN, out,
+  ])
+}
+
+/** The utterances `srcs`, one after the other with nothing between them, as 16 kHz mono Opus at `kbps` into `out`. */
+export function joinAudio(srcs: string[], out: string, kbps: number): void {
+  const n = srcs.length
+  ffmpeg([
+    ...srcs.flatMap((s) => ['-i', s]),
+    '-filter_complex', `${srcs.map((_, i) => `[${i}:a]`).join('')}concat=n=${n}:v=0:a=1`,
+    '-ac', '1', '-ar', '16000', '-c:a', 'libopus', '-b:a', `${kbps}k`, '-application', 'audio', ...CLEAN, out,
+  ])
+}
+
+/** The RMS level of the whole clip in dB (full scale is 0), as ffmpeg's astats reports it. */
+export function rmsDb(path: string): number {
+  const res = spawnRunner('ffmpeg').run(['-hide_banner', '-nostdin', '-i', path, '-af', 'astats=metadata=0', '-f', 'null', '-'], { cwd: ROOT })
+  const m = /Overall[\s\S]*?RMS level dB:\s*(-?[\d.]+)/.exec(res.stderr)
+  if (res.exitCode !== 0 || !m) throw new Error(`could not measure the level of ${path}`)
+  return Number(m[1])
+}
+
+/**
+ * `speech` with `noise` mixed under it so that speech is `snrDb` decibels louder than the noise (RMS over the
+ * whole of each clip), as Opus at `kbps` into `out`. The noise loops if it is shorter; the result is as long as
+ * the speech, 3 dB quieter overall and limited, so that a 0 dB mix does not clip.
+ */
+export function mixAudio(speech: string, noise: string, out: string, snrDb: number, kbps: number): void {
+  const gain = rmsDb(speech) - snrDb - rmsDb(noise)
+  const length = probe(speech).duration
+  ffmpeg([
+    '-i', speech, '-stream_loop', '-1', '-i', noise,
+    '-filter_complex', `[1:a]aresample=16000,volume=${gain.toFixed(2)}dB[n];[0:a][n]amix=inputs=2:duration=first:normalize=0,volume=-3dB,alimiter=limit=0.9`,
+    '-t', String(length), '-ac', '1', '-ar', '16000', '-c:a', 'libopus', '-b:a', `${kbps}k`, '-application', 'audio', ...CLEAN, out,
   ])
 }
 
