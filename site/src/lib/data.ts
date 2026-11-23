@@ -251,6 +251,8 @@ export interface Result {
   edit?: { image: string | null; judge: string | null; answers: { question: string; kind: 'changed' | 'kept'; answer: 'yes' | 'no' | null; ok: boolean }[]; preservation: { diff: number; max: number; ok: boolean } | null }
   /** For a similarity result: the model's top candidates with how they relate to the query, and the scorer's per-level numbers. */
   similarity?: { top: RankedCandidate[]; detail: SimilarityDetail | null }
+  /** For a transcribe result: the scorer's counts and word alignment (null when the reply was not text). */
+  transcript?: { detail: WerDetail | null }
   /** For a search result: the model's top five with whether each is relevant, and the scorer's numbers. */
   search?: { top: SearchCandidate[]; detail: SearchDetail | null }
   /** For the sensitive suite: the scorer's grading of the reply. */
@@ -339,6 +341,29 @@ export interface SearchCandidate {
   text?: string
   title?: string | null
 }
+
+/** One step of a transcript's word alignment: match, substitution, deletion or insertion (assertions/wer.ts). */
+export type WerOp = ['=' | 'S', string, string] | ['D', string, null] | ['I', null, string]
+
+/** What assertions/wer.ts records per case. */
+export interface WerDetail {
+  ref_words: number
+  hyp_words: number
+  sub: number
+  del: number
+  ins: number
+  wer: number
+  ops: WerOp[]
+}
+
+/** A transcribe case's expectation: the reference transcript, the kind of speech, and the WER the case allows (null: the default). */
+export interface ExpectedTranscribe {
+  reference: string
+  kind: string
+  max_wer: number | null
+}
+export const isTranscribe = (e: unknown): e is ExpectedTranscribe =>
+  !!e && typeof e === 'object' && typeof (e as { reference?: unknown }).reference === 'string'
 
 /** What assertions/search.ts records per case. */
 export interface SearchDetail {
@@ -513,6 +538,7 @@ export const SAME_THING: Level[] = ['copy', 'edit', 'scene']
 
 /** A case's expectation in a few words: a regions case as its box count and labels, anything else as JSON. */
 export const describeExpected = (e: unknown): string => {
+  if (isTranscribe(e)) return `${e.kind}: ${e.reference}`
   if (isSearch(e)) return `${e.relevant.length} relevant${e.how ? ` · ${e.how}` : ''}`
   if (isSimilarity(e)) return LEVELS.flatMap((l) => (e[l]?.length ? [`${e[l]!.length} ${l}`] : [])).join(', ')
   if (isEdit(e)) return `${e.changed.length} changed, ${e.kept.length} kept${e.region ? ', edit confined to a region' : ''}: ${[...e.changed, ...e.kept].join(' ')}`

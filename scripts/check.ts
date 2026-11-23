@@ -22,6 +22,7 @@
 //   is missing or unlicensed; a transcribe clip lacks its asr_kind or reference, or a mix differs from its parent;
 // - a search corpus names a clip that is not in the audio and video manifest; a clip-query case's
 //   query_item is not in its corpus, or its levels name a clip that is not in `relevant`;
+// - a transcribe case names a clip that is not in the audio and video manifest, has no reference transcript or an unknown kind, or sets a max_wer outside (0, 1];
 // - a suite has no entry in SUITE_META (scripts/plan.ts) or an entry names a suite that is gone;
 // - a machine profile (machines/<name>.yaml) names a category, cost, suite, model or class that
 //   does not exist, or two profiles claim the same machine key or class;
@@ -207,6 +208,20 @@ for (const suite of readdirSync(SUITES_DIR)) {
       if ((vars.relevant ?? []).includes(vars.query_item)) problems.push(`${suite}/${c.id}: the query ${vars.query_item} is listed as relevant to itself`)
     }
     for (const id of Object.values(vars?.levels ?? {}).flat()) if (!(vars?.relevant ?? []).includes(id)) problems.push(`${suite}/${c.id}: level id ${id} is not in relevant`)
+  }
+}
+
+// Transcription cases (the transcribe suite): the clip is a corpus audio clip, the reference is not empty, the kind is one the plan names.
+const TRANSCRIBE_KINDS = ['read', 'read-hard', 'long', 'noisy', 'conversation']
+if (readdirSync(SUITES_DIR).includes('transcribe')) {
+  for (const c of loadCases('transcribe')) {
+    const vars = c.def['vars'] as { audio?: string; reference?: string; max_wer?: number } | undefined
+    const clip = typeof vars?.audio === 'string' ? /^corpus\/(audio\/[^/]+)$/.exec(vars.audio) : null
+    if (!clip || !mediaFiles.has(clip[1]!)) problems.push(`transcribe/${c.id}: vars.audio must be a corpus/audio clip listed in corpus/av-manifest.json`)
+    if (typeof vars?.reference !== 'string' || vars.reference.trim() === '') problems.push(`transcribe/${c.id}: vars.reference (the transcript) is missing`)
+    const kind = (c.def['metadata'] as { kind?: string } | undefined)?.kind
+    if (!kind || !TRANSCRIBE_KINDS.includes(kind)) problems.push(`transcribe/${c.id}: metadata.kind must be one of ${TRANSCRIBE_KINDS.join(', ')}`)
+    if (vars?.max_wer !== undefined && !(vars.max_wer > 0 && vars.max_wer <= 1)) problems.push(`transcribe/${c.id}: max_wer must be in (0, 1]`)
   }
 }
 
