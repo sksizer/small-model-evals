@@ -1,0 +1,6 @@
+description: "meeting: ami-es2004a-0492, 27 s"
+metadata: { id: ami-es2004a-0492, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-es2004a-0492.ogg
+  reference: "uh and somewhere there's a body behind okay that's some my dreadful sort of that's the worst yet bird that's it's meant to be an eagle a ah eagle right eagle okay right not you okay can a seagull tell it's a flying animal could have been a seagull i never thought of a seagull an eagle um again i'm thinking on my feet goodness i suppose they're all so independent i'd put that one down again da dum um"
+  max_wer: 0.35

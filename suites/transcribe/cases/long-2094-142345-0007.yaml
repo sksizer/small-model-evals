@@ -1,0 +1,6 @@
+description: "long reading: long-2094-142345-0007"
+metadata: { id: long-2094-142345-0007, kind: long, language: en }
+vars:
+  audio: corpus/audio/asr-long-2094-142345-0007.ogg
+  reference: "the history of the house is plain now but there is always a stronger sense of life when the sun is brilliant after rain and now he is pouring down his beams and making sparkles among the wet straw and lighting up every patch of vivid green moss on the red tiles of the cow shed and turning even the muddy water that is hurrying along the channel to the drain into a mirror for the yellow billed ducks who are seizing the opportunity of getting a drink with as much body in it as possible for the great barn doors are thrown wide open and men are busy there mending the harness under the superintendence of mister goby the whittaw otherwise saddler who entertains them with the latest treddleston gossip hetty sorrel often took the opportunity when her aunt's back was turned of looking at the pleasing reflection of herself in those polished surfaces for the oak table was usually turned up like a screen and was more for ornament than for use and she could see herself sometimes in the great round pewter dishes that were ranged on the shelves above the long deal dinner table or in the hobs of the grate which always shone like jasper"
+  max_wer: 0.1

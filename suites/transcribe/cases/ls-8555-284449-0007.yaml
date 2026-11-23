@@ -1,0 +1,6 @@
+description: "read speech: ls-8555-284449-0007"
+metadata: { id: ls-8555-284449-0007, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-8555-284449-0007.ogg
+  reference: "now then let's enter the city an enjoy the grand feast that's being cooked i'm nearly starved myself for this conquerin kingdoms is hard work"
+  max_wer: 0.1

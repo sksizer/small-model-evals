@@ -1,0 +1,6 @@
+description: "read speech in noise: noisy-ls-1284-1180-0008-wind-snr10"
+metadata: { id: noisy-ls-1284-1180-0008-wind-snr10, kind: noisy, language: en }
+vars:
+  audio: corpus/audio/asr-noisy-ls-1284-1180-0008-wind-snr10.ogg
+  reference: "all the morning they trudged up the mountain path and at noon unc and ojo sat on a fallen tree trunk and ate the last of the bread which the old munchkin had placed in his pocket"
+  max_wer: 0.25

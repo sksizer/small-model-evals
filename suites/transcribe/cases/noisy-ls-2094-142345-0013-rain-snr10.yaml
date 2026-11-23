@@ -1,0 +1,6 @@
+description: "read speech in noise: noisy-ls-2094-142345-0013-rain-snr10"
+metadata: { id: noisy-ls-2094-142345-0013-rain-snr10, kind: noisy, language: en }
+vars:
+  audio: corpus/audio/asr-noisy-ls-2094-142345-0013-rain-snr10.ogg
+  reference: "her tongue was not less keen than her eye and whenever a damsel came within earshot seemed to take up an unfinished lecture as a barrel organ takes up a tune precisely at the point where it had left off"
+  max_wer: 0.25

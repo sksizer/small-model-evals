@@ -1,0 +1,6 @@
+description: "harder read speech: ls-4350-9170-0014"
+metadata: { id: ls-4350-9170-0014, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-4350-9170-0014.ogg
+  reference: "between the members of one state subject to a single authority the strife between individuals seems still less and the life of the state seems even more secure"
+  max_wer: 0.2

@@ -1,0 +1,6 @@
+description: "meeting: ami-es2010a-0455, 29 s"
+metadata: { id: ami-es2010a-0455, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-es2010a-0455.ogg
+  reference: "it needs to be compatible 'cause universal remote controls are never universal they're never universal that's right especially if you buy a a not big product d_v_d_ player say usually it doesn't work or if if it's it's not not like a one sony of the if it's like yeah a i yeah don't know something so from we'll have sam's to figure club it how to cover all the different variances in signals yeah and what we need an insanely good instruction booklet because you always have to reconfigure all your yeah contraptions to go with the remote anyways"
+  max_wer: 0.35

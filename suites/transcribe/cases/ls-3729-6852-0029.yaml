@@ -1,0 +1,6 @@
+description: "read speech: ls-3729-6852-0029"
+metadata: { id: ls-3729-6852-0029, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-3729-6852-0029.ogg
+  reference: "it is sold everywhere but for the last three weeks nobody will use any snuff but that sold at the civet cat"
+  max_wer: 0.1

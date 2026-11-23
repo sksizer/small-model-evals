@@ -1,0 +1,6 @@
+description: "read speech: ls-3575-170457-0050"
+metadata: { id: ls-3575-170457-0050, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-3575-170457-0050.ogg
+  reference: "tabby had tended them in their childhood they and none other should tend her in her infirmity and age"
+  max_wer: 0.1

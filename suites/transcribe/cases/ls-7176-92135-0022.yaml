@@ -1,0 +1,6 @@
+description: "read speech: ls-7176-92135-0022"
+metadata: { id: ls-7176-92135-0022, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-7176-92135-0022.ogg
+  reference: "to be or not to be that is the question whether tis nobler in the mind to suffer the slings and arrows what no hamlet speaking"
+  max_wer: 0.1

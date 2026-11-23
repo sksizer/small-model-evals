@@ -1,0 +1,6 @@
+description: "read speech: ls-5639-40744-0018"
+metadata: { id: ls-5639-40744-0018, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-5639-40744-0018.ogg
+  reference: "that would be very well my child replied her father if your plan were not liable to be frustrated by ordinary cunning but no doubt this image has been already missed by its owner and he will have set it down for certain that it was taken out of the room by the person he locked up there"
+  max_wer: 0.1

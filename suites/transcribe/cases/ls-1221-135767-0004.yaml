@@ -1,0 +1,6 @@
+description: "read speech: ls-1221-135767-0004"
+metadata: { id: ls-1221-135767-0004, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-1221-135767-0004.ogg
+  reference: "we have spoken of pearl's rich and luxuriant beauty a beauty that shone with deep and vivid tints a bright complexion eyes possessing intensity both of depth and glow and hair already of a deep glossy brown and which in after years would be nearly akin to black"
+  max_wer: 0.1

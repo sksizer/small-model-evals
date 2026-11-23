@@ -1,0 +1,6 @@
+description: "harder read speech: ls-8461-258277-0002"
+metadata: { id: ls-8461-258277-0002, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-8461-258277-0002.ogg
+  reference: "the knocker replied kamar daughter of azariah the jew say me is ali of cairo with you"
+  max_wer: 0.2

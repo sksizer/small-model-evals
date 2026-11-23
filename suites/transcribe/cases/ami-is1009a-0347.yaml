@@ -1,0 +1,6 @@
+description: "meeting: ami-is1009a-0347, 29 s"
+metadata: { id: ami-is1009a-0347, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-is1009a-0347.ogg
+  reference: "snake i'm going to draw a snake how does it look like uh okay okay okay i hope the kitty cat is hungry 'cause i don't like snakes here's the project finance uh which of course we all have to think about when we design this thing um selling price is supposed to be twenty five euro"
+  max_wer: 0.35

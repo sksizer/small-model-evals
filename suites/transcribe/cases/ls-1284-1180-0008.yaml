@@ -1,0 +1,6 @@
+description: "read speech: ls-1284-1180-0008"
+metadata: { id: ls-1284-1180-0008, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-1284-1180-0008.ogg
+  reference: "all the morning they trudged up the mountain path and at noon unc and ojo sat on a fallen tree trunk and ate the last of the bread which the old munchkin had placed in his pocket"
+  max_wer: 0.1

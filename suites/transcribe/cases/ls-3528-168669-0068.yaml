@@ -1,0 +1,6 @@
+description: "harder read speech: ls-3528-168669-0068"
+metadata: { id: ls-3528-168669-0068, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-3528-168669-0068.ogg
+  reference: "the dead must be obeyed to be buried in the vault under the altar of the chapel not to go to profane earth to remain there in death where she prayed while living such was the last wish of mother crucifixion"
+  max_wer: 0.2

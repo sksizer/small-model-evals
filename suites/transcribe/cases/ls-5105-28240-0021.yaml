@@ -1,0 +1,6 @@
+description: "read speech: ls-5105-28240-0021"
+metadata: { id: ls-5105-28240-0021, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-5105-28240-0021.ogg
+  reference: "before starting it was indispensable that the engine of the dobryna should be repaired to sail under canvas only would in contrary winds and rough seas be both tedious and difficult"
+  max_wer: 0.1

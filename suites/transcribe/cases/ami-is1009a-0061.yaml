@@ -1,0 +1,6 @@
+description: "meeting: ami-is1009a-0061, 26 s"
+metadata: { id: ami-is1009a-0061, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-is1009a-0061.ogg
+  reference: "yeah that's a good and plan everybody's name and what your function is so maybe we start okay with you yeah my name is francina and i'm uh an user interface my role is uh the main responsibility is user interface mm-hmm and my role is to design uh a television remote control mm-hmm okay and i'm a marketing person i wanna figure out how to sell them"
+  max_wer: 0.35

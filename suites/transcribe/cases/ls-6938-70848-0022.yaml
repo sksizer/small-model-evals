@@ -1,0 +1,6 @@
+description: "harder read speech: ls-6938-70848-0022"
+metadata: { id: ls-6938-70848-0022, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-6938-70848-0022.ogg
+  reference: "the first stage was the crushing of autocracy and the crushing of the power of the industrial capitalists and land owners whose interests are closely related"
+  max_wer: 0.2

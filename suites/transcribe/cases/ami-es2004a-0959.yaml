@@ -1,0 +1,6 @@
+description: "meeting: ami-es2004a-0959, 21 s"
+metadata: { id: ami-es2004a-0959, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-es2004a-0959.ogg
+  reference: "okay and there's no reason we need to make it look as fashionable and stylish as a mobile phone it can still be lightweight plastic mm you know right something that's easily moulded and produced yeah sorry i'm treading on your territory guys no uh uh um right okay we've got half an hour before the next meeting so we're all gonna go off and do our individual things um"
+  max_wer: 0.35

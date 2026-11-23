@@ -1,0 +1,6 @@
+description: "harder read speech: ls-6128-63241-0003"
+metadata: { id: ls-6128-63241-0003, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-6128-63241-0003.ogg
+  reference: "he was sorry for her but he saw in a flash that no one could help her that was what made her tragic"
+  max_wer: 0.2

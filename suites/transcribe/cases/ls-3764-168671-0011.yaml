@@ -1,0 +1,6 @@
+description: "harder read speech: ls-3764-168671-0011"
+metadata: { id: ls-3764-168671-0011, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-3764-168671-0011.ogg
+  reference: "the nuns had committed it not only without difficulty but even with the applause of their own consciences"
+  max_wer: 0.2

@@ -1,0 +1,6 @@
+description: "read speech: ls-4077-13751-0000"
+metadata: { id: ls-4077-13751-0000, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-4077-13751-0000.ogg
+  reference: "on the sixth of april eighteen thirty the church of jesus christ of latter day saints was formally organized and thus took on a legal existence"
+  max_wer: 0.1

@@ -1,0 +1,6 @@
+description: "read speech: ls-5683-32865-0009"
+metadata: { id: ls-5683-32865-0009, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-5683-32865-0009.ogg
+  reference: "and he placed it in that gentleman's fingers who now took his turn at the lamp and contemplated the little parallelogram with a gleam of sly amusement"
+  max_wer: 0.1

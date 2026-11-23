@@ -1,0 +1,6 @@
+description: "long reading: long-3729-6852-0004"
+metadata: { id: long-3729-6852-0004, kind: long, language: en }
+vars:
+  audio: corpus/audio/asr-long-3729-6852-0004.ogg
+  reference: "her face was an enigma for it inspired everyone with the warmest sympathy and yet if you examined it attentively there was not one beautiful feature she could not be called handsome but no one could have thought her ugly silvia was the adoration of france and her talent was the real support of all the comedies which the greatest authors wrote for her especially of the plays of marivaux for without her his comedies would never have gone to posterity silvia did not think that her good conduct was a merit for she knew that she was virtuous only because her self love compelled her to be so and she never exhibited any pride or assumed any superiority towards her theatrical sisters although satisfied to shine by their talent or their beauty they cared little about rendering themselves conspicuous by their virtue two years before her death i saw her perform the character of marianne in the comedy of marivaux and in spite of her age and declining health the illusion was complete"
+  max_wer: 0.1

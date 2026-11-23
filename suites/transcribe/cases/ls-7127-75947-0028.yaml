@@ -1,0 +1,6 @@
+description: "read speech: ls-7127-75947-0028"
+metadata: { id: ls-7127-75947-0028, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-7127-75947-0028.ogg
+  reference: "quick quick then among the high reed grass said montalais stoop athenais you are so tall"
+  max_wer: 0.1

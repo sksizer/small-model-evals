@@ -1,0 +1,6 @@
+description: "harder read speech: ls-1998-29454-0041"
+metadata: { id: ls-1998-29454-0041, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-1998-29454-0041.ogg
+  reference: "if you're clean they say honest poverty an if you're dirty they say serve you right"
+  max_wer: 0.2

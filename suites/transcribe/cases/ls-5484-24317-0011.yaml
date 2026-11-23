@@ -1,0 +1,6 @@
+description: "harder read speech: ls-5484-24317-0011"
+metadata: { id: ls-5484-24317-0011, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-5484-24317-0011.ogg
+  reference: "the place by hermon's side which althea had chosen for herself would then be given up to arsinoe"
+  max_wer: 0.2

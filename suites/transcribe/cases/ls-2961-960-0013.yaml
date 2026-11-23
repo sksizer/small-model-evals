@@ -1,0 +1,6 @@
+description: "read speech: ls-2961-960-0013"
+metadata: { id: ls-2961-960-0013, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-2961-960-0013.ogg
+  reference: "it is probable that the relation of the ideas to god or of god to the world was differently conceived by him at different times of his life"
+  max_wer: 0.1

@@ -1,0 +1,6 @@
+description: "read speech: ls-121-121726-0010"
+metadata: { id: ls-121-121726-0010, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-121-121726-0010.ogg
+  reference: "housecleaning a domestic upheaval that makes it easy for the government to enlist all the soldiers it needs"
+  max_wer: 0.1

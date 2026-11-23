@@ -1,0 +1,6 @@
+description: "long reading: long-7127-75947-0000"
+metadata: { id: long-7127-75947-0000, kind: long, language: en }
+vars:
+  audio: corpus/audio/asr-long-7127-75947-0000.ogg
+  reference: "every one could observe his agitation and prostration a prostration which was indeed the more remarkable since people were not accustomed to see him with his arms hanging listlessly by his side his head bewildered and his eyes with all their bright intelligence bedimmed upon this madame deigned to turn her eyes languishingly towards the comte observing do you think so she replied with indifference yes the character which your royal highness assumed is in perfect harmony with your own explain yourself i allude to the goddess the princess inquired no she then rose humming the air to which she was presently going to dance the arrow pierced his heart and wounded him mortally a quarter of an hour afterwards he returned to the theater but it will be readily believed that it was only a powerful effort of reason over his great excitement that enabled him to go back or perhaps for love is thus strangely constituted he found it impossible even to remain much longer separated from the presence of one who had broken his heart"
+  max_wer: 0.1

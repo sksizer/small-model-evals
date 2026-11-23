@@ -1,0 +1,6 @@
+description: "harder read speech: ls-8131-117016-0005"
+metadata: { id: ls-8131-117016-0005, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-8131-117016-0005.ogg
+  reference: "they were safe from protection racketeers there none bothered to come so far out"
+  max_wer: 0.2

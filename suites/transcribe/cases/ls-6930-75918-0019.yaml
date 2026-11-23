@@ -1,0 +1,6 @@
+description: "read speech: ls-6930-75918-0019"
+metadata: { id: ls-6930-75918-0019, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-6930-75918-0019.ogg
+  reference: "upon the large square in front of the hotel the shadows of the tents intersected by the golden moonbeams formed as it were a huge mosaic of jet and yellow flagstones"
+  max_wer: 0.1

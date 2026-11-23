@@ -1,0 +1,6 @@
+description: "read speech: ls-6829-68771-0000"
+metadata: { id: ls-6829-68771-0000, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-6829-68771-0000.ogg
+  reference: "so to the surprise of the democratic committee and all his friends mister hopkins announced that he would oppose forbes's aggressive campaign with an equal aggressiveness and spend as many dollars in doing so as might be necessary"
+  max_wer: 0.1

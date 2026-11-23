@@ -1,0 +1,6 @@
+description: "harder read speech: ls-3005-163389-0006"
+metadata: { id: ls-3005-163389-0006, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-3005-163389-0006.ogg
+  reference: "so they always acquit and then a man goes in the night with a hundred masked cowards at his back and lynches the rascal"
+  max_wer: 0.2

@@ -1,0 +1,6 @@
+description: "harder read speech: ls-7018-75788-0018"
+metadata: { id: ls-7018-75788-0018, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-7018-75788-0018.ogg
+  reference: "each that died we washed and shrouded in some of the clothes and linen cast ashore by the tides and after a little the rest of my fellows perished one by one till i had buried the last of the party and abode alone on the island with but a little provision left i who was wont to have so much"
+  max_wer: 0.2

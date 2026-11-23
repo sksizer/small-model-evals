@@ -1,0 +1,6 @@
+description: "meeting: ami-es2010a-0293, 30 s"
+metadata: { id: ami-es2010a-0293, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-es2010a-0293.ogg
+  reference: "i love cats too yeah i'm a cat person i'm allergic to cats ah uh i'm allergic to cats too oh okay if in you're my next around one life i had a roommate who was um allergic but if she was around my cat forever she became used to yeah it you yeah know if you're it's weird around them for a long period of time i still okay can't sleep with them in my room oh yeah this summer i oh i had to live with cats it was crazy yeah okay fenella um i drew a badger cool yay badger well yeah good choice why a uh badger"
+  max_wer: 0.35

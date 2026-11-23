@@ -1,0 +1,6 @@
+description: "read speech: ls-8455-210777-0031"
+metadata: { id: ls-8455-210777-0031, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-8455-210777-0031.ogg
+  reference: "you have received us with all that courtesy and hospitality for which your character in england stands so high"
+  max_wer: 0.1

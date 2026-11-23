@@ -1,0 +1,6 @@
+description: "read speech: ls-61-70970-0024"
+metadata: { id: ls-61-70970-0024, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-61-70970-0024.ogg
+  reference: "they moved thereafter cautiously about the hut groping before and about them to find something to show that warrenton had fulfilled his mission"
+  max_wer: 0.1

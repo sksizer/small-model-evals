@@ -1,0 +1,6 @@
+description: "read speech: ls-1320-122612-0012"
+metadata: { id: ls-1320-122612-0012, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-1320-122612-0012.ogg
+  reference: "extinguished brands were lying around a spring the offals of a deer were scattered about the place and the trees bore evident marks of having been browsed by the horses"
+  max_wer: 0.1

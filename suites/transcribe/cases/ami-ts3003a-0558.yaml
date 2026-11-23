@@ -1,0 +1,6 @@
+description: "meeting: ami-ts3003a-0558, 25 s"
+metadata: { id: ami-ts3003a-0558, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-ts3003a-0558.ogg
+  reference: "sure ah i was trying to draw a dolphin but i think his nose has to be a little bit but it's close i'm thinking about a swordfish so what yeah yeah it's yeah this is bit of the swordfish yeah he hasn't got an eye"
+  max_wer: 0.35

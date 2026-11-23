@@ -1,0 +1,6 @@
+description: "long reading: long-4992-41797-0009"
+metadata: { id: long-4992-41797-0009, kind: long, language: en }
+vars:
+  audio: corpus/audio/asr-long-4992-41797-0009.ogg
+  reference: "henry lord with the degree of ph d to his credit had been professor of zoology at a new england college but had resigned his post in order to write a series of scientific text books always irritable cold indifferent he had grown rapidly more so as years went on whatever appealed to her sense of beauty was straightway transferred to paper or canvas she is wild to know how to do things she makes effort after effort trembling with eagerness and when she fails to reproduce what she sees she works herself into a frenzy of grief and disappointment when she could not make a rabbit or a bird look real on paper she searched in her father's books for pictures of its bones cyril there must be some better way of doing i just draw the outline of an animal and then i put hairs or feathers on it they have no bodies they couldn't run nor move they're just pasteboard he wouldn't search so don't worry replied cyril quietly and the two looked at each other and knew that it was so there in the cedar hollow then lived olive lord an angry resentful little creature weighed down by a fierce sense of injury"
+  max_wer: 0.1

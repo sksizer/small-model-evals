@@ -1,0 +1,6 @@
+description: "harder read speech: ls-3997-182399-0006"
+metadata: { id: ls-3997-182399-0006, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-3997-182399-0006.ogg
+  reference: "way back in the days when grandpap buzzard had his lil falling out with ol king eagle and done fly so high he sco'tch the feathers offen his haid he had a cousin did grandpap buzzard and this cousin was jes naturally lazy and no count"
+  max_wer: 0.2

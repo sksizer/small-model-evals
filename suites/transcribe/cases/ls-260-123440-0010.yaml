@@ -1,0 +1,6 @@
+description: "read speech: ls-260-123440-0010"
+metadata: { id: ls-260-123440-0010, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-260-123440-0010.ogg
+  reference: "how cheerfully he seems to grin how neatly spread his claws and welcome little fishes in with gently smiling jaws"
+  max_wer: 0.1

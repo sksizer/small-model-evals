@@ -1,0 +1,6 @@
+description: "harder read speech: ls-2609-169640-0011"
+metadata: { id: ls-2609-169640-0011, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-2609-169640-0011.ogg
+  reference: "mister kite observed this also and remarked that our movements had been so prompt as to take the rascals aback"
+  max_wer: 0.2

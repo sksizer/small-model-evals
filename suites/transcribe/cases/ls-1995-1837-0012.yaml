@@ -1,0 +1,6 @@
+description: "read speech: ls-1995-1837-0012"
+metadata: { id: ls-1995-1837-0012, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-1995-1837-0012.ogg
+  reference: "he splashed and stamped along farther and farther onward until he neared the rampart of the clearing and put foot upon the tree bridge"
+  max_wer: 0.1

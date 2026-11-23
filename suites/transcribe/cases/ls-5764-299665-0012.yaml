@@ -1,0 +1,6 @@
+description: "harder read speech: ls-5764-299665-0012"
+metadata: { id: ls-5764-299665-0012, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-5764-299665-0012.ogg
+  reference: "how can we account for the wild beasts that devour human beings for the fanged serpents whose bite is death"
+  max_wer: 0.2

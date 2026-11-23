@@ -1,0 +1,6 @@
+description: "meeting: ami-es2004a-0812, 22 s"
+metadata: { id: ami-es2004a-0812, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-es2004a-0812.ogg
+  reference: "what about the older generation what about granny and grandads um you mean to save it lesser my grandad number can answer his mobile phone but yeah he couldn't even dream mm-hmm of texting or something mm-hmm like that can he programme his remote control or is it basic right with that too i don't think they tape things yeah i right don't think my they grandad's use actually better than me at using teletext so right"
+  max_wer: 0.35

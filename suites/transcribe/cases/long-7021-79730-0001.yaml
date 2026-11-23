@@ -1,0 +1,6 @@
+description: "long reading: long-7021-79730-0001"
+metadata: { id: long-7021-79730-0001, kind: long, language: en }
+vars:
+  audio: corpus/audio/asr-long-7021-79730-0001.ogg
+  reference: "to suppose that the object of this work is to aid in effecting such a substitution as that is entirely to mistake its nature and design by reason and affection as the chaise drives away mary stands bewildered and perplexed on the door step her mind in a tumult of excitement in which hatred of the doctor distrust and suspicion of her mother disappointment vexation and ill humor surge and swell among those delicate organizations on which the structure and development of the soul so closely depend doing perhaps an irreparable injury the mother as soon as the chaise is so far turned that mary can no longer watch the expression of her countenance goes away from the door with a smile of complacency and satisfaction upon her face at the ingenuity and success of her little artifice so you will be a good girl i know and not make any trouble but will stay at home contentedly won't you"
+  max_wer: 0.1

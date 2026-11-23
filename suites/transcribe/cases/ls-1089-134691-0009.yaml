@@ -1,0 +1,6 @@
+description: "read speech: ls-1089-134691-0009"
+metadata: { id: ls-1089-134691-0009, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-1089-134691-0009.ogg
+  reference: "angry with himself he tried to hide his face from their eyes by gazing down sideways into the shallow swirling water under the bridge but he still saw a reflection therein of their top heavy silk hats and humble tape like collars and loosely hanging clerical clothes brother hickey"
+  max_wer: 0.1

@@ -1,0 +1,6 @@
+description: "read speech: ls-908-31957-0001"
+metadata: { id: ls-908-31957-0001, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-908-31957-0001.ogg
+  reference: "i sit beneath thy looks as children do in the noon sun with souls that tremble through their happy eyelids from an unaverred yet prodigal inward joy"
+  max_wer: 0.1

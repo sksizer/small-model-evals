@@ -1,0 +1,6 @@
+description: "harder read speech: ls-8188-269288-0056"
+metadata: { id: ls-8188-269288-0056, kind: read-hard, language: en }
+vars:
+  audio: corpus/audio/asr-ls-8188-269288-0056.ogg
+  reference: "there was no reply but the sound of hurrying steps came quicker and quicker now and then they were interrupted by a groan"
+  max_wer: 0.2

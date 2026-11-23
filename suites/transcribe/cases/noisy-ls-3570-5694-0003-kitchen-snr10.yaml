@@ -1,0 +1,6 @@
+description: "read speech in noise: noisy-ls-3570-5694-0003-kitchen-snr10"
+metadata: { id: noisy-ls-3570-5694-0003-kitchen-snr10, kind: noisy, language: en }
+vars:
+  audio: corpus/audio/asr-noisy-ls-3570-5694-0003-kitchen-snr10.ogg
+  reference: "with a further advance in culture this tabu may change into simple custom of a more or less rigorous character but whatever be the theoretical basis of the distinction which is maintained whether it be a tabu or a larger conventionality the features of the conventional scheme of consumption do not change easily"
+  max_wer: 0.25

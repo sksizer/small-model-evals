@@ -1,0 +1,6 @@
+description: "meeting: ami-is1009a-0663, 22 s"
+metadata: { id: ami-is1009a-0663, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-is1009a-0663.ogg
+  reference: "yeah what of course with that didn't well then because in that you're case because you're we silly can't do because it people are silly oh yeah well but then i mean those it could people be on we can't help everybody well if it were like on top of your bookcase and you usually kept it on the coffee table um you know okay well we have maybe we uh have to move along yeah okay we have to move along but i think we have some good yeah good points good point to start with here"
+  max_wer: 0.35

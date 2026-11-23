@@ -1,0 +1,6 @@
+description: "read speech in noise: noisy-ls-1221-135767-0004-crowd-snr10"
+metadata: { id: noisy-ls-1221-135767-0004-crowd-snr10, kind: noisy, language: en }
+vars:
+  audio: corpus/audio/asr-noisy-ls-1221-135767-0004-crowd-snr10.ogg
+  reference: "we have spoken of pearl's rich and luxuriant beauty a beauty that shone with deep and vivid tints a bright complexion eyes possessing intensity both of depth and glow and hair already of a deep glossy brown and which in after years would be nearly akin to black"
+  max_wer: 0.25

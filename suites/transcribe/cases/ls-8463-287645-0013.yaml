@@ -1,0 +1,6 @@
+description: "read speech: ls-8463-287645-0013"
+metadata: { id: ls-8463-287645-0013, kind: read, language: en }
+vars:
+  audio: corpus/audio/asr-ls-8463-287645-0013.ogg
+  reference: "as to his age and also the name of his master jacob's statement varied somewhat from the advertisement"
+  max_wer: 0.1

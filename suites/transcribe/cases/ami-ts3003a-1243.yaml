@@ -1,0 +1,6 @@
+description: "meeting: ami-ts3003a-1243, 26 s"
+metadata: { id: ami-ts3003a-1243, kind: conversation, language: en }
+vars:
+  audio: corpus/audio/asr-ami-ts3003a-1243.ogg
+  reference: "well it's those laptops ah there we are nice okay but so mm does everybody has um experiences with uh remote controls and i mean not the ordinary mote controls but also a little bit different ones mm like you can use for other oh really no huh you well we no it's have me a neither a"
+  max_wer: 0.35
