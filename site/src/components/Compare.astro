@@ -10,7 +10,9 @@
 // relates to the query (green: copy, edit or scene; amber: same class;
 // red: unrelated); or, for a sensitive-suite result, the level it gave against
 // the expected one, chips for each category (hit, missed, false alarm) and a
-// bar for each risk the model gave. Renders nothing otherwise.
+// bar for each risk the model gave; or, for a transcribe result, the reference and what the model heard
+// with the differences marked (a substituted word shows the reference word, then the model's struck through;
+// a word the model added is struck through, one it left out is underlined) and the counts and speed. Renders nothing otherwise.
 import Boxes from './Boxes.astro'
 import Shot from './Shot.astro'
 import { show, type Result } from '../lib/data'
@@ -32,6 +34,8 @@ const sim = result.similarity
 const levels = sim?.detail?.levels
 const pc = (x: number) => `${Math.round(x * 100)}%`
 const screen = result.screening
+const heard = result.transcript?.detail
+const heardOf = (op: NonNullable<typeof heard>['ops'][number]) => op[0] === 'S' ? 'sub' : op[0] === 'D' ? 'del' : op[0] === 'I' ? 'ins' : 'same'
 // Risks worth drawing: every expected category, and any the model put at 5% or more.
 const bars = screen ? (Object.entries(screen.risks) as [string, number][]).filter(([c, r]) => r >= 0.05 || screen.expected.includes(c as never)).sort((a, b) => b[1] - a[1]) : []
 // The composite records which stages ran for the image.
@@ -46,6 +50,28 @@ const stages = (() => {
 })()
 ---
 
+{
+  heard && (
+    <div class="heard">
+      <p class="heard-sum">
+        <b>WER {(heard.wer * 100).toFixed(1)}%</b> <span class="muted">· {heard.sub} substituted · {heard.del} deleted · {heard.ins} inserted of {heard.ref_words} words</span>
+        {m['rtf'] !== undefined && <span class="muted"> · {m['rtf'].toFixed(m['rtf'] < 10 ? 1 : 0)}× real time</span>}
+        {m['load_ms'] !== undefined && <span class="muted"> · {(m['load_ms'] / 1000).toFixed(1)} s to load</span>}
+        {m['rss_mb'] !== undefined && <span class="muted"> · {Math.round(m['rss_mb'])} MB process memory</span>}
+      </p>
+      <p class="diff" title="Both texts as the scorer compares them: lowercase, no punctuation, numbers as digits">
+        {heard.ops.map((op) => (
+          <>
+            {op[0] === 'S' && <span class="w sub" title={`heard "${op[2]}"`}>{op[1]}</span>}
+            {op[0] === 'S' && <>{' '}<del class="w">{op[2]}</del></>}
+            {op[0] !== 'S' && <span class={`w ${heardOf(op)}`} title={op[0] === 'D' ? 'not heard' : op[0] === 'I' ? 'not said' : undefined}>{op[1] ?? op[2]}</span>}{' '}
+          </>
+        ))}
+      </p>
+      <p class="muted">A substituted word is shown as the reference word (shaded) then what the model wrote (struck through); a struck-through word alone was not said; a wavy red word was left out.</p>
+    </div>
+  )
+}
 {
   screen && (
     <div class="screen">
@@ -219,6 +245,13 @@ const stages = (() => {
   .bar i { display: block; height: 100%; background: var(--muted); }
   .bar i.on { background: var(--warn); }
   .bar-val { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+  .heard-sum { margin: 4px 0; font-size: 13px; }
+  .diff { margin: 4px 0; font-size: 13px; line-height: 1.9; max-height: 14em; overflow: auto; }
+  .diff .w { padding: 0 2px; border-radius: 3px; }
+  .diff .w.sub { background: var(--warn-bg); }
+  .diff del.w { color: var(--bad); background: var(--bad-bg); }
+  .diff .w.del { color: var(--bad); text-decoration: underline; text-decoration-style: wavy; }
+  .diff .w.ins { color: var(--bad); text-decoration: line-through; }
   .region-sum { margin: 4px 0 6px; font-size: 13px; }
   .missed-l { color: var(--muted); }
   .extra-l { color: var(--bad, #d93025); }

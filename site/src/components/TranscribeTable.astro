@@ -1,0 +1,96 @@
+---
+// Model by kind of speech for the transcribe suite, from each result's recorded alignment
+// (assertions/wer.ts). Per kind: WER over all the kind's words (substitutions + deletions + insertions
+// over reference words, so a long clip counts for its length), the pass count (each case passes at its
+// own limit, 10% unless it sets one), and the real-time factor (seconds of audio per second of compute,
+// the median over the kind's clips: 10 is ten times faster than speech). A model absent from a kind did
+// not run its cases. Memory is the largest process reading (an upper bound on the model's own footprint).
+import { fmt, href, modelSlug, tone, type Result } from '../lib/data'
+
+interface Props {
+  results: Result[]
+}
+const { results } = Astro.props
+const KINDS = [
+  { id: 'read', title: 'Read', about: 'Clean read speech, one speaker (LibriSpeech test-clean)' },
+  { id: 'read-hard', title: 'Read, hard', about: 'Accented, noisy or poorly recorded read speech' },
+  { id: 'long', title: 'Long', about: '1 to 2 minute readings: chunking is tested, not just the first 30 s' },
+  { id: 'noisy', title: 'Noisy', about: 'Clean clips mixed with rain, traffic or cafe sound at a set loudness' },
+  { id: 'conversation', title: 'Conversation', about: 'Meetings: several speakers, overlap' },
+] as const
+const kindOf = (r: Result) => (r.expected as { kind?: string } | null)?.kind ?? ''
+const median = (xs: number[]) => (xs.length === 0 ? null : [...xs].sort((a, b) => a - b)[Math.floor((xs.length - 1) / 2)]!)
+const present = KINDS.filter((k) => results.some((r) => kindOf(r) === k.id && r.transcript?.detail))
+const machines = [...new Set(results.map((r) => r.machine))]
+const tables = machines.map((machine) => {
+  const mine = results.filter((r) => r.machine === machine)
+  const rows = [...new Set(mine.map((r) => r.model))]
+    .map((model) => {
+      const cells = Object.fromEntries(
+        present.flatMap((k) => {
+          const rs = mine.filter((r) => r.model === model && kindOf(r) === k.id && r.transcript?.detail)
+          if (rs.length === 0) return []
+          const d = rs.map((r) => r.transcript!.detail!)
+          const words = d.reduce((a, x) => a + x.ref_words, 0)
+          const errors = d.reduce((a, x) => a + x.sub + x.del + x.ins, 0)
+          return [[k.id, { wer: words === 0 ? null : errors / words, sub: d.reduce((a, x) => a + x.sub, 0), del: d.reduce((a, x) => a + x.del, 0), ins: d.reduce((a, x) => a + x.ins, 0), passed: rs.filter((r) => r.pass).length, total: rs.length, stale: rs.some((r) => r.stale), rtf: median(rs.flatMap((r) => (r.metrics?.['rtf'] === undefined ? [] : [r.metrics['rtf']]))) }] as const]
+        }),
+      )
+      const mem = mine.filter((r) => r.model === model).flatMap((r) => (r.metrics?.['rss_mb'] === undefined ? [] : [r.metrics['rss_mb']]))
+      const wers = Object.values(cells).flatMap((c) => (c.wer === null ? [] : [c.wer]))
+      return { model, cells, avg: wers.length === 0 ? Infinity : wers.reduce((a, b) => a + b, 0) / wers.length, mem: mem.length === 0 ? null : Math.max(...mem) }
+    })
+    .sort((a, b) => a.avg - b.avg)
+  return { machine, rows }
+}).filter((t) => t.rows.length > 0)
+const pc = (x: number | null) => (x === null ? '—' : `${(x * 100).toFixed(1)}%`)
+---
+
+{
+  tables.map(({ machine, rows }) => (
+    <div class="scroll">
+      {machines.length > 1 && <h3>{machine}</h3>}
+      <table class="transcribe-table">
+        <thead>
+          <tr>
+            <th rowspan="2">Model</th>
+            {present.map((k) => <th colspan="2" class="num lvl" title={k.about}>{k.title}</th>)}
+            <th rowspan="2" class="num" title="Largest process memory reading while it ran (an upper bound)">Memory</th>
+          </tr>
+          <tr>
+            {present.map(() => <><th class="num" title="Word error rate over all the kind's words: lower is better">WER</th><th class="num" title="Seconds of audio per second of compute (median)">× real time</th></>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr>
+              <td class="pin"><a href={href(`/models/${modelSlug(r.model)}/`)}>{r.model}</a></td>
+              {present.map((k) => {
+                const c = r.cells[k.id]
+                return c ? (
+                  <>
+                    <td class={`num heat ${c.wer === null ? '' : tone(Math.max(0, 1 - c.wer) * 100)}`}>
+                      <strong>{pc(c.wer)}</strong>
+                      <small>{c.passed}/{c.total} pass{c.stale ? ' · stale' : ''}</small>
+                      <small title="Substitutions, deletions and insertions, in words">{c.sub} sub · {c.del} del · {c.ins} ins</small>
+                    </td>
+                    <td class="num">{c.rtf === null ? '—' : `${fmt(c.rtf, c.rtf < 10 ? 1 : 0)}×`}</td>
+                  </>
+                ) : (
+                  <td colspan="2" class="num muted" title="This model has no result for this kind">—</td>
+                )
+              })}
+              <td class="num">{r.mem === null ? '—' : `${fmt(r.mem / 1024, 1)} GB`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ))
+}
+
+<style>
+  .transcribe-table th.lvl { text-align: center; border-left: 1px solid var(--line); }
+  .transcribe-table td small { display: block; color: var(--muted); font-size: 11px; line-height: 1.3; white-space: nowrap; }
+  .transcribe-table td:nth-child(2n+2) { border-left: 1px solid var(--line); }
+</style>

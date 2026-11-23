@@ -105,7 +105,7 @@ const fails = results.filter((r) => !r.pass).length
                       <h4 style="margin-top:10px">Scorer</h4>
                       <pre>{r.error || r.reason || '—'}</pre>
                     </div>
-                    {(r.hits || r.fields || r.regions || r.edit) && (
+                    {(r.hits || r.fields || r.regions || r.edit || r.transcript) && (
                       <div>
                         <h4>Compared</h4>
                         <Compare result={r} />

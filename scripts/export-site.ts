@@ -21,6 +21,7 @@ import { compareRegions, type ExpectedRegions } from '../assertions/regions.ts'
 import { parseEdit, type EditGrading, type ExpectedEdit } from '../assertions/edit.ts'
 import { compareSimilarity, type ExpectedSimilarity, type SimilarityDetail } from '../assertions/similarity.ts'
 import { compareSearch, type SearchDetail } from '../assertions/search.ts'
+import type { WerDetail } from '../assertions/wer.ts'
 import { ENV_DIR, MODEL_DIR, type Environment } from './env.ts'
 import { readConditions, type RunConditions } from './conditions.ts'
 import { ALL_CLASSES, describe } from './machine.ts'
@@ -36,7 +37,7 @@ import { RESULTS_DIR, ROOT, SCOPE, SUITES_DIR, currentSnapshot, latest, loadCase
 
 interface CaseDef {
   description?: string
-  metadata?: { id?: string; supersedes?: string; retired?: string }
+  metadata?: { id?: string; supersedes?: string; retired?: string; kind?: string }
   vars?: Record<string, unknown>
 }
 
@@ -65,6 +66,9 @@ function inputOf(suite: string, vars: Record<string, unknown> = {}): { text: str
     const file = (corporaOf(currentSnapshot(suite).setup)[String(vars['corpus'])] ?? []).find((i) => i.id === clip)?.file
     return { text: clip, ...(file ? { media: file } : {}) }
   }
+  // A transcription case names its clip by repo path.
+  const audio = vars['audio']
+  if (typeof audio === 'string') return { text: audio, media: audio }
   // A similarity case names its query by candidate id; the pool says where the image is.
   const query = vars['query']
   const file = typeof query === 'string' ? currentPool(suite).get(query)?.file : undefined
@@ -103,6 +107,8 @@ function compare(expected: unknown, absent: unknown, output: string, detail?: un
       },
     }
   }
+  // Transcription: the scorer's counts and alignment; the reference and the model's text are the case's and the result's own.
+  if (isTranscribe(expected)) return { transcript: { detail: (detail as WerDetail | null | undefined) ?? null } }
   // Similarity: the top candidates with their levels, and the per-level numbers the scorer recorded.
   if (isSimilarity(expected)) {
     const top = compareSimilarity(expected, output)
@@ -170,6 +176,15 @@ function compare(expected: unknown, absent: unknown, output: string, detail?: un
   return {}
 }
 
+/** What a transcribe case expects: the clip's transcript, its kind, and the WER it may reach (assertions/wer.ts). */
+interface ExpectedTranscribe { reference: string; kind: string; max_wer: number | null }
+const isTranscribe = (e: unknown): e is ExpectedTranscribe =>
+  !!e && typeof e === 'object' && typeof (e as { reference?: unknown }).reference === 'string'
+const transcribeExpected = (c: CaseDef): ExpectedTranscribe | null =>
+  typeof c.vars?.['reference'] === 'string'
+    ? { reference: c.vars['reference'], kind: c.metadata?.kind ?? '', max_wer: typeof c.vars['max_wer'] === 'number' ? c.vars['max_wer'] : null }
+    : null
+
 const isSimilarity = (e: unknown): e is ExpectedSimilarity =>
   !!e && typeof e === 'object' && !Array.isArray(e) && ['copy', 'edit', 'scene', 'class'].some((k) => Array.isArray((e as Record<string, unknown>)[k])) && !('changed' in e)
 
@@ -208,7 +223,7 @@ function caseView(suite: string, id: string, raw: Record<string, unknown>, hash:
     hash,
     description: c.description ?? '',
     input: inputOf(suite, c.vars),
-    expected: c.vars?.['expected'] ?? c.vars?.['tool'] ?? searchExpected(c.vars) ?? null,
+    expected: c.vars?.['expected'] ?? c.vars?.['tool'] ?? searchExpected(c.vars) ?? transcribeExpected(c) ?? null,
     absent: c.vars?.['absent'] ?? null,
     instruction: typeof c.vars?.['instruction'] === 'string' ? c.vars['instruction'] : null,
     args: c.vars?.['args'] ?? null,
@@ -252,6 +267,7 @@ const FAMILIES: { id: string; title: string; blurb: string; has: (suite: string)
   { id: 'vision', title: 'Vision understanding', blurb: 'A photo in, text or a flag out.', has: (s) => ['ocr', 'tag-image', 'nudity-flag', 'sensitive'].includes(s) },
   { id: 'regions', title: 'Regions', blurb: 'A photo in, boxes around things out.', has: (s) => s.startsWith('regions-') },
   { id: 'image', title: 'Image', blurb: 'Edit an image as told, or tell which images are alike.', has: (s) => ['edit', 'similarity'].includes(s) },
+  { id: 'speech', title: 'Speech', blurb: 'A recording in, the words out: word error rate against a reference transcript.', has: (s) => s === 'transcribe' },
   { id: 'search', title: 'Search', blurb: 'A typed query or a clip in, the right photo, page, note, sound, spoken reading or video out: embedding models, ranked by nDCG@10.', has: (s) => s === 'search' },
 ]
 
@@ -275,6 +291,7 @@ const TASKS: Record<string, { label: string; about: string }> = {
   'regions-find': { label: 'Find named things', about: 'Draw a box around one thing named in the request.' },
   'regions-faces': { label: 'Find faces', about: 'Draw a box around every face.' },
   'regions-text': { label: 'Find text lines', about: 'Draw a box around every line of text.' },
+  transcribe: { label: 'Transcription (speech to text)', about: 'Write down what was said in a recording: word error rate against a reference transcript.' },
   edit: { label: 'Image editing', about: 'Change an image as told, leaving the rest alone.' },
   similarity: { label: 'Image similarity', about: 'Tell copies, edits and same-scene images from the rest.' },
   // The search suite is one suite of three kinds of case; the finder offers each kind as its own task (`search:<kind>`).
