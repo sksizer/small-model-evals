@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# transcribe: write down what was said (docs/plans/transcribe.md). Each case is one clip from corpus/audio/ and its
+# reference transcript; the score is the word error rate after both texts are normalised the usual way
+# (assertions/wer.ts), 1 - WER, passing at WER <= `max_wer` (default 0.10; the case sets 0.20 for the harder kinds).
+# Kinds, in `metadata.kind`: read, read-hard, long, noisy, conversation.
+#
+# Every model runs in-process (transformers.js, onnxruntime-node) by providers/transcribe.ts at q8, pinned by
+# commit. The prompt is unused: the provider reads vars.audio. Timing (transcribe_ms, rtf, load_ms) is in the
+# result's metrics.
+#
+# Not here, and why:
+# - Parakeet TDT 0.6B v3: transformers.js 4.3.1 runs Parakeet only as `parakeet_ctc` (a CTC head); v3 is a TDT
+#   (token-and-duration transducer) model and onnx-community has no v3 conversion, only parakeet-tdt-0.6b-v2-ONNX,
+#   which that version cannot load. Revisit when transformers.js adds the TDT decoder.
+# - Moonshine v2 (streaming): no ONNX build that transformers.js 4.3.1 loads was found.
+# - Granite Speech, Apple SpeechTranscriber, whisper.cpp: later stages (the `whisper-cpp` and `apple` families).
+description: transcribe — write down what was said
+
+prompts:
+  - '{{ audio }}' # unused: the provider reads vars directly
+
+providers:
+  - { id: file://../../providers/transcribe.ts, label: whisper-tiny-en, config: { family: transformers, model: Xenova/whisper-tiny.en, revision: 79fb389fc764e7c395bd330e9531d9d32ada7049, dtype: q8 } }
+  - { id: file://../../providers/transcribe.ts, label: whisper-base-en, config: { family: transformers, model: Xenova/whisper-base.en, revision: 95bf40a508535962c6483ead40270b2e32267508, dtype: q8 } }
+  - { id: file://../../providers/transcribe.ts, label: whisper-small-en, config: { family: transformers, model: Xenova/whisper-small.en, revision: fa16a75f5d91e83ecb6a2ccb690f14d91ef00ca4, dtype: q8 } }
+  - { id: file://../../providers/transcribe.ts, label: whisper-large-v3-turbo, config: { family: transformers, model: onnx-community/whisper-large-v3-turbo, revision: 360ebcde2559d60bb474678be3c1de9ef347d01a, dtype: q8 } }
+  - { id: file://../../providers/transcribe.ts, label: distil-small-en, config: { family: transformers, model: distil-whisper/distil-small.en, revision: 9e4a67ca4569c30be43a3fe7fba1621e504f0093, dtype: q8 } }
+  - { id: file://../../providers/transcribe.ts, label: distil-large-v3.5, config: { family: transformers, model: distil-whisper/distil-large-v3.5-ONNX, revision: c1f7de035d785f54bc80f47a9d1d8f9d58da68b1, dtype: q8 } }
+  - { id: file://../../providers/transcribe.ts, label: moonshine-tiny, config: { family: transformers, model: onnx-community/moonshine-tiny-ONNX, revision: a6da1241cd305dcd64eab1edbd615f2bb9aabb95, dtype: q8 } }
+  - { id: file://../../providers/transcribe.ts, label: moonshine-base, config: { family: transformers, model: onnx-community/moonshine-base-ONNX, revision: b1e9b6aae3c3c7298f10c3798393fdf38e8fbbad, dtype: q8 } }
+
+defaultTest:
+  options: { disableVarExpansion: true }
+  assert:
+    - type: javascript
+      value: file://../../assertions/wer.ts
+
+# One immutable file per case (README: Cases). retired/ is not loaded.
+tests: file://cases/*.yaml

@@ -58,6 +58,8 @@ export const SUITE_META: Record<string, { categories: Category[]; cost: Cost; ca
   // Its audio and video kinds make it selectable by `--category audio` or `video` too; pair that with `--kinds` (sounds, speech, sound-to-sound; videos, video-to-video) to run only those.
   search: { categories: ['search', 'audio', 'video'], cost: 'heavy', case_timeout_min: 20 },
   'perf-embed': { categories: ['search'], cost: 'heavy' },
+  // Every clip goes through every model; the largest (large-v3-turbo, distil-large-v3.5) read a 100 s clip in tens of seconds on CPU.
+  transcribe: { categories: ['audio'], cost: 'heavy', case_timeout_min: 10 },
   edit: { categories: ['image-edit'], cost: 'heavy' },
 }
 

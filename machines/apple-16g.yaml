@@ -4,4 +4,4 @@
 description: Apple silicon, 16 GiB unified memory
 match:
   classes: [apple-16g]
-categories: [text, vision, regions, search, image-edit]
+categories: [text, vision, regions, search, image-edit, audio]
